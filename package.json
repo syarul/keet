@@ -1,0 +1,36 @@
+{
+  "name": "keet",
+  "version": "0.5.2",
+  "description": "A data-driven view, OO, pure js without new paradigm shift",
+  "main": "index.js",
+  "scripts": {
+    "distcompress": "browserify index.js --standalone Keet | uglifyjs > dist/keet.min.js",
+    "dist": "browserify index.js --standalone Keet > dist/keet.js",
+    "jsdoc": "jsdoc2md index.js > docs/DOCUMENTATION.md"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/syarul/krom.git"
+  },
+  "keywords": [
+    "views",
+    "view layer",
+    "template string",
+    "web framework",
+    "web app",
+    "reactive",
+    "observable",
+    "OO"
+  ],
+  "author": "Shahrul Nizam Selamat",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/syarul/keet/issues"
+  },
+  "homepage": "https://github.com/syarul/keet#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-livereload": "^3.8.1",
+    "gulp-shell": "^0.5.2"
+  }
+}
