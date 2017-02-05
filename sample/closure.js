@@ -2,7 +2,7 @@
 
 function init() {
 	
-	this.keet = () => new Keet(null, 'debug', this) // pass context this as thrid arg to Keet constructor
+	this.keet = () => new Keet(null, 'debug', this) // pass context this as 3rd arg to Keet constructor
 
 	this.app = this.keet().link('app', '{{state}}')
 

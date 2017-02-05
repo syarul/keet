@@ -1,5 +1,5 @@
 /** 
- * Keet.js v0.5.2 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.5.3 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

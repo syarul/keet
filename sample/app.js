@@ -39,8 +39,8 @@ let _data = data.map(x => x)
 _data.pop()
 
 const keet = (tag, debug) => debug ? new Keet(tag, true) : new Keet(null, false)
-const tag = keet().tag
-const cat = keet().cat //function() { return [].slice.call(arguments).join('') }
+const tag = keet().tag // helper function, write element without writing brackets
+const cat = keet().cat // helper function to concat string, function() { return [].slice.call(arguments).join('') }
 
 const model = {}  //object container for the all the components
 
