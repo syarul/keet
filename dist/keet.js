@@ -1,6 +1,7 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Keet = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function (global){
 /** 
- * Keet.js v0.5.4 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.5.5 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -13,17 +14,17 @@ module.exports = Keet
 /**
  * Keet constructor, each component is an instance of Keet
  * @param {string} - ***optional*** element tag name, set the default template for this Instance, i.e 'div'
- * @param {boolean | string} - ***optional*** set to run in debug modem boolean true or string 'debug'
+ * @param {boolean | string} - ***optional*** set to run in debug mode, boolean true or string 'debug'
  * @param {object} - ***optional*** if using Keet inside a closure declare the context of said closure
  * @returns {constructor}
  */
 function Keet(tagName, debug, context) {
   var cargv = [].slice.call(arguments), ctx = this, child, childAttr, 
-    regc, injc, kStr, kRegc, kAttr, ret, cyc = 0, l, tg,
+    regc, injc, kStr, kRegc, kAttr, ret, l, tg,
     log = cargv.filter(function(c) {
       if(typeof c === 'boolean' && c) return c
       else if(typeof c === 'string' && c === 'debug') return c
-    })[0] ? console.log.bind(console) : function() {},
+    })[0],
     context = cargv.filter(function(c) { return typeof c === 'object'})[0],
     getId = function(id, uid) {
       if(ctx.ctor.doc) {
@@ -50,6 +51,12 @@ function Keet(tagName, debug, context) {
       log('tag result => \n'+JSON.stringify(arr, null, 2))
       return arr.join('')
     }
+  if (!global.log && log){ 
+    global.log = console.log.bind(console)
+    log = console.log.bind(console)
+  }
+  else if (global.log && log) log = console.log.bind(console)
+  else log = function() {}
   this.obs = {}
   this.ctor = {}
   Object.defineProperty(this, 'obs', {
@@ -72,14 +79,12 @@ function Keet(tagName, debug, context) {
   }
   this.tag = function() {
     var args = [].slice.call(arguments), arr = ctx.ktag.apply(null, args)
-    log('tag result => \n'+JSON.stringify(arr, null, 2))
     return arr.join('')
   }
   this.loaded = function(cb) {
     if(ctx.ctor.doc && !ctx.ctor.loaded) {
       document.addEventListener('DOMContentLoaded', function() {
-        cyc++
-        l = ['content loaded ->', 'el:', ctx.el, 'cycle:', cyc]
+        l = ['content loaded ->', 'el:', ctx.el]
         if(!ctx.el) l.splice(1, 2, 'k-link:', ctx.ctor.uid)
         log.apply(null, l)
         ctx.ctor.loaded = true
@@ -100,6 +105,10 @@ function Keet(tagName, debug, context) {
   tg = cargv.filter(function(c) { return typeof c === 'string' && c !== 'debug' })[0]
   if (tg) this.ctor.tmpl = ['<', tg, ' k-link="', this.ctor.uid, '"', '>', '</', tg, '>']
 
+  var insOf = function(i) {
+    return i instanceof Object ? true : false
+  }
+
   var _processTags = function(str, kData) {
     var childs = str.match(/{{([^{}]+)}}/g, '$1'), idx, ctmpl
     if(childs){
@@ -108,10 +117,10 @@ function Keet(tagName, debug, context) {
         // skip tags which not being declared yet
         if(context){
           child = context[regc] ? context[regc] : false
-          log('evaluating context child:', context, '->', child)
+          log('evaluating context child:', context, '->', insOf(child))
         } else {
           child = testEval(regc) ? eval(regc) : false
-          log('evaluating child:', regc, '->', child)
+          log('evaluating child:', regc, '->', insOf(child))
         }
         if(child){
           // handle child tag
@@ -297,10 +306,10 @@ function Keet(tagName, debug, context) {
     // if this is registered, called this Instance.prototype.compose
     if(context){
       evReg = context[reg] ? context[reg] : false
-      log('evaluating context register:', reg, '->', evReg)
+      log('evaluating context register:', reg, '->', insOf(evReg))
     } else {
       evReg = testEval(reg) ? eval(reg) : false
-      log('evaluating register:', reg, '->', evReg)
+      log('evaluating register:', reg, '->', insOf(evReg))
     }
     if(evReg && typeof evReg.__proto__.compose === 'function') {
       evReg.compose()
@@ -938,5 +947,6 @@ Keet.prototype.ktag = function(tag, value, attributes, styles) {
   }
   return ret
 }
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}]},{},[1])(1)
 });

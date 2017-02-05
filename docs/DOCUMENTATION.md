@@ -8,7 +8,7 @@ Keet constructor, each component is an instance of Keet
 | Param | Type | Description |
 | --- | --- | --- |
 | tagName | <code>string</code> | ***optional*** element tag name, set the default template for this Instance, i.e 'div' |
-| debug | <code>boolean</code> &#124; <code>string</code> | ***optional*** set to run in debug modem boolean true or string 'debug' |
+| debug | <code>boolean</code> &#124; <code>string</code> | ***optional*** set to run in debug mode, boolean true or string 'debug' |
 | context | <code>object</code> | ***optional*** if using Keet inside a closure declare the context of said closure |
 
 
