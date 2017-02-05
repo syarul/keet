@@ -8,7 +8,7 @@
  * Released under the MIT License.
  */
 'use strict'
-// module.exports = Keet
+module.exports = Keet
 /**
  * Keet constructor, each component is an instance of Keet
  * @param {string} - ***optional*** element tag name, set the default template for this Instance, i.e 'div'
