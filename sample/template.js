@@ -1,5 +1,6 @@
 // // using pre generated templating with element tagName 'div'
-const keet = debugOff => debugOff ? new Keet('div', false) : new Keet('div', 'debug')
+const keet = () => new Keet('div')
+
 const tag = keet().tag
 
 const app = keet()

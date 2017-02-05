@@ -7,9 +7,9 @@ Keet constructor, each component is an instance of Keet
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tagName | <code>string</code> | element tag name, set the default template for this Instance, i.e "div" |
-| debug | <code>boolean</code> | set to run in debug mode |
-| context | <code>object</code> | if using Keet inside a closure declare the context of said closure |
+| tagName | <code>string</code> | ***optional*** element tag name, set the default template for this Instance, i.e 'div' |
+| debug | <code>boolean</code> &#124; <code>string</code> | ***optional*** set to run in debug modem boolean true or string 'debug' |
+| context | <code>object</code> | ***optional*** if using Keet inside a closure declare the context of said closure |
 
 
 * [Keet(tagName, debug, context)](#Keet) ⇒ <code>constructor</code>
@@ -118,7 +118,7 @@ Observe an object for changes in properties, once recieved delegate to a functio
 | Param | Type | Description |
 | --- | --- | --- |
 | instance | <code>object</code> | obj to watch |
-| fn | <code>function</code> | the function call once observe property changed |
+| fn | <code>function</code> | the function call once observe property changed, arguments pass to the  function; (1st) the property attribute, (2nd) old value, (3rd) new value |
 
 <a name="Keet+unWatch"></a>
 

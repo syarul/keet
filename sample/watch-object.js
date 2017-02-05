@@ -21,7 +21,6 @@ const state = keet()
   .register('app')
   .set({
     value: obj.value,
-    'attr-some': 'SM'+Math.round(Math.random() * 1000),
     'css-background': obj.background
   }).preserveAttributes()
   .watch(obj, updateState)

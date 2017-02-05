@@ -1,6 +1,4 @@
 // observing array changes, support operation of assigment, push, pop, shift, unshift, slice, splice
-var log = console.log.bind(console)
-
 var app = new Keet
 
 app.link('app', '{{operation}}{{container}}')

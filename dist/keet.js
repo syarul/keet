@@ -1,6 +1,6 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Keet = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /** 
- * Keet.js v0.5.3 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.5.4 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -9,18 +9,22 @@
  * Released under the MIT License.
  */
 'use strict'
-module.exports = Keet
+// module.exports = Keet
 /**
  * Keet constructor, each component is an instance of Keet
- * @param {string} - element tag name, set the default template for this Instance, i.e "div"
- * @param {boolean} - set to run in debug mode
- * @param {object} - if using Keet inside a closure declare the context of said closure
+ * @param {string} - ***optional*** element tag name, set the default template for this Instance, i.e 'div'
+ * @param {boolean | string} - ***optional*** set to run in debug modem boolean true or string 'debug'
+ * @param {object} - ***optional*** if using Keet inside a closure declare the context of said closure
  * @returns {constructor}
  */
 function Keet(tagName, debug, context) {
-  var ctx = this, child, childAttr, regc, injc, 
-    kStr, kRegc, kAttr, ret, cyc = 0, l,
-    log = debug ? console.log.bind(console) : function() {},
+  var cargv = [].slice.call(arguments), ctx = this, child, childAttr, 
+    regc, injc, kStr, kRegc, kAttr, ret, cyc = 0, l, tg,
+    log = cargv.filter(function(c) {
+      if(typeof c === 'boolean' && c) return c
+      else if(typeof c === 'string' && c === 'debug') return c
+    })[0] ? console.log.bind(console) : function() {},
+    context = cargv.filter(function(c) { return typeof c === 'object'})[0],
     getId = function(id, uid) {
       if(ctx.ctor.doc) {
         ret = document.getElementById(id)
@@ -93,7 +97,8 @@ function Keet(tagName, debug, context) {
 
   this.ctor.uid = (function() { return (Math.round(Math.random()*0x1000000)).toString(32) }())
 
-  if (typeof tagName === 'string') this.ctor.tmpl = ['<', tagName, ' k-link="', this.ctor.uid, '"', '>', '</', tagName, '>']
+  tg = cargv.filter(function(c) { return typeof c === 'string' && c !== 'debug' })[0]
+  if (tg) this.ctor.tmpl = ['<', tg, ' k-link="', this.ctor.uid, '"', '>', '</', tg, '>']
 
   var _processTags = function(str, kData) {
     var childs = str.match(/{{([^{}]+)}}/g, '$1'), idx, ctmpl
@@ -537,7 +542,8 @@ Keet.prototype.watch = function(instance) {
 /**
  * Observe an object for changes in properties, once recieved delegate to a function callback
  * @param {object} - obj to watch
- * @param {function} - the function call once observe property changed
+ * @param {function} - the function call once observe property changed, arguments pass to the 
+ * function; (1st) the property attribute, (2nd) old value, (3rd) new value 
  * @returns {context}
  */
 Keet.prototype.watchObj = function(instance, fn) {

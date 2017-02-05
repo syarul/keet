@@ -40,9 +40,12 @@ Take a look inside [sample](https://github.com/syarul/keet/tree/master/sample) f
 ## Foward
 
 - Keet.js embrace javascript OO and it's first class functions.
-- For the most part, you can follow js best practices, for Keet.js use closure or object as the main component. 
-- Use ```Keet.prototype.register/unreg``` to swap components.
-- All Keet.prototypes return itself, chaining methods is supported
+- For the most part, you can follow standard javascript best practices, 
+- It's better to holds Keet.js components inside closure or object, for a maintainable code
+- Use the debug mode by passing boolean true or string 'debug' to Keet constructor for a quick trace of elements rendering behavior or failed hookup between components
+- Having trouble of unrendered elements or rendering order issue? ```Keet.prototype.compose(fn)``` has a callback function(fn) which execute after its rendered to DOM
+- Use ```Keet.prototype.register/unreg``` to swap components, so components by any means are highly reusable
+- All Keet.prototypes return itself, chaining methods is supported all along
 
 ## Version history
 
