@@ -364,7 +364,7 @@ function Keet(tagName, debug, context) {
  */
 Keet.prototype.register = function(instance) {
   if (typeof instance === 'string') this.ctor.register = instance
-  else throw ('supply argument is not a string.')
+  else throw ('Argument is not a string.')
   return this
 }
 /**
