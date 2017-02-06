@@ -49,6 +49,7 @@ Take a look inside [sample](https://github.com/syarul/keet/tree/master/sample) f
 
 ## Version history
 
+- 0.5.7 Added force option to ```Keet.prototype.compose```
 - 0.5.2 Discontinued old version, rename to Keet.js added tons of improvement, reaching stable release
 - 0.5.1 Added object watch, added lookup with custom attributes, fix issue crash if jQuery is present, more samples with sane js implementation
 - 0.5.0 Added array observable with ```Keet.prototype.watch``` suport multitude array operations such as assigment, push, pop, shift, unshift, slice, splice. See [sample](https://github.com/syarul/keet/tree/master/sample/array-observable.js) for usage

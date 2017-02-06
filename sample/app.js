@@ -22,7 +22,7 @@ let data = [{
   url: '/resource',
   data: {
     title: 'Resources',
-    desc: 'For more info visit <a href="https://github.com/syarul/keet">https://github.com/syarul/keet</a>',
+    desc: 'For more info visit <a href="https://github.com/syarul/Keet">https://github.com/syarul/Keet</a>',
     link: 'Contact us'
   }
 }, {

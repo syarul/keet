@@ -1,5 +1,5 @@
 /** 
- * Keet.js v0.5.6 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.5.7 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -22,7 +22,7 @@ function Keet(tagName, debug, context) {
     log = cargv.filter(function(c) {
       if(typeof c === 'boolean' && c) return c
       else if(typeof c === 'string' && c === 'debug') return c
-    })[0] ? log = console.log.bind(console) : log = function() {},
+    })[0],
     context = cargv.filter(function(c) { return typeof c === 'object'})[0],
     getId = function(id, uid) {
       if(ctx.ctor.doc) {
@@ -49,6 +49,14 @@ function Keet(tagName, debug, context) {
       log('tag result => \n'+JSON.stringify(arr, null, 2))
       return arr.join('')
     }
+  if(log && typeof window === 'object' && !window.log){
+    window.log = console.log.bind(console)
+    log = console.log.bind(console)
+  } else if (log && typeof window === 'object' && window.log){
+    log = console.log.bind(console)
+  } else {
+    log = function(){}
+  }
   this.obs = {}
   this.ctor = {}
   Object.defineProperty(this, 'obs', {
@@ -75,7 +83,7 @@ function Keet(tagName, debug, context) {
   }
   this.loaded = function(cb) {
     if(ctx.ctor.doc && !ctx.ctor.loaded) {
-      document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('DOMContentLoaded', function(ev) {
         l = ['content loaded ->', 'el:', ctx.el]
         if(!ctx.el) l.splice(1, 2, 'k-link:', ctx.ctor.uid)
         log.apply(null, l)
@@ -85,6 +93,15 @@ function Keet(tagName, debug, context) {
       })
     } else {
       cb()
+    }
+  }
+  this.isNode = function() {
+    var node = getId(ctx.el, ctx.ctor.uid)
+    if (node && typeof node == 'object' && node.nodeType === 1) {
+      node = null
+      return true
+    } else {
+      return false
     }
   }
   this.ctor.attr = {}
@@ -290,6 +307,7 @@ function Keet(tagName, debug, context) {
       applyAttrib(el, state, uid)
       // if child ctor exist apply the attributes to child tags
       for (attr in childTags) applyAttrib(childTags[attr].el, childTags[attr].state, childTags[attr].preserveAttr, childTags[attr].uid)
+      ele = null
     }
   }
 
@@ -400,7 +418,7 @@ Keet.prototype.template = function(tag, id) {
 }
 /**
  * Reevaluate the state of this component instance, if value changed from last update to DOM, update it again.
- * @param {boolean} - ***optional*** force update with boolean true
+ * @param {boolean} - ***optional*** force node render, if the node non-existent, apply false to the callback function
  * @param {function} - ***optional*** run a callback function after this component loaded
  * @returns {context}
  */
@@ -408,12 +426,17 @@ Keet.prototype.compose = function(force, fn) {
   // compose with a function
   // also as callee for setter
   var argv = [].slice.call(arguments),
-    c = this.obs._state_, ctx = this
+    c = this.obs._state_, ctx = this, elem
   force = argv.filter(function(f) { return typeof f === 'boolean'})[0]
   fn = argv.filter(function(f) { return typeof f === 'function'})[0]
   if(force) {
-    this.obs._state_ = c
-    if(fn) fn()
+    elem = this.isNode()
+    if(elem){
+      this.obs._state_ = c
+      if(fn) fn(true)
+    } else {
+      if(fn) fn(false)
+    }
   } else {
     this.loaded(function(){
       ctx.obs._state_ = c
