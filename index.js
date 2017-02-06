@@ -1,5 +1,5 @@
 /** 
- * Keet.js v0.5.5 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.5.6 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -22,7 +22,7 @@ function Keet(tagName, debug, context) {
     log = cargv.filter(function(c) {
       if(typeof c === 'boolean' && c) return c
       else if(typeof c === 'string' && c === 'debug') return c
-    })[0],
+    })[0] ? log = console.log.bind(console) : log = function() {},
     context = cargv.filter(function(c) { return typeof c === 'object'})[0],
     getId = function(id, uid) {
       if(ctx.ctor.doc) {
@@ -49,12 +49,6 @@ function Keet(tagName, debug, context) {
       log('tag result => \n'+JSON.stringify(arr, null, 2))
       return arr.join('')
     }
-  if (!global.log && log){ 
-    global.log = console.log.bind(console)
-    log = console.log.bind(console)
-  }
-  else if (global.log && log) log = console.log.bind(console)
-  else log = function() {}
   this.obs = {}
   this.ctor = {}
   Object.defineProperty(this, 'obs', {
@@ -406,19 +400,26 @@ Keet.prototype.template = function(tag, id) {
 }
 /**
  * Reevaluate the state of this component instance, if value changed from last update to DOM, update it again.
+ * @param {boolean} - ***optional*** force update with boolean true
  * @param {function} - ***optional*** run a callback function after this component loaded
  * @returns {context}
  */
-Keet.prototype.compose = function(fn) {
+Keet.prototype.compose = function(force, fn) {
   // compose with a function
   // also as callee for setter
-  var c = this.obs._state_, ctx = this
-  this.loaded(function(){
-    ctx.obs._state_ = c
-    if (typeof fn === 'function') {
-      fn()
-    }
-  }) 
+  var argv = [].slice.call(arguments),
+    c = this.obs._state_, ctx = this
+  force = argv.filter(function(f) { return typeof f === 'boolean'})[0]
+  fn = argv.filter(function(f) { return typeof f === 'function'})[0]
+  if(force) {
+    this.obs._state_ = c
+    if(fn) fn()
+  } else {
+    this.loaded(function(){
+      ctx.obs._state_ = c
+      if(fn) fn()
+    }) 
+  }
   return this
 }
 /**
@@ -916,10 +917,10 @@ Keet.prototype.set = function(value, vProp) {
  * Helpers to create elements without writing brackets i.e ```app.tag('a', 'link', {id: 'imgLink', href: 'http://somelink.com'}, {color: 'red'})``` 
  * which will yeild ```<a href="http://somelink.com" id="imgLink" style="color:red">link</a>```, **this is not chainable prototype**, 
  * to use use call the helpers function of Keet.
- * @param {string} - the tag reference
+ * @param {string} - the element tag name reference
  * @param {string | number} - the inner html value
  * @param {object} - ***optional*** if specified, write properties and values as attributes, omit as ```null/undefined``` if need next arg
- * @param {string} - ***optional*** if specified, write properties and values as style
+ * @param {object} - ***optional*** if specified, write properties and values as style
  * @returns {array}
  */
 Keet.prototype.ktag = function(tag, value, attributes, styles) {
