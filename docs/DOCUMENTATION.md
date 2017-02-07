@@ -30,6 +30,7 @@ Keet constructor, each component is an instance of Keet
     * [.slice(fn, start, end)](#Keet+slice) ⇒ <code>context</code>
     * [.splice(fn, start, count, ...obj)](#Keet+splice) ⇒ <code>context</code>
     * [.bindListener(inputId, listener, type)](#Keet+bindListener) ⇒ <code>context</code>
+    * [.removeListener(inputId, type)](#Keet+removeListener) ⇒ <code>context</code>
     * [.set(value, vProp)](#Keet+set) ⇒ <code>context</code>
     * [.ktag(tag, value, attributes, styles)](#Keet+ktag) ⇒ <code>array</code>
 
@@ -224,14 +225,26 @@ Removing existing elements and/or adding new elements. Behavior is like ```Array
 <a name="Keet+bindListener"></a>
 
 ### keet.bindListener(inputId, listener, type) ⇒ <code>context</code>
-Input bindings, add an event listener to an input with a lookup to an id, subsequently notify the listener of the changes
+Event listener bindings, add an event listener to an input or any type event with a lookup to an id, subsequently notify the listener of the changes
 
 **Kind**: instance method of <code>[Keet](#Keet)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| inputId | <code>string</code> | the id of the input |
+| inputId | <code>string</code> | the id of the event |
 | listener | <code>object</code> &#124; <code>function</code> | the listener, a component instance or a function |
+| type | <code>string</code> | the type of this event listener |
+
+<a name="Keet+removeListener"></a>
+
+### keet.removeListener(inputId, type) ⇒ <code>context</code>
+Remove event listener bindings
+
+**Kind**: instance method of <code>[Keet](#Keet)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| inputId | <code>string</code> | the id of the event |
 | type | <code>string</code> | the type of this bind event listener |
 
 <a name="Keet+set"></a>

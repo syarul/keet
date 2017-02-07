@@ -1,5 +1,5 @@
 /** 
- * Keet.js v0.5.7 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.5.8 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -876,10 +876,10 @@ Keet.prototype.splice = function(fn, start, count, obj) {
   return this
 }
 /**
- * Input bindings, add an event listener to an input with a lookup to an id, subsequently notify the listener of the changes
- * @param {string} - the id of the input
+ * Event listener bindings, add an event listener to an input or any type event with a lookup to an id, subsequently notify the listener of the changes
+ * @param {string} - the id of the event
  * @param {object | function} - the listener, a component instance or a function
- * @param {string} - the type of this bind event listener
+ * @param {string} - the type of this event listener
  * @returns {context}
  */
 Keet.prototype.bindListener = function(inputId, listener, type) {
@@ -887,8 +887,10 @@ Keet.prototype.bindListener = function(inputId, listener, type) {
   this.loaded(function(){
     var e = document.getElementById(inputId)
     type = type || 'input'
+    if(!ctx.ctor.ev) ctx.ctor.ev = {}
     if(e){
-      e.addEventListener(type, function() {
+      var str = ctx.cat(inputId, '-', type)
+      ctx.ctor.ev[str] = function() {
         if (typeof listener.__proto__.set === 'function') {
           listener.set(e.value)
         } else if (typeof listener === 'function') {
@@ -896,7 +898,28 @@ Keet.prototype.bindListener = function(inputId, listener, type) {
         } else {
           return e.value
         }
-      })
+      }
+
+      e.addEventListener(type, ctx.ctor.ev[str])
+    } else throw('Element does not exist')
+  })
+  return this
+}
+/**
+ * Remove event listener bindings
+ * @param {string} - the id of the event
+ * @param {string} - the type of this bind event listener
+ * @returns {context}
+ */
+Keet.prototype.removeListener = function(inputId, type) {
+  var ctx = this
+  this.loaded(function(){
+    var e = document.getElementById(inputId)
+    type = type || 'input'
+    if(e){
+      var str = ctx.cat(inputId, '-', type)
+      e.removeEventListener(type, ctx.ctor.ev[str], false)
+      delete ctx.ctor.ev[str]
     } else throw('Element does not exist')
   })
   return this

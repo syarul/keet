@@ -49,6 +49,7 @@ Take a look inside [sample](https://github.com/syarul/keet/tree/master/sample) f
 
 ## Version history
 
+- 0.5.8 Added removeListener
 - 0.5.7 Added force option to ```Keet.prototype.compose```
 - 0.5.2 Discontinued old version, rename to Keet.js added tons of improvement, reaching stable release
 - 0.5.1 Added object watch, added lookup with custom attributes, fix issue crash if jQuery is present, more samples with sane js implementation

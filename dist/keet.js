@@ -1,6 +1,6 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Keet = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /** 
- * Keet.js v0.5.7 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.5.8 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -877,10 +877,10 @@ Keet.prototype.splice = function(fn, start, count, obj) {
   return this
 }
 /**
- * Input bindings, add an event listener to an input with a lookup to an id, subsequently notify the listener of the changes
- * @param {string} - the id of the input
+ * Event listener bindings, add an event listener to an input or any type event with a lookup to an id, subsequently notify the listener of the changes
+ * @param {string} - the id of the event
  * @param {object | function} - the listener, a component instance or a function
- * @param {string} - the type of this bind event listener
+ * @param {string} - the type of this event listener
  * @returns {context}
  */
 Keet.prototype.bindListener = function(inputId, listener, type) {
@@ -888,8 +888,10 @@ Keet.prototype.bindListener = function(inputId, listener, type) {
   this.loaded(function(){
     var e = document.getElementById(inputId)
     type = type || 'input'
+    if(!ctx.ctor.ev) ctx.ctor.ev = {}
     if(e){
-      e.addEventListener(type, function() {
+      var str = ctx.cat(inputId, '-', type)
+      ctx.ctor.ev[str] = function() {
         if (typeof listener.__proto__.set === 'function') {
           listener.set(e.value)
         } else if (typeof listener === 'function') {
@@ -897,7 +899,28 @@ Keet.prototype.bindListener = function(inputId, listener, type) {
         } else {
           return e.value
         }
-      })
+      }
+
+      e.addEventListener(type, ctx.ctor.ev[str])
+    } else throw('Element does not exist')
+  })
+  return this
+}
+/**
+ * Remove event listener bindings
+ * @param {string} - the id of the event
+ * @param {string} - the type of this bind event listener
+ * @returns {context}
+ */
+Keet.prototype.removeListener = function(inputId, type) {
+  var ctx = this
+  this.loaded(function(){
+    var e = document.getElementById(inputId)
+    type = type || 'input'
+    if(e){
+      var str = ctx.cat(inputId, '-', type)
+      e.removeEventListener(type, ctx.ctor.ev[str], false)
+      delete ctx.ctor.ev[str]
     } else throw('Element does not exist')
   })
   return this
