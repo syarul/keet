@@ -1,6 +1,6 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Keet = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /** 
- * Keet.js v0.5.8 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.5.9 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -105,9 +105,8 @@ function Keet(tagName, debug, context) {
       return false
     }
   }
-  this.ctor.attr = {}
+  
   this.ctor.tags = {}
-  this.ctor.css = {}
   this.ctor.ops = {}
 
   this.ctor.uid = (function() { return (Math.round(Math.random()*0x1000000)).toString(32) }())
@@ -200,6 +199,10 @@ function Keet(tagName, debug, context) {
       ts = new RegExp('-')
       if (attr.match(ts)) {
         type = attr.split('-')
+
+        if(type[0] === 'attr' && !ctx.ctor.attr) ctx.ctor.attr = {}
+        if(type[0] === 'css' && !ctx.ctor.css) ctx.ctor.css = {}
+
         if (type[0] === 'attr' && ctx.ctor.attr[type[1]] !== state[attr]) {
           // store attr
           ctx.ctor.attr[type[1]] = {
@@ -246,6 +249,26 @@ function Keet(tagName, debug, context) {
     }
   }
 
+  var nodeUpdate = function(newNode, oldNode) {
+    var oAttr = newNode.attributes
+    var output = {};
+    for(var i = oAttr.length - 1; i >= 0; i--) {
+       output[oAttr[i].name] = oAttr[i].value
+    }
+    var nodeEle;
+    for (var iAttr in output) {
+      if(iAttr === 'id') nodeEle = getId(output[iAttr])
+      else if (iAttr === 'k-link') getId(null, output[iAttr])
+    }
+    for (var iAttr in output) {
+      if(oldNode.attributes[iAttr].name === iAttr && oldNode.attributes[iAttr].value != output[iAttr]){
+        if (nodeEle){ 
+          nodeEle.setAttribute(iAttr, output[iAttr])
+        }
+      }
+    }
+  }
+
   var _triggerElem = function() {
     var state = ctx.obs._state_, el = ctx.el, uid = ctx.ctor.uid, 
       processStr, ele = getId(el, uid), childTags = ctx.ctor.tags, attr, tempDiv, 
@@ -260,7 +283,23 @@ function Keet(tagName, debug, context) {
         }else if(ctx.ctor.ops.type === 'update'){
           tempDiv = document.createElement('div')
           tempDiv.innerHTML = ctx.ctor.ops.node
-          ele.replaceChild(tempDiv.childNodes[0], ele.childNodes[ctx.ctor.ops.index])
+          // check if only involving attributes changes or not
+          var flag = false
+          var outerNode = tempDiv.childNodes[0]
+          if(outerNode.hasChildNodes()){
+            if(outerNode.hasAttributes()){
+              nodeUpdate(outerNode, ele.childNodes[ctx.ctor.ops.index])
+            }
+            // var innerNode = tempDiv.childNodes[0].childNodes[0]
+            // if (innerNode.hasChildNodes()){
+            //   nodeUpdate(innerNode, ele.childNodes[ctx.ctor.ops.index].childNodes[0])
+            // } else if(innerNode.innerHTML && innerNode.innerHTML.length > 0) {
+            //   flag = true
+            // }
+          } else {
+            flag = true
+          }
+          if(flag) ele.replaceChild(tempDiv.childNodes[0], ele.childNodes[ctx.ctor.ops.index])
         }else if(ctx.ctor.ops.type === 'unshift'){
           tempDiv = document.createElement('div')
           tempDiv.innerHTML = ctx.ctor.ops.node
@@ -579,15 +618,18 @@ Keet.prototype.watch = function(instance) {
  * @returns {context}
  */
 Keet.prototype.watchObj = function(instance, fn) {
-  var attr
+  var ctx = this, attr
   if(Array.isArray(instance)) {
     throw('Wrong type of operation, use Keet.prototype.watch instead.')
   }
   // watch for changes in the obj
   for (attr in instance){
     instance.watch(attr, function(idx, o, n) {
+      instance.unwatch(attr)
       if(typeof fn === 'function') {
+        instance[attr] = n
         fn(idx, o, n)
+        ctx.watchObj(instance, fn)
       } else {
         throw('Not a function.')
       }

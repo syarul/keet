@@ -30,4 +30,4 @@ inner.register('container').set({
   'css-color': 'blue'
 }).bindListener('clickMe', doMe, 'click')
 
-// setTimeout(() => inner.removeListener('clickMe', 'click'), 5000)
+setTimeout(() => inner.removeListener('clickMe', 'click'), 3000)
