@@ -1,3 +1,3 @@
-var app = new Krom
+var app = new Keet
 
 app.link('app', 'Hello World')
