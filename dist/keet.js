@@ -1,6 +1,6 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Keet = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /** 
- * Keet.js v0.5.9 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.5.10 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -99,6 +99,7 @@ function Keet(tagName, debug, context) {
   this.isNode = function() {
     var node = getId(ctx.el, ctx.ctor.uid)
     if (node && typeof node == 'object' && node.nodeType === 1) {
+      ctx.ctor.loaded = true
       node = null
       return true
     } else {
@@ -267,6 +268,67 @@ function Keet(tagName, debug, context) {
         }
       }
     }
+    output = {}
+  }
+
+  var nodeUpdateHTML = function(newNode, oldNode) {
+    var parent = oldNode.parentElement, newVal = newNode.nodeValue
+    if(parent.nodeType === 1){
+      var oAttr = parent.attributes
+      var output = {};
+      for(var i = oAttr.length - 1; i >= 0; i--) {
+         output[oAttr[i].name] = oAttr[i].value
+      }
+      var nodeEle;
+      for (var iAttr in output) {
+        if(iAttr === 'id') nodeEle = getId(output[iAttr])
+        else if (iAttr === 'k-link') getId(null, output[iAttr])
+      }
+      if(newNode.nodeValue !== oldNode.nodeValue && nodeEle){
+          nodeEle.innerHTML = newNode.nodeValue
+      }
+      output = {}
+    }
+  }
+
+  var updateElem = function(oldElem, newElem){
+    var oldArr = [], newArr = [], flag = false,
+    loopOldChilds = function(elem) {
+      for (var child = elem.firstChild; child !== null; child = child.nextSibling) {
+        oldArr.push(child)
+        if (child.hasChildNodes()) {
+          loopOldChilds(child)
+        }
+      }
+    },
+    loopNewChilds = function(elem) {
+      for (var child = elem.firstChild; child !== null; child = child.nextSibling) {
+        newArr.push(child)
+        if (child.hasChildNodes()) {
+          loopNewChilds(child)
+        }
+      }
+    }
+
+    //push the elements
+    oldArr.push(oldElem)
+    newArr.push(newElem)
+    // now push the childs
+    loopOldChilds(oldElem)
+    loopNewChilds(newElem)
+    newArr.forEach(function(ele, idx, arr) {
+      if (ele.nodeType === 1 && ele.hasAttributes()) {
+        nodeUpdate(ele, oldArr[idx])
+      } else if (ele.nodeType === 3) {
+        nodeUpdateHTML(ele, oldArr[idx])
+        if(ele.nodeValue !== oldArr[idx].nodeValue) flag = true
+      }
+      if(idx === arr.length - 1){
+        oldArr.splice(0)
+        newArr.splice(0)
+        return flag
+      }
+    })
   }
 
   var _triggerElem = function() {
@@ -281,25 +343,15 @@ function Keet(tagName, debug, context) {
         if(ctx.ctor.ops.type === 'remove'){
           ele.removeChild(ele.childNodes[ctx.ctor.ops.index])
         }else if(ctx.ctor.ops.type === 'update'){
+
           tempDiv = document.createElement('div')
           tempDiv.innerHTML = ctx.ctor.ops.node
-          // check if only involving attributes changes or not
-          var flag = false
-          var outerNode = tempDiv.childNodes[0]
-          if(outerNode.hasChildNodes()){
-            if(outerNode.hasAttributes()){
-              nodeUpdate(outerNode, ele.childNodes[ctx.ctor.ops.index])
-            }
-            // var innerNode = tempDiv.childNodes[0].childNodes[0]
-            // if (innerNode.hasChildNodes()){
-            //   nodeUpdate(innerNode, ele.childNodes[ctx.ctor.ops.index].childNodes[0])
-            // } else if(innerNode.innerHTML && innerNode.innerHTML.length > 0) {
-            //   flag = true
-            // }
-          } else {
-            flag = true
-          }
-          if(flag) ele.replaceChild(tempDiv.childNodes[0], ele.childNodes[ctx.ctor.ops.index])
+
+          var flag = updateElem(ele.childNodes[ctx.ctor.ops.index], tempDiv.childNodes[0])
+
+          // if(flag) ele.replaceChild(tempDiv.childNodes[0], ele.childNodes[ctx.ctor.ops.index])
+          // else console.debug('just attributes changes')
+
         }else if(ctx.ctor.ops.type === 'unshift'){
           tempDiv = document.createElement('div')
           tempDiv.innerHTML = ctx.ctor.ops.node
