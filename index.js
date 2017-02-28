@@ -1,5 +1,5 @@
 /** 
- * Keet.js v0.5.10 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.5.11 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -972,7 +972,7 @@ Keet.prototype.splice = function(fn, start, count, obj) {
 /**
  * Event listener bindings, add an event listener to an input or any type event with a lookup to an id, subsequently notify the listener of the changes
  * @param {string} - the id of the event
- * @param {object | function} - the listener, a component instance or a function
+ * @param {object | function} - the listener, a component instance or a function, if it a function second argument is the event
  * @param {string} - the type of this event listener
  * @returns {context}
  */
@@ -984,11 +984,12 @@ Keet.prototype.bindListener = function(inputId, listener, type) {
     if(!ctx.ctor.ev) ctx.ctor.ev = {}
     if(e){
       var str = ctx.cat(inputId, '-', type)
-      ctx.ctor.ev[str] = function() {
+      ctx.ctor.ev[str] = function(evt) {
         if (typeof listener.__proto__.set === 'function') {
+          evt.preventDefault()
           listener.set(e.value)
         } else if (typeof listener === 'function') {
-          listener(e.value)
+          listener(e.value, evt)
         } else {
           return e.value
         }

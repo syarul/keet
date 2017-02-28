@@ -49,6 +49,7 @@ Take a look inside [sample](https://github.com/syarul/keet/tree/master/sample) f
 
 ## Version history
 
+- 0.5.11 Added event to ```keet.prototype.bindListener``` to allow event handling
 - 0.5.10 Improve array handling by doing intelli changes
 - 0.5.8 Added removeListener
 - 0.5.7 Added force option to ```Keet.prototype.compose```

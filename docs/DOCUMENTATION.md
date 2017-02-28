@@ -37,10 +37,7 @@ Keet constructor, each component is an instance of Keet
 <a name="Keet+register"></a>
 
 ### keet.register(instance) ⇒ <code>context</code>
-Register this component instance as a child of a parent component i.e.
-Updates on child are automatically updated to parent whenever the child called ```set/compose/link```.
-**Be carefull using this**, since mutation is not control anymore. If you want to have control over 
-DOM mutation use ```Keet.prototype.compose``` instead.
+Register this component instance as a child of a parent component i.e.Updates on child are automatically updated to parent whenever the child called ```set/compose/link```.**Be carefull using this**, since mutation is not control anymore. If you want to have control over DOM mutation use ```Keet.prototype.compose``` instead.
 
 **Kind**: instance method of <code>[Keet](#Keet)</code>  
 
@@ -51,8 +48,7 @@ DOM mutation use ```Keet.prototype.compose``` instead.
 <a name="Keet+unreg"></a>
 
 ### keet.unreg() ⇒ <code>context</code>
-Unregister this component instance from a parent component. Update on child component will not notify the parent automatically until parent 
-called ```set/compose/link```
+Unregister this component instance from a parent component. Update on child component will not notify the parent automatically until parent called ```set/compose/link```
 
 **Kind**: instance method of <code>[Keet](#Keet)</code>  
 <a name="Keet+template"></a>
@@ -106,8 +102,7 @@ Link this component instance to an attribute ```id```. If value is supplied, not
 <a name="Keet+watch"></a>
 
 ### keet.watch(instance) ⇒ <code>context</code>
-Observe this array for changes, once recieved make update to component. Operation supported are
-assignment, push, pop, shift, unshift, slice, splice.
+Observe this array for changes, once recieved make update to component. Operation supported areassignment, push, pop, shift, unshift, slice, splice.
 
 **Kind**: instance method of <code>[Keet](#Keet)</code>  
 
@@ -237,7 +232,7 @@ Event listener bindings, add an event listener to an input or any type event wit
 | Param | Type | Description |
 | --- | --- | --- |
 | inputId | <code>string</code> | the id of the event |
-| listener | <code>object</code> &#124; <code>function</code> | the listener, a component instance or a function |
+| listener | <code>object</code> &#124; <code>function</code> | the listener, a component instance or a function, if it a function second argument is the event |
 | type | <code>string</code> | the type of this event listener |
 
 <a name="Keet+removeListener"></a>
@@ -255,9 +250,7 @@ Remove event listener bindings
 <a name="Keet+set"></a>
 
 ### keet.set(value, vProp) ⇒ <code>context</code>
-Setter for component instance, takes value as ```string```, ```object``` or ```number```. If supplied with a secondary argument the first argument is the 
-attributes reference in type of either ```value/attributes/css```, to apply as DOM attributes use ```attr-[attributesName]``` i.e 
-```{attr-href: 'http://somelink.com'}```, to apply as style use ```css-[cssStyleProperty]``` i.e ```{css-background-color: 'grey'}```
+Setter for component instance, takes value as ```string```, ```object``` or ```number```. If supplied with a secondary argument the first argument is the attributes reference in type of either ```value/attributes/css```, to apply as DOM attributes use ```attr-[attributesName]``` i.e ```{attr-href: 'http://somelink.com'}```, to apply as style use ```css-[cssStyleProperty]``` i.e ```{css-background-color: 'grey'}```
 
 **Kind**: instance method of <code>[Keet](#Keet)</code>  
 
@@ -269,9 +262,7 @@ attributes reference in type of either ```value/attributes/css```, to apply as D
 <a name="Keet+ktag"></a>
 
 ### keet.ktag(tag, value, attributes, styles) ⇒ <code>array</code>
-Helpers to create elements without writing brackets i.e ```app.tag('a', 'link', {id: 'imgLink', href: 'http://somelink.com'}, {color: 'red'})``` 
-which will yeild ```<a href="http://somelink.com" id="imgLink" style="color:red">link</a>```, **this is not chainable prototype**, 
-to use use call the helpers function of Keet.
+Helpers to create elements without writing brackets i.e ```app.tag('a', 'link', {id: 'imgLink', href: 'http://somelink.com'}, {color: 'red'})``` which will yeild ```<a href="http://somelink.com" id="imgLink" style="color:red">link</a>```, **this is not chainable prototype**, to use use call the helpers function of Keet.
 
 **Kind**: instance method of <code>[Keet](#Keet)</code>  
 
