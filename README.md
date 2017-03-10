@@ -14,7 +14,7 @@ Feels at home, no new learning curve or paradigm on understanding how a web fram
 
 To see Keet.js in action visit [https://syarul.github.io](https://syarul.github.io)
 
-Another sample: live usage at [http://codepen.io/syarul/pen/LVMdYa](codepen)
+Another sample: live usage at [codepen](http://codepen.io/syarul/pen/LVMdYa)
 
 Since Keet is a view layer, you can use it with or without other framework.  
 
