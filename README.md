@@ -14,6 +14,8 @@ Feels at home, no new learning curve or paradigm on understanding how a web fram
 
 To see Keet.js in action visit [https://syarul.github.io](https://syarul.github.io)
 
+Another sample: live usage at [http://codepen.io/syarul/pen/LVMdYa](codepen)
+
 Since Keet is a view layer, you can use it with or without other framework.  
 
 ## Getting there
@@ -49,6 +51,7 @@ Take a look inside [sample](https://github.com/syarul/keet/tree/master/sample) f
 
 ## Version history
 
+- 0.5.12 Fix ```Keet.prototype.splice``` operation when child nodes empty
 - 0.5.11 Added event to ```keet.prototype.bindListener``` to allow event handling
 - 0.5.10 Improve array handling by doing intelli changes
 - 0.5.8 Added removeListener

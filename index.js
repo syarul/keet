@@ -1,5 +1,5 @@
 /** 
- * Keet.js v0.5.11 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.5.12 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -183,8 +183,11 @@ function Keet(tagName, debug, context) {
     return str
   }
 
-  var insertAfter = function(newNode, referenceNode) {
-    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling)
+  var insertAfter = function(newNode, referenceNode, parentNode) {
+    if(referenceNode)
+      referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling)
+    else
+      parentNode.insertBefore(newNode, parentNode.firstChild)
   }
 
   var clone = function(v) {
@@ -378,7 +381,7 @@ function Keet(tagName, debug, context) {
                 if(i === len-1 && tempDivChildLen > 0){
                   c = ctx.ctor.ops.index - 1
                   for(j=ctx.ctor.ops.index;j<tempDivChildLen+ctx.ctor.ops.index;j++){
-                    insertAfter(tempDiv.childNodes[0], ele.childNodes[c])
+                    insertAfter(tempDiv.childNodes[0], ele.childNodes[c], ele)
                     c++
                   }
                 }
