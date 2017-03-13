@@ -1,5 +1,5 @@
 /** 
- * Keet.js v0.6.0 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.6.1 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -258,7 +258,7 @@ function Keet(tagName, debug, context) {
 
       var listKnodeChild = []
 
-      if(kNode.hasChildNodes()){
+      if(kNode && kNode.hasChildNodes()){
         for (var kChild = kNode.firstChild; kChild !== null; kChild = kChild.nextSibling) {
           listKnodeChild.push(kChild)
         }
