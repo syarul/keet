@@ -1,5 +1,5 @@
 /** 
- * Keet.js v0.5.12 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.6.0 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -230,6 +230,7 @@ function Keet(tagName, debug, context) {
           if(gid) gid.setAttribute(type[1], state[attr])
         }
       }
+
     }
     // preserve attributes from store if parent mutated
     if (preserveAttr) {
@@ -250,6 +251,56 @@ function Keet(tagName, debug, context) {
         }
       }
     }
+    //k-click
+    if(state.value) {
+
+      var kNode = getId(selector, uid)
+
+      var listKnodeChild = []
+
+      if(kNode.hasChildNodes()){
+        for (var kChild = kNode.firstChild; kChild !== null; kChild = kChild.nextSibling) {
+          listKnodeChild.push(kChild)
+        }
+        listKnodeChild.forEach(function(c, i){
+          if(c.nodeType === 1 && c.hasAttributes()){
+            var kString = c.getAttribute('k-click')
+            if(kString){
+              var m = kString.match(/\(([^()]+)\)/g)
+              var kFn = kString.split('(')
+              var kClick
+              if(m){  
+                if(kFn){
+                  if(context) kClick = testEval(context[kFn[0]]) ? eval(context[kFn[0]]) : false
+                  else kClick = testEval(kFn[0]) ? eval(kFn[0]) : false
+
+                  if(typeof kClick === 'function') processClickEvt(c, kClick, kFn)
+                }
+              } else {
+                if(context) kClick = testEval(context[kString]) ? eval(context[kString]) : false
+                else kClick = testEval(kString) ? eval(kString) : false
+
+                if(typeof kClick === 'function') processClickEvt(c, kClick)
+              }
+            }
+          }
+        })
+      }
+      listKnodeChild = []
+    }
+  }
+
+  var processClickEvt = function(c, kClick, kFn) {
+    c.removeAttribute('k-click')
+    c.addEventListener('click', function(evt){
+      var argv = []
+      argv.push(evt)
+      if(kFn) {
+        var v = kFn[1].slice(0, -1).split(',')
+        if(v) v.forEach(function(v){ argv.push(v) })
+      }
+      return kClick.apply(null, argv)
+    })
   }
 
   var nodeUpdate = function(newNode, oldNode) {
