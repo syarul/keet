@@ -51,7 +51,7 @@ Take a look inside [sample](https://github.com/syarul/keet/tree/master/sample) f
 
 ## Version history
 
-- 0.6.0 Addded ```k-click``` attributes which handle click event, see [this](https://github.com/syarul/keet/tree/master/sample/k-klick.js) for example
+- 0.6.0 Addded ```k-click``` attributes which handle click event, see [this](https://github.com/syarul/keet/blob/master/sample/k-click.js) for example
 - 0.5.12 Fix ```Keet.prototype.splice``` operation when child nodes empty
 - 0.5.11 Added event to ```keet.prototype.bindListener``` to allow event handling
 - 0.5.10 Improve array handling by doing intelli changes
