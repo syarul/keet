@@ -4,7 +4,63 @@
   <title>Keet.js</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"/>
-  <script src="../dist/keet.js"> </script>
+  <script src="../dist/keet.min.js"> </script>
+  <!-- <script src="../index.js"> </script> -->
+  <style>
+    #app {
+      width: 104px;
+      height: 56px;
+      margin: 100px auto;
+    }
+
+    #app svg {
+      position: absolute;
+    }
+
+    @keyframes blink {
+      0% {
+        transform: scale(0.4);
+        opacity: 0.1;
+      }
+      40% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      90% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 0.1;
+      }
+    }
+
+    #app svg:first-child {
+      animation: blink ease-in 1.5s infinite;
+    }
+
+    #app svg:nth-child(2) {
+      animation: blink ease-in 1.5s infinite 0.1s;
+    }
+
+    #app svg:nth-child(3) {
+      //transform: scale(0.4);
+      animation: blink ease-in 1.5s infinite 0.2s;
+    }
+
+    #app svg:nth-child(4) {
+      animation: blink ease-in 1.5s infinite 0.3s;
+    }
+
+    #app svg:nth-child(5) {
+      animation: blink ease-in 1.5s infinite 0.4s;
+    }
+
+    #app svg:nth-child(6) {
+      animation: blink ease-in 1.5s infinite 0.5s;
+    }
+  </style>
 </head>
 <body>
   <div id="app"></div>
@@ -19,6 +75,8 @@
   <!-- <script src="./template.js"> </script> -->
   <!-- <script src="./watch-object.js"> </script> -->
   <!-- <script src="./class-change.js"> </script> -->
-  <script src="./k-click.js"> </script>
+  <!-- <script src="./k-click.js"> </script> -->
+  <!-- <script src="./svg-loader.js"> </script> -->
+  <script src="./vDomLoaded.js"> </script>
 </body>
 </html>
