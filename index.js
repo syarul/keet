@@ -1,5 +1,5 @@
 /** 
- * Keet.js v0.6.2 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.6.3 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -643,9 +643,10 @@ Keet.prototype.link = function(tag, id, value) {
  * Observe this array for changes, once recieved make update to component. Operation supported are
  * assignment, push, pop, shift, unshift, slice, splice.
  * @param {object} - ***optional*** watch a different array instead
+ * @param {function} - ***optional*** execute a function once the dom has updated
  * @returns {context}
  */
-Keet.prototype.watch = function(instance) {
+Keet.prototype.watch = function(instance, onUpdated) {
   var ctx = this, argv, event
   instance = instance || this.ctor.arrayProto
   if(!Array.isArray(instance)) {
@@ -718,9 +719,9 @@ Keet.prototype.watch = function(instance) {
     instance.watch(i, function(idx, o, n) {
       instance.unwatch(i)
       event.then(function(ev) {
-        if (ev._ === 'noArrayProto') {
+        if (ev._ === 'noArrayProto')
           ctx.update(idx, n)
-        }
+        if(typeof onUpdated === 'function') onUpdated()
         ctx.watch(instance)
       })
     })
