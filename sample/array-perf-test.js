@@ -18,7 +18,10 @@ list.template('ul', 'ramdomList')
   .array(arr, '<li style="width: auto">index:{{index}} - random: {{random}}</li>')
   .set('css-list-style-type', 'none')
 
-app.compose()
+app.compose(ele => {
+  ele.style.width = 'auto'
+  ele.style.margin = '0 0 0 0'
+})
 
 var idx = 0
 setInterval(() => {

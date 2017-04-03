@@ -10,7 +10,7 @@ container
   .register('app')
   .template('div', 'Container')
   .set({
-    value: '<input type="text" id="Input">{{change}}',
+    value: '<input type="text" id="Input"> {{change}}',
     'css-display': 'inline-flex'
   })
 

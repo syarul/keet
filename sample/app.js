@@ -88,7 +88,10 @@ model.view
     'css-padding-top': '20px'
   })
 
-model.app.compose()
+model.app.compose(ele => {
+  ele.style.width = 'auto'
+  ele.style.margin = '0 0 0 0'
+})
 
 const isHomePage = window.location.href.match('#')
 const url = window.location.href.split('#')[1]

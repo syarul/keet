@@ -54,7 +54,10 @@ const list = keet().template('ul', 'people')
     'css-margin-top': '25px'
   })
 
-app.compose()
+app.compose(ele => {
+    ele.style.width = 'auto'
+    ele.style.margin = '0 0 0 0'
+  })
   .bindListener('Name', changeName) // bind the name input to a function
   .bindListener('Age', changeAge) // bind the age input to a function
   .compose(initial) // set the initial list

@@ -1,5 +1,5 @@
 /** 
- * Keet.js v0.6.3 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.7.0 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -48,6 +48,9 @@ function Keet(tagName, debug, context) {
       var args = [].slice.call(arguments), arr = ctx.tag.apply(null, args)
       log('tag result => \n'+JSON.stringify(arr, null, 2))
       return arr.join('')
+    },
+    guid = function(){
+      return (Math.round(Math.random()*0x1000000)).toString(32)
     }
   if(log && typeof window === 'object' && !window.log){
     window.log = console.log.bind(console)
@@ -105,11 +108,14 @@ function Keet(tagName, debug, context) {
       return false
     }
   }
+  this.refNode =  function(){
+    return getId(ctx.el, ctx.ctor.uid)
+  }
   
   this.ctor.tags = {}
   this.ctor.ops = {}
 
-  this.ctor.uid = (function() { return (Math.round(Math.random()*0x1000000)).toString(32) }())
+  this.ctor.uid = guid()
 
   tg = cargv.filter(function(c) { return typeof c === 'string' && c !== 'debug' })[0]
   if (tg) this.ctor.tmpl = ['<', tg, ' k-link="', this.ctor.uid, '"', '>', '</', tg, '>']
@@ -253,7 +259,7 @@ function Keet(tagName, debug, context) {
       }
     }
     //k-click
-    if(state.value) {
+    if(state && state.value) {
 
       var kNode = getId(selector, uid)
 
@@ -310,42 +316,20 @@ function Keet(tagName, debug, context) {
     for(var i = oAttr.length - 1; i >= 0; i--) {
        output[oAttr[i].name] = oAttr[i].value
     }
-    var nodeEle;
-    for (var iAttr in output) {
-      if(iAttr === 'id') nodeEle = getId(output[iAttr])
-      else if (iAttr === 'k-link') getId(null, output[iAttr])
-    }
     for (var iAttr in output) {
       if(oldNode.attributes[iAttr].name === iAttr && oldNode.attributes[iAttr].value != output[iAttr]){
-        if (nodeEle){ 
-          nodeEle.setAttribute(iAttr, output[iAttr])
-        }
+        oldNode.setAttribute(iAttr, output[iAttr])
       }
     }
     output = {}
   }
 
   var nodeUpdateHTML = function(newNode, oldNode) {
-    var parent = oldNode.parentElement, newVal = newNode.nodeValue
-    if(parent.nodeType === 1){
-      var oAttr = parent.attributes
-      var output = {};
-      for(var i = oAttr.length - 1; i >= 0; i--) {
-         output[oAttr[i].name] = oAttr[i].value
-      }
-      var nodeEle;
-      for (var iAttr in output) {
-        if(iAttr === 'id') nodeEle = getId(output[iAttr])
-        else if (iAttr === 'k-link') getId(null, output[iAttr])
-      }
-      if(newNode.nodeValue !== oldNode.nodeValue && nodeEle){
-          nodeEle.innerHTML = newNode.nodeValue
-      }
-      output = {}
-    }
+    if(newNode.nodeValue !== oldNode.nodeValue)
+        oldNode.nodeValue = newNode.nodeValue
   }
 
-  var updateElem = function(oldElem, newElem){
+  var updateElem = function(oldElem, newElem, fallbackHTMLstring){
     var oldArr = [], newArr = [], flag = false,
     loopOldChilds = function(elem) {
       for (var child = elem.firstChild; child !== null; child = child.nextSibling) {
@@ -370,11 +354,18 @@ function Keet(tagName, debug, context) {
     // now push the childs
     loopOldChilds(oldElem)
     loopNewChilds(newElem)
-    newArr.forEach(function(ele, idx, arr) {
+
+    if(oldArr.length !== newArr.length){
+      // if nodeList length is different, use the HTMLString
+      oldElem.innerHTML = fallbackHTMLstring
+      return false
+    }
+
+    oldArr.forEach(function(ele, idx, arr) {
       if (ele.nodeType === 1 && ele.hasAttributes()) {
-        nodeUpdate(ele, oldArr[idx])
+        nodeUpdate(newArr[idx], ele)
       } else if (ele.nodeType === 3) {
-        nodeUpdateHTML(ele, oldArr[idx])
+        nodeUpdateHTML(newArr[idx], ele)
         if(ele.nodeValue !== oldArr[idx].nodeValue) flag = true
       }
       if(idx === arr.length - 1){
@@ -383,6 +374,25 @@ function Keet(tagName, debug, context) {
         return flag
       }
     })
+  }
+
+  var genChildwithId = function(str){
+    var tempDiv, arr = []
+    tempDiv = document.createElement('div')
+    tempDiv.innerHTML = str
+
+    var loopChilds = function(elem) {
+      for (var child = elem.firstChild; child !== null; child = child.nextSibling) {
+        if(child.nodeType === 1){
+          child.setAttribute('k-link', ctx.cat(ctx.ctor.uid, '-', guid()))
+        }
+        if (child.hasChildNodes()) {
+          loopChilds(child)
+        }
+      }
+    }
+    loopChilds(tempDiv)
+    return tempDiv.childNodes[0]
   }
 
   var _triggerElem = function() {
@@ -447,8 +457,19 @@ function Keet(tagName, debug, context) {
         }
         tempDiv = null
       }
-      else if (processStr && state.value.length) ele.innerHTML = processStr
-      else if (!processStr && state.value.length < 1) ele.innerHTML = ''
+      else if (processStr && state.value.length) {
+        if(ele.hasChildNodes() && ele.childNodes[0].nodeType === 1){
+          tempDiv = document.createElement('div')
+          tempDiv.innerHTML = processStr
+          updateElem(ele, tempDiv, processStr)
+          tempDiv = null
+        } else {
+          ele.innerHTML = processStr
+        }
+      }
+      else if (!processStr && state.value.length < 1) {
+        ele.innerHTML = ''
+      }
       // attributes class and style
       applyAttrib(el, state, uid)
       // if child ctor exist apply the attributes to child tags
@@ -565,7 +586,7 @@ Keet.prototype.template = function(tag, id) {
 /**
  * Reevaluate the state of this component instance, if value changed from last update to DOM, update it again.
  * @param {boolean} - ***optional*** force node render, if the node non-existent, apply false to the callback function
- * @param {function} - ***optional*** run a callback function after this component loaded
+ * @param {function} - ***optional*** run a callback function after this component loaded and assign this particular dom selector as arguments
  * @returns {context}
  */
 Keet.prototype.compose = function(force, fn) {
@@ -587,7 +608,7 @@ Keet.prototype.compose = function(force, fn) {
     elem = this.isNode()
     if(elem){
       this.obs._state_ = c
-      if(fn) fn(true)
+      if(fn) fn(this.refNode())
       childFn()
     } else {
       if(fn) fn(false)
@@ -596,7 +617,7 @@ Keet.prototype.compose = function(force, fn) {
   } else {
     this.loaded(function(){
       ctx.obs._state_ = c
-      if(fn) fn()
+      if(fn) fn(ctx.refNode())
       childFn()
     }) 
   }

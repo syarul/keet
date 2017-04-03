@@ -35,7 +35,10 @@ container.template('div', 'container')
   'css-top': '20px'
 })
 
-app.compose()
+app.compose(ele => {
+  ele.style.width = 'auto'
+  ele.style.margin = '0 0 0 0'
+})
 
 var list = new Keet
 
