@@ -1,5 +1,5 @@
 /** 
- * Keet.js v0.7.0 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.7.1 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -667,7 +667,7 @@ Keet.prototype.link = function(tag, id, value) {
  * @param {function} - ***optional*** execute a function once the dom has updated
  * @returns {context}
  */
-Keet.prototype.watch = function(instance, onUpdated) {
+Keet.prototype.watch = function(instance, fn) {
   var ctx = this, argv, event
   instance = instance || this.ctor.arrayProto
   if(!Array.isArray(instance)) {
@@ -742,8 +742,10 @@ Keet.prototype.watch = function(instance, onUpdated) {
       event.then(function(ev) {
         if (ev._ === 'noArrayProto')
           ctx.update(idx, n)
-        if(typeof onUpdated === 'function') onUpdated()
-        ctx.watch(instance)
+        if(typeof fn === 'function') {
+          fn(ctx.refNode())
+        }
+        ctx.watch(instance, fn)
       })
     })
   })
