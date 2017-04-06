@@ -1,5 +1,5 @@
 /** 
- * Keet.js v0.7.1 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.7.2 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -354,7 +354,6 @@ function Keet(tagName, debug, context) {
     // now push the childs
     loopOldChilds(oldElem)
     loopNewChilds(newElem)
-
     if(oldArr.length !== newArr.length){
       // if nodeList length is different, use the HTMLString
       oldElem.innerHTML = fallbackHTMLstring
@@ -470,6 +469,11 @@ function Keet(tagName, debug, context) {
       else if (!processStr && state.value.length < 1) {
         ele.innerHTML = ''
       }
+      else if (!processStr && state.value.length > 1) {
+        tempDiv = document.createElement('div')
+        tempDiv.innerHTML = ctx.ctor.d
+        updateElem(ele, tempDiv, ctx.ctor.d)
+      }
       // attributes class and style
       applyAttrib(el, state, uid)
       // if child ctor exist apply the attributes to child tags
@@ -479,7 +483,16 @@ function Keet(tagName, debug, context) {
   }
 
   var _registerElem = function() {
-    var reg = ctx.ctor.register, evReg
+    var regList = ctx.ctor.register, evReg
+    var reg = regList.filter(function(f){
+      return typeof f === 'string'
+    })[0]
+    var force = regList.filter(function(f){
+      return typeof f === 'boolean'
+    })[0]
+    var fn = regList.filter(function(f){
+      return typeof f === 'function'
+    })[0]
     // if this is registered, called this Instance.prototype.compose
     if(context){
       evReg = context[reg] ? context[reg] : false
@@ -489,7 +502,7 @@ function Keet(tagName, debug, context) {
       log('evaluating register:', reg, '->', insOf(evReg))
     }
     if(evReg && typeof evReg.__proto__.compose === 'function') {
-      evReg.compose()
+      evReg.compose(force, fn)
     }
   }
 
@@ -549,13 +562,15 @@ function Keet(tagName, debug, context) {
 /**
  * Register this component instance as a child of a parent component i.e.
  * Updates on child are automatically updated to parent whenever the child called ```set/compose/link```.
- * **Be carefull using this**, since mutation is not control anymore. If you want to have control over 
- * DOM mutation use ```Keet.prototype.compose``` instead. 
- * @param {string} - the parent component instance declared variable name. 
+ * If you want to have control over DOM mutation use ```Keet.prototype.compose``` instead. 
+ * @param {string} - the parent component instance declared variable name.
+ * @param {boolean} - ***optional*** force node render, if the node non-existent, apply false to the callback function
+ * @param {function} - ***optional*** run a callback function after this component loaded and assign this particular dom selector as arguments
  * @returns {context}
  */
-Keet.prototype.register = function(instance) {
-  if (typeof instance === 'string') this.ctor.register = instance
+Keet.prototype.register = function(instance, force, fn) {
+  var argv = [].slice.call(arguments)
+  if (typeof instance === 'string') this.ctor.register = argv
   else throw ('Argument is not a string.')
   return this
 }

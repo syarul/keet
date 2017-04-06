@@ -10,7 +10,10 @@ app.link('app')
   })
 
 const me = new Keet
-me.register('app').set({
+me.register('app', true, ele => {
+  ele.style.width = 'auto'
+  ele.style.margin = '0 0 0 0'
+}).set({
     value: '{{just}} {{my}} {{name}}',
     'k-data': {
     	just: 'Shahrul',

@@ -7,7 +7,6 @@ app.link('app', '<h1>Keet: Input binding sample</h1>{{container}}')
 const container = new Keet
 
 container
-  .register('app')
   .template('div', 'Container')
   .set({
     value: '<input type="text" id="Input"> {{change}}',
@@ -23,6 +22,7 @@ change
   })
 
 // we stage the Container into static mode by calling compose() only one time, ensure mutation does not occur on eventListener
-container
-  .compose()
-  .bindListener('Input', change)
+app.compose(true, () => {
+  container
+    .compose(() => container.bindListener('Input', change))
+})

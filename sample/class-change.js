@@ -9,7 +9,7 @@ app.link('app')
   })
 
 const container = new Keet
-container.register('app').template('span', 'con').set({
+container.template('span', 'con').set({
     value: '{{inner}}',
     'attr-class': 'aw'
   })
@@ -25,9 +25,14 @@ const doMe = function() {
 }
 
 const inner = new Keet('div')
-inner.register('container').set({
+inner.set({
   value:'<button id="clickMe">CLICK ME!</button>',
   'css-color': 'blue'
-}).bindListener('clickMe', doMe, 'click')
+})
 
-setTimeout(() => inner.removeListener('clickMe', 'click'), 3000)
+app.compose()
+
+container.compose(function(el){
+  container.bindListener('clickMe', doMe, 'click')
+  setTimeout(() => container.removeListener('clickMe', 'click'), 3000)
+})

@@ -50,6 +50,7 @@ Take a look inside [sample](https://github.com/syarul/keet/tree/master/sample) f
 - All Keet.prototypes return itself, chaining methods is supported all along
 
 ## Version history
+- 0.7.2 Fix setter not correctly rendering from string
 - 0.7.0 Fix multiple issues, DOM update now only update on changed, not rerender everything from string, compose now apply the DOM selector
 - 0.6.3 Added function to run once dom updated at ```keet.prototype.watch```
 - 0.6.2 Added ```keet.prototype.vDomLoaded```, which take a function an execute after the component loaded to DOM. See [this](https://github.com/syarul/keet/blob/master/sample/vDomLoaded.js) for example
