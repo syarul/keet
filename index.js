@@ -1,5 +1,5 @@
 /** 
- * Keet.js v0.7.2 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.7.3 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -203,6 +203,15 @@ function Keet(tagName, debug, context) {
     return o.copy
   }
 
+  var loopChilds = function(arr, elem) {
+    for (var child = elem.firstChild; child !== null; child = child.nextSibling) {
+      arr.push(child)
+      if (child.hasChildNodes()) {
+        loopChilds(arr, child)
+      }
+    }
+  }
+
   var applyAttrib = function(selector, state, preserveAttr, uid) {
     var cty, attr, ts, type, a, d, gid, prev
     for (attr in state) {
@@ -266,9 +275,7 @@ function Keet(tagName, debug, context) {
       var listKnodeChild = []
 
       if(kNode && kNode.hasChildNodes()){
-        for (var kChild = kNode.firstChild; kChild !== null; kChild = kChild.nextSibling) {
-          listKnodeChild.push(kChild)
-        }
+        loopChilds(listKnodeChild, kNode)
         listKnodeChild.forEach(function(c, i){
           if(c.nodeType === 1 && c.hasAttributes()){
             var kString = c.getAttribute('k-click')
@@ -330,30 +337,14 @@ function Keet(tagName, debug, context) {
   }
 
   var updateElem = function(oldElem, newElem, fallbackHTMLstring){
-    var oldArr = [], newArr = [], flag = false,
-    loopOldChilds = function(elem) {
-      for (var child = elem.firstChild; child !== null; child = child.nextSibling) {
-        oldArr.push(child)
-        if (child.hasChildNodes()) {
-          loopOldChilds(child)
-        }
-      }
-    },
-    loopNewChilds = function(elem) {
-      for (var child = elem.firstChild; child !== null; child = child.nextSibling) {
-        newArr.push(child)
-        if (child.hasChildNodes()) {
-          loopNewChilds(child)
-        }
-      }
-    }
+    var oldArr = [], newArr = [], flag = false
 
     //push the elements
     oldArr.push(oldElem)
     newArr.push(newElem)
     // now push the childs
-    loopOldChilds(oldElem)
-    loopNewChilds(newElem)
+    loopChilds(oldArr, oldElem)
+    loopChilds(newArr, newElem)
     if(oldArr.length !== newArr.length){
       // if nodeList length is different, use the HTMLString
       oldElem.innerHTML = fallbackHTMLstring

@@ -1,6 +1,6 @@
 # Keet.js
 
-Feels at home, no new learning curve or paradigm on understanding how a web framework should work. **K.I.S.S** and does not obscured data from view with walls of ***you-name-it-how-to-master-a-framework***. Keet.js offer a little bit of;
+Flexible view layer for the web which offer :-
 
 - data bindings
 - data from array
@@ -8,15 +8,12 @@ Feels at home, no new learning curve or paradigm on understanding how a web fram
 - built-in observable
 - few APIs
 - immutability(at least control partial DOM mutation)
-- component register/deregister
 - no custom attributes(unless ```id``` isn't present)
 - reactive css and attributes
 
 To see Keet.js in action visit [https://syarul.github.io](https://syarul.github.io)
 
-Another sample: live usage at [codepen](http://codepen.io/syarul/pen/LVMdYa)
-
-Since Keet is a view layer, you can use it with or without other framework.  
+Another sample: live usage at [codepen](http://codepen.io/syarul/pen/LVMdYa) 
 
 ## Getting there
 For starter create a div element in a html template with an id "app".
@@ -50,6 +47,7 @@ Take a look inside [sample](https://github.com/syarul/keet/tree/master/sample) f
 - All Keet.prototypes return itself, chaining methods is supported all along
 
 ## Version history
+- 0.7.3 traverse DOM childrens recursively instead only affecting the first layer
 - 0.7.2 Fix setter not correctly rendering from string
 - 0.7.0 Fix multiple issues, DOM update now only update on changed, not rerender everything from string, compose now apply the DOM selector
 - 0.6.3 Added function to run once dom updated at ```keet.prototype.watch```

@@ -1,6 +1,6 @@
 {
   "name": "keet",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "A data-driven view, OO, pure js without new paradigm shift",
   "main": "index.js",
   "scripts": {
