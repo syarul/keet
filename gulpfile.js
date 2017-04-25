@@ -18,11 +18,8 @@ gulp.task('watch', function() {
 })
 
 gulp.task('test', function() {
-  return browserify(__dirname + '/test/test.js')
-  .bundle()
-  .pipe(run())
-  .pipe(tapSpec())
-  .pipe(process.stdout)
+  gulp.src('')
+    .pipe(shell('npm run test'))
 })
 
 gulp.task('default', ['test'])

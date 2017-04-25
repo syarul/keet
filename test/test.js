@@ -4,7 +4,7 @@ var keet = require('../')
 
 var log = console.log.bind(console)
 
-test('Keet.js Test', function (t) {
+var tt = test('Keet.js Test', function (t) {
 
 	var vDom = document.createElement('div')
 	vDom.setAttribute('id', 'app')
@@ -18,8 +18,16 @@ test('Keet.js Test', function (t) {
     setTimeout(function () {
 
         var hello = document.getElementById('app').firstChild.nodeValue
-        var expected = 'Hello World!'
+        var expected = 'Hello World'
         t.ok(hello === expected, 'should equal "'+expected+'" as node value')
 
+        // if(!t._ok) throw 'err'
+
+        log(t)
+
     }, 100)
+})
+
+tt.on('end', function(e){
+	log('eeeeee'+e)
 })
