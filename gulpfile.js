@@ -32,6 +32,9 @@ gulp.task('test', function() {
   .pipe(process.stdout)
 })
 
-process.on('exit', function(){ x ? return 0 : return 1 })
+process.on('exit', function() {
+  if(x) return 0
+  return 1
+})
 
 gulp.task('default', ['test'])
