@@ -4,7 +4,7 @@ var keet = require('../../')
 
 var log = console.log.bind(console)
 
-test('fail', function (t) {
+test('Hello World', function (t) {
 
 	var vDom = document.createElement('div')
 	vDom.setAttribute('id', 'app')
@@ -16,7 +16,7 @@ test('fail', function (t) {
     t.plan(1)
     
     var hello = document.getElementById('app').firstChild.nodeValue
-    var expected = 'Hello World!'
+    var expected = 'Hello World'
     t.ok(hello === expected)
 
 });

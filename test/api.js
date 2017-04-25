@@ -3,7 +3,7 @@ var run = require('tape-run')
 var browserify = require('browserify')
 var tapSpec = require('tap-spec')
 
-test('Hello World', function(t) {
+test('keet.js tests', function(t) {
 
   t.plan(1)
 
@@ -13,6 +13,6 @@ test('Hello World', function(t) {
     .on('results', function(results){
       t.ok(results.ok, 'should equal "Hello World" as node value')
     })
-    // .pipe(tapSpec())
-    // .pipe(process.stdout)
+    .pipe(tapSpec())
+    .pipe(process.stdout)
 })

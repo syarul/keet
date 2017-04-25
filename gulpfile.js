@@ -5,6 +5,8 @@ var run = require('tape-run')
 var browserify = require('browserify')
 var tapSpec = require('tap-spec')
 
+var log = console.log.bind(console)
+
 gulp.task('main', function () {
   gulp.src('')
     .pipe(shell('npm run dist'))
@@ -17,9 +19,23 @@ gulp.task('watch', function() {
   gulp.watch('./index.js', ['main'])
 })
 
+var x = false
+
 gulp.task('test', function() {
-  gulp.src('')
-    .pipe(shell('npm run test'))
+  var res = browserify(__dirname + '/test/test.js')
+  .bundle()
+  .pipe(run())
+  .on('results', function(results){
+    if(results.ok) x = true
+  })
+  .pipe(tapSpec())
+  .pipe(process.stdout)
+
+})
+
+process.on('exit', function() {
+  if(!x) return 1
+  return 0
 })
 
 gulp.task('default', ['test'])
