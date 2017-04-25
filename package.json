@@ -6,21 +6,19 @@
   "scripts": {
     "distcompress": "browserify index.js --standalone Keet | uglifyjs > dist/keet.min.js",
     "dist": "browserify index.js --standalone Keet > dist/keet.js",
-    "jsdoc": "jsdoc2md index.js > docs/DOCUMENTATION.md"
+    "jsdoc": "jsdoc2md index.js > docs/DOCUMENTATION.md",
+    "test": "gulp"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/syarul/keet.git"
   },
   "keywords": [
-    "views",
-    "view layer",
+    "virtual dom",
+    "web component",
+    "web view layer",
     "template string",
-    "web framework",
-    "web app",
-    "reactive",
-    "observable",
-    "OO"
+    "framework"
   ],
   "author": "Shahrul Nizam Selamat",
   "license": "MIT",
@@ -29,8 +27,11 @@
   },
   "homepage": "https://github.com/syarul/keet#readme",
   "devDependencies": {
+    "browserify": "^14.3.0",
     "gulp": "^3.9.1",
     "gulp-livereload": "^3.8.1",
-    "gulp-shell": "^0.5.2"
+    "gulp-shell": "^0.5.2",
+    "tape": "^4.6.3",
+    "tape-run": "^3.0.0"
   }
 }
