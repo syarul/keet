@@ -3,6 +3,7 @@ var shell = require('gulp-shell')
 var livereload = require("gulp-livereload")
 var run = require('tape-run')
 var browserify = require('browserify')
+var tapSpec = require('tap-spec')
 
 gulp.task('main', function () {
   gulp.src('')
@@ -20,6 +21,7 @@ gulp.task('test', function() {
   browserify(__dirname + '/test/test.js')
   .bundle()
   .pipe(run())
+  .pipe(tapSpec())
   .pipe(process.stdout)
 })
 
