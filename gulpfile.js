@@ -34,8 +34,7 @@ gulp.task('test', function() {
 })
 
 process.on('exit', function() {
-  if(!x) return 1
-  return 0
+  if(!x) throw 'failing test'
 })
 
 gulp.task('default', ['test'])
