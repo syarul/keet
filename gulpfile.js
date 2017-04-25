@@ -18,7 +18,7 @@ gulp.task('watch', function() {
 })
 
 gulp.task('test', function() {
-  browserify(__dirname + '/test/test.js')
+  return browserify(__dirname + '/test/test.js')
   .bundle()
   .pipe(run())
   .pipe(tapSpec())
