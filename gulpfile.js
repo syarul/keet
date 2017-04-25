@@ -33,8 +33,7 @@ gulp.task('test', function() {
 })
 
 process.on('exit', function() {
-  if(x) return 0
-  return 1
+  if(!x) process.exit(1)
 })
 
 gulp.task('default', ['test'])
