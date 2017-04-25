@@ -18,7 +18,7 @@ test('Hello World test', function (t) {
     setTimeout(function () {
 
         var hello = document.getElementById('app').firstChild.nodeValue
-        t.equal(hello, 'Hello World')
+        t.equal(hello, 'Hello World!')
 
     }, 100)
 })
