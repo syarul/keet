@@ -2,9 +2,9 @@ var test = require('tape')
 
 var keet = require('../')
 
-// var log = console.log.bind(console)
+var log = console.log.bind(console)
 
-test('Hello World test', function (t) {
+test('Keet.js Test', function (t) {
 
 	var vDom = document.createElement('div')
 	vDom.setAttribute('id', 'app')
@@ -18,7 +18,8 @@ test('Hello World test', function (t) {
     setTimeout(function () {
 
         var hello = document.getElementById('app').firstChild.nodeValue
-        t.equal(hello, 'Hello World!')
+        var expected = 'Hello World!'
+        t.ok(hello === expected, 'should equal "'+expected+'" as node value')
 
     }, 100)
 })
