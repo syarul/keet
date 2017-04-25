@@ -18,7 +18,7 @@ var tt = test('Keet.js Test', function (t) {
     setTimeout(function () {
 
         var hello = document.getElementById('app').firstChild.nodeValue
-        var expected = 'Hello World'
+        var expected = 'Hello World!'
         t.ok(hello === expected, 'should equal "'+expected+'" as node value')
 
     }, 100)
