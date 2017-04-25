@@ -30,13 +30,8 @@ gulp.task('test', function() {
   })
   .pipe(tapSpec())
   .pipe(process.stdout)
-
-  // log(res)
-
-  return x
-
 })
 
-// process.on('exit', x ? function() {} : function() { throw 'failing test' })
+process.on('exit', function(){ x ? return 0 : return 1 })
 
 gulp.task('default', ['test'])
