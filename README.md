@@ -1,5 +1,7 @@
 # Keet.js
 
+[![Build Status](https://travis-ci.org/syarul/keet.svg?branch=master)](https://travis-ci.org/syarul/keet)
+
 Flexible view layer for the web which offer :-
 
 - data bindings
