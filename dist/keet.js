@@ -1,6 +1,6 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Keet = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /** 
- * Keet.js v0.7.2 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.7.4-rc (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -204,6 +204,15 @@ function Keet(tagName, debug, context) {
     return o.copy
   }
 
+  var loopChilds = function(arr, elem) {
+    for (var child = elem.firstChild; child !== null; child = child.nextSibling) {
+      arr.push(child)
+      if (child.hasChildNodes()) {
+        loopChilds(arr, child)
+      }
+    }
+  }
+
   var applyAttrib = function(selector, state, preserveAttr, uid) {
     var cty, attr, ts, type, a, d, gid, prev
     for (attr in state) {
@@ -267,9 +276,7 @@ function Keet(tagName, debug, context) {
       var listKnodeChild = []
 
       if(kNode && kNode.hasChildNodes()){
-        for (var kChild = kNode.firstChild; kChild !== null; kChild = kChild.nextSibling) {
-          listKnodeChild.push(kChild)
-        }
+        loopChilds(listKnodeChild, kNode)
         listKnodeChild.forEach(function(c, i){
           if(c.nodeType === 1 && c.hasAttributes()){
             var kString = c.getAttribute('k-click')
@@ -318,7 +325,7 @@ function Keet(tagName, debug, context) {
        output[oAttr[i].name] = oAttr[i].value
     }
     for (var iAttr in output) {
-      if(oldNode.attributes[iAttr].name === iAttr && oldNode.attributes[iAttr].value != output[iAttr]){
+      if(oldNode.attributes[iAttr] && oldNode.attributes[iAttr].name === iAttr && oldNode.attributes[iAttr].value != output[iAttr]){
         oldNode.setAttribute(iAttr, output[iAttr])
       }
     }
@@ -331,30 +338,14 @@ function Keet(tagName, debug, context) {
   }
 
   var updateElem = function(oldElem, newElem, fallbackHTMLstring){
-    var oldArr = [], newArr = [], flag = false,
-    loopOldChilds = function(elem) {
-      for (var child = elem.firstChild; child !== null; child = child.nextSibling) {
-        oldArr.push(child)
-        if (child.hasChildNodes()) {
-          loopOldChilds(child)
-        }
-      }
-    },
-    loopNewChilds = function(elem) {
-      for (var child = elem.firstChild; child !== null; child = child.nextSibling) {
-        newArr.push(child)
-        if (child.hasChildNodes()) {
-          loopNewChilds(child)
-        }
-      }
-    }
+    var oldArr = [], newArr = [], flag = false
 
     //push the elements
     oldArr.push(oldElem)
     newArr.push(newElem)
     // now push the childs
-    loopOldChilds(oldElem)
-    loopNewChilds(newElem)
+    loopChilds(oldArr, oldElem)
+    loopChilds(newArr, newElem)
     if(oldArr.length !== newArr.length){
       // if nodeList length is different, use the HTMLString
       oldElem.innerHTML = fallbackHTMLstring
