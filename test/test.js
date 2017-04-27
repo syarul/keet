@@ -2,38 +2,50 @@ var test = require('tape')
 
 var keet = require('../')
 
-var closureTest = require('./fixture/closure')
+var helloTest = require('./fixtures/hello')
+var closureTest = require('./fixtures/closure')
+var traversalBaseTest = require('./fixtures/traversal')
+var inputBindingTest = require('./fixtures/inputBinding')
+var customDataTest = require('./fixtures/kData')
 
 var log = console.log.bind(console)
 
-var tt = test('Keet.js Test', function (t) {
+function genVDOM() {
+  if (!document) throw 'not a document object model'
+  var vDom = document.createElement('div')
+  vDom.setAttribute('id', 'app')
+  document.body.appendChild(vDom)
+}
 
-	var vDom = document.createElement('div')
-	vDom.setAttribute('id', 'app')
-	document.body.appendChild(vDom)
+function clearVDOM() {
+  if (!document) throw 'not a document object model'
+  document.getElementById('app').innerHTML = ''
+}
 
-	var app = new keet
-	app.link('app', 'Hello World')
+test('Keet.js', function(t) {
 
-    t.plan(2)
-    
-    var hello = document.getElementById('app').firstChild.nodeValue
-    var expected = 'Hello World'
-    t.ok(hello === expected, 'should equal "'+expected+'" as node value')
+  genVDOM()
 
-    /////////////////// test plan 2 /////////////////////
+  t.plan(5)
 
-    document.getElementById('app').innerHTML = ''
+  ///////////
 
-    var closureInit = new closureTest
+  helloTest(t)
 
-    closureInit.app.compose(true, function(c){
-    	if(c.hasChildNodes() && c.childNodes[0].nodeType === 1){
-    		var ctext = 'a view constructed in a closure'
-    		t.ok(c.childNodes[0].firstChild.nodeValue === ctext, 'should equal "'+ctext+'" as node value')
-    	} else {
-    		t.ok(false, 'should equal "'+ctext+'" as node value')
-    	}
-    })
+  clearVDOM()
+
+  closureTest(t)
+
+  clearVDOM()
+
+  traversalBaseTest(t)
+
+  clearVDOM()
+
+  inputBindingTest(t)
+
+  clearVDOM()
+
+  customDataTest(t)
 
 })

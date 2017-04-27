@@ -1,5 +1,5 @@
 /** 
- * Keet.js v0.7.3 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.7.4 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -324,7 +324,7 @@ function Keet(tagName, debug, context) {
        output[oAttr[i].name] = oAttr[i].value
     }
     for (var iAttr in output) {
-      if(oldNode.attributes[iAttr].name === iAttr && oldNode.attributes[iAttr].value != output[iAttr]){
+      if(oldNode.attributes[iAttr] && oldNode.attributes[iAttr].name === iAttr && oldNode.attributes[iAttr].value != output[iAttr]){
         oldNode.setAttribute(iAttr, output[iAttr])
       }
     }

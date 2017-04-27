@@ -38,17 +38,8 @@ Read the documentation [here](https://github.com/syarul/keet/blob/master/docs/DO
 
 Take a look inside [sample](https://github.com/syarul/keet/tree/master/sample) for a quick start using  Keet.js
 
-## Foward
-
-- Keet.js embrace javascript OO and it's first class functions.
-- For the most part, you can follow standard javascript best practices.
-- For a maintainable code, it's better to hold Keet.js components inside closure or object.
-- Use the debug mode by passing boolean true or string 'debug' to Keet constructor for a quick trace of elements rendering behavior or failed hookup between components
-- Having trouble of unrendered elements or rendering order issue? ```Keet.prototype.compose(fn)``` has a callback function(fn) which execute after its rendered to DOM
-- Use ```Keet.prototype.register/unreg``` to swap components, so components by any means are highly reusable
-- All Keet.prototypes return itself, chaining methods is supported all along
-
 ## Version history
+- 0.7.4 Added test(w.i.p), fix minor bug
 - 0.7.3 traverse DOM childrens recursively instead only affecting the first layer
 - 0.7.2 Fix setter not correctly rendering from string
 - 0.7.0 Fix multiple issues, DOM update now only update on changed, not rerender everything from string, compose now apply the DOM selector
