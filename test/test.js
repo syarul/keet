@@ -7,6 +7,7 @@ var closureTest = require('./fixtures/closure')
 var traversalBaseTest = require('./fixtures/traversal')
 var inputBindingTest = require('./fixtures/inputBinding')
 var customDataTest = require('./fixtures/kData')
+var classChangeTest = require('./fixtures/classChange')
 
 var log = console.log.bind(console)
 
@@ -26,7 +27,7 @@ test('Keet.js', function(t) {
 
   genVDOM()
 
-  t.plan(5)
+  t.plan(6)
 
   ///////////
 
@@ -47,5 +48,9 @@ test('Keet.js', function(t) {
   clearVDOM()
 
   customDataTest(t)
+
+  clearVDOM()
+
+  classChangeTest(t)
 
 })

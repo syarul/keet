@@ -45,11 +45,7 @@ module.exports = function(t) {
     trv.state.compose(true, function(el) {
       var v = document.getElementById('dod')
       v.click()
-      if (trv.status === 'later')
-        t.ok(true, 'dom traversal, onclick event')
-      else
-        t.ok(false, 'dom traversal, onclick event')
-
+      t.ok(trv.status === 'later', 'dom traversal, onclick event')
     })
 
   })

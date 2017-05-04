@@ -19,11 +19,6 @@ module.exports = function(t) {
   var closed = new init
 
   closed.app.compose(true, function(c) {
-    if (c.hasChildNodes() && c.childNodes[0].nodeType === 1) {
-      var ctext = 'a view constructed in a closure'
-      t.ok(c.childNodes[0].firstChild.nodeValue === ctext, 'closure')
-    } else {
-      t.ok(false, 'closure')
-    }
+    t.ok(c.childNodes[0].firstChild.nodeValue === 'a view constructed in a closure', 'closure')
   })
 }

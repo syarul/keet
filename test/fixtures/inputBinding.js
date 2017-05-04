@@ -48,11 +48,8 @@ module.exports = function(t) {
 
       var c = document.getElementById('Change')
 
-      if (c.firstChild) {
-        t.ok(c.firstChild.nodeValue === 'after', 'input binding')
-      } else {
-        t.ok(false, 'input binding')
-      }
+      t.ok(c.firstChild.nodeValue === 'after', 'input binding')
+
     })
   })
 }

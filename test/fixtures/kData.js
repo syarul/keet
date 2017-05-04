@@ -2,7 +2,7 @@ var Keet = require('../../')
 var util = require('../util')
 var log = console.log.bind(console)
 
-var init = function() {
+var init = function(cb) {
 
   var ctx = this
 
@@ -39,15 +39,14 @@ var init = function() {
         name: 'Amet'
       }
     })
+
+    cb()
   }, 1000)
 }
 
 module.exports = function(t) {
-
-  new init
-
-  setTimeout(function(){
+  new init(function(){
     var v = document.getElementById('app')
     t.ok(v.firstChild.nodeValue === 'My name is Doloro Sit Amet', 'custom data')
-  }, 1100)
+  })
 }
