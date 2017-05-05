@@ -4,13 +4,13 @@ var livereload = require("gulp-livereload")
 var run = require('tape-run')
 var browserify = require('browserify')
 var tapSpec = require('tap-spec')
-var istanbul = require('gulp-istanbul');
-var b = require('browserify-istanbul')
-var tapeIstanbul = require('tape-istanbul')
-var coverify = require('coverify')
-var parse = require('coverify/parse')
-var concat = require('concat-stream')
-var bb = require('gulp-browserify')
+// var istanbul = require('gulp-istanbul');
+// var b = require('browserify-istanbul')
+// var tapeIstanbul = require('tape-istanbul')
+// var coverify = require('coverify')
+// var parse = require('coverify/parse')
+// var concat = require('concat-stream')
+// var bb = require('gulp-browserify')
 
 var stream = require('stream');
 
@@ -38,22 +38,22 @@ gulp.task('test', function() {
   // .plugin('tape-istanbul/plugin')
   .bundle()
   .pipe(run())
-  // .on('results', function(results){
-  //   if(results.ok) x = true
-  // })
-  // .pipe(tapSpec())
+  .on('results', function(results){
+    if(results.ok) x = true
+  })
+  .pipe(tapSpec())
   // .pipe(tapeIstanbul())
   .pipe(process.stdout)
 })
 
 gulp.task('cov', function() {
   gulp.src(['*.js'])
-    .plugin('tape-istanbul/hook')
+    // .plugin('tape-istanbul/hook')
     .on('finish', function () {
       browserify(__dirname + '/test/test.js')
       .bundle()
       .pipe(run())
-      .pipe(tapeIstanbul())
+      // .pipe(tapeIstanbul())
       // .pipe(istanbul.enforceThresholds({ thresholds: { global: 70 } })) // Enforce a coverage of at least 90%
       .on('results', function(results){
         if(results.ok) x = true
@@ -65,7 +65,7 @@ gulp.task('cov', function() {
 
 var temp = {}
 
-gulp.task('ex', function() {
+/*gulp.task('ex', function() {
 
   // browserify()
   browserify(__dirname + '/test/v2.js')
@@ -115,7 +115,7 @@ gulp.task('ex', function() {
   // .pipe(process.stdout)
   // .pipe(coverify('/test/v2.js'))
   // .pipe(process.stdout)
-})
+})*/
 
 gulp.task('t', function() {
   gulp.src('')
