@@ -30,13 +30,12 @@
   "homepage": "https://github.com/syarul/keet#readme",
   "devDependencies": {
     "browserify": "^14.3.0",
+    "coverify": "^1.4.1",
     "gulp": "^3.9.1",
-    "gulp-istanbul": "^1.1.1",
     "gulp-livereload": "^3.8.1",
     "gulp-shell": "^0.5.2",
     "tap-spec": "^4.1.1",
     "tape": "^4.6.3",
-    "tape-istanbul": "^1.0.4",
     "tape-run": "^3.0.0"
   }
 }

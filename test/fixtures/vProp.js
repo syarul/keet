@@ -7,12 +7,13 @@ var init = function() {
   }
 
   this.app = keet().link('app', '{{state}}')
-  this.state = keet().template('div').set('a view constructed in a closure')
+  this.state = keet().template('div')
+    .set('value', 'set vProp')
 }
 
 module.exports = function(t) {
   var closed = new init
   closed.app.compose(true, function(c) {
-    t.ok(c.childNodes[0].firstChild.nodeValue === 'a view constructed in a closure', 'closure')
+    t.ok(c.childNodes[0].firstChild.nodeValue === 'set vProp', 'setter')
   })
 }

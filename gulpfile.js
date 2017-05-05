@@ -119,7 +119,7 @@ var temp = {}
 
 gulp.task('t', function() {
   gulp.src('')
-    .pipe(shell('node_modules\\.bin\\browserify -t coverify test/test.js | tape-run | coverify'))
+    .pipe(shell('browserify -t coverify test/test.js | tape-run | coverify'))
 })
 
 // process.on('exit', function() {

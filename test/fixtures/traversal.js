@@ -1,11 +1,9 @@
 var Keet = require('../../')
-var util = require('../util')
-var log = console.log.bind(console)
+var cat = require('../../cat')
 
 var init = function() {
 
   var ctx = this
-
   var keet = function() {
     return new Keet(ctx)
   }
@@ -21,7 +19,7 @@ var init = function() {
   this.state = keet()
     .template('div', 'traversalContainer')
     .set({
-      value: util.cat(
+      value: cat(
         '<div>',
           'aaaa',
           '<span>',

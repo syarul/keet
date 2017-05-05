@@ -10,7 +10,6 @@
 'use strict'
 var cat = require('./cat')
 var copy = require('./copy')
-var tag = require('./tag')
 
 module.exports = Keet
 /**
@@ -47,11 +46,6 @@ function Keet(tagName, debug, context) {
       return s.replace(rx, function(a, b) {
         return b.toUpperCase()
       })
-    },
-    eleConstruct = function() {
-      var args = [].slice.call(arguments), arr = tag.apply(null, args)
-      log('tag result => \n'+JSON.stringify(arr, null, 2))
-      return arr.join('')
     },
     guid = function(){
       return (Math.round(Math.random()*0x1000000)).toString(32)
@@ -418,7 +412,7 @@ function Keet(tagName, debug, context) {
             for(i=ctx.ctor.ops.index;i<childLen+1;i++){
               len = ctx.ctor.ops.index+ctx.ctor.ops.count
               if(i < len){
-                ele.removeChild(ele.childNodes[ctx.ctor.ops.index])
+                ele.removeChild(ele.childNodes[i])
                 if(i === len-1 && tempDivChildLen > 0){
                   c = ctx.ctor.ops.index - 1
                   for(j=ctx.ctor.ops.index;j<tempDivChildLen+ctx.ctor.ops.index;j++){
@@ -427,6 +421,13 @@ function Keet(tagName, debug, context) {
                   }
                 }
               }
+            }
+          } else {
+            len = ctx.ctor.ops.pristinelen - ctx.ctor.ops.index
+            i = 0
+            while(i < len){
+              ele.removeChild(ele.childNodes[ctx.ctor.ops.pristinelen - i - 1])
+              i++
             }
           }
         } else {
@@ -674,7 +675,11 @@ Keet.prototype.watch = function(instance, fn) {
   var op = opsList(), ev = {}
   ev._ = 'noArrayProto'
   ev.change = function(cb) {
-    if (cb) cb(this)
+    console.log(this, cb)
+    if (cb) {
+      // console.log(true)
+      cb(this)
+    }
   }
   Object.defineProperty(ev, 'state', {
     __proto__: null,
@@ -684,6 +689,7 @@ Keet.prototype.watch = function(instance, fn) {
     },
     set: function(value) {
       this._ = value
+      console.log(this)
       this.change()
     }
   })
@@ -711,22 +717,29 @@ Keet.prototype.watch = function(instance, fn) {
       op = opsList()
       ev.state = 'slice'
     } else if(ops === 'splice') {
+      // console.log(argvs)
       ctx.splice.apply(ctx, argvs)
       op = opsList()
       ev.state = 'splice'
+      // console.log(ev.state)
     } 
   }
   op.forEach(function(f){
     instance[f] = function() {
+      // console.loadedg('op.length '+op.length)
       if(op.length > 0) {
         Array.prototype[f].apply(this, arguments)
+        console.log(f)
         query(f, arguments)
       }
     }
   })
   // watch array.prototype operation first before dealing with update event
   event = new Promise(function(resolve){
+    // console.log(this)
     this.change(function(res) {
+      console.log(res)
+      // console.log(this)
       resolve(res)
     })
   }.bind(ev))
@@ -735,6 +748,7 @@ Keet.prototype.watch = function(instance, fn) {
     instance.watch(i, function(idx, o, n) {
       instance.unwatch(i)
       event.then(function(ev) {
+        console.log('aw!!! '+ typeof fn)
         if (ev._ === 'noArrayProto')
           ctx.update(idx, n)
         if(typeof fn === 'function') {
@@ -1037,7 +1051,8 @@ Keet.prototype.splice = function(fn, start, count, obj) {
       type: 'splice',
       index: start,
       count: count,
-      node: argv
+      node: argv,
+      pristinelen: this.ctor.arrayPristine.length
     }
     if(ctxFn && typeof ctxFn === 'function') {
       fnArr = ctxFn(arr)
@@ -1075,8 +1090,6 @@ Keet.prototype.bindListener = function(inputId, listener, type) {
           listener.set(e.value)
         } else if (typeof listener === 'function') {
           listener(e.value, evt)
-        } else {
-          return e.value
         }
       }
 

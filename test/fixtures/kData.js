@@ -1,6 +1,4 @@
 var Keet = require('../../')
-var util = require('../util')
-var log = console.log.bind(console)
 
 var init = function(cb) {
 

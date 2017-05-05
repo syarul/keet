@@ -1,56 +1,51 @@
 var test = require('tape')
-
-var keet = require('../')
-
-var helloTest = require('./fixtures/hello')
-var closureTest = require('./fixtures/closure')
-var traversalBaseTest = require('./fixtures/traversal')
-var inputBindingTest = require('./fixtures/inputBinding')
-var customDataTest = require('./fixtures/kData')
-var classChangeTest = require('./fixtures/classChange')
-
-var log = console.log.bind(console)
-
-function genVDOM() {
-  if (!document) throw 'not a document object model'
-  var vDom = document.createElement('div')
-  vDom.setAttribute('id', 'app')
-  document.body.appendChild(vDom)
-}
+var fixtures = require('./fixtures')
 
 function clearVDOM() {
   if (!document) throw 'not a document object model'
   document.getElementById('app').innerHTML = ''
 }
 
+
+// var a = [1,2,3]
+
+// a.splice(0)
+
+// console.log(a)
+
 test('Keet.js', function(t) {
 
-  genVDOM()
+  if (!document) throw 'not a document object model'
+  var vDom = document.createElement('div')
+  vDom.setAttribute('id', 'app')
+  document.body.appendChild(vDom)
 
-  t.plan(6)
+  var plan = 0
 
-  ///////////
+  for(var key in fixtures){
+    if(typeof fixtures[key] === 'object'){
+      plan += Object.keys(fixtures[key]).length
+    } else {
+      plan += 1
+    }
+  }
 
-  helloTest(t)
+  // console.log(plan, Object.keys(fixtures).length)
 
-  clearVDOM()
+  t.plan(plan)
 
-  closureTest(t)
-
-  clearVDOM()
-
-  traversalBaseTest(t)
-
-  clearVDOM()
-
-  inputBindingTest(t)
-
-  clearVDOM()
-
-  customDataTest(t)
-
-  clearVDOM()
-
-  classChangeTest(t)
-
+  for(var key in fixtures){
+    var fixture = fixtures[key]
+    if(typeof fixture === 'function'){
+      console.log(key)
+      fixture(t)
+      clearVDOM()
+    } else {
+      for(var iKey in fixture){
+        var innerFixture = fixture[iKey]
+        innerFixture(t)
+        clearVDOM()
+      }
+    }
+  }
 })
