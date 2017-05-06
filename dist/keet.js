@@ -1,6 +1,21 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Keet = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports = function() {
+  return [].slice.call(arguments).join('')
+}
+},{}],2:[function(require,module,exports){
+module.exports = function(argv) {
+  var clone = function(v) {
+    var o = {}
+    o.copy = v
+    return o.copy
+  }
+  return Array.isArray(argv) ? argv.map(function(v) {
+    return v
+  }) : clone(argv)
+}
+},{}],3:[function(require,module,exports){
 /** 
- * Keet.js v0.7.4-rc (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.8.0 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -9,6 +24,9 @@
  * Released under the MIT License.
  */
 'use strict'
+var cat = require('./cat')
+var copy = require('./copy')
+
 module.exports = Keet
 /**
  * Keet constructor, each component is an instance of Keet
@@ -28,7 +46,7 @@ function Keet(tagName, debug, context) {
     getId = function(id, uid) {
       if(ctx.ctor.doc) {
         ret = document.getElementById(id)
-        if (!ret && uid) ret = document.querySelector(ctx.cat('[k-link="', uid, '"]'))
+        if (!ret && uid) ret = document.querySelector(cat('[k-link="', uid, '"]'))
       } else {
         throw('Not a document object model.')
       }
@@ -44,11 +62,6 @@ function Keet(tagName, debug, context) {
       return s.replace(rx, function(a, b) {
         return b.toUpperCase()
       })
-    },
-    eleConstruct = function() {
-      var args = [].slice.call(arguments), arr = ctx.tag.apply(null, args)
-      log('tag result => \n'+JSON.stringify(arr, null, 2))
-      return arr.join('')
     },
     guid = function(){
       return (Math.round(Math.random()*0x1000000)).toString(32)
@@ -76,15 +89,6 @@ function Keet(tagName, debug, context) {
   this.ctor.doc = (function() {
     return typeof document == 'object' ? true : false
   }())
-  // helpers functions
-  this.cat = function() { return [].slice.call(arguments).join('') }
-  this.copy = function(argv) {
-    return Array.isArray(argv) ? argv.map( function(v) { return v }) : argv
-  }
-  this.tag = function() {
-    var args = [].slice.call(arguments), arr = ctx.ktag.apply(null, args)
-    return arr.join('')
-  }
   this.loaded = function(cb) {
     if(ctx.ctor.doc && !ctx.ctor.loaded) {
       document.addEventListener('DOMContentLoaded', function(ev) {
@@ -112,7 +116,7 @@ function Keet(tagName, debug, context) {
   this.refNode =  function(){
     return getId(ctx.el, ctx.ctor.uid)
   }
-  
+
   this.ctor.tags = {}
   this.ctor.ops = {}
 
@@ -150,11 +154,11 @@ function Keet(tagName, debug, context) {
           ctx.ctor.tags[regc] = childAttr
           // inject value into child template
           if(child.ctor.tmpl) {
-            ctmpl = ctx.copy(child.ctor.tmpl)
+            ctmpl = copy(child.ctor.tmpl)
             idx =  ctmpl.indexOf('>')
             if(~idx) {
               ctmpl.splice(idx+1, 0, child.obs._state_.value)
-              injc = ctx.cat.apply(null, ctmpl)
+              injc = cat.apply(null, ctmpl)
             }
           }
           // if template does not exist return value as parameter
@@ -196,12 +200,6 @@ function Keet(tagName, debug, context) {
       referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling)
     else
       parentNode.insertBefore(newNode, parentNode.firstChild)
-  }
-
-  var clone = function(v) {
-    var o = {}
-    o.copy = v
-    return o.copy
   }
 
   var loopChilds = function(arr, elem) {
@@ -375,7 +373,7 @@ function Keet(tagName, debug, context) {
     var loopChilds = function(elem) {
       for (var child = elem.firstChild; child !== null; child = child.nextSibling) {
         if(child.nodeType === 1){
-          child.setAttribute('k-link', ctx.cat(ctx.ctor.uid, '-', guid()))
+          child.setAttribute('k-link', cat(ctx.ctor.uid, '-', guid()))
         }
         if (child.hasChildNodes()) {
           loopChilds(child)
@@ -389,7 +387,7 @@ function Keet(tagName, debug, context) {
   var _triggerElem = function() {
     var state = ctx.obs._state_, el = ctx.el, uid = ctx.ctor.uid, 
       processStr, ele = getId(el, uid), childTags = ctx.ctor.tags, attr, tempDiv, 
-      childLen, tempDivChildLen, i, j, len, c
+      childLen, tempDivChildLen, i, j, k, len, c
     if (ele) {
       // process each {{instance}} before parsing to html
       processStr = _processTags(state.value, state['k-data'])
@@ -404,9 +402,6 @@ function Keet(tagName, debug, context) {
 
           var flag = updateElem(ele.childNodes[ctx.ctor.ops.index], tempDiv.childNodes[0])
 
-          // if(flag) ele.replaceChild(tempDiv.childNodes[0], ele.childNodes[ctx.ctor.ops.index])
-          // else console.debug('just attributes changes')
-
         }else if(ctx.ctor.ops.type === 'unshift'){
           tempDiv = document.createElement('div')
           tempDiv.innerHTML = ctx.ctor.ops.node
@@ -417,15 +412,15 @@ function Keet(tagName, debug, context) {
           tempDiv = document.createElement('div')
           tempDiv.innerHTML = ctx.ctor.ops.node
           ele.innerHTML = ''
-          tempDivChildLen = clone(tempDiv.childNodes.length)
+          tempDivChildLen = copy(tempDiv.childNodes.length)
           for(i=0;i<tempDivChildLen;i++){
             ele.appendChild(tempDiv.childNodes[0])
           }
         }else if(ctx.ctor.ops.type === 'splice'){
           tempDiv = document.createElement('div')
           tempDiv.innerHTML = ctx.ctor.ops.node
-          childLen = clone(ele.childNodes.length)
-          tempDivChildLen = clone(tempDiv.childNodes.length)
+          childLen = copy(ele.childNodes.length)
+          tempDivChildLen = copy(tempDiv.childNodes.length)
           if(ctx.ctor.ops.count && ctx.ctor.ops.count > 0){
             for(i=ctx.ctor.ops.index;i<childLen+1;i++){
               len = ctx.ctor.ops.index+ctx.ctor.ops.count
@@ -440,6 +435,18 @@ function Keet(tagName, debug, context) {
                 }
               }
             }
+          } else if(ctx.ctor.ops.nodeLen) {
+            c = ctx.ctor.ops.index - 1
+            for(k=ctx.ctor.ops.index;k<tempDivChildLen+ctx.ctor.ops.index;k++){
+              insertAfter(tempDiv.childNodes[0], ele.childNodes[c], ele)
+              c++
+            }
+            // len = ctx.ctor.ops.pristinelen - ctx.ctor.ops.index
+            // i = 0
+            // while(i < len){
+            //   ele.removeChild(ele.childNodes[ctx.ctor.ops.pristinelen - i - 1])
+            //   i++
+            // }
           }
         } else {
           tempDiv = document.createElement('div')
@@ -662,7 +669,7 @@ Keet.prototype.link = function(tag, id, value) {
     this.set(argv[1])
   } else if (argv.length > 2 && typeof tag === 'string' && (typeof value === 'string' || typeof value === 'number')) {
     this.el = id
-    vtag = this.cat('<', tag, '>', value, '</', tag, '>')
+    vtag = cat('<', tag, '>', value, '</', tag, '>')
     this.set(vtag)
   }
   return this
@@ -675,7 +682,7 @@ Keet.prototype.link = function(tag, id, value) {
  * @returns {context}
  */
 Keet.prototype.watch = function(instance, fn) {
-  var ctx = this, argv, event
+  var ctx = this, argv, event, pristineLen = copy(this.ctor.arrayProto), el, add, oldLen, s
   instance = instance || this.ctor.arrayProto
   if(!Array.isArray(instance)) {
     argv = [].slice.call(arguments)
@@ -696,7 +703,7 @@ Keet.prototype.watch = function(instance, fn) {
     },
     set: function(value) {
       this._ = value
-      this.change()
+      this.change
     }
   })
   var query = function(ops, argvs) {
@@ -731,8 +738,38 @@ Keet.prototype.watch = function(instance, fn) {
   op.forEach(function(f){
     instance[f] = function() {
       if(op.length > 0) {
-        Array.prototype[f].apply(this, arguments)
-        query(f, arguments)
+        var fargv = [].slice.call(arguments)
+        Array.prototype[f].apply(this, fargv)
+        el = ctx.refNode()
+        if(el){
+
+          //propagate callback, since this event does not triggered
+          if(fargv.length === 1 && f === 'splice'){
+            fargv.push(pristineLen.length - fargv[0])
+            s = setInterval(function(){
+              el = ctx.refNode()
+              if(el && el.childNodes.length === fargv[0]) clearInterval(s)
+              if(typeof fn === 'function'){
+                fn(ctx.refNode())
+              }
+            }, 10)
+          } else if(fargv.length === 2 && f === 'splice' && fargv[1] === 0){
+            if(typeof fn === 'function') {
+              fn(ctx.refNode())
+            }
+          } else if(fargv.length > 2 && f === 'splice' && fargv[1] === 0){
+            add = fargv.slice(2)
+            oldLen = copy(el.childNodes.length)
+            s = setInterval(function(){
+              el = ctx.refNode()
+              if(el && el.childNodes.length === oldLen + add.length) clearInterval(s)
+              if(!el) clearInterval(s)
+              if(typeof fn === 'function')
+                fn(ctx.refNode())
+            }, 10)
+          }
+        }
+        query(f, fargv)
       }
     }
   })
@@ -742,6 +779,7 @@ Keet.prototype.watch = function(instance, fn) {
       resolve(res)
     })
   }.bind(ev))
+
   // watch for changes in the array, if event is not assignment, do unwatch on the array
   instance.forEach(function(r, i) {
     instance.watch(i, function(idx, o, n) {
@@ -813,7 +851,7 @@ Keet.prototype.unWatch = function(instance) {
 Keet.prototype.array = function(array, templateString, isAppend) {
   var tmplStr = '', arrProps, tmpl, rep
   this.ctor.arrayProto = array
-  this.ctor.arrayPristine = this.copy(array)
+  this.ctor.arrayPristine = copy(array)
   this.ctor.tmplString = templateString
   arrProps = templateString.match(/{{([^{}]+)}}/g, '$1')
   array.forEach(function(r) {
@@ -873,7 +911,7 @@ Keet.prototype.update = function(index, obj, fn) {
  */
 Keet.prototype.remove = function(idx, fn) {
   var arr = this.ctor.arrayProto, 
-    arrPris = this.copy(this.ctor.arrayPristine),
+    arrPris = copy(this.ctor.arrayPristine),
     str = this.ctor.tmplString, index, key, fnArr
   if(Array.isArray(arr)){
     this.ctor.ops = {
@@ -896,7 +934,7 @@ Keet.prototype.remove = function(idx, fn) {
         this.ctor.ops.index = idx
       }
     }
-    arr = this.copy(arrPris)
+    arr = copy(arrPris)
     if(typeof fn === 'function') {
       fnArr = fn(arr)
       if(fnArr && Array.isArray(fnArr)) { 
@@ -948,7 +986,7 @@ Keet.prototype.insert = function(obj, fn) {
  * @returns {context}
  */
 Keet.prototype.unshift = function(fn, obj) {
-  var arr = this.copy(this.ctor.arrayPristine),
+  var arr = copy(this.ctor.arrayPristine),
     str = this.ctor.tmplString, ctxFn, argv, fnArr
   if(typeof arguments[0] === 'function'){
     ctxFn = [].shift.call(arguments)
@@ -986,7 +1024,7 @@ Keet.prototype.unshift = function(fn, obj) {
  * @returns {context}
  */
 Keet.prototype.slice = function(fn, start, end) {
-  var arr = this.copy(this.ctor.arrayPristine),
+  var arr = copy(this.ctor.arrayPristine),
     str = this.ctor.tmplString, ctxFn, argv, fnArr
   if(typeof arguments[0] === 'function'){
     ctxFn = [].shift.call(arguments)
@@ -1027,7 +1065,7 @@ Keet.prototype.slice = function(fn, start, end) {
  * @returns {context}
  */
 Keet.prototype.splice = function(fn, start, count, obj) {
-  var arr = this.copy(this.ctor.arrayPristine),
+  var arr = copy(this.ctor.arrayPristine),
     str = this.ctor.tmplString, ctxFn, objs, argv, fnArr
   argv = [].slice.call(arguments)
   if(typeof arguments[0] === 'function'){
@@ -1040,16 +1078,22 @@ Keet.prototype.splice = function(fn, start, count, obj) {
   if(Array.isArray(arr)){
     if(argv.length > 0 && count) {
       arr.splice(start, count, argv)
-      arr = [].concat.apply(  [], arr)
-    } else if(!count){
-      arr.splice(start)
+      arr = [].concat.apply([], arr)
+    } else if(argv.length === 0 && count) {
+      arr.splice(start, count)
+      arr = [].concat.apply([], arr)
+    } else if(argv.length > 0 && !count){
+      arr.splice(start, 0, argv)
+      arr = [].concat.apply([], arr)
     }
     this.ctor.ops = {
       preserve: true,
       type: 'splice',
       index: start,
       count: count,
-      node: argv
+      node: argv,
+      nodeLen: argv.length,
+      pristinelen: this.ctor.arrayPristine.length
     }
     if(ctxFn && typeof ctxFn === 'function') {
       fnArr = ctxFn(arr)
@@ -1080,15 +1124,13 @@ Keet.prototype.bindListener = function(inputId, listener, type) {
     type = type || 'input'
     if(!ctx.ctor.ev) ctx.ctor.ev = {}
     if(e){
-      var str = ctx.cat(inputId, '-', type)
+      var str = cat(inputId, '-', type)
       ctx.ctor.ev[str] = function(evt) {
         if (typeof listener.__proto__.set === 'function') {
           evt.preventDefault()
           listener.set(e.value)
         } else if (typeof listener === 'function') {
           listener(e.value, evt)
-        } else {
-          return e.value
         }
       }
 
@@ -1109,7 +1151,7 @@ Keet.prototype.removeListener = function(inputId, type) {
     var e = document.getElementById(inputId)
     type = type || 'input'
     if(e){
-      var str = ctx.cat(inputId, '-', type)
+      var str = cat(inputId, '-', type)
       e.removeEventListener(type, ctx.ctor.ev[str], false)
       delete ctx.ctor.ev[str]
     } else throw('Element does not exist')
@@ -1151,38 +1193,5 @@ Keet.prototype.set = function(value, vProp) {
   }
   return this
 }
-/**
- * Helpers to create elements without writing brackets i.e ```app.tag('a', 'link', {id: 'imgLink', href: 'http://somelink.com'}, {color: 'red'})``` 
- * which will yeild ```<a href="http://somelink.com" id="imgLink" style="color:red">link</a>```, **this is not chainable prototype**, 
- * to use use call the helpers function of Keet.
- * @param {string} - the element tag name reference
- * @param {string | number} - the inner html value
- * @param {object} - ***optional*** if specified, write properties and values as attributes, omit as ```null/undefined``` if need next arg
- * @param {object} - ***optional*** if specified, write properties and values as style
- * @returns {array}
- */
-Keet.prototype.ktag = function(tag, value, attributes, styles) {
-  var attr, idx, te, a = [].slice.call(arguments),
-    ret = ['<', a[0], '>', a[1],'</', a[0], '>']
-  if(a.length > 2 && typeof a[2] === 'object') {
-    for(attr in a[2]){
-      ret.splice(2, 0, ' ', attr, '="', a[2][attr], '"')
-    }
-  }
-  if(a.length > 3 && typeof a[3] === 'object') {
-    idx = ret.indexOf('>')
-    if(~idx){
-      te = [idx, 0, ' style="']
-      for(attr in a[3]){
-        te.push(attr)
-        te.push(':')
-        te.push(a[3][attr])
-      }
-      te.push('"')
-      ret.splice.apply(ret, te)
-    }
-  }
-  return ret
-}
-},{}]},{},[1])(1)
+},{"./cat":1,"./copy":2}]},{},[3])(3)
 });

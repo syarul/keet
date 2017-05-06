@@ -13,13 +13,13 @@ Keet constructor, each component is an instance of Keet
 
 
 * [Keet(tagName, debug, context)](#Keet) ⇒ <code>constructor</code>
-    * [.register(instance)](#Keet+register) ⇒ <code>context</code>
+    * [.register(instance, force, fn)](#Keet+register) ⇒ <code>context</code>
     * [.unreg()](#Keet+unreg) ⇒ <code>context</code>
     * [.template(tag, id)](#Keet+template) ⇒ <code>context</code>
     * [.compose(force, fn)](#Keet+compose) ⇒ <code>context</code>
     * [.preserveAttributes(argv)](#Keet+preserveAttributes) ⇒ <code>context</code>
     * [.link(tag, id, value)](#Keet+link) ⇒ <code>context</code>
-    * [.watch(instance, onUpdated)](#Keet+watch) ⇒ <code>context</code>
+    * [.watch(instance, fn)](#Keet+watch) ⇒ <code>context</code>
     * [.watchObj(instance, fn)](#Keet+watchObj) ⇒ <code>context</code>
     * [.unWatch(instance)](#Keet+unWatch) ⇒ <code>context</code>
     * [.array(array, templateString, isAppend)](#Keet+array) ⇒ <code>context</code>
@@ -32,18 +32,19 @@ Keet constructor, each component is an instance of Keet
     * [.bindListener(inputId, listener, type)](#Keet+bindListener) ⇒ <code>context</code>
     * [.removeListener(inputId, type)](#Keet+removeListener) ⇒ <code>context</code>
     * [.set(value, vProp)](#Keet+set) ⇒ <code>context</code>
-    * [.ktag(tag, value, attributes, styles)](#Keet+ktag) ⇒ <code>array</code>
 
 <a name="Keet+register"></a>
 
-### keet.register(instance) ⇒ <code>context</code>
-Register this component instance as a child of a parent component i.e.Updates on child are automatically updated to parent whenever the child called ```set/compose/link```.**Be carefull using this**, since mutation is not control anymore. If you want to have control over DOM mutation use ```Keet.prototype.compose``` instead.
+### keet.register(instance, force, fn) ⇒ <code>context</code>
+Register this component instance as a child of a parent component i.e.Updates on child are automatically updated to parent whenever the child called ```set/compose/link```.If you want to have control over DOM mutation use ```Keet.prototype.compose``` instead.
 
 **Kind**: instance method of <code>[Keet](#Keet)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | instance | <code>string</code> | the parent component instance declared variable name. |
+| force | <code>boolean</code> | ***optional*** force node render, if the node non-existent, apply false to the callback function |
+| fn | <code>function</code> | ***optional*** run a callback function after this component loaded and assign this particular dom selector as arguments |
 
 <a name="Keet+unreg"></a>
 
@@ -101,7 +102,7 @@ Link this component instance to an attribute ```id```. If value is supplied, not
 
 <a name="Keet+watch"></a>
 
-### keet.watch(instance, onUpdated) ⇒ <code>context</code>
+### keet.watch(instance, fn) ⇒ <code>context</code>
 Observe this array for changes, once recieved make update to component. Operation supported areassignment, push, pop, shift, unshift, slice, splice.
 
 **Kind**: instance method of <code>[Keet](#Keet)</code>  
@@ -109,7 +110,7 @@ Observe this array for changes, once recieved make update to component. Operatio
 | Param | Type | Description |
 | --- | --- | --- |
 | instance | <code>object</code> | ***optional*** watch a different array instead |
-| onUpdated | <code>function</code> | ***optional*** execute a function once the dom has updated |
+| fn | <code>function</code> | ***optional*** execute a function once the dom has updated |
 
 <a name="Keet+watchObj"></a>
 
@@ -259,18 +260,4 @@ Setter for component instance, takes value as ```string```, ```object``` or ```n
 | --- | --- | --- |
 | value | <code>object</code> &#124; <code>string</code> | a value can be an object, string or number |
 | vProp | <code>string</code> | ***optional*** if specified, this is the property instead, while previous argument is the attribute |
-
-<a name="Keet+ktag"></a>
-
-### keet.ktag(tag, value, attributes, styles) ⇒ <code>array</code>
-Helpers to create elements without writing brackets i.e ```app.tag('a', 'link', {id: 'imgLink', href: 'http://somelink.com'}, {color: 'red'})``` which will yeild ```<a href="http://somelink.com" id="imgLink" style="color:red">link</a>```, **this is not chainable prototype**, to use use call the helpers function of Keet.
-
-**Kind**: instance method of <code>[Keet](#Keet)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| tag | <code>string</code> | the element tag name reference |
-| value | <code>string</code> &#124; <code>number</code> | the inner html value |
-| attributes | <code>object</code> | ***optional*** if specified, write properties and values as attributes, omit as ```null/undefined``` if need next arg |
-| styles | <code>object</code> | ***optional*** if specified, write properties and values as style |
 
