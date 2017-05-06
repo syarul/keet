@@ -6,13 +6,6 @@ function clearVDOM() {
   document.getElementById('app').innerHTML = ''
 }
 
-
-// var a = [1,2,3]
-
-// a.splice(0)
-
-// console.log(a)
-
 test('Keet.js', function(t) {
 
   if (!document) throw 'not a document object model'
@@ -30,14 +23,11 @@ test('Keet.js', function(t) {
     }
   }
 
-  // console.log(plan, Object.keys(fixtures).length)
-
   t.plan(plan)
 
   for(var key in fixtures){
     var fixture = fixtures[key]
     if(typeof fixture === 'function'){
-      console.log(key)
       fixture(t)
       clearVDOM()
     } else {

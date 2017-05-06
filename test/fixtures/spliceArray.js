@@ -19,22 +19,35 @@ var init = function(cb) {
     .watch(null, cb)
 }
 
-module.exports = function(t) {
+exports.spliceCountNoAdd = function(t) {
 
   var res = null
 
-  var closed = new init(function(){
-    t.ok(res === 'this view 1 has changed', 'array splice with count')
+  var c = new init(function(){
+    t.ok(res === 'this view 2', 'splice with count without elements addition')
   })
 
-  closed.app.compose(true, function(c) {
+  c.app.compose(true, function() {
     var v = document.getElementById('viewList')
-    var c1 = {
-      view: 1, 
-      text:'this view 1 has changed'
+    c.arr.splice(1, 1)
+    res = v.childNodes[1].firstChild.nodeValue
+  })
+}
+
+exports.spliceCountWithAdd = function(t) {
+
+  var res = null
+
+  var c = new init(function(){
+    t.ok(res === 'this view 11 has changed', 'splice with count with elements addition')
+  })
+  var add = {
+      view: 11, 
+      text:'this view 11 has changed'
     }
-    // closed.arr.splice(1, 1, c1)
-    closed.arr.splice(1, 1)
+  c.app.compose(true, function() {
+    var v = document.getElementById('viewList')
+    c.arr.splice(1, 1, add)
     res = v.childNodes[1].firstChild.nodeValue
   })
 }

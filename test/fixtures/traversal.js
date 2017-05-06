@@ -36,14 +36,14 @@ var init = function() {
 
 module.exports = function(t) {
 
-  var trv = new init
+  var c = new init
 
-  trv.app.compose(true, function(c) {
+  c.app.compose(true, function() {
 
-    trv.state.compose(true, function(el) {
+    c.state.compose(true, function() {
       var v = document.getElementById('dod')
       v.click()
-      t.ok(trv.status === 'later', 'dom traversal, onclick event')
+      t.ok(c.status === 'later', 'dom traversal, onclick event')
     })
 
   })

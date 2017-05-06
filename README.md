@@ -39,6 +39,7 @@ Read the documentation [here](https://github.com/syarul/keet/blob/master/docs/DO
 Take a look inside [sample](https://github.com/syarul/keet/tree/master/sample) for a quick start using  Keet.js
 
 ## Version history
+- 0.8.0 Fixed Array.prototype.splice not propagating changes and callback, added code coverage and more test, saperate util functions (cat, copy, tag)
 - 0.7.4 Added test(w.i.p), fix minor bug
 - 0.7.3 traverse DOM childrens recursively instead only affecting the first layer
 - 0.7.2 Fix setter not correctly rendering from string

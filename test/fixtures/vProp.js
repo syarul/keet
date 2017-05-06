@@ -12,8 +12,8 @@ var init = function() {
 }
 
 module.exports = function(t) {
-  var closed = new init
-  closed.app.compose(true, function(c) {
-    t.ok(c.childNodes[0].firstChild.nodeValue === 'set vProp', 'setter')
+  var c = new init
+  c.app.compose(true, function(e) {
+    t.ok(e.childNodes[0].firstChild.nodeValue === 'set vProp', 'setter')
   })
 }
