@@ -34,7 +34,7 @@ gulp.task('test', function() {
   .pipe(process.stdout)
 })
 
-gulp.task('t', function() {
+gulp.task('cov', function() {
   gulp.src('')
     .pipe(shell('browserify -t coverify test/test.js | tape-run | coverify'))
 })

@@ -1,7 +1,7 @@
 var Keet = require('../../')
 var log = console.log.bind(console)
 
-var init = function() {
+var init = function(cb) {
   var ctx = this
   var keet = function() {
     return new Keet(ctx)
@@ -16,36 +16,42 @@ var init = function() {
   this.app = keet().link('app', '{{state}}')
   this.state = keet().template('ul', 'viewList')
     .array(this.arr, '<li>{{text}}</li>')
-    .watch()
+    .watch(null, cb)
 }
 
 exports.spliceSingle = function(t) {
-  var c = new init
+  var v = null
+  var c = new init(function(){
+    t.ok(v.childNodes.length === 1, 'splice without count without elements addition')
+  })
   c.app.compose(true, function(el) {
     c.arr.splice(1)
-    var v = document.getElementById('viewList')
-    t.ok(v.childNodes.length === 1, 'splice without count without elements addition')
+    v = document.getElementById('viewList')
   })
 }
 
 exports.spliceNoAdd = function(t) {
-  var c = new init
+  var v = null
+  var c = new init(function(){
+    t.ok(v.childNodes.length === 3, 'splice with count 0 without elements addition')
+  })
   c.app.compose(true, function(el) {
     c.arr.splice(2, 0)
-    var v = document.getElementById('viewList')
-    t.ok(v.childNodes.length === 3, 'splice with count 0 without elements addition')
+    v = document.getElementById('viewList')
   })
 }
 
 exports.spliceAdd = function(t) {
-  var c = new init
+  var v = null
+  var c = new init(function(){
+    t.ok(v.childNodes.length === 5 && v.childNodes[1].firstChild.nodeValue === 'this view 11 has changed', 'splice with count 0 with elements addition')
+  })
   c.app.compose(true, function(el) {
     var add = {
       view: 11, 
       text:'this view 11 has changed'
     }
     c.arr.splice(1, 0, add, add)
-    var v = document.getElementById('viewList')
-    t.ok(v.childNodes.length === 5 && v.childNodes[1].firstChild.nodeValue === 'this view 11 has changed', 'splice with count 0 with elements addition')
+    v = document.getElementById('viewList')
   })
 }

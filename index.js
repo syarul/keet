@@ -425,12 +425,6 @@ function Keet(tagName, debug, context) {
               insertAfter(tempDiv.childNodes[0], ele.childNodes[c], ele)
               c++
             }
-            // len = ctx.ctor.ops.pristinelen - ctx.ctor.ops.index
-            // i = 0
-            // while(i < len){
-            //   ele.removeChild(ele.childNodes[ctx.ctor.ops.pristinelen - i - 1])
-            //   i++
-            // }
           }
         } else {
           tempDiv = document.createElement('div')
@@ -666,7 +660,7 @@ Keet.prototype.link = function(tag, id, value) {
  * @returns {context}
  */
 Keet.prototype.watch = function(instance, fn) {
-  var ctx = this, argv, event, pristineLen = copy(this.ctor.arrayProto), el, add, oldLen, s
+  var ctx = this, argv, event, pristineLen = copy(this.ctor.arrayProto)
   instance = instance || this.ctor.arrayProto
   if(!Array.isArray(instance)) {
     argv = [].slice.call(arguments)
@@ -675,7 +669,7 @@ Keet.prototype.watch = function(instance, fn) {
   }
   var opsList = function() { return ['push', 'pop', 'shift', 'unshift', 'slice', 'splice'] }
   var op = opsList(), ev = {}
-  ev._ = 'noArrayProto'
+  ev._ = 'noState'
   ev.change = function(cb) {
     if (cb) cb(this)
   }
@@ -724,60 +718,49 @@ Keet.prototype.watch = function(instance, fn) {
       if(op.length > 0) {
         var fargv = [].slice.call(arguments)
         Array.prototype[f].apply(this, fargv)
-        el = ctx.refNode()
-        if(el){
-
-          //propagate callback, since this event does not triggered
-          if(fargv.length === 1 && f === 'splice'){
-            fargv.push(pristineLen.length - fargv[0])
-            s = setInterval(function(){
-              el = ctx.refNode()
-              if(el && el.childNodes.length === fargv[0]) clearInterval(s)
-              if(typeof fn === 'function'){
-                fn(ctx.refNode())
-              }
-            }, 10)
-          } else if(fargv.length === 2 && f === 'splice' && fargv[1] === 0){
-            if(typeof fn === 'function') {
-              fn(ctx.refNode())
-            }
-          } else if(fargv.length > 2 && f === 'splice' && fargv[1] === 0){
-            add = fargv.slice(2)
-            oldLen = copy(el.childNodes.length)
-            s = setInterval(function(){
-              el = ctx.refNode()
-              if(el && el.childNodes.length === oldLen + add.length) clearInterval(s)
-              if(!el) clearInterval(s)
-              if(typeof fn === 'function')
-                fn(ctx.refNode())
-            }, 10)
-          }
-        }
+        //propagate splice with single arguments
+        if(fargv.length === 1 && f === 'splice')
+          fargv.push(pristineLen.length - fargv[0])
         query(f, fargv)
       }
     }
   })
   // watch array.prototype operation first before dealing with update event
-  event = new Promise(function(resolve){
+  event = new Promise(function(resolve) {
     this.change(function(res) {
-      resolve(res)
+      for (var attr in res) {
+        if (attr === '_')
+          res.watch(attr, function(idx, o, n) {
+            res.unwatch(attr)
+            resolve(n)
+          })
+      }
     })
   }.bind(ev))
+
+  var isAssignment = false
 
   // watch for changes in the array, if event is not assignment, do unwatch on the array
   instance.forEach(function(r, i) {
     instance.watch(i, function(idx, o, n) {
       instance.unwatch(i)
-      event.then(function(ev) {
-        if (ev._ === 'noArrayProto')
+      event.then(function(state) {
+        isAssignment = true
+        if (state === 'noArrayProto'){
           ctx.update(idx, n)
-        if(typeof fn === 'function') {
-          fn(ctx.refNode())
+          if(typeof fn === 'function') {
+            fn(ctx.refNode())
+          }
         }
         ctx.watch(instance, fn)
       })
     })
   })
+  if(!isAssignment){
+    event.then(function(ev) {
+      if(typeof fn === 'function') fn(ctx.refNode())
+    })
+  }
   return this
 }
 /**
