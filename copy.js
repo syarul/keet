@@ -1,4 +1,5 @@
 module.exports = function(argv) {
+// copy = function(argv) {
   var clone = function(v) {
     var o = {}
     o.copy = v

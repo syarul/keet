@@ -1,5 +1,5 @@
 /** 
- * Keet.js v0.8.0 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.8.1 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -380,11 +380,11 @@ function Keet(tagName, debug, context) {
         if(ctx.ctor.ops.type === 'remove'){
           ele.removeChild(ele.childNodes[ctx.ctor.ops.index])
         }else if(ctx.ctor.ops.type === 'update'){
-
+        
           tempDiv = document.createElement('div')
           tempDiv.innerHTML = ctx.ctor.ops.node
 
-          var flag = updateElem(ele.childNodes[ctx.ctor.ops.index], tempDiv.childNodes[0])
+          updateElem(ele.childNodes[ctx.ctor.ops.index], tempDiv.childNodes[0])
 
         }else if(ctx.ctor.ops.type === 'unshift'){
           tempDiv = document.createElement('div')
@@ -432,8 +432,7 @@ function Keet(tagName, debug, context) {
           ele.appendChild(tempDiv.childNodes[0])
         }
         tempDiv = null
-      }
-      else if (processStr && state.value.length) {
+      } else if (processStr && state.value.length) {
         if(ele.hasChildNodes() && ele.childNodes[0].nodeType === 1){
           tempDiv = document.createElement('div')
           tempDiv.innerHTML = processStr
@@ -627,7 +626,7 @@ Keet.prototype.preserveAttributes = function(argv) {
 /**
  * Link this component instance to an attribute ```id```. If value is supplied, notify update to DOM.
  * @param {string} - ***optional*** element tagName, if declared wrap this value inside this tag, 
- * 1st dropped if arguments length is less than 3
+ * 1st argument gets dropped if arguments length is less than 3
  * @param {string} - the id string
  * @param {object|string} - ***optional*** value to parse into DOM
  * @returns {context}
@@ -660,7 +659,7 @@ Keet.prototype.link = function(tag, id, value) {
  * @returns {context}
  */
 Keet.prototype.watch = function(instance, fn) {
-  var ctx = this, argv, event, pristineLen = copy(this.ctor.arrayProto)
+  var ctx = this, argv, event, pristineLen = copy(this.ctor.arrayProto), ff
   instance = instance || this.ctor.arrayProto
   if(!Array.isArray(instance)) {
     argv = [].slice.call(arguments)
@@ -676,9 +675,6 @@ Keet.prototype.watch = function(instance, fn) {
   Object.defineProperty(ev, 'state', {
     __proto__: null,
     writeable: true,
-    get: function() {
-      return this._
-    },
     set: function(value) {
       this._ = value
       this.change
@@ -711,10 +707,15 @@ Keet.prototype.watch = function(instance, fn) {
       ctx.splice.apply(ctx, argvs)
       op = opsList()
       ev.state = 'splice'
-    } 
+    } else {
+      op = opsList()
+      ev.state = 'noArrayProto'
+    }
   }
-  op.forEach(function(f){
+
+  op.forEach(function(f, i, r){
     instance[f] = function() {
+      ff = true
       if(op.length > 0) {
         var fargv = [].slice.call(arguments)
         Array.prototype[f].apply(this, fargv)
@@ -724,28 +725,28 @@ Keet.prototype.watch = function(instance, fn) {
         query(f, fargv)
       }
     }
+    if(i === r.length - 1 && !ff){
+      query()
+    }
   })
+
   // watch array.prototype operation first before dealing with update event
-  event = new Promise(function(resolve) {
+  event = new Promise(function(resolve, reject) {
     this.change(function(res) {
-      for (var attr in res) {
-        if (attr === '_')
-          res.watch(attr, function(idx, o, n) {
-            res.unwatch(attr)
-            resolve(n)
-          })
-      }
+      var t = setInterval(function(){
+        if(res._ !== 'noState') {
+          clearInterval(t)
+          resolve(res._)
+        }
+      }, 5)
     })
   }.bind(ev))
-
-  var isAssignment = false
 
   // watch for changes in the array, if event is not assignment, do unwatch on the array
   instance.forEach(function(r, i) {
     instance.watch(i, function(idx, o, n) {
       instance.unwatch(i)
       event.then(function(state) {
-        isAssignment = true
         if (state === 'noArrayProto'){
           ctx.update(idx, n)
           if(typeof fn === 'function') {
@@ -756,11 +757,13 @@ Keet.prototype.watch = function(instance, fn) {
       })
     })
   })
-  if(!isAssignment){
-    event.then(function(ev) {
-      if(typeof fn === 'function') fn(ctx.refNode())
-    })
-  }
+
+  event.then(function(state) {
+    if (state !== 'noArrayProto' && typeof fn === 'function'){
+      fn(ctx.refNode())
+    }
+  })
+
   return this
 }
 /**
@@ -796,9 +799,15 @@ Keet.prototype.watchObj = function(instance, fn) {
  * @returns {context}
  */
 Keet.prototype.unWatch = function(instance) {
-  var attr
+  var attr, instance = instance || this.ctor.arrayProto
   if(Array.isArray(instance)) {
-    instance.forEach(function(r, i) {
+    delete instance.push
+    delete instance.pop
+    delete instance.shift
+    delete instance.unshift
+    delete instance.slice
+    delete instance.splice
+    instance.forEach(function(r, i, arr) {
       instance.unwatch(i)
     })
   } else {

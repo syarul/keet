@@ -10,7 +10,9 @@ var init = function(cb) {
   this.arr = [
     {view: 0, text:'this view 0'},
     {view: 1, text:'this view 1'},
-    {view: 2, text:'this view 2'}
+    {view: 2, text:'this view 2'},
+    {view: 3, text:'this view 3'},
+    {view: 4, text:'this view 4'}
   ]
 
   this.app = keet().link('app', '{{state}}')
@@ -19,37 +21,32 @@ var init = function(cb) {
     .watch(null, cb)
 }
 
-exports.insert1 = function(t) {
+exports.shift = function(t) {
 
   var res = null
 
   var c = new init(function(){
-    t.ok(res === 'this view 3', 'insert')
+    t.ok(res === 'this view 1', 'shift')
   })
 
   c.app.compose(true, function() {
-    c.arr.push({view: 3, text:'this view 3'})
+    c.arr.shift()
     var v = document.getElementById('viewList')
-    res = v.childNodes[3].firstChild.nodeValue
+    res = v.childNodes[0].firstChild.nodeValue
   })
 }
 
-exports.insertFn = function(t) {
+exports.pop = function(t) {
 
   var res = null
 
-  var c = new init
+  var c = new init(function(){
+    t.ok(res === 'this view 3', 'pop')
+  })
 
   c.app.compose(true, function() {
-    c.state.insert({view: 5, text:'this view 5'}, function(res){
-      return res.map(function(f, i){
-        f.view = i 
-        f.text = 'this view has changed '+i
-        return f
-      })
-    })
+    c.arr.pop()
     var v = document.getElementById('viewList')
-    res = v.childNodes[3].firstChild.nodeValue
-    t.ok(res === 'this view has changed 3', 'insert with function')
+    res = v.childNodes[v.childNodes.length - 1].firstChild.nodeValue
   })
 }

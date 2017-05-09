@@ -1,9 +1,11 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Keet = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 module.exports = function() {
+// cat = function() {
   return [].slice.call(arguments).join('')
 }
 },{}],2:[function(require,module,exports){
 module.exports = function(argv) {
+// copy = function(argv) {
   var clone = function(v) {
     var o = {}
     o.copy = v
@@ -15,7 +17,7 @@ module.exports = function(argv) {
 }
 },{}],3:[function(require,module,exports){
 /** 
- * Keet.js v0.8.0 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.8.1 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -396,11 +398,11 @@ function Keet(tagName, debug, context) {
         if(ctx.ctor.ops.type === 'remove'){
           ele.removeChild(ele.childNodes[ctx.ctor.ops.index])
         }else if(ctx.ctor.ops.type === 'update'){
-
+        
           tempDiv = document.createElement('div')
           tempDiv.innerHTML = ctx.ctor.ops.node
 
-          var flag = updateElem(ele.childNodes[ctx.ctor.ops.index], tempDiv.childNodes[0])
+          updateElem(ele.childNodes[ctx.ctor.ops.index], tempDiv.childNodes[0])
 
         }else if(ctx.ctor.ops.type === 'unshift'){
           tempDiv = document.createElement('div')
@@ -441,12 +443,6 @@ function Keet(tagName, debug, context) {
               insertAfter(tempDiv.childNodes[0], ele.childNodes[c], ele)
               c++
             }
-            // len = ctx.ctor.ops.pristinelen - ctx.ctor.ops.index
-            // i = 0
-            // while(i < len){
-            //   ele.removeChild(ele.childNodes[ctx.ctor.ops.pristinelen - i - 1])
-            //   i++
-            // }
           }
         } else {
           tempDiv = document.createElement('div')
@@ -454,8 +450,7 @@ function Keet(tagName, debug, context) {
           ele.appendChild(tempDiv.childNodes[0])
         }
         tempDiv = null
-      }
-      else if (processStr && state.value.length) {
+      } else if (processStr && state.value.length) {
         if(ele.hasChildNodes() && ele.childNodes[0].nodeType === 1){
           tempDiv = document.createElement('div')
           tempDiv.innerHTML = processStr
@@ -649,7 +644,7 @@ Keet.prototype.preserveAttributes = function(argv) {
 /**
  * Link this component instance to an attribute ```id```. If value is supplied, notify update to DOM.
  * @param {string} - ***optional*** element tagName, if declared wrap this value inside this tag, 
- * 1st dropped if arguments length is less than 3
+ * 1st argument gets dropped if arguments length is less than 3
  * @param {string} - the id string
  * @param {object|string} - ***optional*** value to parse into DOM
  * @returns {context}
@@ -682,7 +677,7 @@ Keet.prototype.link = function(tag, id, value) {
  * @returns {context}
  */
 Keet.prototype.watch = function(instance, fn) {
-  var ctx = this, argv, event, pristineLen = copy(this.ctor.arrayProto), el, add, oldLen, s
+  var ctx = this, argv, event, pristineLen = copy(this.ctor.arrayProto), ff
   instance = instance || this.ctor.arrayProto
   if(!Array.isArray(instance)) {
     argv = [].slice.call(arguments)
@@ -691,16 +686,13 @@ Keet.prototype.watch = function(instance, fn) {
   }
   var opsList = function() { return ['push', 'pop', 'shift', 'unshift', 'slice', 'splice'] }
   var op = opsList(), ev = {}
-  ev._ = 'noArrayProto'
+  ev._ = 'noState'
   ev.change = function(cb) {
     if (cb) cb(this)
   }
   Object.defineProperty(ev, 'state', {
     __proto__: null,
     writeable: true,
-    get: function() {
-      return this._
-    },
     set: function(value) {
       this._ = value
       this.change
@@ -733,50 +725,38 @@ Keet.prototype.watch = function(instance, fn) {
       ctx.splice.apply(ctx, argvs)
       op = opsList()
       ev.state = 'splice'
-    } 
+    } else {
+      op = opsList()
+      ev.state = 'noArrayProto'
+    }
   }
-  op.forEach(function(f){
+
+  op.forEach(function(f, i, r){
     instance[f] = function() {
+      ff = true
       if(op.length > 0) {
         var fargv = [].slice.call(arguments)
         Array.prototype[f].apply(this, fargv)
-        el = ctx.refNode()
-        if(el){
-
-          //propagate callback, since this event does not triggered
-          if(fargv.length === 1 && f === 'splice'){
-            fargv.push(pristineLen.length - fargv[0])
-            s = setInterval(function(){
-              el = ctx.refNode()
-              if(el && el.childNodes.length === fargv[0]) clearInterval(s)
-              if(typeof fn === 'function'){
-                fn(ctx.refNode())
-              }
-            }, 10)
-          } else if(fargv.length === 2 && f === 'splice' && fargv[1] === 0){
-            if(typeof fn === 'function') {
-              fn(ctx.refNode())
-            }
-          } else if(fargv.length > 2 && f === 'splice' && fargv[1] === 0){
-            add = fargv.slice(2)
-            oldLen = copy(el.childNodes.length)
-            s = setInterval(function(){
-              el = ctx.refNode()
-              if(el && el.childNodes.length === oldLen + add.length) clearInterval(s)
-              if(!el) clearInterval(s)
-              if(typeof fn === 'function')
-                fn(ctx.refNode())
-            }, 10)
-          }
-        }
+        //propagate splice with single arguments
+        if(fargv.length === 1 && f === 'splice')
+          fargv.push(pristineLen.length - fargv[0])
         query(f, fargv)
       }
     }
+    if(i === r.length - 1 && !ff){
+      query()
+    }
   })
+
   // watch array.prototype operation first before dealing with update event
-  event = new Promise(function(resolve){
+  event = new Promise(function(resolve, reject) {
     this.change(function(res) {
-      resolve(res)
+      var t = setInterval(function(){
+        if(res._ !== 'noState') {
+          clearInterval(t)
+          resolve(res._)
+        }
+      }, 5)
     })
   }.bind(ev))
 
@@ -784,16 +764,24 @@ Keet.prototype.watch = function(instance, fn) {
   instance.forEach(function(r, i) {
     instance.watch(i, function(idx, o, n) {
       instance.unwatch(i)
-      event.then(function(ev) {
-        if (ev._ === 'noArrayProto')
+      event.then(function(state) {
+        if (state === 'noArrayProto'){
           ctx.update(idx, n)
-        if(typeof fn === 'function') {
-          fn(ctx.refNode())
+          if(typeof fn === 'function') {
+            fn(ctx.refNode())
+          }
         }
         ctx.watch(instance, fn)
       })
     })
   })
+
+  event.then(function(state) {
+    if (state !== 'noArrayProto' && typeof fn === 'function'){
+      fn(ctx.refNode())
+    }
+  })
+
   return this
 }
 /**
@@ -829,9 +817,15 @@ Keet.prototype.watchObj = function(instance, fn) {
  * @returns {context}
  */
 Keet.prototype.unWatch = function(instance) {
-  var attr
+  var attr, instance = instance || this.ctor.arrayProto
   if(Array.isArray(instance)) {
-    instance.forEach(function(r, i) {
+    delete instance.push
+    delete instance.pop
+    delete instance.shift
+    delete instance.unshift
+    delete instance.slice
+    delete instance.splice
+    instance.forEach(function(r, i, arr) {
       instance.unwatch(i)
     })
   } else {
