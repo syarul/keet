@@ -1,5 +1,4 @@
-module.exports = function(argv) {
-// copy = function(argv) {
+var copy = function(argv) {
   var clone = function(v) {
     var o = {}
     o.copy = v
@@ -8,4 +7,11 @@ module.exports = function(argv) {
   return Array.isArray(argv) ? argv.map(function(v) {
     return v
   }) : clone(argv)
+}
+
+if (typeof exports !== 'undefined') {
+  if (typeof module !== 'undefined' && module.exports) {
+    exports = module.exports = copy
+  }
+  exports.copy = copy
 }

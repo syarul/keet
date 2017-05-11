@@ -1,4 +1,4 @@
-module.exports = function() {
+var tag = function() {
   function ktag(tag, value, attributes, styles) {
     var attr, idx, te, a = [].slice.call(arguments),
       ret = ['<', a[0], '>', a[1], '</', a[0], '>']
@@ -25,4 +25,11 @@ module.exports = function() {
   var args = [].slice.call(arguments),
     arr = ktag.apply(null, args)
   return arr.join('')
+}
+
+if (typeof exports !== 'undefined') {
+  if (typeof module !== 'undefined' && module.exports) {
+    exports = module.exports = tag
+  }
+  exports.tag = tag
 }

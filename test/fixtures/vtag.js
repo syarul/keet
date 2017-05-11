@@ -1,26 +1,47 @@
 var Keet = require('../../')
+var log = console.log.bind(console)
 
-var init = function(cb) {
+var init = function() {
+  document.getElementById('app').innerHTML = ''
   var ctx = this
-  var keet = function() {
+  var keet = function(tag) {
     return new Keet(ctx)
   }
 
   this.app = keet().link('app', '{{test}}')
-  this.test = keet().link('span', 'testTag', 'value of tag')
+  this.test = keet().template('div', 'testTag')
+    .set('initial')
+
 }
 
-module.exports = function(t) {
+var init2 = function(cb) {
+  var ctx = this
+  var keet = function(tag) {
+    return new Keet(ctx)
+  }
 
+  var fn = function() {
+    cb(1234567890)
+  }
+
+  this.app = keet().link('app', '{{test}}')
+  this.test = keet().template('div', 'testTag')
+    .set('initial')
+    .vDomLoaded(fn)
+
+}
+
+exports.vtag1 = function(t) {
   var c = new init
-  
-  c.app.compose(true, function(el){
-  		console.log(el)
-	  var v = document.getElementById('testTag')//.firstChild.nodeValue
-	  var s = document.querySelector('span')
-	  console.log(v)
-	  t.ok(true)
+  c.app.compose(function() { 
+      var v = document.getElementById('testTag')
+      t.ok(v.firstChild.nodeValue === 'initial', 'compose not force')
   })
-  // t.ok(v === 'value of tag', 'hello world')
+}
 
+exports.vdomloaded = function(t) {
+  var cc = new init2(function(n){
+    t.ok(n = 1234567890, 'vdom loaded event')
+  })
+  cc.app.compose()
 }

@@ -39,6 +39,30 @@ var init2 = function() {
     .watch()
 }
 
+var init3 = function() {
+  var ctx = this
+  var keet = function() {
+    return new Keet(ctx)
+  }
+
+  var updateState = function(index, oldVal, newVal){
+    ctx.state.set(newVal)
+  }
+
+  this.obj = {
+    watched: 'initial'
+  }
+  this.app = keet().link('app', '{{state}}')
+  this.state = keet()
+    .template('div', 'State')
+    .set({
+      value: this.obj.watched,
+      'css-background': 'red'
+    })
+    .preserveAttributes()
+    .watch(this.obj, updateState)
+}
+
 exports.unWatchObj = function(t) {
   var c = new init
   c.app.compose(true, function(){
@@ -65,4 +89,14 @@ exports.unWatchArray = function(t) {
     var v = document.getElementById('viewList')
     t.ok(v.childNodes.length === 3 && v.childNodes[0].firstChild.nodeValue === 'this view 0', 'unwatch array')
   })
+}
+
+exports.preserveAttributes = function(t) {
+  var c = new init3
+  c.app.compose(true, function(){
+    c.obj.watched = 'after'
+    var v = document.getElementById('State')
+    t.ok(v.style.background === 'red', 'preserve attributes')
+  })
+
 }
