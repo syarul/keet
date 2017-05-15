@@ -35,12 +35,17 @@ gulp.task('test', function() {
 })
 
 gulp.task('cov', function() {
-  gulp.src('')
+  var stream = gulp.src('')
     .pipe(shell('browserify -t coverify test/test.js | tape-run | coverify'))
+
+  stream.on('end', function(){
+    gulp.src('')
+    .pipe(shell('rm -f .source*'))
+  })
 })
 
-process.on('exit', function() {
-  if(!x) process.exit(1)
-})
+// process.on('exit', function() {
+//   if(!x) process.exit(1)
+// })
 
-gulp.task('default', ['test'])
+gulp.task('default', ['cov'])

@@ -1,5 +1,5 @@
 /** 
- * Keet.js v0.8.2 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.9.0 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -15,17 +15,12 @@ module.exports = Keet
 /**
  * Keet constructor, each component is an instance of Keet
  * @param {string} - ***optional*** element tag name, set the default template for this Instance, i.e 'div'
- * @param {boolean | string} - ***optional*** set to run in debug mode, boolean true or string 'debug'
  * @param {object} - ***optional*** if using Keet inside a closure declare the context of said closure
  * @returns {constructor}
  */
-function Keet(tagName, debug, context) {
+function Keet(tagName, context) {
   var cargv = [].slice.call(arguments), ctx = this, child, childAttr, 
     regc, injc, kStr, kRegc, kAttr, ret, l, tg,
-    log = cargv.filter(function(c) {
-      if(typeof c === 'boolean' && c) return c
-      else if(typeof c === 'string' && c === 'debug') return c
-    })[0],
     context = cargv.filter(function(c) { return typeof c === 'object'})[0],
     getId = function(id, uid) {
       if(ctx.ctor.doc) {
@@ -42,7 +37,6 @@ function Keet(tagName, debug, context) {
     },
     camelCase = function(s) {
       var rx = /\-([a-z])/g
-      if (s === s.toUpperCase()) s = s.toLowerCase()
       return s.replace(rx, function(a, b) {
         return b.toUpperCase()
       })
@@ -50,14 +44,6 @@ function Keet(tagName, debug, context) {
     guid = function(){
       return (Math.round(Math.random()*0x1000000)).toString(32)
     }
-  if(log && typeof window === 'object' && !window.log){
-    window.log = console.log.bind(console)
-    log = console.log.bind(console)
-  } else if (log && typeof window === 'object' && window.log){
-    log = console.log.bind(console)
-  } else {
-    log = function(){}
-  }
   this.obs = {}
   this.ctor = {}
   Object.defineProperty(this, 'obs', {
@@ -104,10 +90,6 @@ function Keet(tagName, debug, context) {
   tg = cargv.filter(function(c) { return typeof c === 'string' && c !== 'debug' })[0]
   if (tg) this.ctor.tmpl = ['<', tg, ' k-link="', this.ctor.uid, '"', '>', '</', tg, '>']
 
-  var insOf = function(i) {
-    return i instanceof Object ? true : false
-  }
-
   var _processTags = function(str, kData) {
     var childs = str.match(/{{([^{}]+)}}/g, '$1'), idx, ctmpl
     if(childs){
@@ -116,10 +98,8 @@ function Keet(tagName, debug, context) {
         // skip tags which not being declared yet
         if(context){
           child = context[regc] ? context[regc] : false
-          log('evaluating context child:', context, '->', insOf(child))
         } else {
           child = testEval(regc) ? eval(regc) : false
-          log('evaluating child:', regc, '->', insOf(child))
         }
         if(child){
           childAttr = {
@@ -262,7 +242,6 @@ function Keet(tagName, debug, context) {
               var m = kString.match(/\(([^()]+)\)/g)
               var kFn = kString.split('(')
               var kClick
-              // console.log(kString, m, kFn)
               if(m){  
                 if(kFn){
                   if(context) kClick = testEval(context[kFn[0]]) ? eval(context[kFn[0]]) : false
@@ -351,7 +330,6 @@ function Keet(tagName, debug, context) {
       // process each {{instance}} before parsing to html
       processStr = _processTags(state.value, state['k-data'])
       // parsing string to DOM only when necessary
-      // console.log(processStr, state.value.length)
       if(ctx.ctor.ops.preserve === true && ele.hasChildNodes()) {
         if(ctx.ctor.ops.type === 'remove'){
           ele.removeChild(ele.childNodes[ctx.ctor.ops.index])
@@ -448,10 +426,8 @@ function Keet(tagName, debug, context) {
     // if this is registered, called this Instance.prototype.compose
     if(context){
       evReg = context[reg] ? context[reg] : false
-      log('evaluating context register:', reg, '->', insOf(evReg))
     } else {
       evReg = testEval(reg) ? eval(reg) : false
-      log('evaluating register:', reg, '->', insOf(evReg))
     }
     if(evReg && typeof evReg.__proto__.compose === 'function') {
       evReg.compose(force, fn)

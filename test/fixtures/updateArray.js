@@ -25,7 +25,7 @@ var init = function(cb) {
     .watch(null, cb)
 }
 
-exports.sliceArgv0 = function(t) {
+module.exports = function(t) {
 
   var res = null, res2 = null
 

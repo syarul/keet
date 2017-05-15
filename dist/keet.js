@@ -1,11 +1,16 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Keet = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-module.exports = function() {
-// cat = function() {
-  return [].slice.call(arguments).join('')
+var cat = function() {
+    return [].slice.call(arguments).join('')
+  }
+
+if (typeof exports !== 'undefined') {
+  if (typeof module !== 'undefined' && module.exports) {
+    exports = module.exports = cat
+  }
+  exports.cat = cat
 }
 },{}],2:[function(require,module,exports){
-module.exports = function(argv) {
-// copy = function(argv) {
+var copy = function(argv) {
   var clone = function(v) {
     var o = {}
     o.copy = v
@@ -15,9 +20,16 @@ module.exports = function(argv) {
     return v
   }) : clone(argv)
 }
+
+if (typeof exports !== 'undefined') {
+  if (typeof module !== 'undefined' && module.exports) {
+    exports = module.exports = copy
+  }
+  exports.copy = copy
+}
 },{}],3:[function(require,module,exports){
 /** 
- * Keet.js v0.8.1 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.9.0 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -33,17 +45,12 @@ module.exports = Keet
 /**
  * Keet constructor, each component is an instance of Keet
  * @param {string} - ***optional*** element tag name, set the default template for this Instance, i.e 'div'
- * @param {boolean | string} - ***optional*** set to run in debug mode, boolean true or string 'debug'
  * @param {object} - ***optional*** if using Keet inside a closure declare the context of said closure
  * @returns {constructor}
  */
-function Keet(tagName, debug, context) {
+function Keet(tagName, context) {
   var cargv = [].slice.call(arguments), ctx = this, child, childAttr, 
     regc, injc, kStr, kRegc, kAttr, ret, l, tg,
-    log = cargv.filter(function(c) {
-      if(typeof c === 'boolean' && c) return c
-      else if(typeof c === 'string' && c === 'debug') return c
-    })[0],
     context = cargv.filter(function(c) { return typeof c === 'object'})[0],
     getId = function(id, uid) {
       if(ctx.ctor.doc) {
@@ -60,7 +67,6 @@ function Keet(tagName, debug, context) {
     },
     camelCase = function(s) {
       var rx = /\-([a-z])/g
-      if (s === s.toUpperCase()) s = s.toLowerCase()
       return s.replace(rx, function(a, b) {
         return b.toUpperCase()
       })
@@ -68,14 +74,6 @@ function Keet(tagName, debug, context) {
     guid = function(){
       return (Math.round(Math.random()*0x1000000)).toString(32)
     }
-  if(log && typeof window === 'object' && !window.log){
-    window.log = console.log.bind(console)
-    log = console.log.bind(console)
-  } else if (log && typeof window === 'object' && window.log){
-    log = console.log.bind(console)
-  } else {
-    log = function(){}
-  }
   this.obs = {}
   this.ctor = {}
   Object.defineProperty(this, 'obs', {
@@ -94,9 +92,6 @@ function Keet(tagName, debug, context) {
   this.loaded = function(cb) {
     if(ctx.ctor.doc && !ctx.ctor.loaded) {
       document.addEventListener('DOMContentLoaded', function(ev) {
-        l = ['content loaded ->', 'el:', ctx.el]
-        if(!ctx.el) l.splice(1, 2, 'k-link:', ctx.ctor.uid)
-        log.apply(null, l)
         ctx.ctor.loaded = true
         if(typeof cb === 'function') cb()
         else throw('Not a function.')
@@ -111,8 +106,6 @@ function Keet(tagName, debug, context) {
       ctx.ctor.loaded = true
       node = null
       return true
-    } else {
-      return false
     }
   }
   this.refNode =  function(){
@@ -127,10 +120,6 @@ function Keet(tagName, debug, context) {
   tg = cargv.filter(function(c) { return typeof c === 'string' && c !== 'debug' })[0]
   if (tg) this.ctor.tmpl = ['<', tg, ' k-link="', this.ctor.uid, '"', '>', '</', tg, '>']
 
-  var insOf = function(i) {
-    return i instanceof Object ? true : false
-  }
-
   var _processTags = function(str, kData) {
     var childs = str.match(/{{([^{}]+)}}/g, '$1'), idx, ctmpl
     if(childs){
@@ -139,10 +128,8 @@ function Keet(tagName, debug, context) {
         // skip tags which not being declared yet
         if(context){
           child = context[regc] ? context[regc] : false
-          log('evaluating context child:', context, '->', insOf(child))
         } else {
           child = testEval(regc) ? eval(regc) : false
-          log('evaluating child:', regc, '->', insOf(child))
         }
         if(child){
           childAttr = {
@@ -150,7 +137,7 @@ function Keet(tagName, debug, context) {
             state: child.obs._state_,
             preserveAttr: child.ctor.preserveAttr,
             uid: child.ctor.uid,
-            operator: child.vDomLoaded
+            operator: child.ctor.vDomLoaded
           }
 
           ctx.ctor.tags[regc] = childAttr
@@ -198,10 +185,7 @@ function Keet(tagName, debug, context) {
   }
 
   var insertAfter = function(newNode, referenceNode, parentNode) {
-    if(referenceNode)
-      referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling)
-    else
-      parentNode.insertBefore(newNode, parentNode.firstChild)
+    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling)
   }
 
   var loopChilds = function(arr, elem) {
@@ -223,7 +207,7 @@ function Keet(tagName, debug, context) {
         if(type[0] === 'attr' && !ctx.ctor.attr) ctx.ctor.attr = {}
         if(type[0] === 'css' && !ctx.ctor.css) ctx.ctor.css = {}
 
-        if (type[0] === 'attr' && ctx.ctor.attr[type[1]] !== state[attr]) {
+        if (type[0] === 'attr' && !preserveAttr/* && ctx.ctor.attr[type[1]] !== state[attr]*/) {
           // store attr
           ctx.ctor.attr[type[1]] = {
             selector: selector,
@@ -243,6 +227,10 @@ function Keet(tagName, debug, context) {
             if(gid) gid.style[cty] = state[attr]
           }
         } else if (type[0] === 'attr' && preserveAttr) {
+          ctx.ctor.attr[type[1]] = {
+            selector: selector,
+            attr: state[attr]
+          }
           gid = getId(selector, uid)
           if(gid) gid.setAttribute(type[1], state[attr])
         }
@@ -292,10 +280,9 @@ function Keet(tagName, debug, context) {
                   if(typeof kClick === 'function') processClickEvt(c, kClick, kFn)
                 }
               } else {
-                if(context) kClick = testEval(context[kString]) ? eval(context[kString]) : false
-                else kClick = testEval(kString) ? eval(kString) : false
-
-                if(typeof kClick === 'function') processClickEvt(c, kClick)
+                if(context) kClick = testEval(context[kFn[0]]) ? eval(context[kFn[0]]) : false
+                else kClick = testEval(kFn[0]) ? eval(kFn[0]) : false
+                if(typeof kClick === 'function') processClickEvt(c, kClick, kFn)
               }
             }
           }
@@ -338,7 +325,7 @@ function Keet(tagName, debug, context) {
   }
 
   var updateElem = function(oldElem, newElem, fallbackHTMLstring){
-    var oldArr = [], newArr = [], flag = false
+    var oldArr = [], newArr = []
 
     //push the elements
     oldArr.push(oldElem)
@@ -357,33 +344,12 @@ function Keet(tagName, debug, context) {
         nodeUpdate(newArr[idx], ele)
       } else if (ele.nodeType === 3) {
         nodeUpdateHTML(newArr[idx], ele)
-        if(ele.nodeValue !== oldArr[idx].nodeValue) flag = true
       }
       if(idx === arr.length - 1){
         oldArr.splice(0)
         newArr.splice(0)
-        return flag
       }
     })
-  }
-
-  var genChildwithId = function(str){
-    var tempDiv, arr = []
-    tempDiv = document.createElement('div')
-    tempDiv.innerHTML = str
-
-    var loopChilds = function(elem) {
-      for (var child = elem.firstChild; child !== null; child = child.nextSibling) {
-        if(child.nodeType === 1){
-          child.setAttribute('k-link', cat(ctx.ctor.uid, '-', guid()))
-        }
-        if (child.hasChildNodes()) {
-          loopChilds(child)
-        }
-      }
-    }
-    loopChilds(tempDiv)
-    return tempDiv.childNodes[0]
   }
 
   var _triggerElem = function() {
@@ -490,10 +456,8 @@ function Keet(tagName, debug, context) {
     // if this is registered, called this Instance.prototype.compose
     if(context){
       evReg = context[reg] ? context[reg] : false
-      log('evaluating context register:', reg, '->', insOf(evReg))
     } else {
       evReg = testEval(reg) ? eval(reg) : false
-      log('evaluating register:', reg, '->', insOf(evReg))
     }
     if(evReg && typeof evReg.__proto__.compose === 'function') {
       evReg.compose(force, fn)
@@ -619,9 +583,6 @@ Keet.prototype.compose = function(force, fn) {
       this.obs._state_ = c
       if(fn) fn(this.refNode())
       childFn()
-    } else {
-      if(fn) fn(false)
-      childFn()
     }
   } else {
     this.loaded(function(){
@@ -642,30 +603,30 @@ Keet.prototype.preserveAttributes = function(argv) {
   return this
 }
 /**
+ * Add callback function after component initialize
+ * @param {function} - the function to associate with the callback event
+ * @returns {context}
+ */
+Keet.prototype.vDomLoaded = function(cb) {
+  if(typeof cb === 'function') {
+    this.ctor.vDomLoaded = cb
+  }
+  return this
+}
+/**
  * Link this component instance to an attribute ```id```. If value is supplied, notify update to DOM.
- * @param {string} - ***optional*** element tagName, if declared wrap this value inside this tag, 
- * 1st argument gets dropped if arguments length is less than 3
  * @param {string} - the id string
  * @param {object|string} - ***optional*** value to parse into DOM
  * @returns {context}
  */
-Keet.prototype.link = function(tag, id, value) {
+Keet.prototype.link = function(id, value) {
   var argv = [].slice.call(arguments), kLink, vtag
   if (argv.length === 1) this.el = argv[0]
   else if (argv.length === 2 && !this.ctor.tmpl) {
     this.el = argv[0]
     this.set(argv[1])
-  } else if (argv.length === 2 && this.ctor.tmpl) {
-    kLink = this.ctor.tmpl.indexOf(' k-link="')
-    if(~kLink) {
-      this.ctor.tmpl.splice(kLink, 2, ' id="', argv[0])
-    }
-    this.el = argv[0]
-    this.set(argv[1])
-  } else if (argv.length > 2 && typeof tag === 'string' && (typeof value === 'string' || typeof value === 'number')) {
-    this.el = id
-    vtag = cat('<', tag, '>', value, '</', tag, '>')
-    this.set(vtag)
+  } else {
+    throw('component already declared')
   }
   return this
 }

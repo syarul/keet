@@ -21,8 +21,9 @@ const state = keet()
   .register('app')
   .set({
     value: obj.value,
-    'css-background': obj.background
-  }).preserveAttributes()
+    'css-background': obj.background,
+    'attr-tat': 'aw'
+  })//.preserveAttributes()
   .watch(obj, updateState)
 
 app.compose()

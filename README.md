@@ -39,6 +39,7 @@ Read the documentation [here](https://github.com/syarul/keet/blob/master/docs/DO
 Take a look inside [sample](https://github.com/syarul/keet/tree/master/sample) for a quick start using  Keet.js
 
 ## Version history
+- 0.9.0 Remove log/debug, test coverage now at 100%
 - 0.8.2 Remove some discrepancies, fixed observables, more test
 - 0.8.0 Fixed Array.prototype.splice not propagating changes and callback, added code coverage and more test, separate util functions ([cat](https://github.com/syarul/keet/blob/master/cat.js), [copy](https://github.com/syarul/keet/blob/master/copy.js), [tag](https://github.com/syarul/keet/blob/master/tag.js))
 - 0.7.4 Added test(w.i.p), fix minor bug
