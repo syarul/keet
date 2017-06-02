@@ -1,5 +1,5 @@
 /** 
- * Keet.js v0.9.0 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v0.9.1 (Alpha) version: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -590,9 +590,16 @@ Keet.prototype.vDomLoaded = function(cb) {
  * @returns {context}
  */
 Keet.prototype.link = function(id, value) {
-  var argv = [].slice.call(arguments), kLink, vtag
+  var argv = [].slice.call(arguments), kLink
   if (argv.length === 1) this.el = argv[0]
   else if (argv.length === 2 && !this.ctor.tmpl) {
+    this.el = argv[0]
+    this.set(argv[1])
+  } else if (argv.length === 2 && this.ctor.tmpl) {
+    kLink = this.ctor.tmpl.indexOf(' k-link="')
+    if(~kLink) {
+      this.ctor.tmpl.splice(kLink, 2, ' id="', argv[0])
+    }
     this.el = argv[0]
     this.set(argv[1])
   } else {
