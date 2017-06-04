@@ -29,8 +29,8 @@ if (typeof exports !== 'undefined') {
 }
 },{}],3:[function(require,module,exports){
 /** 
- * Keet.js v1.0.0 Beta release: https://github.com/syarul/keet
- * A data-driven view, OO, pure js without new paradigm shift
+ * Keet.js v1.0.2 Beta release: https://github.com/syarul/keet
+ * A flexible view layer for the web
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
  *
@@ -477,7 +477,7 @@ function Keet(tagName, context) {
     }
   })
 
-  if (!Object.prototype._watch_) {
+  if (!Object.prototype.watch) {
     Object.defineProperty(Object.prototype, 'watch', {
       enumerable: false,
       configurable: true,
@@ -504,7 +504,7 @@ function Keet(tagName, context) {
     })
   }
   // object.unwatch
-  if (!Object.prototype._unwatch_) {
+  if (!Object.prototype.unwatch) {
     Object.defineProperty(Object.prototype, 'unwatch', {
       enumerable: false,
       configurable: true,
