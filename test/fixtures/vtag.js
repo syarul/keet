@@ -31,7 +31,7 @@ var init2 = function(cb) {
 }
 
 exports.vtag1 = function(t) {
-  document.getElementById('app2').innerHTML = ''
+  document.getElementById('app').innerHTML = ''
   var cx = new init
   cx.app.compose(function() { 
       var v = document.getElementById('testTag')
