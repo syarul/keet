@@ -53,10 +53,10 @@ list
 var info = new Keet
 info
   .register('operation')
-  .set('Test type: Assignment, index1 -> index99')
+  .set('Test type: Array.prototype.assign, index1 -> index99')
 
 setTimeout(() => {
-  arr[1] = ps(99)
+  arr.assign(1, ps(99))
 },2000)
 
 setTimeout(() => {

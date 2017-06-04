@@ -20,9 +20,8 @@ var init = function(cb) {
 }
 
 exports.sliceArgv0 = function(t) {
-
+  document.getElementById('app').innerHTML = ''
   var res = null
-
   var c = new init(function(){
     t.ok(res === 'this view 2', 'slice with arg 0')
   })
@@ -35,9 +34,8 @@ exports.sliceArgv0 = function(t) {
 }
 
 exports.sliceArgv1 = function(t) {
-
+  document.getElementById('app').innerHTML = ''
   var res = null
-
   var c = new init(function(){
     t.ok(res === 'this view 1', 'slice with arg 1')
   })
@@ -50,9 +48,8 @@ exports.sliceArgv1 = function(t) {
 }
 
 exports.sliceArgv2 = function(t) {
-
+  document.getElementById('app').innerHTML = ''
   var res = {}
-
   var c = new init(function(){
     t.ok(res.node === 'this view 1' && res.len === 1, 'slice with 2 args')
   })

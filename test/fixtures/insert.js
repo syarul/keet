@@ -20,9 +20,8 @@ var init = function(cb) {
 }
 
 exports.insert1 = function(t) {
-
+  document.getElementById('app').innerHTML = ''
   var res = null
-
   var c = new init(function(){
     t.ok(res === 'this view 3', 'insert')
   })
@@ -35,11 +34,9 @@ exports.insert1 = function(t) {
 }
 
 exports.insertFn = function(t) {
-
+  document.getElementById('app').innerHTML = ''
   var res = null
-
   var c = new init
-
   c.app.compose(true, function() {
     c.state.insert({view: 5, text:'this view 5'}, function(res){
       return res.map(function(f, i){

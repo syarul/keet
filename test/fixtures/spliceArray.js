@@ -20,9 +20,8 @@ var init = function(cb) {
 }
 
 exports.spliceCountNoAdd = function(t) {
-
+  document.getElementById('app').innerHTML = ''
   var res = null
-
   var c = new init(function(){
     t.ok(res === 'this view 2', 'splice with count without elements addition')
   })
@@ -35,9 +34,8 @@ exports.spliceCountNoAdd = function(t) {
 }
 
 exports.spliceCountWithAdd = function(t) {
-
+  document.getElementById('app').innerHTML = ''
   var res = null
-
   var c = new init(function(){
     t.ok(res === 'this view 11 has changed', 'splice with count with elements addition')
   })

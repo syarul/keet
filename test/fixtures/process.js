@@ -27,6 +27,7 @@ var init2 = function() {
 }
 
 exports.tag = function(t) {
+  document.getElementById('app').innerHTML = ''
   var c = new init2
   c.app.compose(true, function() {
     var v = document.querySelector('span')
@@ -35,6 +36,7 @@ exports.tag = function(t) {
 }
 
 var init3 = function() {
+  document.getElementById('app').innerHTML = ''
   var ctx = this
   var keet = function() {
     return new Keet(ctx)
@@ -51,6 +53,7 @@ var init3 = function() {
 }
 
 exports.attr = function(t) {
+  document.getElementById('app').innerHTML = ''
   var cc = new init3
   cc.app.compose(true, function() {
     var v = document.querySelector('span')

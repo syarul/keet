@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/syarul/keet.svg?branch=master)](https://travis-ci.org/syarul/keet)
 
-Flexible view layer for the web which offer :-
+A flexible view layer for the web which offer :-
 
 - data bindings
 - data from array
@@ -11,7 +11,9 @@ Flexible view layer for the web which offer :-
 - few APIs
 - immutability(at least control partial DOM mutation)
 - no custom attributes(unless ```id``` isn't present)
-- reactive css and attributes
+- reactive css and attribute
+- small learning curve
+- hassel-free integration with existing project
 
 To see Keet.js in action visit [https://syarul.github.io](https://syarul.github.io)
 
@@ -39,6 +41,7 @@ Read the documentation [here](https://github.com/syarul/keet/blob/master/docs/DO
 Take a look inside [sample](https://github.com/syarul/keet/tree/master/sample) for a quick start using  Keet.js
 
 ## Version history
+- 1.0.0 Fix array observable not correctly handling data, add Array.prototype.assign for custom array assignment which is observeable
 - 0.9.1 Fix issue on declaring keet with link prototype
 - 0.9.0 Remove log/debug, test coverage now at 100%
 - 0.8.2 Remove some discrepancies, fixed observables, more test

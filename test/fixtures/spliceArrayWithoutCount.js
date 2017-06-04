@@ -20,6 +20,7 @@ var init = function(cb) {
 }
 
 exports.spliceSingle = function(t) {
+  document.getElementById('app').innerHTML = ''
   var v = null
   var c = new init(function(){
     t.ok(v.childNodes.length === 1, 'splice without count without elements addition')
@@ -31,6 +32,7 @@ exports.spliceSingle = function(t) {
 }
 
 exports.spliceNoAdd = function(t) {
+  document.getElementById('app').innerHTML = ''
   var v = null
   var c = new init(function(){
     t.ok(v.childNodes.length === 3, 'splice with count 0 without elements addition')
@@ -42,6 +44,7 @@ exports.spliceNoAdd = function(t) {
 }
 
 exports.spliceAdd = function(t) {
+  document.getElementById('app').innerHTML = ''
   var v = null
   var c = new init(function(){
     t.ok(v.childNodes.length === 5 && v.childNodes[1].firstChild.nodeValue === 'this view 11 has changed', 'splice with count 0 with elements addition')

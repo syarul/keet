@@ -1,11 +1,6 @@
 var test = require('tape')
 var fixtures = require('./fixtures')
 
-function clearVDOM() {
-  if (!document) throw 'not a document object model'
-  document.getElementById('app').innerHTML = ''
-}
-
 test('Keet.js', function(t) {
 
   if (!document) throw 'not a document object model'
@@ -29,12 +24,10 @@ test('Keet.js', function(t) {
     var fixture = fixtures[key]
     if(typeof fixture === 'function'){
       fixture(t)
-      clearVDOM()
     } else {
       for(var iKey in fixture){
         var innerFixture = fixture[iKey]
         innerFixture(t)
-        clearVDOM()
       }
     }
   }

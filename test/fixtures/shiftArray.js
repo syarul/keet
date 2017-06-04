@@ -22,9 +22,8 @@ var init = function(cb) {
 }
 
 exports.shift = function(t) {
-
+  document.getElementById('app').innerHTML = ''
   var res = null
-
   var c = new init(function(){
     t.ok(res === 'this view 1', 'shift')
   })
@@ -37,9 +36,8 @@ exports.shift = function(t) {
 }
 
 exports.pop = function(t) {
-
+  document.getElementById('app').innerHTML = ''
   var res = null
-
   var c = new init(function(){
     t.ok(res === 'this view 3', 'pop')
   })

@@ -15,12 +15,14 @@ var init = function(cb) {
 }
 
 exports.register1 = function(t) {
+  document.getElementById('app').innerHTML = ''
   var c = new init(function(){
     t.ok(true, 'register')
   })
 }
 
 exports.register2 = function(t) {
+  document.getElementById('app').innerHTML = ''
   var cc = new init
   cc.test.unreg()
   cc.app.compose(function(){
@@ -29,6 +31,7 @@ exports.register2 = function(t) {
 }
 
 exports.reg3 = function(t) {
+  document.getElementById('app').innerHTML = ''
   fn = function() {
     t.ok(true, 'global register')
   }

@@ -39,8 +39,8 @@ let _data = data.map(x => x)
 _data.pop()
 
 const keet = () => new Keet(true)
-const tag = keet().tag // helper function, write element without writing brackets
-const cat = keet().cat // helper function to concat string, function() { return [].slice.call(arguments).join('') }
+
+// let cat = window.cat
 
 const model = {}  //object container for the all the components
 

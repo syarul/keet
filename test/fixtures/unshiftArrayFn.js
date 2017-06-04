@@ -19,6 +19,7 @@ var init = function(cb) {
 }
 
 module.exports = function(t) {
+  document.getElementById('app').innerHTML = ''
   var c = new init
   c.app.compose(true, function() {
     function cell(idx){

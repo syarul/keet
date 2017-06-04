@@ -19,11 +19,9 @@ var init = function() {
 }
 
 exports.spliceCountNoAdd = function(t) {
-
+  document.getElementById('app').innerHTML = ''
   var res = null
-
   var c = new init
-
   c.app.compose(true, function() {
     c.state.splice(function(arr){
       arr = arr.map(function(f, i){

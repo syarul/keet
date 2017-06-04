@@ -25,10 +25,7 @@ const doMe = function() {
 }
 
 const inner = new Keet('div')
-inner.set({
-  value:'<button id="clickMe">CLICK ME!</button>',
-  'css-color': 'blue'
-})
+inner.set('<button id="clickMe">CLICK ME!</button>')
 
 app.compose()
 

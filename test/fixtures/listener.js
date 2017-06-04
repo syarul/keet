@@ -27,6 +27,7 @@ var init = function() {
 }
 
 exports.addListener = function(t) {
+  document.getElementById('app').innerHTML = ''
   var closed = new init
   closed.app.compose(true, function(c) {
     closed.container.compose(true, function(){
@@ -44,51 +45,51 @@ exports.addListener = function(t) {
 }
 
 exports.removeListener = function(t) {
+  document.getElementById('app').innerHTML = ''
+  var closed = new init
+  closed.app.compose(true, function(c) {
+    closed.container.compose(true, function(){
 
-    var closed = new init
-    closed.app.compose(true, function(c) {
-      closed.container.compose(true, function(){
+      closed.container.bindListener('clickMe', closed.doMe, 'click')
 
-        closed.container.bindListener('clickMe', closed.doMe, 'click')
+      var v = document.getElementById('clickMe')
 
-        var v = document.getElementById('clickMe')
+      v.click()
 
+      var r = document.getElementById('con')
+
+      if(r.classList.contains('after')){
+        closed.container.removeListener('clickMe', 'click')
         v.click()
-
-        var r = document.getElementById('con')
-
-        if(r.classList.contains('after')){
-          closed.container.removeListener('clickMe', 'click')
-          v.click()
-          t.ok(!r.classList.contains('modulo'), 'remove listener')
-        }
+        t.ok(!r.classList.contains('modulo'), 'remove listener')
+      }
 
 
-      })
     })
+  })
 }
 
 exports.extraListener = function(t) {
+  document.getElementById('app').innerHTML = ''
+  var closed = new init
+  closed.app.compose(true, function(c) {
+    closed.container.compose(true, function(){
 
-    var closed = new init
-    closed.app.compose(true, function(c) {
-      closed.container.compose(true, function(){
+      closed.container.bindListener('clickMe', closed.doMe, 'click')
 
-        closed.container.bindListener('clickMe', closed.doMe, 'click')
+      var v = document.getElementById('clickMe')
 
-        var v = document.getElementById('clickMe')
+      v.click()
+
+      var r = document.getElementById('con')
+
+      if(r.classList.contains('after')){
 
         v.click()
-
-        var r = document.getElementById('con')
-
-        if(r.classList.contains('after')){
-
-          v.click()
-          t.ok(r.classList.contains('modulo'), 'extra listener test')
-        }
+        t.ok(r.classList.contains('modulo'), 'extra listener test')
+      }
 
 
-      })
     })
+  })
 }

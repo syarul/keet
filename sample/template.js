@@ -1,8 +1,6 @@
 // // using pre generated templating with element tagName 'div'
 const keet = () => new Keet('div')
 
-const tag = keet().tag
-
 const app = keet()
 
 app.link('app', '{{container}}')

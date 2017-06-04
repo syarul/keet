@@ -1,7 +1,7 @@
 var Keet = require('../../')
 
 module.exports = function(t) {
-
+  document.getElementById('app').innerHTML = ''
   var app = new Keet
   app.link('app', 'Hello World')
   var hello = document.getElementById('app').firstChild.nodeValue

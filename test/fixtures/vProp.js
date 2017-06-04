@@ -12,6 +12,7 @@ var init = function() {
 }
 
 module.exports = function(t) {
+  document.getElementById('app').innerHTML = ''
   var c = new init
   c.app.compose(true, function(e) {
     t.ok(e.childNodes[0].firstChild.nodeValue === 'set vProp', 'setter')

@@ -1,7 +1,7 @@
 var Keet = require('../../')
 var log = console.log.bind(console)
 
-var init = function(cb) {
+var init = function() {
   var ctx = this
   var keet = function() {
     return new Keet(ctx)
@@ -22,17 +22,12 @@ var init = function(cb) {
   this.app = keet().link('app', '{{state}}')
   this.state = keet().template('ul', 'viewList')
     .array(this.arr, '<li vstate="{{vstate}}">{{text}}</li>')
-    .watch(null, cb)
 }
 
 module.exports = function(t) {
-
+  document.getElementById('app').innerHTML = ''
   var res = null, res2 = null
-
-  var c = new init(function(){
-    t.ok(res === 'this view 22' && res2 === 'another', 'node update')
-  })
-
+  var c = new init
   c.app.compose(true, function() {
     c.state.update(0, {
       view: 22,
@@ -42,5 +37,7 @@ module.exports = function(t) {
     var v = document.getElementById('viewList')
     res = v.childNodes[0].firstChild.nodeValue
     res2 = v.childNodes[0].getAttribute('vstate')
+
+    t.ok(res === 'this view 22' && res2 === 'another', 'node update')
   })
 }

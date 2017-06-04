@@ -64,6 +64,7 @@ var init3 = function() {
 }
 
 exports.unWatchObj = function(t) {
+  document.getElementById('app').innerHTML = ''
   var c = new init
   c.app.compose(true, function(){
     c.obj.watched = 'after'
@@ -77,6 +78,7 @@ exports.unWatchObj = function(t) {
 }
 
 exports.unWatchArray = function(t) {
+  document.getElementById('app').innerHTML = ''
   var c = new init2
   c.app.compose(true, function() {
     c.state.unWatch()
@@ -86,12 +88,14 @@ exports.unWatchArray = function(t) {
     c.arr.unshift({view: 9, text:'this view 9'})
     c.arr.slice(1, 2)
     c.arr.splice(0)
+    c.arr.assign(0, {view: 0, text:'this view 0'})
     var v = document.getElementById('viewList')
     t.ok(v.childNodes.length === 3 && v.childNodes[0].firstChild.nodeValue === 'this view 0', 'unwatch array')
   })
 }
 
 exports.preserveAttributes = function(t) {
+  document.getElementById('app').innerHTML = ''
   var c = new init3
   c.app.compose(true, function(){
     c.obj.watched = 'after'

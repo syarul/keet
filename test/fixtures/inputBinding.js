@@ -24,9 +24,8 @@ var init = function() {
 }
 
 module.exports = function(t) {
-
+  document.getElementById('app').innerHTML = ''
   var trv = new init
-
   trv.app.compose(true, function() {
     trv.container.compose(true, function() {
       trv.container.bindListener('Input', trv.change)

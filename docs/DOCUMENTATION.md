@@ -1,6 +1,6 @@
 <a name="Keet"></a>
 
-## Keet(tagName, debug, context) ⇒ <code>constructor</code>
+## Keet(tagName, context) ⇒ <code>constructor</code>
 Keet constructor, each component is an instance of Keet
 
 **Kind**: global function  
@@ -8,17 +8,17 @@ Keet constructor, each component is an instance of Keet
 | Param | Type | Description |
 | --- | --- | --- |
 | tagName | <code>string</code> | ***optional*** element tag name, set the default template for this Instance, i.e 'div' |
-| debug | <code>boolean</code> &#124; <code>string</code> | ***optional*** set to run in debug mode, boolean true or string 'debug' |
 | context | <code>object</code> | ***optional*** if using Keet inside a closure declare the context of said closure |
 
 
-* [Keet(tagName, debug, context)](#Keet) ⇒ <code>constructor</code>
+* [Keet(tagName, context)](#Keet) ⇒ <code>constructor</code>
     * [.register(instance, force, fn)](#Keet+register) ⇒ <code>context</code>
     * [.unreg()](#Keet+unreg) ⇒ <code>context</code>
     * [.template(tag, id)](#Keet+template) ⇒ <code>context</code>
     * [.compose(force, fn)](#Keet+compose) ⇒ <code>context</code>
     * [.preserveAttributes(argv)](#Keet+preserveAttributes) ⇒ <code>context</code>
-    * [.link(tag, id, value)](#Keet+link) ⇒ <code>context</code>
+    * [.vDomLoaded(cb)](#Keet+vDomLoaded) ⇒ <code>context</code>
+    * [.link(id, value)](#Keet+link) ⇒ <code>context</code>
     * [.watch(instance, fn)](#Keet+watch) ⇒ <code>context</code>
     * [.watchObj(instance, fn)](#Keet+watchObj) ⇒ <code>context</code>
     * [.unWatch(instance)](#Keet+unWatch) ⇒ <code>context</code>
@@ -87,23 +87,33 @@ Persist this instance state attributes and style regardless parent instance muta
 | --- | --- | --- |
 | argv | <code>boolean</code> | ***optional*** undo the persistance changes |
 
+<a name="Keet+vDomLoaded"></a>
+
+### keet.vDomLoaded(cb) ⇒ <code>context</code>
+Add callback function after component initialize
+
+**Kind**: instance method of <code>[Keet](#Keet)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| cb | <code>function</code> | the function to associate with the callback event |
+
 <a name="Keet+link"></a>
 
-### keet.link(tag, id, value) ⇒ <code>context</code>
+### keet.link(id, value) ⇒ <code>context</code>
 Link this component instance to an attribute ```id```. If value is supplied, notify update to DOM.
 
 **Kind**: instance method of <code>[Keet](#Keet)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tag | <code>string</code> | ***optional*** element tagName, if declared wrap this value inside this tag,  1st dropped if arguments length is less than 3 |
 | id | <code>string</code> | the id string |
 | value | <code>object</code> &#124; <code>string</code> | ***optional*** value to parse into DOM |
 
 <a name="Keet+watch"></a>
 
 ### keet.watch(instance, fn) ⇒ <code>context</code>
-Observe this array for changes, once recieved make update to component. Operation supported areassignment, push, pop, shift, unshift, slice, splice.
+Observe this array for changes, once recieved make update to component. Operation supported areassignment, push, pop, shift, unshift, slice, splice and assign(is a wrapper for standard array assignment).
 
 **Kind**: instance method of <code>[Keet](#Keet)</code>  
 

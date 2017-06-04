@@ -2,8 +2,6 @@ const keet = () => new Keet
 
 const log = console.log.bind(console)
 
-const cat = keet().cat
-
 const app = keet().link('app', '{{vTree}}')
 
 const vTree = keet().template('div').register('app')

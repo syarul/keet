@@ -20,6 +20,7 @@ var init = function(cb) {
 }
 
 module.exports = function(t) {
+  document.getElementById('app').innerHTML = ''
   var v = null
   var c = new init(function(){
     t.ok(v.childNodes.length === 6 && v.childNodes[2].firstChild.nodeValue === 'this view 5', 'unshift')

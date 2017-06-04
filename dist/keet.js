@@ -29,7 +29,7 @@ if (typeof exports !== 'undefined') {
 }
 },{}],3:[function(require,module,exports){
 /** 
- * Keet.js v0.9.1 (Alpha) version: https://github.com/syarul/keet
+ * Keet.js v1.0.0 Beta release: https://github.com/syarul/keet
  * A data-driven view, OO, pure js without new paradigm shift
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -477,7 +477,7 @@ function Keet(tagName, context) {
     }
   })
 
-  if (!Object.prototype.watch) {
+  if (!Object.prototype._watch_) {
     Object.defineProperty(Object.prototype, 'watch', {
       enumerable: false,
       configurable: true,
@@ -504,7 +504,7 @@ function Keet(tagName, context) {
     })
   }
   // object.unwatch
-  if (!Object.prototype.unwatch) {
+  if (!Object.prototype._unwatch_) {
     Object.defineProperty(Object.prototype, 'unwatch', {
       enumerable: false,
       configurable: true,
@@ -514,6 +514,15 @@ function Keet(tagName, context) {
         delete this[prop] 
         this[prop] = val
       }
+    })
+  }
+  if(!Array.prototype.assign){
+    Object.defineProperty(Array.prototype, 'assign', {
+        enumerable: false,
+        writable: true,
+        value: function(index, value) { 
+          this[index] = value
+        }
     })
   }
 }
@@ -639,7 +648,7 @@ Keet.prototype.link = function(id, value) {
 }
 /**
  * Observe this array for changes, once recieved make update to component. Operation supported are
- * assignment, push, pop, shift, unshift, slice, splice.
+ * assignment, push, pop, shift, unshift, slice, splice and assign(is a wrapper for standard array assignment).
  * @param {object} - ***optional*** watch a different array instead
  * @param {function} - ***optional*** execute a function once the dom has updated
  * @returns {context}
@@ -652,51 +661,31 @@ Keet.prototype.watch = function(instance, fn) {
     this.watchObj.apply(this, argv)
     return this
   }
-  var opsList = function() { return ['push', 'pop', 'shift', 'unshift', 'slice', 'splice'] }
+  var opsList = function() { return ['push', 'pop', 'shift', 'unshift', 'slice', 'splice', 'assign'] }
+
   var op = opsList(), ev = {}
-  ev._ = 'noState'
-  ev.change = function(cb) {
-    if (cb) cb(this)
-  }
-  Object.defineProperty(ev, 'state', {
-    __proto__: null,
-    writeable: true,
-    set: function(value) {
-      this._ = value
-      this.change
-    }
-  })
+  ev.change = function() {}
+
   var query = function(ops, argvs) {
     op = []
     if(ops === 'push') {
       ctx.insert(argvs[0])
-      op = opsList()
-      ev.state = 'push'
     } else if(ops === 'pop') {
       var i = instance.length
       ctx.remove(i)
-      op = opsList()
-      ev.state = 'pop'
     } else if(ops === 'shift') {
       ctx.remove(0)
-      op = opsList()
-      ev.state = 'shift'
     } else if(ops === 'unshift') {
       ctx.unshift.apply(ctx, argvs)
-      op = opsList()
-      ev.state = 'unshift'
     } else if(ops === 'slice') {
       ctx.slice.apply(ctx, argvs)
-      op = opsList()
-      ev.state = 'slice'
     } else if(ops === 'splice') {
       ctx.splice.apply(ctx, argvs)
-      op = opsList()
-      ev.state = 'splice'
     } else {
-      op = opsList()
-      ev.state = 'noArrayProto'
+      ctx.update.apply(ctx, argvs)
     }
+    op = opsList()
+    ev.change()
   }
 
   op.forEach(function(f, i, r){
@@ -711,45 +700,15 @@ Keet.prototype.watch = function(instance, fn) {
         query(f, fargv)
       }
     }
-    if(i === r.length - 1 && !ff){
-      query()
-    }
   })
 
-  // watch array.prototype operation first before dealing with update event
-  event = new Promise(function(resolve, reject) {
-    this.change(function(res) {
-      var t = setInterval(function(){
-        if(res._ !== 'noState') {
-          clearInterval(t)
-          resolve(res._)
-        }
-      }, 5)
-    })
+  event = new Promise(function(resolve) {
+    this.change = resolve
   }.bind(ev))
 
-  // watch for changes in the array, if event is not assignment, do unwatch on the array
-  instance.forEach(function(r, i) {
-    instance.watch(i, function(idx, o, n) {
-      instance.unwatch(i)
-      event.then(function(state) {
-        if (state === 'noArrayProto'){
-          ctx.update(idx, n)
-          if(typeof fn === 'function') {
-            fn(ctx.refNode())
-          }
-        }
-        ctx.watch(instance, fn)
-      })
-    })
+  event.then(function() {
+    if (typeof fn === 'function') fn(ctx.refNode())
   })
-
-  event.then(function(state) {
-    if (state !== 'noArrayProto' && typeof fn === 'function'){
-      fn(ctx.refNode())
-    }
-  })
-
   return this
 }
 /**
@@ -793,9 +752,7 @@ Keet.prototype.unWatch = function(instance) {
     delete instance.unshift
     delete instance.slice
     delete instance.splice
-    instance.forEach(function(r, i, arr) {
-      instance.unwatch(i)
-    })
+    delete instance.assign
   } else {
     for (attr in instance){
       instance.unwatch(attr)

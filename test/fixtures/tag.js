@@ -2,7 +2,7 @@ var tag = require('../../tag')
 var cat = require('../../cat')
 
 module.exports = function(t) {
-  
+	
   var htmlStr = cat(
 		tag(
 			'div', 'what', 

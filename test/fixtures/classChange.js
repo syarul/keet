@@ -21,6 +21,7 @@ var init = function(cb) {
 }
 
 module.exports = function(t) {
+  document.getElementById('app').innerHTML = ''
   var closed = new init(function(){
   	var e = document.getElementById('State')
   	t.ok(e.getAttribute('class') === 'set-to-new-class', 'attribute change')

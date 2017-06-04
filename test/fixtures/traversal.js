@@ -35,9 +35,8 @@ var init = function() {
 }
 
 module.exports = function(t) {
-
+  document.getElementById('app').innerHTML = ''
   var c = new init
-
   c.app.compose(true, function() {
 
     c.state.compose(true, function() {
