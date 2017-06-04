@@ -8,10 +8,6 @@ test('Keet.js', function(t) {
   vDom.setAttribute('id', 'app')
   document.body.appendChild(vDom)
 
-  var vDom2 = document.createElement('div')
-  vDom2.setAttribute('id', 'app2')
-  document.body.appendChild(vDom2)
-
   var plan = 0
 
   for(var key in fixtures){
