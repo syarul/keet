@@ -2,13 +2,12 @@ var Keet = require('../../')
 var log = console.log.bind(console)
 
 var init = function() {
-  document.getElementById('app').innerHTML = ''
   var ctx = this
   var keet = function(tag) {
     return new Keet(ctx)
   }
 
-  this.app = keet().link('app', '{{test}}')
+  this.app = keet().link('app2', '{{test}}')
   this.test = keet().template('div', 'testTag')
     .set('initial')
 
@@ -24,7 +23,7 @@ var init2 = function(cb) {
     cb(1234567890)
   }
 
-  this.app = keet().link('app', '{{test}}')
+  this.app = keet().link('app2', '{{test}}')
   this.test = keet().template('div', 'testTag')
     .set('initial')
     .vDomLoaded(fn)
@@ -32,18 +31,19 @@ var init2 = function(cb) {
 }
 
 exports.vtag1 = function(t) {
-  document.getElementById('app').innerHTML = ''
-  var c = new init
-  c.app.compose(function() { 
+  document.getElementById('app2').innerHTML = ''
+  var cx = new init
+  cx.app.compose(function() { 
       var v = document.getElementById('testTag')
       t.ok(v.firstChild.nodeValue === 'initial', 'compose not force')
   })
+
 }
 
 exports.vdomloaded = function(t) {
-  document.getElementById('app').innerHTML = ''
-  var cc = new init2(function(n){
+  document.getElementById('app2').innerHTML = ''
+  var ccx = new init2(function(n){
     t.ok(n = 1234567890, 'vdom loaded event')
   })
-  cc.app.compose()
+  ccx.app.compose()
 }
