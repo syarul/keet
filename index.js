@@ -1,5 +1,5 @@
 /** 
- * Keet.js v1.0.2 Beta release: https://github.com/syarul/keet
+ * Keet.js v1.0.3 Beta release: https://github.com/syarul/keet
  * A flexible view layer for the web
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
