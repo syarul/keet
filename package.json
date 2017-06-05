@@ -1,6 +1,6 @@
 {
   "name": "keet",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A flexible view layer for the web",
   "main": "index.js",
   "scripts": {

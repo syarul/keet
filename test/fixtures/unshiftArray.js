@@ -20,10 +20,8 @@ var init = function(cb) {
 }
 
 module.exports = function(t) {
-  document.getElementById('app').innerHTML = ''
-  var v = null
-  var c = new init(function(){
-    t.ok(v.childNodes.length === 6 && v.childNodes[2].firstChild.nodeValue === 'this view 5', 'unshift')
+  var c = new init(function(el){
+    t.ok(el.childNodes.length === 6 && el.childNodes[2].firstChild.nodeValue === 'this view 5', 'unshift')
   })
   c.app.compose(true, function() {
     function cell(idx){
@@ -33,6 +31,5 @@ module.exports = function(t) {
       }
     }
     c.arr.unshift(cell(3), cell(4), cell(5))
-    v = document.getElementById('viewList')
   })
 }

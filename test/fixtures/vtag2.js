@@ -19,9 +19,8 @@ var init = function(cb) {
 }
 
 module.exports = function(t) {
-  document.getElementById('app').innerHTML = ''
   var c = new init(function(n){
     t.ok(n = 1234567890, 'vdom loaded event')
   })
-  c.app.compose()
+  c.app.compose(true)
 }

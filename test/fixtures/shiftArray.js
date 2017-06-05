@@ -22,29 +22,21 @@ var init = function(cb) {
 }
 
 exports.shift = function(t) {
-  document.getElementById('app').innerHTML = ''
-  var res = null
-  var c = new init(function(){
-    t.ok(res === 'this view 1', 'shift')
+  var c = new init(function(el){
+    t.ok(el.childNodes[0].firstChild.nodeValue === 'this view 1', 'shift')
   })
 
   c.app.compose(true, function() {
     c.arr.shift()
-    var v = document.getElementById('viewList')
-    res = v.childNodes[0].firstChild.nodeValue
   })
 }
 
 exports.pop = function(t) {
-  document.getElementById('app').innerHTML = ''
-  var res = null
-  var c = new init(function(){
-    t.ok(res === 'this view 3', 'pop')
+  var c = new init(function(el){
+    t.ok(el.childNodes[el.childNodes.length - 1].firstChild.nodeValue === 'this view 3', 'pop')
   })
 
   c.app.compose(true, function() {
     c.arr.pop()
-    var v = document.getElementById('viewList')
-    res = v.childNodes[v.childNodes.length - 1].firstChild.nodeValue
   })
 }

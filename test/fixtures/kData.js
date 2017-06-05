@@ -43,7 +43,6 @@ var init = function(cb) {
 }
 
 module.exports = function(t) {
-  document.getElementById('app').innerHTML = ''
   new init(function(){
     var v = document.getElementById('app')
     t.ok(v.firstChild.nodeValue === 'My name is Doloro Sit Amet', 'custom data')

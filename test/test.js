@@ -24,10 +24,12 @@ test('Keet.js', function(t) {
     var fixture = fixtures[key]
     if(typeof fixture === 'function'){
       fixture(t)
+      document.getElementById('app').innerHTML = ''
     } else {
       for(var iKey in fixture){
         var innerFixture = fixture[iKey]
         innerFixture(t)
+        document.getElementById('app').innerHTML = ''
       }
     }
   }

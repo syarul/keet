@@ -19,7 +19,6 @@ var init = function(cb) {
 }
 
 exports.rem1 = function(t) {
-  document.getElementById('app').innerHTML = ''
   var c = new init
   c.app.compose(true, function() {
     c.state.remove(0)
@@ -30,7 +29,6 @@ exports.rem1 = function(t) {
 }
 
 exports.rem2 = function(t) {
-  document.getElementById('app').innerHTML = ''
   var c = new init
   c.app.compose(true, function() {
     c.state.remove({text: 'this view 1'})
@@ -41,7 +39,6 @@ exports.rem2 = function(t) {
 }
 
 exports.rem3 = function(t) {
-  document.getElementById('app').innerHTML = ''
   var c = new init
   c.app.compose(true, function() {
     c.state.remove(0, function(res){

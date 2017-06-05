@@ -1,5 +1,5 @@
 /** 
- * Keet.js v1.0.4 Beta release: https://github.com/syarul/keet
+ * Keet.js v1.0.5 Beta release: https://github.com/syarul/keet
  * A flexible view layer for the web
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -322,12 +322,6 @@ function Keet(tagName, context) {
     })
   }
 
-  var _elemAfterUpdate = function() {}
-
-  this.eleHasUpdate = new Promise(function(resolve){
-    _elemAfterUpdate = resolve
-  })
-
   var _triggerElem = function() {
     var state = ctx.obs._state_, el = ctx.el, uid = ctx.ctor.uid, 
       processStr, ele = getId(el, uid), childTags = ctx.ctor.tags, attr, tempDiv, 
@@ -416,7 +410,6 @@ function Keet(tagName, context) {
       for (attr in childTags) applyAttrib(childTags[attr].el, childTags[attr].state, childTags[attr].preserveAttr, childTags[attr].uid)
       ele = null
     }
-    _elemAfterUpdate()
   }
 
   var _registerElem = function() {
@@ -642,9 +635,9 @@ Keet.prototype.watch = function(instance, fn) {
 
   op = opsList()
 
-  ctx.eleHasUpdate.then(function(){
+  var change = function(){
     if (typeof fn === 'function') fn(ctx.refNode())
-  })
+  }
 
   query = function(ops, argvs) {
     op = []
@@ -663,6 +656,7 @@ Keet.prototype.watch = function(instance, fn) {
     else
       ctx.update.apply(ctx, argvs)
     op = opsList()
+    change()
   }
 
   op.forEach(function(f, i, r){

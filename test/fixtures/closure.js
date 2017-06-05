@@ -11,7 +11,6 @@ var init = function() {
 }
 
 module.exports = function(t) {
-  document.getElementById('app').innerHTML = ''
   var closed = new init
   closed.app.compose(true, function(c) {
     t.ok(c.childNodes[0].firstChild.nodeValue === 'a view constructed in a closure', 'closure')

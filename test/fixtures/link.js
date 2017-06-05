@@ -12,11 +12,9 @@ var init = function() {
 }
 
 module.exports = function(t) {
-  document.getElementById('app').innerHTML = ''
-  var closed = new init
-  closed.app.compose(true, function(c) {
-    closed.state.link('nextState', 'new')
-    t.ok(closed.state.ctor.tmpl[3] === 'nextState', 'link')
-    // t.ok(true)
+  var c = new init
+  c.app.compose(true, function() {
+    c.state.link('nextState', 'new')
+    t.ok(c.state.ctor.tmpl[3] === 'nextState', 'link')
   })
 }

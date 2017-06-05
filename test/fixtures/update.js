@@ -19,7 +19,6 @@ var init = function(cb) {
 }
 
 exports.update1 = function(t) {
-  document.getElementById('app').innerHTML = ''
   var c = new init
   c.app.compose(true, function() {
     c.state.update(1, {view: 7, text:'this view 7'})
@@ -29,7 +28,6 @@ exports.update1 = function(t) {
 }
 
 exports.updateFn = function(t) {
-  document.getElementById('app').innerHTML = ''
   var c = new init
   c.app.compose(true, function() {
     c.state.update(1, {view: 7, text:'this view 7'}, function(res){

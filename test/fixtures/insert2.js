@@ -1,7 +1,7 @@
 var Keet = require('../../')
 var log = console.log.bind(console)
 
-var init = function(cb) {
+var init = function() {
   var ctx = this
   var keet = function() {
     return new Keet(ctx)
@@ -19,21 +19,18 @@ var init = function(cb) {
 }
 
 module.exports = function(t) {
+  var res = null
   var c = new init
   c.app.compose(true, function() {
-    function cell(idx){
-      return {
-        view: idx, 
-        text:'this view '+idx
-      }
-    }
-    c.state.unshift(function(arr){
-      return arr.map(function(f, i){
-        f.text = 'this view changed ' + i
+    var v = document.getElementById('viewList')
+    c.state.insert({view: 5, text:'this view 5'}, function(res){
+      return res.map(function(f, i){
+        f.view = i 
+        f.text = 'this view has changed '+i
         return f
       })
-    }, cell(3), cell(4), cell(5))
-    var v = document.getElementById('viewList')
-    t.ok(v.childNodes[2].firstChild.nodeValue === 'this view changed 2' && v.childNodes[5].firstChild.nodeValue === 'this view changed 5', 'unshift with function')
+    })
+    res = v.childNodes[3].firstChild.nodeValue
+    t.ok(res === 'this view has changed 3', 'insert with function')
   })
 }

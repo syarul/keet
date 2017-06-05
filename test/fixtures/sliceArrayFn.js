@@ -1,7 +1,7 @@
 var Keet = require('../../')
 var log = console.log.bind(console)
 
-var init = function(cb) {
+var init = function() {
   var ctx = this
   var keet = function() {
     return new Keet(ctx)
@@ -19,16 +19,15 @@ var init = function(cb) {
 }
 
 module.exports = function(t) {
-  document.getElementById('app').innerHTML = ''
   var c = new init
   c.app.compose(true, function() {
+    var v = document.getElementById('viewList')
     c.state.slice(function(res){
       return res.map(function(f){
         f.text = 'this view has changed'
         return f
       })
     }, 1, 2)
-    var v = document.getElementById('viewList')
     t.ok(v.childNodes[0].firstChild.nodeValue=== 'this view has changed', 'slice with function')
   })
 }

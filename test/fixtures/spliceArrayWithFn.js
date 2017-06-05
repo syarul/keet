@@ -18,8 +18,7 @@ var init = function() {
     .array(this.arr, '<li>{{text}}</li>')
 }
 
-exports.spliceCountNoAdd = function(t) {
-  document.getElementById('app').innerHTML = ''
+module.exports = function(t) {
   var res = null
   var c = new init
   c.app.compose(true, function() {

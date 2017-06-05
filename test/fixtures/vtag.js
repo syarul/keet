@@ -14,7 +14,6 @@ var init = function() {
 }
 
 module.exports = function(t) {
-  document.getElementById('app').innerHTML = ''
   var c = new init
   c.app.compose(function() { 
       var v = document.getElementById('testTag')

@@ -20,34 +20,26 @@ var init = function(cb) {
 }
 
 exports.spliceSingle = function(t) {
-  document.getElementById('app').innerHTML = ''
-  var v = null
-  var c = new init(function(){
-    t.ok(v.childNodes.length === 1, 'splice without count without elements addition')
+  var c = new init(function(el){
+    t.ok(el.childNodes.length === 1, 'splice without count without elements addition')
   })
   c.app.compose(true, function(el) {
     c.arr.splice(1)
-    v = document.getElementById('viewList')
   })
 }
 
 exports.spliceNoAdd = function(t) {
-  document.getElementById('app').innerHTML = ''
-  var v = null
-  var c = new init(function(){
-    t.ok(v.childNodes.length === 3, 'splice with count 0 without elements addition')
+  var c = new init(function(el){
+    t.ok(el.childNodes.length === 3, 'splice with count 0 without elements addition')
   })
   c.app.compose(true, function(el) {
     c.arr.splice(2, 0)
-    v = document.getElementById('viewList')
   })
 }
 
 exports.spliceAdd = function(t) {
-  document.getElementById('app').innerHTML = ''
-  var v = null
-  var c = new init(function(){
-    t.ok(v.childNodes.length === 5 && v.childNodes[1].firstChild.nodeValue === 'this view 11 has changed', 'splice with count 0 with elements addition')
+  var c = new init(function(el){
+    t.ok(el.childNodes.length === 5 && el.childNodes[1].firstChild.nodeValue === 'this view 11 has changed', 'splice with count 0 with elements addition')
   })
   c.app.compose(true, function(el) {
     var add = {
@@ -55,6 +47,5 @@ exports.spliceAdd = function(t) {
       text:'this view 11 has changed'
     }
     c.arr.splice(1, 0, add, add)
-    v = document.getElementById('viewList')
   })
 }

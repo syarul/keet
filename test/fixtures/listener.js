@@ -27,7 +27,6 @@ var init = function() {
 }
 
 exports.addListener = function(t) {
-  document.getElementById('app').innerHTML = ''
   var closed = new init
   closed.app.compose(true, function(c) {
     closed.container.compose(true, function(){
@@ -45,7 +44,6 @@ exports.addListener = function(t) {
 }
 
 exports.removeListener = function(t) {
-  document.getElementById('app').innerHTML = ''
   var closed = new init
   closed.app.compose(true, function(c) {
     closed.container.compose(true, function(){
@@ -70,7 +68,6 @@ exports.removeListener = function(t) {
 }
 
 exports.extraListener = function(t) {
-  document.getElementById('app').innerHTML = ''
   var closed = new init
   closed.app.compose(true, function(c) {
     closed.container.compose(true, function(){

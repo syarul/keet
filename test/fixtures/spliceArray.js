@@ -20,32 +20,23 @@ var init = function(cb) {
 }
 
 exports.spliceCountNoAdd = function(t) {
-  document.getElementById('app').innerHTML = ''
-  var res = null
-  var c = new init(function(){
-    t.ok(res === 'this view 2', 'splice with count without elements addition')
+  var c = new init(function(el){
+    t.ok(el.childNodes[1].firstChild.nodeValue === 'this view 2', 'splice with count without elements addition')
   })
-
   c.app.compose(true, function() {
-    var v = document.getElementById('viewList')
     c.arr.splice(1, 1)
-    res = v.childNodes[1].firstChild.nodeValue
   })
 }
 
 exports.spliceCountWithAdd = function(t) {
-  document.getElementById('app').innerHTML = ''
-  var res = null
-  var c = new init(function(){
-    t.ok(res === 'this view 11 has changed', 'splice with count with elements addition')
+  var c = new init(function(el){
+    t.ok(el.childNodes[1].firstChild.nodeValue === 'this view 11 has changed', 'splice with count with elements addition')
   })
   var add = {
       view: 11, 
       text:'this view 11 has changed'
     }
   c.app.compose(true, function() {
-    var v = document.getElementById('viewList')
     c.arr.splice(1, 1, add)
-    res = v.childNodes[1].firstChild.nodeValue
   })
 }

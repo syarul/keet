@@ -15,23 +15,20 @@ var init = function(cb) {
 }
 
 exports.register1 = function(t) {
-  document.getElementById('app').innerHTML = ''
   var c = new init(function(){
     t.ok(true, 'register')
   })
 }
 
 exports.register2 = function(t) {
-  document.getElementById('app').innerHTML = ''
-  var cc = new init
-  cc.test.unreg()
-  cc.app.compose(function(){
-    t.ok(cc.test.ctor.register === null, 'unregister')
+  var c = new init
+  c.test.unreg()
+  c.app.compose(function(){
+    t.ok(c.test.ctor.register === null, 'unregister')
   })
 }
 
 exports.reg3 = function(t) {
-  document.getElementById('app').innerHTML = ''
   fn = function() {
     t.ok(true, 'global register')
   }

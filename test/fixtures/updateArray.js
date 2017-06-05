@@ -25,7 +25,6 @@ var init = function() {
 }
 
 module.exports = function(t) {
-  document.getElementById('app').innerHTML = ''
   var res = null, res2 = null
   var c = new init
   c.app.compose(true, function() {
