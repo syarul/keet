@@ -1,5 +1,5 @@
 /** 
- * Keet.js v1.0.3 Beta release: https://github.com/syarul/keet
+ * Keet.js v1.0.4 Beta release: https://github.com/syarul/keet
  * A flexible view layer for the web
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -322,6 +322,12 @@ function Keet(tagName, context) {
     })
   }
 
+  var _elemAfterUpdate = function() {}
+
+  this.eleHasUpdate = new Promise(function(resolve){
+    _elemAfterUpdate = resolve
+  })
+
   var _triggerElem = function() {
     var state = ctx.obs._state_, el = ctx.el, uid = ctx.ctor.uid, 
       processStr, ele = getId(el, uid), childTags = ctx.ctor.tags, attr, tempDiv, 
@@ -410,6 +416,7 @@ function Keet(tagName, context) {
       for (attr in childTags) applyAttrib(childTags[attr].el, childTags[attr].state, childTags[attr].preserveAttr, childTags[attr].uid)
       ele = null
     }
+    _elemAfterUpdate()
   }
 
   var _registerElem = function() {
@@ -624,43 +631,42 @@ Keet.prototype.link = function(id, value) {
  * @returns {context}
  */
 Keet.prototype.watch = function(instance, fn) {
-  var ctx = this, argv, event, pristineLen = copy(this.ctor.arrayProto), ff
-  instance = instance || this.ctor.arrayProto
+  var ctx = this, argv, event, pristineLen = copy(this.ctor.arrayProto), 
+  opsList, op, query, instance = instance || this.ctor.arrayProto
   if(!Array.isArray(instance)) {
     argv = [].slice.call(arguments)
     this.watchObj.apply(this, argv)
     return this
   }
-  var opsList = function() { return ['push', 'pop', 'shift', 'unshift', 'slice', 'splice', 'assign'] }
+  opsList = function() { return ['push', 'pop', 'shift', 'unshift', 'slice', 'splice', 'assign'] }
 
-  var op = opsList(), ev = {}
-  ev.change = function() {}
+  op = opsList()
 
-  var query = function(ops, argvs) {
+  ctx.eleHasUpdate.then(function(){
+    if (typeof fn === 'function') fn(ctx.refNode())
+  })
+
+  query = function(ops, argvs) {
     op = []
-    if(ops === 'push') {
+    if(ops === 'push')
       ctx.insert(argvs[0])
-    } else if(ops === 'pop') {
-      var i = instance.length
-      ctx.remove(i)
-    } else if(ops === 'shift') {
+    else if(ops === 'pop')
+      ctx.remove(instance.length)
+    else if(ops === 'shift')
       ctx.remove(0)
-    } else if(ops === 'unshift') {
+    else if(ops === 'unshift')
       ctx.unshift.apply(ctx, argvs)
-    } else if(ops === 'slice') {
+    else if(ops === 'slice')
       ctx.slice.apply(ctx, argvs)
-    } else if(ops === 'splice') {
+    else if(ops === 'splice')
       ctx.splice.apply(ctx, argvs)
-    } else {
+    else
       ctx.update.apply(ctx, argvs)
-    }
     op = opsList()
-    ev.change()
   }
 
   op.forEach(function(f, i, r){
     instance[f] = function() {
-      ff = true
       if(op.length > 0) {
         var fargv = [].slice.call(arguments)
         Array.prototype[f].apply(this, fargv)
@@ -672,13 +678,6 @@ Keet.prototype.watch = function(instance, fn) {
     }
   })
 
-  event = new Promise(function(resolve) {
-    this.change = resolve
-  }.bind(ev))
-
-  event.then(function() {
-    if (typeof fn === 'function') fn(ctx.refNode())
-  })
   return this
 }
 /**
