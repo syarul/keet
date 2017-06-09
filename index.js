@@ -1,5 +1,5 @@
 /** 
- * Keet.js v1.0.7 Beta release: https://github.com/syarul/keet
+ * Keet.js v1.0.8 Beta release: https://github.com/syarul/keet
  * A flexible view layer for the web
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -172,7 +172,7 @@ function Keet(tagName, context) {
     for (attr in state) {
       ts = new RegExp('-')
       if (attr.match(ts)) {
-        type = attr.split('-')
+        type = attr.split(/-(.+)/)
 
         if(type[0] === 'attr' && !ctx.ctor.attr) ctx.ctor.attr = {}
         if(type[0] === 'css' && !ctx.ctor.css) ctx.ctor.css = {}
@@ -677,11 +677,12 @@ Keet.prototype.watch = function(instance, fn) {
 /**
  * Observe an object for changes in properties, once recieved delegate to a function callback
  * @param {object} - obj to watch
- * @param {function} - the function call once observe property changed, arguments pass to the 
- * function; (1st) the property attribute, (2nd) old value, (3rd) new value 
+ * @param {function | string} - the function call once observe property changed, arguments pass to the 
+ * function; (1st) the property attribute, (2nd) old value, (3rd) new value. If it a string it pass to Keet.prototype.set
+ * @param {string} - the instance property to watch
  * @returns {context}
  */
-Keet.prototype.watchObj = function(instance, fn) {
+Keet.prototype.watchObj = function(instance, set, prop) {
   var ctx = this, attr
   if(Array.isArray(instance)) {
     throw('Wrong type of operation, use Keet.prototype.watch instead.')
@@ -690,10 +691,14 @@ Keet.prototype.watchObj = function(instance, fn) {
   for (attr in instance){
     instance.watch(attr, function(idx, o, n) {
       instance.unwatch(attr)
-      if(typeof fn === 'function') {
+      if(typeof set === 'function') {
         instance[attr] = n
-        fn.apply(ctx, arguments)
-        ctx.watchObj(instance, fn)
+        set.apply(ctx, arguments)
+        ctx.watchObj(instance, set)
+      } else if(typeof set === 'string' && prop && typeof prop === 'string') {
+        instance[attr] = n
+        ctx.set(set, instance[prop])
+        ctx.watchObj(instance, set, prop)
       } else {
         throw('Not a function.')
       }
