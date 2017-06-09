@@ -29,7 +29,7 @@ if (typeof exports !== 'undefined') {
 }
 },{}],3:[function(require,module,exports){
 /** 
- * Keet.js v1.0.6 Beta release: https://github.com/syarul/keet
+ * Keet.js v1.0.7 Beta release: https://github.com/syarul/keet
  * A flexible view layer for the web
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -723,7 +723,7 @@ Keet.prototype.watchObj = function(instance, fn) {
       if(typeof fn === 'function') {
         instance[attr] = n
         fn.apply(ctx, arguments)
-        ctx.watchObj(instance, fn.apply(ctx, arguments))
+        ctx.watchObj(instance, fn)
       } else {
         throw('Not a function.')
       }
