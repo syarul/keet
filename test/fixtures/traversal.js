@@ -36,9 +36,9 @@ var init = function() {
 
 module.exports = function(t) {
   var c = new init
-  c.app.compose(true, function() {
+  c.app.compose(function() {
 
-    c.state.compose(true, function() {
+    c.state.compose(function() {
       var v = document.getElementById('dod')
       v.click()
       t.ok(c.status === 'later', 'dom traversal, onclick event')

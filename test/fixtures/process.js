@@ -28,7 +28,7 @@ var init2 = function() {
 
 exports.tag = function(t) {
   var c = new init2
-  c.app.compose(true, function() {
+  c.app.compose(function() {
     var v = document.querySelector('span')
     t.ok(v.getAttribute('k-link') === c.state.ctor.uid, 'k-link attribute')
   })
@@ -52,7 +52,7 @@ var init3 = function() {
 
 exports.attr = function(t) {
   var c = new init3
-  c.app.compose(true, function() {
+  c.app.compose(function() {
     var v = document.querySelector('span')
     t.ok(v.getAttribute('some') === 'someAttr', 'custom attribute')
   })

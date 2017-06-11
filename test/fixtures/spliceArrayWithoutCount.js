@@ -23,7 +23,7 @@ exports.spliceSingle = function(t) {
   var c = new init(function(el){
     t.ok(el.childNodes.length === 1, 'splice without count without elements addition')
   })
-  c.app.compose(true, function(el) {
+  c.app.compose(function(el) {
     c.arr.splice(1)
   })
 }
@@ -32,7 +32,7 @@ exports.spliceNoAdd = function(t) {
   var c = new init(function(el){
     t.ok(el.childNodes.length === 3, 'splice with count 0 without elements addition')
   })
-  c.app.compose(true, function(el) {
+  c.app.compose(function(el) {
     c.arr.splice(2, 0)
   })
 }
@@ -41,7 +41,7 @@ exports.spliceAdd = function(t) {
   var c = new init(function(el){
     t.ok(el.childNodes.length === 5 && el.childNodes[1].firstChild.nodeValue === 'this view 11 has changed', 'splice with count 0 with elements addition')
   })
-  c.app.compose(true, function(el) {
+  c.app.compose(function(el) {
     var add = {
       view: 11, 
       text:'this view 11 has changed'

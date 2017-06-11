@@ -24,7 +24,7 @@ module.exports = function(t) {
     t.ok(el.childNodes[3].firstChild.nodeValue === 'this view 3', 'insert')
   })
 
-  c.app.compose(true, function() {
+  c.app.compose(function() {
     c.arr.push({view: 3, text:'this view 3'})
   })
 }

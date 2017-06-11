@@ -17,9 +17,8 @@ var init = function(cb) {
 }
 
 module.exports = function(t) {
-  document.getElementById('app').innerHTML = ''
   var c = new init
-  c.app.compose(true, function() {
+  c.app.compose(function() {
     var v = document.getElementById('viewState')
     t.ok(v.style.backgroundColor === 'red', 'camelCase')
   })

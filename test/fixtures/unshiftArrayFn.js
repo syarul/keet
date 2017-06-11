@@ -20,7 +20,7 @@ var init = function(cb) {
 
 module.exports = function(t) {
   var c = new init
-  c.app.compose(true, function() {
+  c.app.compose(function() {
     function cell(idx){
       return {
         view: idx, 

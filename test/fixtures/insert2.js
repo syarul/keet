@@ -21,7 +21,7 @@ var init = function() {
 module.exports = function(t) {
   var res = null
   var c = new init
-  c.app.compose(true, function() {
+  c.app.compose(function() {
     var v = document.getElementById('viewList')
     c.state.insert({view: 5, text:'this view 5'}, function(res){
       return res.map(function(f, i){

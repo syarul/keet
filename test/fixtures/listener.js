@@ -28,8 +28,8 @@ var init = function() {
 
 exports.addListener = function(t) {
   var closed = new init
-  closed.app.compose(true, function(c) {
-    closed.container.compose(true, function(){
+  closed.app.compose(function(c) {
+    closed.container.compose(function(){
 
       closed.container.bindListener('clickMe', closed.doMe, 'click')
 
@@ -45,8 +45,8 @@ exports.addListener = function(t) {
 
 exports.removeListener = function(t) {
   var closed = new init
-  closed.app.compose(true, function(c) {
-    closed.container.compose(true, function(){
+  closed.app.compose(function(c) {
+    closed.container.compose(function(){
 
       closed.container.bindListener('clickMe', closed.doMe, 'click')
 
@@ -69,8 +69,8 @@ exports.removeListener = function(t) {
 
 exports.extraListener = function(t) {
   var closed = new init
-  closed.app.compose(true, function(c) {
-    closed.container.compose(true, function(){
+  closed.app.compose(function(c) {
+    closed.container.compose(function(){
 
       closed.container.bindListener('clickMe', closed.doMe, 'click')
 

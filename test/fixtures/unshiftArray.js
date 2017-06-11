@@ -23,7 +23,7 @@ module.exports = function(t) {
   var c = new init(function(el){
     t.ok(el.childNodes.length === 6 && el.childNodes[2].firstChild.nodeValue === 'this view 5', 'unshift')
   })
-  c.app.compose(true, function() {
+  c.app.compose(function() {
     function cell(idx){
       return {
         view: idx, 

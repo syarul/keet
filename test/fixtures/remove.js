@@ -20,7 +20,7 @@ var init = function(cb) {
 
 exports.rem1 = function(t) {
   var c = new init
-  c.app.compose(true, function() {
+  c.app.compose(function() {
     c.state.remove(0)
     var v = document.getElementById('viewList')
     var res = v.childNodes[0].firstChild.nodeValue
@@ -30,7 +30,7 @@ exports.rem1 = function(t) {
 
 exports.rem2 = function(t) {
   var c = new init
-  c.app.compose(true, function() {
+  c.app.compose(function() {
     c.state.remove({text: 'this view 1'})
     var v = document.getElementById('viewList')
     var res = v.childNodes[1].firstChild.nodeValue
@@ -40,7 +40,7 @@ exports.rem2 = function(t) {
 
 exports.rem3 = function(t) {
   var c = new init
-  c.app.compose(true, function() {
+  c.app.compose(function() {
     c.state.remove(0, function(res){
       return res.map(function(f, i){
         f.text = 'this view has changed '+ i

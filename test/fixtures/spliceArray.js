@@ -23,7 +23,7 @@ exports.spliceCountNoAdd = function(t) {
   var c = new init(function(el){
     t.ok(el.childNodes[1].firstChild.nodeValue === 'this view 2', 'splice with count without elements addition')
   })
-  c.app.compose(true, function() {
+  c.app.compose(function() {
     c.arr.splice(1, 1)
   })
 }
@@ -36,7 +36,7 @@ exports.spliceCountWithAdd = function(t) {
       view: 11, 
       text:'this view 11 has changed'
     }
-  c.app.compose(true, function() {
+  c.app.compose(function() {
     c.arr.splice(1, 1, add)
   })
 }

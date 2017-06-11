@@ -20,12 +20,11 @@ var init = function(cb) {
 }
 
 module.exports = function(t) {
-  document.getElementById('app').innerHTML = ''
   var c = new init(function(el){
     var v = el.childNodes
     t.ok(v.length === 3 && v[1].firstChild.nodeValue === 'this view 11', 'array with callback')
   })
-  c.app.compose(true, function() {
+  c.app.compose(function() {
     c.arr.assign(1, {view: 11, text:'this view 11'})
   })
 }

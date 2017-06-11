@@ -21,7 +21,7 @@ var init = function() {
 module.exports = function(t) {
   var res = null
   var c = new init
-  c.app.compose(true, function() {
+  c.app.compose(function() {
     c.state.splice(function(arr){
       arr = arr.map(function(f, i){
         var n = {}

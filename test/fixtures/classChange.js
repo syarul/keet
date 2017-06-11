@@ -14,7 +14,7 @@ var init = function(cb) {
   		'attr-class': 'just-a-class'
   	})
 
-  this.app.compose(true, function(){
+  this.app.compose(function(){
   	ctx.state.set('attr-class', 'set-to-new-class')
   	cb()
   })

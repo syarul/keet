@@ -13,7 +13,7 @@ var init = function() {
 
 module.exports = function(t) {
   var c = new init
-  c.app.compose(true, function() {
+  c.app.compose(function() {
     c.state.link('nextState', 'new')
     t.ok(c.state.ctor.tmpl[3] === 'nextState', 'link')
   })

@@ -32,29 +32,26 @@ var init2 = function(cb) {
 }
 
 exports.kclick1 = function(t) {
-  document.getElementById('app').innerHTML = ''
   var c = new init(function(r){
     t.ok(r === '1', 'k-click event with argument')
   })
-  c.app.compose(true, function(c) {
+  c.app.compose(function(c) {
       var v = document.getElementById('clickMe')
       v.click()
   })
 }
 
 exports.kclick2 = function(t) {
-  document.getElementById('app').innerHTML = ''
   var c = new init2(function(r){
     t.ok(r === '', 'k-click event without arguments')
   })
-  c.app.compose(true, function(c) {
+  c.app.compose(function(c) {
       var v = document.getElementById('clickMe')
       v.click()
   })
 }
 
 exports.kClickGlob1 = function(t) {
-  document.getElementById('app').innerHTML = ''
   ev = function(evt, r){
     t.ok(r === '1', 'k-click event with argument [global]')
   }
@@ -65,7 +62,7 @@ exports.kClickGlob1 = function(t) {
   state = new Keet
   state.template('div').set('<button id="clickMe" k-click="ev(1)">CLICK ME!</button>')
 
-  app.compose(true, function(c) {
+  app.compose(function(c) {
       var v = document.getElementById('clickMe')
       v.click()
   })

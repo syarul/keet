@@ -86,7 +86,7 @@ var init4 = function() {
 exports.unWatchObj = function(t) {
   document.getElementById('app').innerHTML = ''
   var c = new init
-  c.app.compose(true, function(){
+  c.app.compose(function(){
     c.obj.watched = 'after'
     var v = document.getElementById('State')
     var f = v.firstChild.nodeValue
@@ -98,9 +98,8 @@ exports.unWatchObj = function(t) {
 }
 
 exports.unWatchArray = function(t) {
-  document.getElementById('app').innerHTML = ''
   var c = new init2
-  c.app.compose(true, function() {
+  c.app.compose(function() {
     c.state.unWatch()
     c.arr.push({view: 3, text:'this view 3'})
     c.arr.pop()
@@ -115,9 +114,8 @@ exports.unWatchArray = function(t) {
 }
 
 exports.preserveAttributes = function(t) {
-  document.getElementById('app').innerHTML = ''
   var c = new init3
-  c.app.compose(true, function(){
+  c.app.compose(function(){
     c.obj.watched = 'after'
     var v = document.getElementById('State')
     t.ok(v.style.background === 'red', 'preserve attributes')
@@ -126,9 +124,8 @@ exports.preserveAttributes = function(t) {
 }
 
 exports.watchObjString = function(t) {
-  document.getElementById('app').innerHTML = ''
   var c = new init4
-  c.app.compose(true, function(){
+  c.app.compose(function(){
     c.obj.watched = 'after'
     var v = document.getElementById('State')
     t.ok(v.style.background === 'red', 'watch object string')

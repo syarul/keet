@@ -89,21 +89,9 @@ function Keet(tagName, context) {
   this.ctor.doc = (function() {
     return typeof document == 'object' ? true : false
   }())
-  this.loaded = function(cb) {
-    if(ctx.ctor.doc && !ctx.ctor.loaded) {
-      document.addEventListener('DOMContentLoaded', function(ev) {
-        ctx.ctor.loaded = true
-        if(typeof cb === 'function') cb()
-        else throw('Not a function.')
-      })
-    } else {
-      cb()
-    }
-  }
   this.isNode = function() {
     var node = getId(ctx.el, ctx.ctor.uid)
     if (node && typeof node == 'object' && node.nodeType === 1) {
-      ctx.ctor.loaded = true
       node = null
       return true
     }
@@ -572,7 +560,7 @@ Keet.prototype.template = function(tag, id) {
 }
 /**
  * Reevaluate the state of this component instance, if value changed from last update to DOM, update it again.
- * @param {boolean} - ***optional*** force node render, if the node non-existent, apply false to the callback function
+ * @param {boolean} - ***optional*** voided: feature is removed
  * @param {function} - ***optional*** run a callback function after this component loaded and assign this particular dom selector as arguments
  * @returns {context}
  */
@@ -591,19 +579,13 @@ Keet.prototype.compose = function(force, fn) {
     }
   }
 
-  if(force) {
-    elem = this.isNode()
-    if(elem){
-      this.obs._state_ = c
-      if(fn) fn(this.refNode())
-      childFn()
-    }
+  elem = this.isNode()
+  if(elem){
+    this.obs._state_ = c
+    if(fn) fn(this.refNode())
+    childFn()
   } else {
-    this.loaded(function(){
-      ctx.obs._state_ = c
-      if(fn) fn(ctx.refNode())
-      childFn()
-    }) 
+    throw 'element does nto exist'
   }
   return this
 }
@@ -1041,24 +1023,21 @@ Keet.prototype.splice = function(fn, start, count, obj) {
  */
 Keet.prototype.bindListener = function(inputId, listener, type) {
   var ctx = this
-  this.loaded(function(){
-    var e = document.getElementById(inputId)
-    type = type || 'input'
-    if(!ctx.ctor.ev) ctx.ctor.ev = {}
-    if(e){
-      var str = cat(inputId, '-', type)
-      ctx.ctor.ev[str] = function(evt) {
-        if (typeof listener.__proto__.set === 'function') {
-          evt.preventDefault()
-          listener.set(e.value)
-        } else if (typeof listener === 'function') {
-          listener(e.value, evt)
-        }
+  var e = document.getElementById(inputId)
+  type = type || 'input'
+  if(!ctx.ctor.ev) ctx.ctor.ev = {}
+  if(e){
+    var str = cat(inputId, '-', type)
+    ctx.ctor.ev[str] = function(evt) {
+      if (typeof listener.__proto__.set === 'function') {
+        evt.preventDefault()
+        listener.set(e.value)
+      } else if (typeof listener === 'function') {
+        listener(e.value, evt)
       }
-
-      e.addEventListener(type, ctx.ctor.ev[str])
-    } else throw('Element does not exist')
-  })
+    }
+    e.addEventListener(type, ctx.ctor.ev[str])
+  } else throw('Element does not exist')
   return this
 }
 /**
@@ -1069,15 +1048,13 @@ Keet.prototype.bindListener = function(inputId, listener, type) {
  */
 Keet.prototype.removeListener = function(inputId, type) {
   var ctx = this
-  this.loaded(function(){
-    var e = document.getElementById(inputId)
-    type = type || 'input'
-    if(e){
-      var str = cat(inputId, '-', type)
-      e.removeEventListener(type, ctx.ctor.ev[str], false)
-      delete ctx.ctor.ev[str]
-    } else throw('Element does not exist')
-  })
+  var e = document.getElementById(inputId)
+  type = type || 'input'
+  if(e){
+    var str = cat(inputId, '-', type)
+    e.removeEventListener(type, ctx.ctor.ev[str], false)
+    delete ctx.ctor.ev[str]
+  } else throw('Element does not exist')
   return this
 }
 /**

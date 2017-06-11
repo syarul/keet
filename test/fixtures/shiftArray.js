@@ -26,7 +26,7 @@ exports.shift = function(t) {
     t.ok(el.childNodes[0].firstChild.nodeValue === 'this view 1', 'shift')
   })
 
-  c.app.compose(true, function() {
+  c.app.compose(function() {
     c.arr.shift()
   })
 }
@@ -36,7 +36,7 @@ exports.pop = function(t) {
     t.ok(el.childNodes[el.childNodes.length - 1].firstChild.nodeValue === 'this view 3', 'pop')
   })
 
-  c.app.compose(true, function() {
+  c.app.compose(function() {
     c.arr.pop()
   })
 }

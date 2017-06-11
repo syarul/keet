@@ -13,7 +13,7 @@ module.exports = function(t) {
   state2 = new Keet
   state2.template('div').set('<button id="clickMe2" k-click="ev2()">CLICK ME!</button>')
 
-  app2.compose(true, function(c) {
+  app2.compose(function(c) {
     var v = document.getElementById('clickMe2')
     v.click()
   })

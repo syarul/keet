@@ -20,7 +20,7 @@ var init = function(cb) {
 
 exports.update1 = function(t) {
   var c = new init
-  c.app.compose(true, function() {
+  c.app.compose(function() {
     c.state.update(1, {view: 7, text:'this view 7'})
     var v = document.getElementById('viewList')
     t.ok(v.childNodes[1].firstChild.nodeValue === 'this view 7', 'update')
@@ -29,7 +29,7 @@ exports.update1 = function(t) {
 
 exports.updateFn = function(t) {
   var c = new init
-  c.app.compose(true, function() {
+  c.app.compose(function() {
     c.state.update(1, {view: 7, text:'this view 7'}, function(res){
       return res.map(function(f, i){
         f.text = 'this view has changed '+ i
