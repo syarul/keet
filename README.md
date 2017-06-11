@@ -40,6 +40,8 @@ Read the documentation [here](https://github.com/syarul/keet/blob/master/docs/DO
 
 Take a look inside [sample](https://github.com/syarul/keet/tree/master/sample) for a quick start using  Keet.js
 
+To see **todomvc** version of Keet.js visit [here](https://github.com/syarul/keetjs-todomvc)
+
 ## Version history
 - 1.0.8 Addded double click with attributes ```k-double-click="someFunction()"```, remove force on ```compose()``` default always ```compose()```.
 - 1.0.6 Apply context and arguments to function callback of ```Keet.prototype.watchObj```
