@@ -237,7 +237,10 @@ function Keet(tagName, context) {
         loopChilds(listKnodeChild, kNode)
         listKnodeChild.forEach(function(c, i){
           if(c.nodeType === 1 && c.hasAttributes()){
-            var kString = c.getAttribute('k-click')
+            var kStringSingle = c.getAttribute('k-click')
+            var KStringDouble = c.getAttribute('k-double-click')
+            var kString = KStringDouble || kStringSingle
+            var isDouble = KStringDouble ? true : false
             if(kString){
               var m = kString.match(/\(([^()]+)\)/g)
               var kFn = kString.split('(')
@@ -247,12 +250,12 @@ function Keet(tagName, context) {
                   if(context) kClick = testEval(context[kFn[0]]) ? eval(context[kFn[0]]) : false
                   else kClick = testEval(kFn[0]) ? eval(kFn[0]) : false
 
-                  if(typeof kClick === 'function') processClickEvt(c, kClick, kFn)
+                  if(typeof kClick === 'function') processClickEvt(c, kClick, kFn, isDouble)
                 }
               } else {
                 if(context) kClick = testEval(context[kFn[0]]) ? eval(context[kFn[0]]) : false
                 else kClick = testEval(kFn[0]) ? eval(kFn[0]) : false
-                if(typeof kClick === 'function') processClickEvt(c, kClick, kFn)
+                if(typeof kClick === 'function') processClickEvt(c, kClick, kFn, isDouble)
               }
             }
           }
@@ -262,16 +265,18 @@ function Keet(tagName, context) {
     }
   }
 
-  var processClickEvt = function(c, kClick, kFn) {
-    c.removeAttribute('k-click')
-    c.addEventListener('click', function(evt){
+  var processClickEvt = function(c, kClick, kFn, isDouble) {
+    var click = isDouble ? 'dblclick' : 'click'
+    var rem = isDouble ? 'k-double-click' : 'k-click'
+    c.removeAttribute(rem)
+    c.addEventListener(click, function(evt){
       var argv = []
       argv.push(evt)
       if(kFn) {
         var v = kFn[1].slice(0, -1).split(',')
         if(v) v.forEach(function(v){ argv.push(v) })
       }
-      return kClick.apply(null, argv)
+      return kClick.apply(c, argv)
     })
   }
 

@@ -41,6 +41,7 @@ Read the documentation [here](https://github.com/syarul/keet/blob/master/docs/DO
 Take a look inside [sample](https://github.com/syarul/keet/tree/master/sample) for a quick start using  Keet.js
 
 ## Version history
+- 1.0.8 Addded double click with attributes ```k-double-click="someFunction()"```
 - 1.0.6 Apply context and arguments to function callback of ```Keet.prototype.watchObj```
 - 1.0.0 Fix array observable not correctly handling data, add ```Array.prototype.assign``` for custom array assignment which is observable
 - 0.9.1 Fix issue on declaring keet with link prototype

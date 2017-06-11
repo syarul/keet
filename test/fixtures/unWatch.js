@@ -63,6 +63,26 @@ var init3 = function() {
     .watch(this.obj, updateState)
 }
 
+var init4 = function() {
+  var ctx = this
+  var keet = function() {
+    return new Keet(ctx)
+  }
+
+  this.obj = {
+    watched: 'initial'
+  }
+  this.app = keet().link('app', '{{state}}')
+  this.state = keet()
+    .template('div', 'State')
+    .set({
+      value: this.obj.watched,
+      'css-background': 'red'
+    })
+    .preserveAttributes()
+    .watch(this.obj, 'value', 'watched')
+}
+
 exports.unWatchObj = function(t) {
   document.getElementById('app').innerHTML = ''
   var c = new init
@@ -101,6 +121,17 @@ exports.preserveAttributes = function(t) {
     c.obj.watched = 'after'
     var v = document.getElementById('State')
     t.ok(v.style.background === 'red', 'preserve attributes')
+  })
+
+}
+
+exports.watchObjString = function(t) {
+  document.getElementById('app').innerHTML = ''
+  var c = new init4
+  c.app.compose(true, function(){
+    c.obj.watched = 'after'
+    var v = document.getElementById('State')
+    t.ok(v.style.background === 'red', 'watch object string')
   })
 
 }
