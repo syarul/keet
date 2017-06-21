@@ -1,5 +1,5 @@
 /** 
- * Keet.js v1.0.8 Beta release: https://github.com/syarul/keet
+ * Keet.js v1.1.0 Beta release: https://github.com/syarul/keet
  * A flexible view layer for the web
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -164,8 +164,9 @@ function Keet(tagName, context) {
 
         if(type[0] === 'attr' && !ctx.ctor.attr) ctx.ctor.attr = {}
         if(type[0] === 'css' && !ctx.ctor.css) ctx.ctor.css = {}
+        if(type[0] === 'el' && !ctx.ctor.el) ctx.ctor.el = {}
 
-        if (type[0] === 'attr' && !preserveAttr/* && ctx.ctor.attr[type[1]] !== state[attr]*/) {
+        if (type[0] === 'attr') {
           // store attr
           ctx.ctor.attr[type[1]] = {
             selector: selector,
@@ -184,13 +185,17 @@ function Keet(tagName, context) {
             gid = getId(selector, uid)
             if(gid) gid.style[cty] = state[attr]
           }
-        } else if (type[0] === 'attr' && preserveAttr) {
-          ctx.ctor.attr[type[1]] = {
+        } else if(type[0] === 'el') {
+          ctx.ctor.el[type[1]] = {
             selector: selector,
-            attr: state[attr]
+            el: state[attr]
           }
           gid = getId(selector, uid)
-          if(gid) gid.setAttribute(type[1], state[attr])
+          if(gid){
+            if(typeof gid[type[1]] === 'boolean'){
+              gid[type[1]] = state[attr]
+            }
+          }
         }
       }
 
@@ -321,7 +326,8 @@ function Keet(tagName, context) {
       childLen, tempDivChildLen, i, j, k, len, c
     if (ele) {
       // process each {{instance}} before parsing to html
-      processStr = _processTags(state.value, state['k-data'])
+      if(state.value)
+        processStr = _processTags(state.value, state['k-data'])
       // parsing string to DOM only when necessary
       if(ctx.ctor.ops.preserve === true && ele.hasChildNodes()) {
         if(ctx.ctor.ops.type === 'remove'){
@@ -389,13 +395,15 @@ function Keet(tagName, context) {
           ele.innerHTML = processStr
         }
       }
-      else if (!processStr && state.value.length < 1) {
+      else if (!processStr && state.value === '') {
         ele.innerHTML = ''
       }
-      else if (!processStr && state.value.length > 1) {
+      else if (!processStr && state.value && state.value.length > 1) {
         tempDiv = document.createElement('div')
         tempDiv.innerHTML = ctx.ctor.d
         updateElem(ele, tempDiv, ctx.ctor.d)
+      } else if(!processStr && !state.value) {
+        //
       }
       // attributes class and style
       applyAttrib(el, state, uid)
@@ -555,7 +563,7 @@ Keet.prototype.compose = function(force, fn) {
     if(fn) fn(this.refNode())
     childFn()
   } else {
-    throw 'element does nto exist'
+    throw 'element does not exist'
   }
   return this
 }

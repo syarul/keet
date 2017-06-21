@@ -43,6 +43,7 @@ Take a look inside [sample](https://github.com/syarul/keet/tree/master/sample) f
 To see **todomvc** version of Keet.js visit [here](https://github.com/syarul/keetjs-todomvc)
 
 ## Version history
+- 1.1.0 Added handler for input checkbox
 - 1.0.8 Addded double click with attributes ```k-double-click="someFunction()"```, remove force on ```compose()``` default always ```compose()```.
 - 1.0.6 Apply context and arguments to function callback of ```Keet.prototype.watchObj```
 - 1.0.0 Fix array observable not correctly handling data, add ```Array.prototype.assign``` for custom array assignment which is observable
