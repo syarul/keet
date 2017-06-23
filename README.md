@@ -1,4 +1,4 @@
-# Keet.js
+<img width="274" src="https://raw.githubusercontent.com/syarul/keet/master/img/keet-logo.png"/> 
 
 [![npm package](https://img.shields.io/badge/npm-1.1.0-blue.svg)](https://www.npmjs.com/package/keet)
 [![browser build](https://img.shields.io/badge/wzrd.in-1.1.0-ff69b4.svg)](https://wzrd.in/standalone/keet@latest)
