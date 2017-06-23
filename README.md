@@ -1,6 +1,10 @@
 # Keet.js
 
+[![npm package](https://img.shields.io/badge/npm-1.1.0-blue.svg)](https://www.npmjs.com/package/keet)
+[![browser build](https://img.shields.io/badge/wzrd.in-1.1.0-ff69b4.svg)](https://wzrd.in/standalone/keet@latest)
 [![Build Status](https://travis-ci.org/syarul/keet.svg?branch=master)](https://travis-ci.org/syarul/keet)
+[![test](https://img.shields.io/badge/test-53/53-brightgreen.svg)](https://travis-ci.org/syarul/keet)
+[![coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://travis-ci.org/syarul/keet)
 
 A flexible view layer for the web which offer :-
 
