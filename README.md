@@ -1,9 +1,9 @@
 <img width="274" src="https://raw.githubusercontent.com/syarul/keet/master/img/keet-logo.png"/> 
 
-[![npm package](https://img.shields.io/badge/npm-1.1.0--rc-blue.svg)](https://www.npmjs.com/package/keet)
-[![browser build](https://img.shields.io/badge/wzrd.in-1.1.0-ff69b4.svg)](https://wzrd.in/standalone/keet@latest)
+[![npm package](https://img.shields.io/badge/npm-1.2.0-blue.svg)](https://www.npmjs.com/package/keet)
+[![browser build](https://img.shields.io/badge/wzrd.in-1.2.0-ff69b4.svg)](https://wzrd.in/standalone/keet@latest)
 [![Build Status](https://travis-ci.org/syarul/keet.svg?branch=master)](https://travis-ci.org/syarul/keet)
-[![test](https://img.shields.io/badge/test-53/53-brightgreen.svg)](https://travis-ci.org/syarul/keet)
+[![test](https://img.shields.io/badge/test-54/54-brightgreen.svg)](https://travis-ci.org/syarul/keet)
 [![coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://travis-ci.org/syarul/keet)
 
 A flexible view layer for the web which offer :-
@@ -47,6 +47,7 @@ Take a look inside [sample](https://github.com/syarul/keet/tree/master/sample) f
 To see **todomvc** version of Keet.js visit [here](https://github.com/syarul/keetjs-todomvc)
 
 ## Version history
+- 1.2.0 Added ```Keet.prototype.watchDistict```, watch an object attributes directly, now handle [input](https://github.com/syarul/keet/blob/master/sample/ele3.js) checked with ```el-checked```
 - 1.1.0 Added handler for input checkbox
 - 1.0.8 Addded double click with attributes ```k-double-click="someFunction()"```, remove force on ```compose()``` default always ```compose()```.
 - 1.0.6 Apply context and arguments to function callback of ```Keet.prototype.watchObj```

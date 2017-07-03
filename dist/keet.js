@@ -13,8 +13,15 @@ if (typeof exports !== 'undefined') {
 var copy = function(argv) {
   var clone = function(v) {
     var o = {}
-    o.copy = v
-    return o.copy
+    if(typeof v !== 'object'){
+      o.copy = v
+      return o.copy
+    } else {
+      for(var attr in v){
+        o[attr] = v[attr]
+      }
+      return o
+    }
   }
   return Array.isArray(argv) ? argv.map(function(v) {
     return v
@@ -29,7 +36,7 @@ if (typeof exports !== 'undefined') {
 }
 },{}],3:[function(require,module,exports){
 /** 
- * Keet.js v1.1.0-rc Beta release: https://github.com/syarul/keet
+ * Keet.js v1.2.0 Beta release: https://github.com/syarul/keet
  * A flexible view layer for the web
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -728,6 +735,28 @@ Keet.prototype.watchObj = function(instance, set, prop) {
         throw('Not a function.')
       }
     })
+  }
+  return this
+}
+/**
+ * Watch an object attributes and make update to components once a value changed
+ * @param {object} - the object instance to watch
+ * @returns {context}
+ */
+Keet.prototype.watchDistict = function(instance) {
+  var ctx = this, attr, obj
+  if(typeof instance === 'object'){
+    if (!this.obs._state_) this.set(copy(instance))
+    // watch for changes in the obj
+    for (attr in instance){
+      instance.watch(attr, function(idx, o, n) {
+        instance.unwatch(attr)
+        obj = {}
+        obj[idx] = n
+        ctx.set(obj)
+        ctx.watchDistict(instance)
+      })
+    }
   }
   return this
 }
