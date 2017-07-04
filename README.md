@@ -42,11 +42,12 @@ app.link('app', 'Hello World')
 
 Read the documentation [here](https://github.com/syarul/keet/blob/master/docs/DOCUMENTATION.md)
 
-Take a look inside [sample](https://github.com/syarul/keet/tree/master/sample) for a quick start using  Keet.js
+Take a look at [sample](https://github.com/syarul/keet/tree/master/sample) for a quick start using  Keet.js
 
-To see **todomvc** version of Keet.js visit [here](https://github.com/syarul/keetjs-todomvc)
+Checkout [**todoMVC**](https://github.com/syarul/keetjs-todomvc) version of Keet.js
 
 ## Version history
+- 1.3.0 Added ```Keet.prototype.evented``` see [this](https://github.com/syarul/keet/blob/master/sample/arrayAdv.js) for example
 - 1.2.0 Added ```Keet.prototype.watchDistict```, watch an object attributes directly, now handle [input](https://github.com/syarul/keet/blob/master/sample/ele3.js) checked with ```el-checked```
 - 1.1.0 Added handler for input checkbox
 - 1.0.8 Addded double click with attributes ```k-double-click="someFunction()"```, remove force on ```compose()``` default always ```compose()```.

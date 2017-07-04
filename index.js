@@ -1,5 +1,5 @@
 /** 
- * Keet.js v1.2.0 Beta release: https://github.com/syarul/keet
+ * Keet.js v1.3.0 Beta release: https://github.com/syarul/keet
  * A flexible view layer for the web
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -194,6 +194,8 @@ function Keet(tagName, context) {
           if(gid){
             if(typeof gid[type[1]] === 'boolean'){
               gid[type[1]] = state[attr]
+            } else if(typeof gid[type[1]] === 'function' && state[attr]){
+              gid[type[1]]()
             }
           }
         }
@@ -221,40 +223,43 @@ function Keet(tagName, context) {
     }
     //k-click
     if(state && state.value) {
+      // setTimeout(function(){
 
-      var kNode = getId(selector, uid)
+        var kNode = getId(selector, uid)
 
-      var listKnodeChild = []
+        var listKnodeChild = []
 
-      if(kNode && kNode.hasChildNodes()){
-        loopChilds(listKnodeChild, kNode)
-        listKnodeChild.forEach(function(c, i){
-          if(c.nodeType === 1 && c.hasAttributes()){
-            var kStringSingle = c.getAttribute('k-click')
-            var KStringDouble = c.getAttribute('k-double-click')
-            var kString = KStringDouble || kStringSingle
-            var isDouble = KStringDouble ? true : false
-            if(kString){
-              var m = kString.match(/\(([^()]+)\)/g)
-              var kFn = kString.split('(')
-              var kClick
-              if(m){  
-                if(kFn){
+        if(kNode && kNode.hasChildNodes()){
+          loopChilds(listKnodeChild, kNode)
+          listKnodeChild.forEach(function(c, i){
+            if(c.nodeType === 1 && c.hasAttributes()){
+              var kStringSingle = c.getAttribute('k-click')
+              var KStringDouble = c.getAttribute('k-double-click')
+              var kString = KStringDouble || kStringSingle
+              var isDouble = KStringDouble ? true : false
+              if(kString){
+                var m = kString.match(/\(([^()]+)\)/g)
+                var kFn = kString.split('(')
+                var kClick
+                if(m){  
+                  if(kFn){
+                    if(context) kClick = testEval(context[kFn[0]]) ? eval(context[kFn[0]]) : false
+                    else kClick = testEval(kFn[0]) ? eval(kFn[0]) : false
+
+                    if(typeof kClick === 'function') processClickEvt(c, kClick, kFn, isDouble)
+                  }
+                } else {
                   if(context) kClick = testEval(context[kFn[0]]) ? eval(context[kFn[0]]) : false
                   else kClick = testEval(kFn[0]) ? eval(kFn[0]) : false
-
                   if(typeof kClick === 'function') processClickEvt(c, kClick, kFn, isDouble)
                 }
-              } else {
-                if(context) kClick = testEval(context[kFn[0]]) ? eval(context[kFn[0]]) : false
-                else kClick = testEval(kFn[0]) ? eval(kFn[0]) : false
-                if(typeof kClick === 'function') processClickEvt(c, kClick, kFn, isDouble)
               }
             }
-          }
-        })
-      }
-      listKnodeChild = []
+          })
+        }
+        listKnodeChild = []
+
+      // })
     }
   }
 
@@ -320,6 +325,16 @@ function Keet(tagName, context) {
     })
   }
 
+  var eventedElem = function(elem, selector, value, eventObj){
+    var e = elem.querySelector(cat('[', selector, '="', value, '"]'))
+    if(e){
+      for(var attr in eventObj){
+        if(typeof e[attr] === 'function' && eventObj[attr]) e[attr]()
+        else if(typeof e[attr] === 'boolean') e[attr] = eventObj[attr]
+      }
+    }
+  }
+
   var _triggerElem = function() {
     var state = ctx.obs._state_, el = ctx.el, uid = ctx.ctor.uid, 
       processStr, ele = getId(el, uid), childTags = ctx.ctor.tags, attr, tempDiv, 
@@ -332,6 +347,8 @@ function Keet(tagName, context) {
       if(ctx.ctor.ops.preserve === true && ele.hasChildNodes()) {
         if(ctx.ctor.ops.type === 'remove'){
           ele.removeChild(ele.childNodes[ctx.ctor.ops.index])
+        }else if(ctx.ctor.ops.type === 'evented'){
+          eventedElem(ele.childNodes[ctx.ctor.ops.index], ctx.ctor.ops.selector, ctx.ctor.ops.value, ctx.ctor.ops.eventObj)
         }else if(ctx.ctor.ops.type === 'update'){
         
           tempDiv = document.createElement('div')
@@ -706,10 +723,14 @@ Keet.prototype.watchObj = function(instance, set, prop) {
  * @param {object} - the object instance to watch
  * @returns {context}
  */
-Keet.prototype.watchDistict = function(instance) {
-  var ctx = this, attr, obj
+Keet.prototype.watchDistict = function(instance, value) {
+  var ctx = this, cp, attr, obj
   if(typeof instance === 'object'){
-    if (!this.obs._state_) this.set(copy(instance))
+    if (!this.obs._state_) {
+      cp = copy(instance)
+      if(value) cp['value'] = value
+      this.set(cp)
+    }
     // watch for changes in the obj
     for (attr in instance){
       instance.watch(attr, function(idx, o, n) {
@@ -770,6 +791,32 @@ Keet.prototype.array = function(array, templateString, isAppend) {
     this.ctor.ops.node = tmplStr
   } else {
     this.set(tmplStr)
+  }
+  return this
+}
+/**
+ * Event selector for child elements
+ * @param {number} - the index target for event
+ * @param {string} - the selector
+ * @param {string} - the selector value
+ * @param {object} - the event object to assigned, i.e ```{ click: true }```, which will trigger click event
+ * @returns {context}
+ */
+Keet.prototype.evented = function(index, selector, value, eventObj) {
+  var arr = this.ctor.arrayProto, str = this.ctor.tmplString, fnArr
+  if(Array.isArray(arr)){
+    if(typeof index === 'number')
+    this.ctor.ops = {
+      preserve: true,
+      type: 'evented',
+      index: index,
+      selector: selector,
+      value: value,
+      eventObj: eventObj
+    }
+    this.array(arr, str)
+  } else {
+    throw('object reference not created from array.')
   }
   return this
 }
