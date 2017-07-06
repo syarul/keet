@@ -1,5 +1,5 @@
 /** 
- * Keet.js v1.3.0 Beta release: https://github.com/syarul/keet
+ * Keet.js v1.3.1 Beta release: https://github.com/syarul/keet
  * A flexible view layer for the web
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -192,7 +192,7 @@ function Keet(tagName, context) {
           }
           gid = getId(selector, uid)
           if(gid){
-            if(typeof gid[type[1]] === 'boolean'){
+            if(typeof gid[type[1]] === 'boolean' || typeof gid[type[1]] === 'string'){
               gid[type[1]] = state[attr]
             } else if(typeof gid[type[1]] === 'function' && state[attr]){
               gid[type[1]]()
@@ -330,7 +330,7 @@ function Keet(tagName, context) {
     if(e){
       for(var attr in eventObj){
         if(typeof e[attr] === 'function' && eventObj[attr]) e[attr]()
-        else if(typeof e[attr] === 'boolean') e[attr] = eventObj[attr]
+        else if(typeof e[attr] === 'boolean' || typeof e[attr] === 'string') e[attr] = eventObj[attr]
       }
     }
   }

@@ -1,10 +1,10 @@
 <img width="274" src="https://raw.githubusercontent.com/syarul/keet/master/img/keet-logo.png"/> 
 
 [![npm package](https://img.shields.io/badge/npm-1.3.0-blue.svg)](https://www.npmjs.com/package/keet)
-[![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet)
 [![browser build](https://img.shields.io/badge/wzrd.in-1.3.0-ff69b4.svg)](https://wzrd.in/standalone/keet@latest)
+[![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet)
 [![Build Status](https://travis-ci.org/syarul/keet.svg?branch=master)](https://travis-ci.org/syarul/keet)
-[![test](https://img.shields.io/badge/test-57/57-brightgreen.svg)](https://travis-ci.org/syarul/keet)
+[![test](https://img.shields.io/badge/test-58/58-brightgreen.svg)](https://travis-ci.org/syarul/keet)
 [![coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://travis-ci.org/syarul/keet)
 
 A flexible view layer for the web which offer :-
