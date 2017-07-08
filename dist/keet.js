@@ -36,7 +36,7 @@ if (typeof exports !== 'undefined') {
 }
 },{}],3:[function(require,module,exports){
 /** 
- * Keet.js v1.3.1 Beta release: https://github.com/syarul/keet
+ * Keet.js v1.3.1-rc Beta release: https://github.com/syarul/keet
  * A flexible view layer for the web
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

@@ -20,9 +20,11 @@ Keet constructor, each component is an instance of Keet
     * [.vDomLoaded(cb)](#Keet+vDomLoaded) ⇒ <code>context</code>
     * [.link(id, value)](#Keet+link) ⇒ <code>context</code>
     * [.watch(instance, fn)](#Keet+watch) ⇒ <code>context</code>
-    * [.watchObj(instance, fn)](#Keet+watchObj) ⇒ <code>context</code>
+    * [.watchObj(instance, set, prop)](#Keet+watchObj) ⇒ <code>context</code>
+    * [.watchDistict(instance)](#Keet+watchDistict) ⇒ <code>context</code>
     * [.unWatch(instance)](#Keet+unWatch) ⇒ <code>context</code>
     * [.array(array, templateString, isAppend)](#Keet+array) ⇒ <code>context</code>
+    * [.evented(index, selector, value, eventObj)](#Keet+evented) ⇒ <code>context</code>
     * [.update(index, obj, fn)](#Keet+update) ⇒ <code>context</code>
     * [.remove(idx, fn)](#Keet+remove) ⇒ <code>context</code>
     * [.insert(obj, fn)](#Keet+insert) ⇒ <code>context</code>
@@ -73,7 +75,7 @@ Reevaluate the state of this component instance, if value changed from last upda
 
 | Param | Type | Description |
 | --- | --- | --- |
-| force | <code>boolean</code> | ***optional*** force node render, if the node non-existent, apply false to the callback function |
+| force | <code>boolean</code> | ***optional*** voided: feature is removed |
 | fn | <code>function</code> | ***optional*** run a callback function after this component loaded and assign this particular dom selector as arguments |
 
 <a name="Keet+preserveAttributes"></a>
@@ -124,7 +126,7 @@ Observe this array for changes, once recieved make update to component. Operatio
 
 <a name="Keet+watchObj"></a>
 
-### keet.watchObj(instance, fn) ⇒ <code>context</code>
+### keet.watchObj(instance, set, prop) ⇒ <code>context</code>
 Observe an object for changes in properties, once recieved delegate to a function callback
 
 **Kind**: instance method of <code>[Keet](#Keet)</code>  
@@ -132,7 +134,19 @@ Observe an object for changes in properties, once recieved delegate to a functio
 | Param | Type | Description |
 | --- | --- | --- |
 | instance | <code>object</code> | obj to watch |
-| fn | <code>function</code> | the function call once observe property changed, arguments pass to the  function; (1st) the property attribute, (2nd) old value, (3rd) new value |
+| set | <code>function</code> &#124; <code>string</code> | the function call once observe property changed, arguments pass to the  function; (1st) the property attribute, (2nd) old value, (3rd) new value. If it a string it pass to Keet.prototype.set |
+| prop | <code>string</code> | the instance property to watch |
+
+<a name="Keet+watchDistict"></a>
+
+### keet.watchDistict(instance) ⇒ <code>context</code>
+Watch an object attributes and make update to components once a value changed
+
+**Kind**: instance method of <code>[Keet](#Keet)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| instance | <code>object</code> | the object instance to watch |
 
 <a name="Keet+unWatch"></a>
 
@@ -157,6 +171,20 @@ Set value for this component instance from an array of objects
 | array | <code>object</code> | instance of the array |
 | templateString | <code>string</code> | the template string i.e ```<li>{{index}} name:{{name}} age:{{age}}</li>```. Each handlebar is the reference to attribute in the ***array*** objects |
 | isAppend | <code>boolean</code> | this value assign programmatically by other prototypes, avoid declaring this parameter |
+
+<a name="Keet+evented"></a>
+
+### keet.evented(index, selector, value, eventObj) ⇒ <code>context</code>
+Event selector for child elements
+
+**Kind**: instance method of <code>[Keet](#Keet)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| index | <code>number</code> | the index target for event |
+| selector | <code>string</code> | the selector |
+| value | <code>string</code> | the selector value |
+| eventObj | <code>object</code> | the event object to assigned, i.e ```{ click: true }```, which will trigger click event |
 
 <a name="Keet+update"></a>
 
