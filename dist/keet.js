@@ -83,12 +83,12 @@ function Keet(tagName, context) {
   ,   genElement = function(child){
         var tempDiv = document.createElement('div')
         var cloneChild = copy(child)
-        delete cloneChild.value
+        delete cloneChild.template
         delete cloneChild.tag
         delete cloneChild.click
         delete cloneChild.style
         delete cloneChild['k-bind']
-        var s = tag(child.tag, child.value ? child.value : '', cloneChild, child.style)
+        var s = tag(child.tag, child.template ? child.template : '', cloneChild, child.style)
         tempDiv.innerHTML = s
         if(child.tag === 'input'){
           if (child.click) tempDiv.childNodes[0].click()
@@ -150,10 +150,9 @@ function Keet(tagName, context) {
   * render component to DOM
   */
 
-  this.render = function(appObj){
+  this.render = function(){
     var ele = getId(ctx.el, ctx.uid)
-    var elArr = parseStr(appObj, true)
-
+    var elArr = parseStr(ctx.base, true)
     for (var i = 0; i < elArr.length; i++) {
       ele.appendChild(elArr[i])
     }
@@ -170,7 +169,7 @@ function Keet(tagName, context) {
 
   this.bind = function(type, fn){
     var ele = getId(ctx.el, ctx.uid)
-    ele.addEventListener(type, fn, false)
+    ele.addEventListener(type, ctx.base ? fn.bind(ctx.base) : fn, false)
   }
 
   var watcher = function(instance, index){
@@ -319,14 +318,15 @@ Keet.prototype.link = function(id, value) {
   if (argv.length === 1) this.el = argv[0]
   else if (argv.length === 2 && !this.tmpl) {
     this.el = argv[0]
-    this.render(argv[1])
+    this.base = argv[1]
+    this.render()
   } else if (argv.length === 2 && this.tmpl) {
     kLink = this.tmpl.indexOf(' k-link="')
     if(~kLink) {
       this.tmpl.splice(kLink, 2, ' id="', argv[0])
     }
     this.el = argv[0]
-    this.render(argv[1])
+    this.render()
   } else {
     throw('component already declared')
   }

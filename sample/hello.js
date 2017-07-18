@@ -1,21 +1,17 @@
-var keet = new Keet
+var app = new Keet
 
-
-var app = { template: '{{hello}}{{info}}' }
-
-keet.link('app', app)
-
-var hello = {
+var c = { 
+	template: '{{hello}}{{info}}',
+	hello: {
 	tag: 'input',
-	id: 'testCheck',
-	'k-bind': function(ev){
-		info.value = ev.target.value
+		'k-bind'(ev){
+			this.info.template = ev.target.value
+		}
+	},
+	info: {
+		tag: 'span',
+		template: ''
 	}
 }
 
-var info = {
-	tag: 'span',
-	value: '',
-}
-
-keet.compose(app)
+app.link('app', c)
