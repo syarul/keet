@@ -446,6 +446,7 @@ function Keet(tagName, context) {
   }
 
   var updateElem = function(oldElem, newElem){
+    // console.log(oldElem)
     var oldArr = [], newArr = []
     oldArr.push(oldElem)
     newArr.push(newElem)

@@ -8,10 +8,10 @@
  * Released under the MIT License.
  */
 'use strict'
-// var cat = require('./cat')
-// var copy = require('./copy')
+var cat = require('./cat')
+var copy = require('./copy')
 
-// module.exports = Keet
+module.exports = Keet
 
 function Keet(tagName, context) {
   var ctx = this
