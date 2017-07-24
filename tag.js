@@ -18,6 +18,7 @@ var tag = function() {
           te.push(attr)
           te.push(':')
           te.push(a[3][attr])
+          te.push(';')
         }
         te.push('"')
         ret.splice.apply(ret, te)

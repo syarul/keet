@@ -8,10 +8,10 @@
  * Released under the MIT License.
  */
 'use strict'
-var cat = require('./cat')
-var copy = require('./copy')
+// var cat = require('./cat')
+// var copy = require('./copy')
 
-module.exports = Keet
+// module.exports = Keet
 
 function Keet(tagName, context) {
   var ctx = this
@@ -409,6 +409,7 @@ function Keet(tagName, context) {
   }
 
   var updateElem = function(oldElem, newElem){
+    // console.log(oldElem)
     var oldArr = [], newArr = []
     oldArr.push(oldElem)
     newArr.push(newElem)
