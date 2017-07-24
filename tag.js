@@ -4,7 +4,10 @@ var tag = function() {
       ret = ['<', a[0], '>', a[1], '</', a[0], '>']
     if (a.length > 2 && typeof a[2] === 'object') {
       for (attr in a[2]) {
-        ret.splice(2, 0, ' ', attr, '="', a[2][attr], '"')
+        if(typeof a[2][attr] === 'boolean' && a[2][attr])
+          ret.splice(2, 0, ' ', attr)
+        else
+          ret.splice(2, 0, ' ', attr, '="', a[2][attr], '"')
       }
     }
     if (a.length > 3 && typeof a[3] === 'object') {

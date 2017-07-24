@@ -20,11 +20,10 @@ function Keet(tagName, context) {
   ,   isDoc = (function() {
         return typeof document == 'object' ? true : false
       }())
-  ,   getId = function(id, uid) {
+  ,   getId = function(id) {
         var ret        
         if (isDoc) {
             ret = document.getElementById(id)
-            if (!ret && uid) ret = document.querySelector(cat('[k-link="', uid, '"]'))
         } else {
             throw ('Not a document object model.')
         }
@@ -50,18 +49,24 @@ function Keet(tagName, context) {
         delete cloneChild.tag
         delete cloneChild.click
         delete cloneChild.style
-        delete cloneChild['k-bind']
+        delete cloneChild.bind
+        for(var attr in cloneChild){
+          if(typeof cloneChild[attr] === 'function'){
+            delete cloneChild[attr]
+          }
+        }
         var s = tag(child.tag, child.template ? child.template : '', cloneChild, child.style)
         tempDiv.innerHTML = s
         if(child.tag === 'input'){
           if (child.click) tempDiv.childNodes[0].click()
-          if (child['k-bind']){ 
-            ctx.bind('input', child['k-bind'])
+          if (child.bind){
+            ctx.bind(child.bind.type, child.bind.fn)
           }
           if (child.checked) tempDiv.childNodes[0].checked = 'checked'
           else if(child.checked === false)
             tempDiv.childNodes[0].checked = false
         }
+        process_k_click(tempDiv)
         return tempDiv.childNodes[0]
       }
   ,   parseStr = function(appObj, watch){
@@ -71,50 +76,105 @@ function Keet(tagName, context) {
         ,   child
         ,   tempDiv
         ,   elemArr = []
-
         if(childs){
-          childs.forEach(function(c, index){
-            regc = c.replace(/{{([^{}]+)}}/g, '$1')
-            // skip tags which not being declared yet
-            if(context){
-              // check closure object
-              child = context[regc] ? context[regc] : false
-            } else {
-              // check if current  objectr has prop
-              child = appObj[regc]
-              // check global object
-              if(!child) child = testEval(regc) ? eval(regc) : false
-            }
-            if(child && typeof child === 'object'){
-              var newElement = genElement(child)
-              elemArr.push(newElement)
-            } else if(!child){
-              tempDiv = document.createElement('div')
-              tempDiv.innerHTML = c
-              elemArr.push(tempDiv.childNodes[0])
-            }
 
-            // watch object state
-            if(watch && child) {
-              watcher(child, index)
-            }
-          })
+          if(Array.isArray(appObj.list)) {
+              var arrProps = str.match(/{{([^{}]+)}}/g, '$1'), tmplStr = '', tmpl
+              appObj.list.forEach(function(r) {
+                tmpl = str
+                arrProps.forEach(function(s) {
+                  var rep = s.replace(/{{([^{}]+)}}/g, '$1')
+                  tmpl = tmpl.replace(/{{([^{}]+)}}/, r[rep])
+                })
+                tempDiv = document.createElement('div')
+                tempDiv.innerHTML = tmpl
+                process_k_click(tempDiv)
+                elemArr.push(tempDiv.childNodes[0])
+              })
+              watcher3(appObj.list)
+          } else {
+            childs.forEach(function(c, index){
+              regc = c.replace(/{{([^{}]+)}}/g, '$1')
+              // skip tags which not being declared yet
+              if(context){
+                // check closure object
+                child = context[regc] ? context[regc] : false
+              } else {
+                // check if current  objectr has prop
+                child = appObj[regc]
+                // check global object
+                if(!child) child = testEval(regc) ? eval(regc) : false
+              }
+              if(child && typeof child === 'object'){
+                var newElement = genElement(child)
+                elemArr.push(newElement)
+              } else if(!child){
+                tempDiv = document.createElement('div')
+                tempDiv.innerHTML = c
+                elemArr.push(tempDiv.childNodes[0])
+              }
+
+              // watch object state
+              if(watch && child) {
+                watcher(child, index)
+              }
+            })
+          }
+
         } else {
           tempDiv = document.createElement('div')
           tempDiv.innerHTML = str
           elemArr.push(tempDiv.childNodes[0])
+          watcher2(appObj)
         }
         return elemArr
   }
-
-  this.uid = guid()
+  ,   process_k_click = function(kNode){
+        var listKnodeChild = []
+        if(kNode.hasChildNodes()){
+          loopChilds(listKnodeChild, kNode)
+          listKnodeChild.forEach(function(c, i){
+            if(c.nodeType === 1 && c.hasAttributes()){
+              var kStringSingle = c.getAttribute('k-click')
+              var KStringDouble = c.getAttribute('k-double-click')
+              var kString = KStringDouble || kStringSingle
+              var isDouble = KStringDouble ? true : false
+              if(kString){
+                var kFn = kString.split('(')
+                var kClick
+                if(kFn){
+                  kClick = testEval(ctx.base[kFn[0]]) ? eval(ctx.base[kFn[0]]) : false
+                  if(typeof kClick === 'function') processClickEvt(c, kClick, kFn, isDouble)
+                }
+                
+              }
+            }
+          })
+        }
+        listKnodeChild = []
+  }
+  ,   processClickEvt = function(c, kClick, kFn, isDouble) {
+        var click = isDouble ? 'dblclick' : 'click'
+        var rem = isDouble ? 'k-double-click' : 'k-click'
+        c.removeAttribute(rem)
+        c.addEventListener(click, function(evt){
+          var argv = []
+          argv.push(evt)
+          if(kFn) {
+            var v = kFn[1].slice(0, -1).split(',')
+            if(v) v.forEach(function(v){ argv.push(v) })
+          }
+          return kClick.apply(c, argv)
+        })
+  }
 
   /**
   * render component to DOM
   */
 
   this.render = function(){
-    var ele = getId(ctx.el, ctx.uid)
+    var ele = getId(ctx.el)
+    if(context) ctx.base = context
     var elArr = parseStr(ctx.base, true)
     for (var i = 0; i < elArr.length; i++) {
       ele.appendChild(elArr[i])
@@ -123,7 +183,7 @@ function Keet(tagName, context) {
   }
 
   this.update = function(appObj){
-    var ele = getId(ctx.el, ctx.uid)
+    var ele = getId(ctx.el)
     var elArr = parseStr(appObj, true)
     for (var i = 0; i < elArr.length; i++) {
       ele.replaceChild(elArr[i], ele.childNodes[i])
@@ -131,7 +191,7 @@ function Keet(tagName, context) {
   }
 
   this.bind = function(type, fn){
-    var ele = getId(ctx.el, ctx.uid)
+    var ele = getId(ctx.el)
     ele.addEventListener(type, ctx.base ? fn.bind(ctx.base) : fn, false)
   }
 
@@ -142,7 +202,7 @@ function Keet(tagName, context) {
         instance.unwatch(attr)
         obj = {}
         obj[idx] = n
-        ele = getId(ctx.el, ctx.uid)
+        ele = getId(ctx.el)
         if(idx !== 'click'){
           copyInstance = copy(instance)
           Object.assign(copyInstance, obj)
@@ -154,6 +214,165 @@ function Keet(tagName, context) {
         watcher(instance, index)
       })
     }
+  }
+
+  var watcher2 = function(instance){
+    var obj, attr, ele, copyInstance, newElem
+    for (attr in instance){
+      instance.watch(attr, function(idx, o, n) {
+        instance.unwatch(attr)
+        obj = {}
+        obj[idx] = n
+        ele = getId(ctx.el)
+        if(idx !== 'click'){
+          copyInstance = copy(instance)
+          Object.assign(copyInstance, obj)
+          newElem = genElement(copyInstance)
+          updateElem(ele, newElem)
+        } else {
+          ele.click()
+        }
+        watcher2(instance)
+      })
+    }
+  }
+
+  var watcher3 = function(instance){
+    var pristineLen = copy(instance), opsList, op, query
+    
+    opsList = function() { return ['push', 'pop', 'shift', 'unshift', 'splice', 'update'] }
+
+    op = opsList()
+
+    query = function(ops, argvs) {
+      op = []
+      if(ops === 'push')
+        arrProtoPush(argvs[0])
+      else if(ops === 'pop')
+        arrProtoPop()
+      else if(ops === 'shift')
+        arrProtoShift()
+      else if(ops === 'unshift')
+        arrProtoUnShift.apply(null, argvs)
+      else if(ops === 'splice')
+        arrProtoSplice.apply(null, argvs)
+      else
+        arrProtoUpdate.apply(null, argvs)
+      op = opsList()
+      pristineLen = copy(instance)
+    }
+
+    op.forEach(function(f, i, r){
+      instance[f] = function() {
+        if(op.length > 0) {
+          var fargv = [].slice.call(arguments)
+          Array.prototype[f].apply(this, fargv)
+          //propagate splice with single arguments
+          if(fargv.length === 1 && f === 'splice')
+            fargv.push(pristineLen.length - fargv[0])
+          query(f, fargv)
+        }
+      }
+    })
+  }
+
+  var arrProtoPush = function(newObj){
+    var ele = getId(ctx.el)
+    ele.appendChild(genTemplate(newObj))
+  }
+
+  var arrProtoPop = function(){
+    var ele = getId(ctx.el)
+    if(ele.childNodes.length) {
+      ele.removeChild(ele.lastChild)
+    }
+  }
+
+  var arrProtoShift = function(){
+    var ele = getId(ctx.el)
+    if(ele.childNodes.length) {
+      ele.removeChild(ele.firstChild)
+    }
+  }
+
+  var arrProtoUnShift = function(){
+    var argv = [].slice.call(arguments)
+    var ele = getId(ctx.el)
+    var i = argv.length - 1
+    while(i > -1) {
+      ele.insertBefore(genTemplate(argv[i]), ele.firstChild)
+      i--
+    }
+  }
+
+  var arrProtoSplice = function(){
+    var ele = getId(ctx.el)
+    ,   childLen
+    ,   len
+    ,   i
+    ,   j
+    ,   k
+    ,   c
+    ,   tempDivChildLen
+    ,   tempDiv
+    ,   argv = [].slice.call(arguments)
+    ,   start = [].shift.call(argv)
+    ,   count
+    if(typeof argv[0] === 'number'){
+      count = [].shift.call(argv)
+    }
+
+    tempDiv = document.createElement('div')
+    if(argv.length){
+      i = 0
+      while(i < argv.length){
+        tempDiv.appendChild(genTemplate(argv[i]))
+        i++
+      }
+    }
+
+    childLen = copy(ele.childNodes.length)
+    tempDivChildLen = copy(tempDiv.childNodes.length)
+    if (count && count > 0) {
+      for (i = start; i < childLen + 1; i++) {
+        len = start + count
+        if (i < len) {
+          ele.removeChild(ele.childNodes[start])
+          if (i === len - 1 && tempDivChildLen > 0) {
+            c = start - 1
+            for (j = start; j < tempDivChildLen + start; j++) {
+              insertAfter(tempDiv.childNodes[0], ele.childNodes[c], ele)
+              c++
+            }
+          }
+        }
+      }
+    } else if (argv.length) {
+      c = start - 1
+      for (k = start; k < tempDivChildLen + start; k++) {
+        insertAfter(tempDiv.childNodes[0], ele.childNodes[c], ele)
+        c++
+      }
+    }
+  }
+
+  var arrProtoUpdate = function(){
+    var argv = [].slice.call(arguments)
+    ,   ele = getId(ctx.el)
+    ,   index = [].shift.call(argv)
+    updateElem(ele.childNodes[index], genTemplate(argv[0]))
+  }
+
+  var genTemplate = function(obj){
+    var arrProps = ctx.base.template.match(/{{([^{}]+)}}/g, '$1'),  tmpl, tempDiv, ele
+    tmpl = ctx.base.template
+    arrProps.forEach(function(s) {
+      var rep = s.replace(/{{([^{}]+)}}/g, '$1')
+      tmpl = tmpl.replace(/{{([^{}]+)}}/, obj[rep])
+    })
+    tempDiv = document.createElement('div')
+    tempDiv.innerHTML = tmpl
+    return tempDiv.childNodes[0]
   }
 
   var loopChilds = function(arr, elem) {
@@ -177,19 +396,8 @@ function Keet(tagName, context) {
     }
     for (var iAttr in output) {
       if(oldNode.attributes[iAttr] && oldNode.attributes[iAttr].name === iAttr && oldNode.attributes[iAttr].value != output[iAttr]){
-        if(iAttr === 'checked'){
-          if(output[iAttr] === 'true'){
-            oldNode.checked = true
-            oldNode.setAttribute(iAttr, 'checked')
-          } else{
-            oldNode.checked = false
-            oldNode.setAttribute(iAttr, false)
-          }
-        } else if(iAttr === 'click'){
-            oldNode.click()
-        }
-        else
-          oldNode.setAttribute(iAttr, output[iAttr])
+        if(iAttr === 'click') oldNode.click()
+        else oldNode.setAttribute(iAttr, output[iAttr])
       }
     }
     output = {}
@@ -265,8 +473,8 @@ function Keet(tagName, context) {
     })
   }
 
-  if(!Array.prototype.assign){
-    Object.defineProperty(Array.prototype, 'assign', {
+  if(!Array.prototype.update){
+    Object.defineProperty(Array.prototype, 'update', {
         enumerable: false,
         writable: true,
         value: function(index, value) { 
@@ -277,22 +485,16 @@ function Keet(tagName, context) {
 }
 
 Keet.prototype.link = function(id, value) {
-  var argv = [].slice.call(arguments), kLink
-  if (argv.length === 1) this.el = argv[0]
-  else if (argv.length === 2 && !this.tmpl) {
-    this.el = argv[0]
-    this.base = argv[1]
-    this.render()
-  } else if (argv.length === 2 && this.tmpl) {
-    kLink = this.tmpl.indexOf(' k-link="')
-    if(~kLink) {
-      this.tmpl.splice(kLink, 2, ' id="', argv[0])
+  var argv = [].slice.call(arguments)
+
+  this.el = argv[0]
+  if (argv.length === 2){
+    if(!argv[1].tag){
+      argv[1].tag = document.getElementById(id).tagName.toLowerCase()
     }
-    this.el = argv[0]
-    this.render()
-  } else {
-    throw('component already declared')
+    this.base = argv[1]
   }
+  this.render()
   return this
 }
 
