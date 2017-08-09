@@ -10,6 +10,7 @@
 'use strict'
 var cat = require('./cat')
 var copy = require('./copy')
+var tag = require('./tag')
 
 module.exports = Keet
 
