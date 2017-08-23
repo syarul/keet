@@ -90,6 +90,8 @@ function Keet(tagName, context) {
                 tempDiv = document.createElement('div')
                 tempDiv.innerHTML = tmpl
                 process_k_click(tempDiv)
+                process_k_hover(tempDiv)
+                process_k_out(tempDiv)
                 elemArr.push(tempDiv.childNodes[0])
               })
               watcher3(appObj.list)
@@ -168,6 +170,74 @@ function Keet(tagName, context) {
           return kClick.apply(c, argv)
         })
   }
+  ,   process_k_hover = function(kNode){
+        var listKnodeChild = []
+        if(kNode.hasChildNodes()){
+          loopChilds(listKnodeChild, kNode)
+          listKnodeChild.forEach(function(c, i){
+            if(c.nodeType === 1 && c.hasAttributes()){
+              var kString = c.getAttribute('k-hover')
+              if(kString){
+                var kFn = kString.split('(')
+                var kHover
+                if(kFn){
+                  kHover = testEval(ctx.base[kFn[0]]) ? eval(ctx.base[kFn[0]]) : false
+                  if(typeof kHover === 'function') processHoverEvt(c, kHover, kFn)
+                }
+                
+              }
+            }
+          })
+        }
+        listKnodeChild = []
+  }
+  ,   processHoverEvt = function(c, kHover, kFn) {
+        c.addEventListener('mouseover', function(evt){
+          var argv = []
+          argv.push(evt)
+          if(kFn) {
+            var v = kFn[1].slice(0, -1).split(',')
+            if(v) v.forEach(function(v){ argv.push(v) })
+          }
+          return kHover.apply(c, argv)
+        })
+  }
+  ,   process_k_out = function(kNode){
+        var listKnodeChild = []
+        if(kNode.hasChildNodes()){
+          loopChilds(listKnodeChild, kNode)
+          listKnodeChild.forEach(function(c, i){
+            if(c.nodeType === 1 && c.hasAttributes()){
+              var kString = c.getAttribute('k-out')
+              if(kString){
+                var kFn = kString.split('(')
+                var kOut
+                if(kFn){
+                  kOut = testEval(ctx.base[kFn[0]]) ? eval(ctx.base[kFn[0]]) : false
+                  if(typeof kOut === 'function') processOutEvt(c, kOut, kFn)
+                }
+                
+              }
+            }
+          })
+        }
+        listKnodeChild = []
+  }
+  ,   processOutEvt = function(c, kOut, kFn) {
+        c.addEventListener('mouseout', function(evt){
+          var argv = []
+          argv.push(evt)
+          if(kFn) {
+            var v = kFn[1].slice(0, -1).split(',')
+            if(v) v.forEach(function(v){ argv.push(v) })
+          }
+          return kOut.apply(c, argv)
+        })
+  }
+
+  this.rewriteContext = function(context){
+    context = typeof context === 'object' ? context : {}
+  }
 
   /**
   * render component to DOM
@@ -175,6 +245,13 @@ function Keet(tagName, context) {
 
   this.render = function(){
     var ele = getId(ctx.el)
+    if(!ele){
+      console.warn('error: cannot find DOM, waiting')
+      setTimeout(function(){
+        ctx.render()
+      }, 100)
+      return false
+    }
     if(context) ctx.base = context
     var elArr = parseStr(ctx.base, true)
     for (var i = 0; i < elArr.length; i++) {
@@ -267,6 +344,8 @@ function Keet(tagName, context) {
       instance[f] = function() {
         if(op.length > 0) {
           var fargv = [].slice.call(arguments)
+          if(f === 'update')
+            fargv[1] = Object.assign(pristineLen[fargv[0]], fargv[1])
           Array.prototype[f].apply(this, fargv)
           //propagate splice with single arguments
           if(fargv.length === 1 && f === 'splice')
@@ -390,6 +469,7 @@ function Keet(tagName, context) {
   }
 
   var nodeUpdate = function(newNode, oldNode) {
+    if(!newNode) return false
     var oAttr = newNode.attributes
     var output = {};
     for(var i = oAttr.length - 1; i >= 0; i--) {
@@ -405,21 +485,22 @@ function Keet(tagName, context) {
   }
 
   var nodeUpdateHTML = function(newNode, oldNode) {
+    if(!newNode) return false
     if(newNode.nodeValue !== oldNode.nodeValue)
         oldNode.nodeValue = newNode.nodeValue
   }
 
   var updateElem = function(oldElem, newElem){
-    // console.log(oldElem)
     var oldArr = [], newArr = []
     oldArr.push(oldElem)
     newArr.push(newElem)
     loopChilds(oldArr, oldElem)
     loopChilds(newArr, newElem)
     if(oldArr.length !== newArr.length){
+      // console.warn('old element has different length to the new element')
       // if nodeList length is different, replace the HTMLString
-      oldElem.innerHTML = newElem.innerHTML
-      return false
+      // oldElem.innerHTML = newElem.innerHTML
+      // return false
     }
 
     oldArr.forEach(function(ele, idx, arr) {
@@ -485,6 +566,11 @@ function Keet(tagName, context) {
     })
   }
 }
+
+// Keet.prototype.bindContext = function(instance, child) {
+//   this.writeContext(instance[child])
+//   return this
+// }
 
 Keet.prototype.link = function(id, value) {
   var argv = [].slice.call(arguments)

@@ -1,11 +1,11 @@
 var app = new Keet
 
 var c = { 
-	template: '<li>{{first}} {{last}}</li>',
+	template: '<li style="background:{{bg}}">{{first}} {{last}}</li>',
 	list: [
-		{first: 'john', last: 'doe'},
-		{first: 'rocky', last: 'bulba'},
-		{first: 'james', last: 'king'}
+		{first: 'john', last: 'doe', bg: 'blue'},
+		{first: 'rocky', last: 'bulba', bg: 'yellow'},
+		{first: 'james', last: 'king', bg: 'green'}
 	]
 }
 
@@ -27,7 +27,7 @@ setTimeout(function(){
 	// c.list.unshift({first: 'john', last: 'doe'}, {first: 'rocky', last: 'bulba'})
 	// c.list.splice(0, 2)
 	// c.list.splice(1, 1, {first: 'awil', last: 'awile'})
-	c.list.update(2, {first: 'awil', last: 'awile'})
+	c.list.update(2, {bg: 'red'})
 }, 2000)
 
 // setTimeout(function(){
