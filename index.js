@@ -68,6 +68,8 @@ function Keet(tagName, context) {
             tempDiv.childNodes[0].checked = false
         }
         process_k_click(tempDiv)
+        process_k_hover(tempDiv)
+        process_k_out(tempDiv)
         return tempDiv.childNodes[0]
       }
   ,   parseStr = function(appObj, watch){
@@ -127,6 +129,9 @@ function Keet(tagName, context) {
         } else {
           tempDiv = document.createElement('div')
           tempDiv.innerHTML = str
+          process_k_click(tempDiv)
+          process_k_hover(tempDiv)
+          process_k_out(tempDiv)
           elemArr.push(tempDiv.childNodes[0])
           watcher2(appObj)
         }
@@ -192,6 +197,7 @@ function Keet(tagName, context) {
         listKnodeChild = []
   }
   ,   processHoverEvt = function(c, kHover, kFn) {
+        c.removeAttribute('k-hover')
         c.addEventListener('mouseover', function(evt){
           var argv = []
           argv.push(evt)
@@ -224,6 +230,7 @@ function Keet(tagName, context) {
         listKnodeChild = []
   }
   ,   processOutEvt = function(c, kOut, kFn) {
+        c.removeAttribute('k-out')
         c.addEventListener('mouseout', function(evt){
           var argv = []
           argv.push(evt)
