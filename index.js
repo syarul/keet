@@ -253,10 +253,7 @@ function Keet(tagName, context) {
   this.render = function(){
     var ele = getId(ctx.el)
     if(!ele){
-      console.warn('error: cannot find DOM, waiting')
-      setTimeout(function(){
-        ctx.render()
-      }, 100)
+      console.warn('error: cannot find DOM with id: '+ctx.el+' skip rendering..')
       return false
     }
     if(context) ctx.base = context
@@ -351,6 +348,7 @@ function Keet(tagName, context) {
       instance[f] = function() {
         if(op.length > 0) {
           var fargv = [].slice.call(arguments)
+          if(!pristineLen[fargv[0]]) return false
           if(f === 'update')
             fargv[1] = Object.assign(pristineLen[fargv[0]], fargv[1])
           Array.prototype[f].apply(this, fargv)

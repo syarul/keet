@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Keet.js</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"/>
+  <style>
+    body
+    {
+      padding: 0;
+      margin: 0;
+    }
+    #navlist
+    {
+    padding: 3px 0;
+    margin-left: 0;
+    border-bottom: 1px solid #778;
+    font: bold 12px Verdana, sans-serif;
+    }
+
+    #navlist li
+    {
+    list-style: none;
+    margin: 0;
+    display: inline;
+    }
+
+    #navlist li span
+    {
+    cursor: pointer;
+    padding: 3px 0.5em;
+    //margin-left: 3px;
+    border: 1px solid #778;
+    border-bottom: none;
+    background: #DDE;
+    text-decoration: none;
+    }
+
+    #navlist li span:link { color: #448; }
+    #navlist li span:visited { color: #667; }
+
+    #navlist li span:hover
+    {
+    color: #000;
+    background: #AAE;
+    border-color: #227;
+    }
+
+    #navlist li span#current
+    {
+    background: white;
+    border-bottom: 1px solid white;
+    }
+  </style>
+</head>
+<body>
+  <div id="navcontainer">
+  <ul id="navlist">
+  <li id="active"><span id="current">Item one</span></li>
+  <li><span>Item two</span></li>
+  <li><span>Item three</span></li>
+  <li><span>Item four</span></li>
+  <li><span>Item five</span></li>
+</ul>
+</div>
+</html>

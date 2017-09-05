@@ -6,6 +6,8 @@ var tag = function() {
       for (attr in a[2]) {
         if(typeof a[2][attr] === 'boolean' && a[2][attr])
           ret.splice(2, 0, ' ', attr)
+        else if(attr === 'class' && Array.isArray(a[2][attr]))
+          ret.splice(2, 0, ' ', attr, '="', a[2][attr].join(' ').trim(), '"')
         else
           ret.splice(2, 0, ' ', attr, '="', a[2][attr], '"')
       }
