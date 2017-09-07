@@ -242,8 +242,9 @@ function Keet(tagName, context) {
         })
   }
 
-  this.rewriteContext = function(context){
-    context = typeof context === 'object' ? context : {}
+  this.flush = function(component){
+    var ele = getId(component)
+    if(ele) ele.innerHTML = ''
   }
 
   /**
@@ -571,11 +572,6 @@ function Keet(tagName, context) {
     })
   }
 }
-
-// Keet.prototype.bindContext = function(instance, child) {
-//   this.writeContext(instance[child])
-//   return this
-// }
 
 Keet.prototype.link = function(id, value) {
   var argv = [].slice.call(arguments)
