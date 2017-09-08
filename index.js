@@ -67,6 +67,7 @@ function Keet(tagName, context) {
           else if(child.checked === false)
             tempDiv.childNodes[0].checked = false
         }
+        process_on_change(tempDiv)
         process_k_click(tempDiv)
         process_k_hover(tempDiv)
         process_k_out(tempDiv)
@@ -91,6 +92,7 @@ function Keet(tagName, context) {
                 })
                 tempDiv = document.createElement('div')
                 tempDiv.innerHTML = tmpl
+                process_on_change(tempDiv)
                 process_k_click(tempDiv)
                 process_k_hover(tempDiv)
                 process_k_out(tempDiv)
@@ -129,6 +131,7 @@ function Keet(tagName, context) {
         } else {
           tempDiv = document.createElement('div')
           tempDiv.innerHTML = str
+          process_on_change(tempDiv)
           process_k_click(tempDiv)
           process_k_hover(tempDiv)
           process_k_out(tempDiv)
@@ -137,6 +140,27 @@ function Keet(tagName, context) {
         }
         return elemArr
   }
+
+  ,   process_on_change = function(kNode){
+        var listKnodeChild = []
+        if(kNode.hasChildNodes()){
+          loopChilds(listKnodeChild, kNode)
+          listKnodeChild.forEach(function(c, i){
+            if(c.nodeType === 1 && c.hasAttributes()){
+              if(c.getAttribute('type') === 'file' && c.tagName === 'INPUT'){
+                var change = testEval(ctx.base['change']) ? eval(ctx.base['change']) : false
+                if(typeof change === 'function') {
+                  c.addEventListener('change', function(evt){
+                    return change.apply(c, [evt])
+                  })
+                }
+              }
+            }
+          })
+        }
+        listKnodeChild = []
+  }
+
   ,   process_k_click = function(kNode){
         var listKnodeChild = []
         if(kNode.hasChildNodes()){
@@ -240,6 +264,11 @@ function Keet(tagName, context) {
           }
           return kOut.apply(c, argv)
         })
+  }
+
+  this.vdom = function(){
+    var ele = getId(ctx.el)
+    if(ele) return ele
   }
 
   this.flush = function(component){
