@@ -51,6 +51,7 @@ function Keet(tagName, context) {
         delete cloneChild.click
         delete cloneChild.style
         delete cloneChild.bind
+        delete cloneChild.__ref__
         for(var attr in cloneChild){
           if(typeof cloneChild[attr] === 'function'){
             delete cloneChild[attr]
