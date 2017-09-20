@@ -291,6 +291,10 @@ function Keet(tagName, context) {
     var elArr = parseStr(ctx.base, true)
     for (var i = 0; i < elArr.length; i++) {
       ele.appendChild(elArr[i])
+
+      if(i === elArr.length - 1){
+        document.addEventListener('_loaded', window._loaded && typeof window._loaded === 'function' ? window._loaded(ctx.el) : null, false)
+      }
     }
 
   }
@@ -300,6 +304,9 @@ function Keet(tagName, context) {
     var elArr = parseStr(appObj, true)
     for (var i = 0; i < elArr.length; i++) {
       ele.replaceChild(elArr[i], ele.childNodes[i])
+      if(i === elArr.length - 1){
+        document.addEventListener('_update', window._update && typeof window._update === 'function' ? window._update(ctx.el) : null, false)
+      }
     }
   }
 
