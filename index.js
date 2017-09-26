@@ -515,6 +515,7 @@ function Keet(tagName, context) {
     if(!newNode) return false
     var oAttr = newNode.attributes
     var output = {};
+
     for(var i = oAttr.length - 1; i >= 0; i--) {
        output[oAttr[i].name] = oAttr[i].value
     }
@@ -524,6 +525,10 @@ function Keet(tagName, context) {
         else oldNode.setAttribute(iAttr, output[iAttr])
       }
     }
+    if(oldNode.textContent  === "" && newNode.textContent ){
+      oldNode.textContent = newNode.textContent
+    }
+
     output = {}
   }
 
