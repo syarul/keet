@@ -4,12 +4,7 @@ var tag = function() {
       ret = ['<', a[0], '>', a[1], '</', a[0], '>']
     if (a.length > 2 && typeof a[2] === 'object') {
       for (attr in a[2]) {
-        if(typeof a[2][attr] === 'boolean' && a[2][attr])
-          ret.splice(2, 0, ' ', attr)
-        else if(attr === 'class' && Array.isArray(a[2][attr]))
-          ret.splice(2, 0, ' ', attr, '="', a[2][attr].join(' ').trim(), '"')
-        else
-          ret.splice(2, 0, ' ', attr, '="', a[2][attr], '"')
+        ret.splice(2, 0, ' ', attr, '="', a[2][attr], '"')
       }
     }
     if (a.length > 3 && typeof a[3] === 'object') {
@@ -20,7 +15,6 @@ var tag = function() {
           te.push(attr)
           te.push(':')
           te.push(a[3][attr])
-          te.push(';')
         }
         te.push('"')
         ret.splice.apply(ret, te)

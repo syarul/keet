@@ -8,9 +8,88 @@
   <script src="../copy.js"> </script>
   <script src="../tag.js"> </script>
   <script src="../dist/keet.js"> </script>
+  <style>
+    #app {
+      width: 104px;
+      height: 56px;
+      margin: 100px auto;
+    }
+
+    #app svg {
+      position: absolute;
+    }
+
+    @keyframes blink {
+      0% {
+        transform: scale(0.4);
+        opacity: 0.1;
+      }
+      40% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      90% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 0.1;
+      }
+    }
+
+    #app svg:first-child {
+      animation: blink ease-in 1.5s infinite;
+    }
+
+    #app svg:nth-child(2) {
+      animation: blink ease-in 1.5s infinite 0.1s;
+    }
+
+    #app svg:nth-child(3) {
+      //transform: scale(0.4);
+      animation: blink ease-in 1.5s infinite 0.2s;
+    }
+
+    #app svg:nth-child(4) {
+      animation: blink ease-in 1.5s infinite 0.3s;
+    }
+
+    #app svg:nth-child(5) {
+      animation: blink ease-in 1.5s infinite 0.4s;
+    }
+
+    #app svg:nth-child(6) {
+      animation: blink ease-in 1.5s infinite 0.5s;
+    }
+  </style>
 </head>
 <body>
   <div id="app"></div>
+  <script src="./app.js"> </script>
+  <!-- <script src="./array-observable.js"> </script> -->
+  <!-- <script src="./arraySplice2.js"> </script> -->
+  <!-- <script src="./array.js"> </script> -->
+  <!-- <script src="./array-perf-test.js"> </script> -->
+  <!-- <script src="./array-remove-insert.js"> </script> -->
+  <!-- <script src="./closure.js"> </script> -->
   <!-- <script src="./hello.js"> </script> -->
-  <script src="./array.js"> </script>
+  <!-- <script src="./input-binding.js"> </script> -->
+  <!-- <script src="./k-data.js"> </script> -->
+  <!-- <script src="./template.js"> </script> -->
+  <!-- <script src="./watch-object.js"> </script> -->
+  <!-- <script src="./class-change.js"> </script> -->
+  <!-- <script src="./k-click.js"> </script> -->
+  <!-- <script src="./svg-loader.js"> </script> -->
+  <!-- <script src="./vDomLoaded.js"> </script> -->
+  <!-- <script src="./vTree.js"> </script> -->
+  <!-- <script src="./link.js"> </script> -->
+  <!-- <script src="./array2.js"> </script> -->
+  <!-- <script src="./array3.js"> </script> -->
+  <!-- <script src="./array4.js"> </script> -->
+  <!-- <script src="./ele.js"> </script> -->
+  <!-- <script src="./ele2.js"> </script> -->
+  <!-- <script src="./ele3.js"> </script> -->
+  <!-- <script src="./arrayAdv.js"> </script> -->
+</body>
 </html>
