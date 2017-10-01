@@ -74,7 +74,8 @@ class Main extends App {
   }
 
   _pointerEvent(childs){
-     childs.map(c => this.store.getActiveState ? this.addClass(c, 'none') : this.removeClass(c, 'none'))
+    childs.map(c => 
+      this.store.getActiveState ? this.addClass(c, 'none') : this.removeClass(c, 'none'))
   }
 
 }
@@ -83,7 +84,8 @@ const app = new Main
 
 const skip = filter('app/index')
 
-const sink = through((...args) => vpipe(...args, app, 'app', menu, dashboard))
+const sink = through({ objectMode: true }, (...args) => 
+  vpipe(...args, app, 'app', menu, dashboard))
 
 stream.pipe(skip).pipe(sink)
 
