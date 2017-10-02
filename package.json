@@ -1,9 +1,11 @@
 {
   "name": "keet",
   "version": "2.0.1",
-  "description": "An API for web application",
+  "description": "A solution to write clean interface for web application",
   "main": "index.js",
   "scripts": {
+    "dist": "browserify index.js --standalone Keet > dist/keet.js",
+    "distcompress": "browserify index.js --standalone Keet | uglifyjs > dist/keet.min.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

@@ -1,9 +1,9 @@
 var gulp = require('gulp')
 var shell = require('gulp-shell')
 var livereload = require("gulp-livereload")
-var run = require('tape-run')
+// var run = require('tape-run')
 var browserify = require('browserify')
-var tapSpec = require('tap-spec')
+// var tapSpec = require('tap-spec')
 
 var stream = require('stream');
 
@@ -21,28 +21,28 @@ gulp.task('watch', function() {
   gulp.watch('./index.js', ['main'])
 })
 
-var x = false
+// var x = false
 
-gulp.task('test', function() {
-  browserify(__dirname + '/test/test.js')
-  .bundle()
-  .pipe(run())
-  .on('results', function(results){
-    if(results.ok) x = true
-  })
-  .pipe(tapSpec())
-  .pipe(process.stdout)
-})
+// gulp.task('test', function() {
+//   browserify(__dirname + '/test/test.js')
+//   .bundle()
+//   .pipe(run())
+//   .on('results', function(results){
+//     if(results.ok) x = true
+//   })
+//   .pipe(tapSpec())
+//   .pipe(process.stdout)
+// })
 
-gulp.task('cov', function() {
-  var stream = gulp.src('')
-    .pipe(shell('browserify -t coverify test/test.js | tape-run | coverify'))
+// gulp.task('cov', function() {
+//   var stream = gulp.src('')
+//     .pipe(shell('browserify -t coverify test/test.js | tape-run | coverify'))
 
-  stream.on('end', function(){
-    gulp.src('')
-    .pipe(shell('rm -f .source*'))
-  })
-})
+//   stream.on('end', function(){
+//     gulp.src('')
+//     .pipe(shell('rm -f .source*'))
+//   })
+// })
 
 process.on('exit', function() {
   if(!x) process.exit(1)

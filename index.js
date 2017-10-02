@@ -1,5 +1,5 @@
 /** 
- * Keet.js v2.0 Alpha release: https://github.com/syarul/keet
+ * Keet.js v2.0.1 Alpha release: https://github.com/syarul/keet
  * an API for web application
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -68,10 +68,8 @@ function Keet(tagName, context) {
           else if(child.checked === false)
             tempDiv.childNodes[0].checked = false
         }
+        process_event(tempDiv)
         process_on_change(tempDiv)
-        process_k_click(tempDiv)
-        process_k_hover(tempDiv)
-        process_k_out(tempDiv)
         return tempDiv.childNodes[0]
       }
   ,   parseStr = function(appObj, watch){
@@ -93,10 +91,8 @@ function Keet(tagName, context) {
                 })
                 tempDiv = document.createElement('div')
                 tempDiv.innerHTML = tmpl
+                process_event(tempDiv)
                 process_on_change(tempDiv)
-                process_k_click(tempDiv)
-                process_k_hover(tempDiv)
-                process_k_out(tempDiv)
                 elemArr.push(tempDiv.childNodes[0])
               })
               watcher3(appObj.list)
@@ -132,139 +128,65 @@ function Keet(tagName, context) {
         } else {
           tempDiv = document.createElement('div')
           tempDiv.innerHTML = str
+          process_event(tempDiv)
           process_on_change(tempDiv)
-          process_k_click(tempDiv)
-          process_k_hover(tempDiv)
-          process_k_out(tempDiv)
           elemArr.push(tempDiv.childNodes[0])
           watcher2(appObj)
         }
         return elemArr
   }
 
-  ,   process_on_change = function(kNode){
-        var listKnodeChild = []
-        if(kNode.hasChildNodes()){
-          loopChilds(listKnodeChild, kNode)
-          listKnodeChild.forEach(function(c, i){
-            if(c.nodeType === 1 && c.hasAttributes()){
-              if(c.getAttribute('type') === 'file' && c.tagName === 'INPUT'){
-                var change = testEval(ctx.base['change']) ? eval(ctx.base['change']) : false
-                if(typeof change === 'function') {
-                  c.addEventListener('change', function(evt){
-                    return change.apply(c, [evt])
-                  })
-                }
+  var process_event = function(kNode) {
+    var listKnodeChild = [], hask, evtName, evthandler, handler, isHandler, argv, i, atts, v
+    if (kNode.hasChildNodes()) {
+      loopChilds(listKnodeChild, kNode)
+      listKnodeChild.forEach(function(c, i) {
+        if (c.nodeType === 1 && c.hasAttributes()) {
+          for (i = 0, atts = c.attributes; i < atts.length; i++){
+            hask = /^k-/.test(atts[i].nodeName)
+            if(hask){
+              evtName = atts[i].nodeName.split('-')[1]
+              evthandler = atts[i].nodeValue
+              handler = evthandler.split('(')
+              isHandler = testEval(ctx.base[handler[0]]) ? eval(ctx.base[handler[0]]) : false
+              if(typeof isHandler === 'function') {
+                c.removeAttribute(atts[i].nodeName)
+                c.addEventListener(evtName, function(evt){
+                  argv = []
+                  argv.push(evt)
+                  
+                  v = handler[1].slice(0, -1).split(',')
+                  if(v) v.forEach(function(v){ argv.push(v) })
+                  
+                  return isHandler.apply(c, argv)
+                })
               }
             }
-          })
+          }
         }
-        listKnodeChild = []
+      })
+    }
+    listKnodeChild = []
   }
 
-  ,   process_k_click = function(kNode){
-        var listKnodeChild = []
-        if(kNode.hasChildNodes()){
-          loopChilds(listKnodeChild, kNode)
-          listKnodeChild.forEach(function(c, i){
-            if(c.nodeType === 1 && c.hasAttributes()){
-              var kStringSingle = c.getAttribute('k-click')
-              var KStringDouble = c.getAttribute('k-double-click')
-              var kString = KStringDouble || kStringSingle
-              var isDouble = KStringDouble ? true : false
-              if(kString){
-                var kFn = kString.split('(')
-                var kClick
-                if(kFn){
-                  kClick = testEval(ctx.base[kFn[0]]) ? eval(ctx.base[kFn[0]]) : false
-                  if(typeof kClick === 'function') processClickEvt(c, kClick, kFn, isDouble)
-                }
-                
-              }
+  , process_on_change = function(kNode) {    
+    var listKnodeChild = []
+    if (kNode.hasChildNodes()) {
+      loopChilds(listKnodeChild, kNode)
+      listKnodeChild.forEach(function(c, i) {
+        if (c.nodeType === 1 && c.hasAttributes()) {
+          if (c.getAttribute('type') === 'file' && c.tagName === 'INPUT') {
+            var change = testEval(ctx.base['change']) ? eval(ctx.base['change']) : false
+            if (typeof change === 'function') {
+              c.addEventListener('change', function(evt) {
+                return change.apply(c, [evt])
+              })
             }
-          })
-        }
-        listKnodeChild = []
-  }
-  ,   processClickEvt = function(c, kClick, kFn, isDouble) {
-        var click = isDouble ? 'dblclick' : 'click'
-        var rem = isDouble ? 'k-double-click' : 'k-click'
-        c.removeAttribute(rem)
-        c.addEventListener(click, function(evt){
-          var argv = []
-          argv.push(evt)
-          if(kFn) {
-            var v = kFn[1].slice(0, -1).split(',')
-            if(v) v.forEach(function(v){ argv.push(v) })
           }
-          return kClick.apply(c, argv)
-        })
-  }
-  ,   process_k_hover = function(kNode){
-        var listKnodeChild = []
-        if(kNode.hasChildNodes()){
-          loopChilds(listKnodeChild, kNode)
-          listKnodeChild.forEach(function(c, i){
-            if(c.nodeType === 1 && c.hasAttributes()){
-              var kString = c.getAttribute('k-hover')
-              if(kString){
-                var kFn = kString.split('(')
-                var kHover
-                if(kFn){
-                  kHover = testEval(ctx.base[kFn[0]]) ? eval(ctx.base[kFn[0]]) : false
-                  if(typeof kHover === 'function') processHoverEvt(c, kHover, kFn)
-                }
-                
-              }
-            }
-          })
         }
-        listKnodeChild = []
-  }
-  ,   processHoverEvt = function(c, kHover, kFn) {
-        c.removeAttribute('k-hover')
-        c.addEventListener('mouseover', function(evt){
-          var argv = []
-          argv.push(evt)
-          if(kFn) {
-            var v = kFn[1].slice(0, -1).split(',')
-            if(v) v.forEach(function(v){ argv.push(v) })
-          }
-          return kHover.apply(c, argv)
-        })
-  }
-  ,   process_k_out = function(kNode){
-        var listKnodeChild = []
-        if(kNode.hasChildNodes()){
-          loopChilds(listKnodeChild, kNode)
-          listKnodeChild.forEach(function(c, i){
-            if(c.nodeType === 1 && c.hasAttributes()){
-              var kString = c.getAttribute('k-out')
-              if(kString){
-                var kFn = kString.split('(')
-                var kOut
-                if(kFn){
-                  kOut = testEval(ctx.base[kFn[0]]) ? eval(ctx.base[kFn[0]]) : false
-                  if(typeof kOut === 'function') processOutEvt(c, kOut, kFn)
-                }
-                
-              }
-            }
-          })
-        }
-        listKnodeChild = []
-  }
-  ,   processOutEvt = function(c, kOut, kFn) {
-        c.removeAttribute('k-out')
-        c.addEventListener('mouseout', function(evt){
-          var argv = []
-          argv.push(evt)
-          if(kFn) {
-            var v = kFn[1].slice(0, -1).split(',')
-            if(v) v.forEach(function(v){ argv.push(v) })
-          }
-          return kOut.apply(c, argv)
-        })
+      })
+    }
+    listKnodeChild = []
   }
 
   this.vdom = function(){

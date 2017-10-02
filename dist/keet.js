@@ -36,7 +36,7 @@ if (typeof exports !== 'undefined') {
 }
 },{}],3:[function(require,module,exports){
 /** 
- * Keet.js v2.0 Alpha release: https://github.com/syarul/keet
+ * Keet.js v2.0.1 Alpha release: https://github.com/syarul/keet
  * an API for web application
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -47,6 +47,7 @@ if (typeof exports !== 'undefined') {
 'use strict'
 var cat = require('./cat')
 var copy = require('./copy')
+var tag = require('./tag')
 
 module.exports = Keet
 
@@ -87,6 +88,7 @@ function Keet(tagName, context) {
         delete cloneChild.click
         delete cloneChild.style
         delete cloneChild.bind
+        delete cloneChild.__ref__
         for(var attr in cloneChild){
           if(typeof cloneChild[attr] === 'function'){
             delete cloneChild[attr]
@@ -103,7 +105,8 @@ function Keet(tagName, context) {
           else if(child.checked === false)
             tempDiv.childNodes[0].checked = false
         }
-        process_k_click(tempDiv)
+        process_event(tempDiv)
+        process_on_change(tempDiv)
         return tempDiv.childNodes[0]
       }
   ,   parseStr = function(appObj, watch){
@@ -125,7 +128,8 @@ function Keet(tagName, context) {
                 })
                 tempDiv = document.createElement('div')
                 tempDiv.innerHTML = tmpl
-                process_k_click(tempDiv)
+                process_event(tempDiv)
+                process_on_change(tempDiv)
                 elemArr.push(tempDiv.childNodes[0])
               })
               watcher3(appObj.list)
@@ -161,48 +165,75 @@ function Keet(tagName, context) {
         } else {
           tempDiv = document.createElement('div')
           tempDiv.innerHTML = str
+          process_event(tempDiv)
+          process_on_change(tempDiv)
           elemArr.push(tempDiv.childNodes[0])
           watcher2(appObj)
         }
         return elemArr
   }
-  ,   process_k_click = function(kNode){
-        var listKnodeChild = []
-        if(kNode.hasChildNodes()){
-          loopChilds(listKnodeChild, kNode)
-          listKnodeChild.forEach(function(c, i){
-            if(c.nodeType === 1 && c.hasAttributes()){
-              var kStringSingle = c.getAttribute('k-click')
-              var KStringDouble = c.getAttribute('k-double-click')
-              var kString = KStringDouble || kStringSingle
-              var isDouble = KStringDouble ? true : false
-              if(kString){
-                var kFn = kString.split('(')
-                var kClick
-                if(kFn){
-                  kClick = testEval(ctx.base[kFn[0]]) ? eval(ctx.base[kFn[0]]) : false
-                  if(typeof kClick === 'function') processClickEvt(c, kClick, kFn, isDouble)
-                }
-                
+
+  var process_event = function(kNode) {
+    var listKnodeChild = [], hask, evtName, evthandler, handler, isHandler, argv, i, atts, v
+    if (kNode.hasChildNodes()) {
+      loopChilds(listKnodeChild, kNode)
+      listKnodeChild.forEach(function(c, i) {
+        if (c.nodeType === 1 && c.hasAttributes()) {
+          for (i = 0, atts = c.attributes; i < atts.length; i++){
+            hask = /^k-/.test(atts[i].nodeName)
+            if(hask){
+              evtName = atts[i].nodeName.split('-')[1]
+              evthandler = atts[i].nodeValue
+              handler = evthandler.split('(')
+              isHandler = testEval(ctx.base[handler[0]]) ? eval(ctx.base[handler[0]]) : false
+              if(typeof isHandler === 'function') {
+                c.removeAttribute(atts[i].nodeName)
+                c.addEventListener(evtName, function(evt){
+                  argv = []
+                  argv.push(evt)
+                  
+                  v = handler[1].slice(0, -1).split(',')
+                  if(v) v.forEach(function(v){ argv.push(v) })
+                  
+                  return isHandler.apply(c, argv)
+                })
               }
             }
-          })
-        }
-        listKnodeChild = []
-  }
-  ,   processClickEvt = function(c, kClick, kFn, isDouble) {
-        var click = isDouble ? 'dblclick' : 'click'
-        var rem = isDouble ? 'k-double-click' : 'k-click'
-        c.removeAttribute(rem)
-        c.addEventListener(click, function(evt){
-          var argv = []
-          argv.push(evt)
-          if(kFn) {
-            var v = kFn[1].slice(0, -1).split(',')
-            if(v) v.forEach(function(v){ argv.push(v) })
           }
-          return kClick.apply(c, argv)
-        })
+        }
+      })
+    }
+    listKnodeChild = []
+  }
+
+  , process_on_change = function(kNode) {    
+    var listKnodeChild = []
+    if (kNode.hasChildNodes()) {
+      loopChilds(listKnodeChild, kNode)
+      listKnodeChild.forEach(function(c, i) {
+        if (c.nodeType === 1 && c.hasAttributes()) {
+          if (c.getAttribute('type') === 'file' && c.tagName === 'INPUT') {
+            var change = testEval(ctx.base['change']) ? eval(ctx.base['change']) : false
+            if (typeof change === 'function') {
+              c.addEventListener('change', function(evt) {
+                return change.apply(c, [evt])
+              })
+            }
+          }
+        }
+      })
+    }
+    listKnodeChild = []
+  }
+
+  this.vdom = function(){
+    var ele = getId(ctx.el)
+    if(ele) return ele
+  }
+
+  this.flush = function(component){
+    var ele = getId(component)
+    if(ele) ele.innerHTML = ''
   }
 
   /**
@@ -211,10 +242,18 @@ function Keet(tagName, context) {
 
   this.render = function(){
     var ele = getId(ctx.el)
+    if(!ele){
+      console.warn('error: cannot find DOM with id: '+ctx.el+' skip rendering..')
+      return false
+    }
     if(context) ctx.base = context
     var elArr = parseStr(ctx.base, true)
     for (var i = 0; i < elArr.length; i++) {
       ele.appendChild(elArr[i])
+
+      if(i === elArr.length - 1){
+        document.addEventListener('_loaded', window._loaded && typeof window._loaded === 'function' ? window._loaded(ctx.el) : null, false)
+      }
     }
 
   }
@@ -224,6 +263,9 @@ function Keet(tagName, context) {
     var elArr = parseStr(appObj, true)
     for (var i = 0; i < elArr.length; i++) {
       ele.replaceChild(elArr[i], ele.childNodes[i])
+      if(i === elArr.length - 1){
+        document.addEventListener('_update', window._update && typeof window._update === 'function' ? window._update(ctx.el) : null, false)
+      }
     }
   }
 
@@ -303,6 +345,9 @@ function Keet(tagName, context) {
       instance[f] = function() {
         if(op.length > 0) {
           var fargv = [].slice.call(arguments)
+          if(!pristineLen[fargv[0]]) return false
+          if(f === 'update')
+            fargv[1] = Object.assign(pristineLen[fargv[0]], fargv[1])
           Array.prototype[f].apply(this, fargv)
           //propagate splice with single arguments
           if(fargv.length === 1 && f === 'splice')
@@ -426,8 +471,10 @@ function Keet(tagName, context) {
   }
 
   var nodeUpdate = function(newNode, oldNode) {
+    if(!newNode) return false
     var oAttr = newNode.attributes
     var output = {};
+
     for(var i = oAttr.length - 1; i >= 0; i--) {
        output[oAttr[i].name] = oAttr[i].value
     }
@@ -437,25 +484,30 @@ function Keet(tagName, context) {
         else oldNode.setAttribute(iAttr, output[iAttr])
       }
     }
+    if(oldNode.textContent  === "" && newNode.textContent ){
+      oldNode.textContent = newNode.textContent
+    }
+
     output = {}
   }
 
   var nodeUpdateHTML = function(newNode, oldNode) {
+    if(!newNode) return false
     if(newNode.nodeValue !== oldNode.nodeValue)
         oldNode.nodeValue = newNode.nodeValue
   }
 
   var updateElem = function(oldElem, newElem){
-    // console.log(oldElem)
     var oldArr = [], newArr = []
     oldArr.push(oldElem)
     newArr.push(newElem)
     loopChilds(oldArr, oldElem)
     loopChilds(newArr, newElem)
     if(oldArr.length !== newArr.length){
+      // console.warn('old element has different length to the new element')
       // if nodeList length is different, replace the HTMLString
-      oldElem.innerHTML = newElem.innerHTML
-      return false
+      // oldElem.innerHTML = newElem.innerHTML
+      // return false
     }
 
     oldArr.forEach(function(ele, idx, arr) {
@@ -540,5 +592,47 @@ Keet.prototype.compose = function(instance) {
   this.update(instance)
   return this
 }
-},{"./cat":1,"./copy":2}]},{},[3])(3)
+},{"./cat":1,"./copy":2,"./tag":4}],4:[function(require,module,exports){
+var tag = function() {
+  function ktag(tag, value, attributes, styles) {
+    var attr, idx, te, a = [].slice.call(arguments),
+      ret = ['<', a[0], '>', a[1], '</', a[0], '>']
+    if (a.length > 2 && typeof a[2] === 'object') {
+      for (attr in a[2]) {
+        if(typeof a[2][attr] === 'boolean' && a[2][attr])
+          ret.splice(2, 0, ' ', attr)
+        else if(attr === 'class' && Array.isArray(a[2][attr]))
+          ret.splice(2, 0, ' ', attr, '="', a[2][attr].join(' ').trim(), '"')
+        else
+          ret.splice(2, 0, ' ', attr, '="', a[2][attr], '"')
+      }
+    }
+    if (a.length > 3 && typeof a[3] === 'object') {
+      idx = ret.indexOf('>')
+      if (~idx) {
+        te = [idx, 0, ' style="']
+        for (attr in a[3]) {
+          te.push(attr)
+          te.push(':')
+          te.push(a[3][attr])
+          te.push(';')
+        }
+        te.push('"')
+        ret.splice.apply(ret, te)
+      }
+    }
+    return ret
+  }
+  var args = [].slice.call(arguments),
+    arr = ktag.apply(null, args)
+  return arr.join('')
+}
+
+if (typeof exports !== 'undefined') {
+  if (typeof module !== 'undefined' && module.exports) {
+    exports = module.exports = tag
+  }
+  exports.tag = tag
+}
+},{}]},{},[3])(3)
 });

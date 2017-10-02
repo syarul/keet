@@ -29,7 +29,3 @@ setTimeout(function(){
 	// c.list.splice(1, 1, {first: 'awil', last: 'awile'})
 	c.list.update(2, {bg: 'red'})
 }, 2000)
-
-// setTimeout(function(){
-// 	c['k-list'].pop()
-// }, 4000)

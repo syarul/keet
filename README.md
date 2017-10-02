@@ -1,12 +1,10 @@
 # keet.js v2
 
-An API for web application
+A solution to write clean interface for web application
 
 > version 1.x moved to branch v1
 
 ## Info
-
-A solution to write clean interface for web application
 
 Basic example:-
 
