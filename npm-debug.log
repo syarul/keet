@@ -1,0 +1,114 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'publish' ]
+2 info using npm@4.1.2
+3 info using node@v6.9.1
+4 verbose publish [ '.' ]
+5 silly cache add args [ '.', null ]
+6 verbose cache add spec .
+7 silly cache add parsed spec Result {
+7 silly cache add   raw: '.',
+7 silly cache add   scope: null,
+7 silly cache add   escapedName: null,
+7 silly cache add   name: null,
+7 silly cache add   rawSpec: '.',
+7 silly cache add   spec: 'E:\\Distro\\keet',
+7 silly cache add   type: 'directory' }
+8 verbose addLocalDirectory C:\Users\khai\AppData\Roaming\npm-cache\keet\2.0.1\package.tgz not in flight; packing
+9 verbose correctMkdir C:\Users\khai\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+10 info lifecycle keet@2.0.1~prepublish: keet@2.0.1
+11 silly lifecycle keet@2.0.1~prepublish: no script for prepublish, continuing
+12 info lifecycle keet@2.0.1~prepare: keet@2.0.1
+13 silly lifecycle keet@2.0.1~prepare: no script for prepare, continuing
+14 verbose tar pack [ 'C:\\Users\\khai\\AppData\\Roaming\\npm-cache\\keet\\2.0.1\\package.tgz',
+14 verbose tar pack   'E:\\Distro\\keet' ]
+15 verbose tarball C:\Users\khai\AppData\Roaming\npm-cache\keet\2.0.1\package.tgz
+16 verbose folder E:\Distro\keet
+17 verbose addLocalTarball adding from inside cache C:\Users\khai\AppData\Roaming\npm-cache\keet\2.0.1\package.tgz
+18 verbose correctMkdir C:\Users\khai\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+19 silly cache afterAdd keet@2.0.1
+20 verbose afterAdd C:\Users\khai\AppData\Roaming\npm-cache\keet\2.0.1\package\package.json not in flight; writing
+21 verbose correctMkdir C:\Users\khai\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+22 verbose afterAdd C:\Users\khai\AppData\Roaming\npm-cache\keet\2.0.1\package\package.json written
+23 silly publish { name: 'keet',
+23 silly publish   version: '2.0.1',
+23 silly publish   description: 'A solution to write clean interface for web application',
+23 silly publish   main: 'index.js',
+23 silly publish   scripts:
+23 silly publish    { dist: 'browserify index.js --standalone Keet > dist/keet.js',
+23 silly publish      distcompress: 'browserify index.js --standalone Keet | uglifyjs > dist/keet.min.js',
+23 silly publish      test: 'echo "Error: no test specified" && exit 1' },
+23 silly publish   repository: { type: 'git', url: 'git+https://github.com/syarul/keet.git' },
+23 silly publish   keywords: [ 'dom', 'component', 'view', 'stream', 'framework' ],
+23 silly publish   author: { name: 'Shahrul Nizam Selamat' },
+23 silly publish   license: 'MIT',
+23 silly publish   bugs: { url: 'https://github.com/syarul/keet/issues' },
+23 silly publish   homepage: 'https://github.com/syarul/keet#readme',
+23 silly publish   readme: '# keet.js v2\r\n\r\nA solution to write clean interface for web application\r\n\r\n> version 1.x moved to branch v1\r\n\r\n## Info\r\n\r\nBasic example:-\r\n\r\n```javascript\r\n\r\nconst Keet = require(\'keet\')\r\n\r\nconst keet = ctx => new Keet(ctx)\r\n\r\nconst tmpl = {\r\n    template: \'{{example}}\',\r\n    example: {\r\n        tag: \'div\',\r\n        id: \'example\',\r\n        style: {\r\n            height: \'300px\',\r\n            width: \'600px\',\r\n            border: \'1px solid blue\',\r\n            display: \'flex\',\r\n            \'flex-flow\': \'row wrap\',\r\n            \'flex-direction\': \'column\',\r\n            background: \'yellow\'\r\n        }\r\n    }\r\n}\r\n\r\nkeet(tmpl).link(\'app\') //\'app\' is the mount point of our DOM\r\n\r\n```\r\n\r\nBut with node.js stream + web component we can achieve a better flow where we load our static template with ajax write to a stream, pipe to a filter stream and finally pipe to a sink interface. \r\n\r\n```javascript\r\nconst vpipe = (json, _, next, app, id, ...clusters) => {\r\n\r\n  app.mount(json)\r\n    .link(id)\r\n    .cluster(...clusters)\r\n\r\n  next()\r\n}\r\n\r\n```\r\n\r\nThe web component:-\r\n\r\n```javascript\r\n\r\nimport through from \'through2\'\r\nimport stream from \'jsonui\'\r\nimport filter from \'utils/filterStream\'\r\nimport App from \'keet\'\r\nimport Store from \'stores/appStore\'\r\n\r\nimport vpipe from \'utils/vpipe\'\r\n\r\nimport menu from \'components/menu\'\r\nimport dashboard from \'components/dashboard\'\r\n\r\nclass Main extends App {\r\n\r\n  constructor() {\r\n    super()\r\n    this.store = new Store(this)\r\n  }\r\n\r\n  _pointerEvent(childs){\r\n    childs.map(c => \r\n      this.store.getActiveState ? this.addClass(c, \'none\') : this.removeClass(c, \'none\'))\r\n  }\r\n\r\n}\r\n\r\nconst app = new Main\r\n\r\nconst skip = filter(\'app/index\')\r\n\r\nconst sink = through({ objectMode: true }, (...args) => \r\n  vpipe(...args, app, \'app\', menu, dashboard))\r\n\r\nstream.pipe(skip).pipe(sink)\r\n\r\nexport default app\r\n\r\n```\r\n\r\n\r\n## License\r\n\r\nThe MIT License (MIT)\r\n\r\nCopyright (c) 2017 Shahrul Nizam Selamat\r\n  \r\n',
+23 silly publish   readmeFilename: 'README.md',
+23 silly publish   gitHead: '0d386315054fb725277ce97cf021b3bb8d5da4c0',
+23 silly publish   _id: 'keet@2.0.1',
+23 silly publish   _shasum: 'c7ff82907acfdf02576a10343cb5ce7b1c5cbb90',
+23 silly publish   _from: '.' }
+24 info lifecycle keet@2.0.1~prepublishOnly: keet@2.0.1
+25 silly lifecycle keet@2.0.1~prepublishOnly: no script for prepublishOnly, continuing
+26 verbose getPublishConfig undefined
+27 silly mapToRegistry name keet
+28 silly mapToRegistry using default registry
+29 silly mapToRegistry registry https://registry.npmjs.org/
+30 silly mapToRegistry data Result {
+30 silly mapToRegistry   raw: 'keet',
+30 silly mapToRegistry   scope: null,
+30 silly mapToRegistry   escapedName: 'keet',
+30 silly mapToRegistry   name: 'keet',
+30 silly mapToRegistry   rawSpec: '',
+30 silly mapToRegistry   spec: 'latest',
+30 silly mapToRegistry   type: 'tag' }
+31 silly mapToRegistry uri https://registry.npmjs.org/keet
+32 verbose publish registryBase https://registry.npmjs.org/
+33 silly publish uploading C:\Users\khai\AppData\Roaming\npm-cache\keet\2.0.1\package.tgz
+34 verbose request uri https://registry.npmjs.org/keet
+35 verbose request sending authorization for write operation
+36 info attempt registry request try #1 at 01:27:22
+37 verbose request using bearer token for auth
+38 verbose request id b67efa414ca96c56
+39 http request PUT https://registry.npmjs.org/keet
+40 http 403 https://registry.npmjs.org/keet
+41 verbose headers { 'content-type': 'application/json',
+41 verbose headers   'cache-control': 'max-age=300',
+41 verbose headers   'content-length': '91',
+41 verbose headers   'accept-ranges': 'bytes',
+41 verbose headers   date: 'Mon, 02 Oct 2017 17:27:23 GMT',
+41 verbose headers   via: '1.1 varnish',
+41 verbose headers   connection: 'keep-alive',
+41 verbose headers   'x-served-by': 'cache-hkg17927-HKG',
+41 verbose headers   'x-cache': 'MISS',
+41 verbose headers   'x-cache-hits': '0',
+41 verbose headers   'x-timer': 'S1506965243.877693,VS0,VE628',
+41 verbose headers   vary: 'Accept-Encoding, Accept' }
+42 verbose request invalidating C:\Users\khai\AppData\Roaming\npm-cache\registry.npmjs.org\keet on PUT
+43 error publish Failed PUT 403
+44 verbose stack Error: You cannot publish over the previously published version 2.0.1. : keet
+44 verbose stack     at makeError (C:\Users\khai\AppData\Roaming\nvm\v6.9.1\node_modules\npm\node_modules\npm-registry-client\lib\request.js:304:12)
+44 verbose stack     at CachingRegistryClient.<anonymous> (C:\Users\khai\AppData\Roaming\nvm\v6.9.1\node_modules\npm\node_modules\npm-registry-client\lib\request.js:292:14)
+44 verbose stack     at Request._callback (C:\Users\khai\AppData\Roaming\nvm\v6.9.1\node_modules\npm\node_modules\npm-registry-client\lib\request.js:212:14)
+44 verbose stack     at Request.self.callback (C:\Users\khai\AppData\Roaming\nvm\v6.9.1\node_modules\npm\node_modules\request\request.js:186:22)
+44 verbose stack     at emitTwo (events.js:106:13)
+44 verbose stack     at Request.emit (events.js:191:7)
+44 verbose stack     at Request.<anonymous> (C:\Users\khai\AppData\Roaming\nvm\v6.9.1\node_modules\npm\node_modules\request\request.js:1081:10)
+44 verbose stack     at emitOne (events.js:96:13)
+44 verbose stack     at Request.emit (events.js:188:7)
+44 verbose stack     at IncomingMessage.<anonymous> (C:\Users\khai\AppData\Roaming\nvm\v6.9.1\node_modules\npm\node_modules\request\request.js:1001:12)
+45 verbose statusCode 403
+46 verbose pkgid keet
+47 verbose cwd E:\Distro\keet
+48 error Windows_NT 6.1.7601
+49 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "publish"
+50 error node v6.9.1
+51 error npm  v4.1.2
+52 error code E403
+53 error You cannot publish over the previously published version 2.0.1. : keet
+54 error If you need help, you may report this error at:
+54 error     <https://github.com/npm/npm/issues>
+55 verbose exit [ 1, true ]
