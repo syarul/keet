@@ -1,7 +1,7 @@
 # keet.js v2
 
 <!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
-[![npm package](https://img.shields.io/badge/npm-2.0.5-blue.svg)](https://www.npmjs.com/package/keet) [![browser build](https://img.shields.io/badge/wzrd.in-2.0.5-ff69b4.svg)](https://wzrd.in/standalone/keet@latest) [![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet)
+[![npm package](https://img.shields.io/badge/npm-2.0.6-blue.svg)](https://www.npmjs.com/package/keet) [![browser build](https://img.shields.io/badge/wzrd.in-2.0.6-ff69b4.svg)](https://wzrd.in/standalone/keet@latest) [![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet)
 <!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
 <!-- AUTO-GENERATED-CONTENT:END -->
 
@@ -9,9 +9,15 @@ A solution to write clean interface for web application.
 
 > version 1.x moved to branch v1
 
-## Info
+## Yo
 
-Stop writing html template/string inside your JavaScript codes, stick to the fundamental of ***JavaScript Object Oriented Design*** and keep your code clean and modular all the time.
+- Stop polluting html template/string within your JavaScript codes, know when your code smells [iffy](https://sourcemaking.com/refactoring/smells)
+
+- Get youself a service by having your application to be of [small-program design](https://sourcemaking.com/antipatterns/spaghetti-code) 
+
+- Live up to the standard of [Unix Philosophy](http://www.faqs.org/docs/artu/ch01s06.html)
+
+## Intro
 
 Basic example:-
 
@@ -52,13 +58,13 @@ Which will result into
 </div>
 ```
 
-Once mounted, the attributes of our object are observable and you can simply change them to make new update.
+Once mounted, the attributes of applied object are observable,
 
 ```javascript
 obj.example.template = 'hello keet!'
 
 ```
-Our DOM will reactively change into 
+the corresponding DOM will reactively changed into 
 ```html
 <div id="app">
   <!--result start-->
@@ -66,12 +72,12 @@ Our DOM will reactively change into
   <!--result end-->
 </div>
 ```
-But we better off changing it by using the build-in helper function
+And the better option is by using the built-in helper function, or write your own
 ```javascript
 app.setAttr('example', 'template', 'hello keet!')
 
 ```
-To assign event handler we can simply write a property of our object with a key string starting with 'k-' i.e for click event, we write 'k-click' 
+To use event handlers we can simply assign key properties of the object with strings starting with 'k-' i.e for click event:- 'k-click' 
 
 ```javascript
 const event = {
@@ -92,7 +98,7 @@ app.mount(event).link('app')
 
 ## Hierarchal delegation
 
-To mount multiple Javascript objects that inherit properties from another object you could use ```Keet.prototype.cluster```
+To mount multiple Javascript objects that inherit properties from another object, use ```Keet.prototype.cluster```
 
 ```javascript
 const first = {
@@ -121,7 +127,7 @@ app.mount(first).link('app').cluster(child)
 
 ## Streamlike flow
 
-To have event more robust handling of data we should load it through JSON. With the advent of Node.js stream in the browser using [readable-stream](https://www.npmjs.com/package/readable-stream) we can have infinite possibilties on how we can control our application structure and data flow
+To have even more robust data handling, we should load via JSON. With the advent of Node.js stream in the browser using [readable-stream](https://www.npmjs.com/package/readable-stream) we can manage and control our application structure and data flow concisely
 
 ```javascript
 const str = require('string-to-stream')
@@ -142,7 +148,7 @@ const app = new App()
 
 const sink = through((buf, _, next) => {
   let json = JSON.parse(buf.toString())
-  json.clickhandler = app._clickHandler.bind(app) // delegate event handler to component
+  json.clickHandler = app._clickHandler.bind(app) // delegate event handler to component
   app.mount(json).link('app')
   next()
 })

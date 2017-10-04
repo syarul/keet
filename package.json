@@ -1,6 +1,6 @@
 {
   "name": "keet",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "A solution to write clean interface for web application",
   "main": "index.js",
   "scripts": {
