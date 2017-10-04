@@ -1,5 +1,5 @@
 /** 
- * Keet.js v2.0.3 Alpha release: https://github.com/syarul/keet
+ * Keet.js v2.0.4 Alpha release: https://github.com/syarul/keet
  * an API for web application
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -571,18 +571,18 @@ Keet.prototype.getBase = function(child, attribute, newProp) {
     return this.base[child][attribute]
 }
 
-Keet.prototype.addClass = function(child, _class) {
+Keet.prototype.addClass = function(child, newClass) {
   var b = this.getBase(child, 'class')
 
   var isArr = function() {
-    b.push(_class)
+    b.push(newClass)
     this.getBase(child, 'class', b)
   }
 
-  return Array.isArray(b) && isArr
+  return Array.isArray(b) && isArr()
 }
 
-Keet.prototype.removeClass = function(child, _class) {
+Keet.prototype.removeClass = function(child, oldClass) {
   var b = this.getBase(child, 'class')
 
   var hIdx = function(idx) {
@@ -591,42 +591,42 @@ Keet.prototype.removeClass = function(child, _class) {
   }
 
   var isArr = function() {
-    var idx = b.indexOf(_class)
+    var idx = b.indexOf(oldClass)
     if (~idx) hIdx(idx)
   }
 
-  return Array.isArray(b) && isArr
+  return Array.isArray(b) && isArr()
 }
 
-Keet.prototype.swapClass = function(child, con, _classes) {
+Keet.prototype.swapClass = function(child, condition, classesArray) {
   var b = this.getBase(child, 'class')
 
-  if (con) _classes.reverse()
+  if (condition) classesArray.reverse()
 
   var hIdx = function(idx) {
-    b.splice(idx, 1, _classes[1])
+    b.splice(idx, 1, classesArray[1])
     this.getBase(child, 'class', b)
   }
 
   var isArr = function() {
-    var idx = b.indexOf(_classes[0])
+    var idx = b.indexOf(classesArray[0])
     if (~idx) hIdx(idx)
   }
 
-  return Array.isArray(b) && isArr
+  return Array.isArray(b) && isArr()
 }
 
-Keet.prototype.swapAttr = function(child, con, _attrs, attr) {
-  if (con) _attrs.reverse()
-  this.getBase(child, attr, _attrs[0])
+Keet.prototype.swapAttr = function(child, condition, propertyArray, attribute) {
+  if (condition) propertyArray.reverse()
+  this.getBase(child, attribute, propertyArray[0])
 }
 
-Keet.prototype.setAttr = function(child, _attr, attr) {
-  this.getBase(child, attr, _attr)
+Keet.prototype.setAttr = function(child, attribute, newProperty) {
+  this.getBase(child, attribute, newProperty)
 }
 
-Keet.prototype.renderSub = function(subView, display) {
-  this.base[subView].style = {
+Keet.prototype.renderSub = function(child, display) {
+  this.base[child].style = {
     display: display
   }
 }

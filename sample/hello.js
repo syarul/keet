@@ -1,12 +1,21 @@
-const keet = ctx => new Keet(ctx)
-
-const tmpl = { 
-	template: '{{hello}}',
-	hello: {
-		tag: 'div',
-		id: 'hello',
-		template: 'hello world'
-	}
+class App extends Keet {
+  constructor(){
+    super()
+  }
 }
 
-keet(tmpl).link('app')
+const app = new App()
+
+const obj = {
+    template: '{{example}}',
+    example: {
+        tag: 'div',
+        id: 'example',
+        style: {
+            'font-style': 'italic'
+        },
+        template: 'hello world'
+    }
+}
+
+app.mount(obj).link('app') //'app' is the mount point of our DOM
