@@ -1,5 +1,5 @@
 /** 
- * Keet.js v2.0.2 Alpha release: https://github.com/syarul/keet
+ * Keet.js v2.0.3 Alpha release: https://github.com/syarul/keet
  * an API for web application
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -50,7 +50,6 @@ function Keet(tagName, context) {
         delete cloneChild.tag
         delete cloneChild.click
         delete cloneChild.style
-        delete cloneChild.bind
         delete cloneChild.__ref__
         for(var attr in cloneChild){
           if(typeof cloneChild[attr] === 'function'){
@@ -61,9 +60,6 @@ function Keet(tagName, context) {
         tempDiv.innerHTML = s
         if(child.tag === 'input'){
           if (child.click) tempDiv.childNodes[0].click()
-          if (child.bind){
-            ctx.bind(child.bind.type, child.bind.fn)
-          }
           if (child.checked) tempDiv.childNodes[0].checked = 'checked'
           else if(child.checked === false)
             tempDiv.childNodes[0].checked = false
@@ -230,11 +226,6 @@ function Keet(tagName, context) {
         document.addEventListener('_update', window._update && typeof window._update === 'function' ? window._update(ctx.el) : null, false)
       }
     }
-  }
-
-  this.bind = function(type, fn){
-    var ele = getId(ctx.el)
-    ele.addEventListener(type, ctx.base ? fn.bind(ctx.base) : fn, false)
   }
 
   var watcher = function(instance, index){
@@ -554,4 +545,88 @@ Keet.prototype.link = function(id, value) {
 Keet.prototype.compose = function(instance) {
   this.update(instance)
   return this
+}
+
+Keet.prototype.mount = function(instance) {
+  this.base = instance
+  return this
+}
+
+Keet.prototype.cluster = function() {
+  var args = [].slice.call(arguments)
+  args.map(function(fn){
+    if(typeof fn === 'function') fn()
+  })
+  return this
+}
+
+Keet.prototype.list = function(){
+  return this.base && this.base.list || []
+}
+
+Keet.prototype.getBase = function(child, attribute, newProp) {
+  if (arguments.length > 2 && this.base)
+    this.base[child][attribute] = newProp
+  else
+    return this.base[child][attribute]
+}
+
+Keet.prototype.addClass = function(child, _class) {
+  var b = this.getBase(child, 'class')
+
+  var isArr = function() {
+    b.push(_class)
+    this.getBase(child, 'class', b)
+  }
+
+  return Array.isArray(b) && isArr
+}
+
+Keet.prototype.removeClass = function(child, _class) {
+  var b = this.getBase(child, 'class')
+
+  var hIdx = function(idx) {
+    b.splice(idx, 1)
+    this.getBase(child, 'class', b)
+  }
+
+  var isArr = function() {
+    var idx = b.indexOf(_class)
+    if (~idx) hIdx(idx)
+  }
+
+  return Array.isArray(b) && isArr
+}
+
+Keet.prototype.swapClass = function(child, con, _classes) {
+  var b = this.getBase(child, 'class')
+
+  if (con) _classes.reverse()
+
+  var hIdx = function(idx) {
+    b.splice(idx, 1, _classes[1])
+    this.getBase(child, 'class', b)
+  }
+
+  var isArr = function() {
+    var idx = b.indexOf(_classes[0])
+    if (~idx) hIdx(idx)
+  }
+
+  return Array.isArray(b) && isArr
+}
+
+Keet.prototype.swapAttr = function(child, con, _attrs, attr) {
+  if (con) _attrs.reverse()
+  this.getBase(child, attr, _attrs[0])
+}
+
+Keet.prototype.setAttr = function(child, _attr, attr) {
+  this.getBase(child, attr, _attr)
+}
+
+Keet.prototype.renderSub = function(subView, display) {
+  this.base[subView].style = {
+    display: display
+  }
 }

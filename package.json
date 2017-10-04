@@ -1,10 +1,10 @@
 {
   "name": "keet",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "A solution to write clean interface for web application",
   "main": "index.js",
   "scripts": {
-    "dist": "browserify index.js --standalone Keet > dist/keet.js",
+    "dist": "browserify index.js --standalone Keet > dist/keet.js && node markdown.config.js",
     "distcompress": "browserify index.js --standalone Keet | uglifyjs > dist/keet.min.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/syarul/keet/issues"
   },
-  "homepage": "https://github.com/syarul/keet#readme"
+  "homepage": "https://github.com/syarul/keet#readme",
+  "devDependencies": {
+    "markdown-magic": "^0.1.19"
+  }
 }

@@ -1,5 +1,10 @@
 # keet.js v2
 
+<!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
+[![npm package](https://img.shields.io/badge/npm-2.0.3-blue.svg)](https://www.npmjs.com/package/keet) [![browser build](https://img.shields.io/badge/wzrd.in-2.0.3-ff69b4.svg)](https://wzrd.in/standalone/keet@latest) [![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet)
+<!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
+<!-- AUTO-GENERATED-CONTENT:END -->
+
 A solution to write clean interface for web application
 
 > version 1.x moved to branch v1
