@@ -1,5 +1,5 @@
 /** 
- * Keet.js v2.0.4 Alpha release: https://github.com/syarul/keet
+ * Keet.js v2.0.5 Alpha release: https://github.com/syarul/keet
  * an API for web application
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

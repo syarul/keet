@@ -52,7 +52,7 @@ Which will result into
 </div>
 ```
 
-Once mounted, the object attributes of our object are observable and you can simply change them to make new update.
+Once mounted, the attributes of our object are observable and you can simply change them to make new update.
 
 ```javascript
 obj.example.template = 'hello keet!'
@@ -104,7 +104,6 @@ const first = {
 }
 
 const child = () => {
-
   const second = {
     template: '{{cool}}',
     cool: {
@@ -112,9 +111,7 @@ const child = () => {
         template: 'I\'m cool yo!'
     }
   }
-
   const sec = new App()
-
   sec.mount(second).link('me')
 } 
 
@@ -136,7 +133,6 @@ class App extends Keet {
   constructor(){
     super()
   }
-
   _clickHandler(evt){
     console.log('I\'m cool yo!')
   }
@@ -146,7 +142,7 @@ const app = new App()
 
 const sink = through((buf, _, next) => {
   let json = JSON.parse(buf.toString())
-  json.clickhandler = app._clickHandler.bind(app) // delegate our event handler to our components
+  json.clickhandler = app._clickHandler.bind(app) // delegate event handler to component
   app.mount(json).link('app')
   next()
 })
