@@ -56,7 +56,7 @@ Which will result into
 </div>
 ```
 
-Once mounted, the attributes of applied object are observable,
+Once mounted, the attributes of applied object are observables,
 
 ```javascript
 obj.example.template = 'hello keet!'
@@ -70,9 +70,9 @@ the corresponding DOM will reactively changed into
   <!--result end-->
 </div>
 ```
-And the better option is by using the built-in helper function, or write your own
+And the better option is by using the built-in helper function, or you can write your own helper
 ```javascript
-app.setAttr('example', 'template', 'hello keet!')
+app.contentUpdate('example', 'hello keet!')
 
 ```
 To use event handlers we can simply assign key properties of the object with strings starting with 'k-' i.e for click event:- 'k-click' 
