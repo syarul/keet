@@ -1,19 +1,15 @@
 # keet.js v2
 
 <!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
-[![npm package](https://img.shields.io/badge/npm-2.0.8-blue.svg)](https://www.npmjs.com/package/keet) [![browser build](https://img.shields.io/badge/wzrd.in-2.0.8-ff69b4.svg)](https://wzrd.in/standalone/keet@latest) [![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet)
+[![npm package](https://img.shields.io/badge/npm-2.0.8-blue.svg)](https://www.npmjs.com/package/keet) [![browser build](https://img.shields.io/badge/wzrd.in-2.0.8-ff69b4.svg)](https://wzrd.in/standalone/keet@latest) [![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet) [![Build Status](https://travis-ci.org/syarul/keet.svg?branch=master)](https://travis-ci.org/syarul/keet)
 <!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
 <!-- AUTO-GENERATED-CONTENT:END -->
 
-<!--[![Build Status](https://travis-ci.org/syarul/keet.svg?branch=master)](https://travis-ci.org/syarul/keet) [![Coverage Status](https://coveralls.io/repos/syarul/keet/badge.svg?branch=master&service=github)] -->
+<!--[![Coverage Status](https://coveralls.io/repos/github/syarul/keet/badge.svg?branch=master)](https://coveralls.io/github/syarul/keet?branch=master)-->
 
 A solution to write clean interface for web application.
 
-> version 1.x moved to branch v1
-
-## Yo
-
-- Stop polluting html template/string within your JavaScript codes, know when your code smells [iffy](https://sourcemaking.com/refactoring/smells)
+- Stop polluting html template/string within JavaScript codes, know when your code smells [iffy](https://sourcemaking.com/refactoring/smells)
 
 - Get youself a service by having your application to be of [small-program design](https://sourcemaking.com/antipatterns/spaghetti-code) 
 
