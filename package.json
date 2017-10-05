@@ -1,12 +1,16 @@
 {
   "name": "keet",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "A solution to write clean interface for web application",
   "main": "index.js",
   "scripts": {
+    "debug": "browserify index.js --debug --standalone Keet > dist/keet.debug.js",
     "dist": "browserify index.js --standalone Keet > dist/keet.js && node markdown.config.js",
     "distcompress": "browserify index.js --standalone Keet | uglifyjs > dist/keet.min.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/test.js --compilers js:babel-core/register",
+    "cover": "nyc --reporter=lcov --reporter=text npm run test",
+    "test-ci": "nyc npm run test",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls"
   },
   "repository": {
     "type": "git",
@@ -26,6 +30,27 @@
   },
   "homepage": "https://github.com/syarul/keet#readme",
   "devDependencies": {
-    "markdown-magic": "^0.1.19"
+    "babel-core": "^6.26.0",
+    "babel-plugin-istanbul": "^4.1.5",
+    "babel-preset-es2015": "^6.24.1",
+    "browserify": "^14.4.0",
+    "gulp": "^3.9.1",
+    "gulp-livereload": "^3.8.1",
+    "gulp-shell": "^0.6.3",
+    "markdown-magic": "^0.1.19",
+    "nyc": "^11.2.1"
+  },
+  "nyc": {
+    "include": [
+      "index.js",
+      "tag.js",
+      "cat.js",
+      "copy.js"
+    ],
+    "sourceMap": false,
+    "instrument": false
+  },
+  "dependencies": {
+    "jsdom": "^11.3.0"
   }
 }

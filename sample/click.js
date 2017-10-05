@@ -1,12 +1,12 @@
-const tmpl = { 
-	template: '{{click}}',
-	click: {
-		tag: 'button',
-		id: 'clicker',
-		'k-click': 'clicker()',
-		'k-mouseout': 'mouseout()',
-		template: 'click me!'
-	}
+const tmpl = {
+  template: '{{click}}',
+  click: {
+    tag: 'button',
+    id: 'clicker',
+    'k-click': 'clicker()',
+    'k-mouseout': 'mouseout()',
+    template: 'click me!'
+  }
 }
 
 const app = new Keet

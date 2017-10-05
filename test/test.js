@@ -1,36 +1,56 @@
-var test = require('tape')
-var fixtures = require('./fixtures')
+const assert = require('assert')
+const { JSDOM } = require('jsdom')
 
-test('Keet.js', function(t) {
+const Keet = require('../')
 
-  if (!document) throw 'not a document object model'
-  var vDom = document.createElement('div')
-  vDom.setAttribute('id', 'app')
-  document.body.appendChild(vDom)
+describe('mocha tests', function () {
 
-  var plan = 0
+  before(() => {
+    const dom = new JSDOM(`
+      <!DOCTYPE html>
+        <html>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <head>
+        </head>
+        <body>
+          <div id="app"></div>
+        </body>
+      </html>`)
 
-  for(var key in fixtures){
-    if(typeof fixtures[key] === 'object'){
-      plan += Object.keys(fixtures[key]).length
-    } else {
-      plan += 1
+      global.document = dom.window.document
+      const window = dom.window
+      global.window = window
+      global.log = console.log.bind(console)
     }
-  }
+  )
 
-  t.plan(plan)
+  it('has document', function () {
+    var div = document.createElement('div')
+    assert.equal(div.nodeName, 'DIV')
+  })
 
-  for(var key in fixtures){
-    var fixture = fixtures[key]
-    if(typeof fixture === 'function'){
-      fixture(t)
-      document.getElementById('app').innerHTML = ''
-    } else {
-      for(var iKey in fixture){
-        var innerFixture = fixture[iKey]
-        innerFixture(t)
-        document.getElementById('app').innerHTML = ''
+  it('write text content', function () {
+    
+    class App extends Keet {
+      constructor(){
+        super()
       }
     }
-  }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{hello}}',
+      hello: {
+        tag: 'div',
+        id: 'hello',
+        template: 'hello world'
+      }
+    }
+
+    app.mount(instance).link('app')
+
+    assert.equal(document.querySelector('#hello').childNodes[0].nodeValue, 'hello world')
+  })
+
 })

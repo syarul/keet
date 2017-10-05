@@ -1,6 +1,9 @@
 language: node_js
 node_js:
-  - "6.9.1"
+  - "8"
+  - "7"
+  - "6"
+  - "4"
 addons:
   apt:
     packages:
@@ -9,4 +12,5 @@ install:
   - export DISPLAY=':99.0'
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
   - npm install
-script: gulp
+script: npm run test-ci
+after_success: npm run coveralls

@@ -5,6 +5,8 @@
 <!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
 <!-- AUTO-GENERATED-CONTENT:END -->
 
+<!--[![Build Status](https://travis-ci.org/syarul/keet.svg?branch=master)](https://travis-ci.org/syarul/keet) [![Coverage Status](https://coveralls.io/repos/syarul/keet/badge.svg?branch=master&service=github)] -->
+
 A solution to write clean interface for web application.
 
 > version 1.x moved to branch v1
