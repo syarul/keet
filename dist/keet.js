@@ -36,7 +36,7 @@ if (typeof exports !== 'undefined') {
 }
 },{}],3:[function(require,module,exports){
 /** 
- * Keet.js v2.0.6 Alpha release: https://github.com/syarul/keet
+ * Keet.js v2.0.7 Alpha release: https://github.com/syarul/keet
  * an API for web application
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -170,32 +170,40 @@ function Keet(tagName, context) {
   }
 
   var process_event = function(kNode) {
-    var listKnodeChild = [], hask, evtName, evthandler, handler, isHandler, argv, i, atts, v
+    var listKnodeChild = [], hask, evtName, evthandler, handler, isHandler, argv, i, atts, v, rem = []
     if (kNode.hasChildNodes()) {
       loopChilds(listKnodeChild, kNode)
       listKnodeChild.forEach(function(c, i) {
         if (c.nodeType === 1 && c.hasAttributes()) {
-          for (i = 0, atts = c.attributes; i < atts.length; i++){
-            hask = /^k-/.test(atts[i].nodeName)
-            if(hask){
-              evtName = atts[i].nodeName.split('-')[1]
-              evthandler = atts[i].nodeValue
-              handler = evthandler.split('(')
-              isHandler = testEval(ctx.base[handler[0]]) ? eval(ctx.base[handler[0]]) : false
-              if(typeof isHandler === 'function') {
-                c.removeAttribute(atts[i].nodeName)
-                c.addEventListener(evtName, function(evt){
-                  argv = []
-                  argv.push(evt)
-                  
-                  v = handler[1].slice(0, -1).split(',')
-                  if(v) v.forEach(function(v){ argv.push(v) })
-                  
-                  return isHandler.apply(c, argv)
-                })
+          i = 0
+          function next(){
+            atts = c.attributes
+            if(i < atts.length) {
+              hask = /^k-/.test(atts[i].nodeName)
+              if(hask){
+                evtName = atts[i].nodeName.split('-')[1]
+                evthandler = atts[i].nodeValue
+                handler = evthandler.split('(')
+                isHandler = testEval(ctx.base[handler[0]]) ? eval(ctx.base[handler[0]]) : false
+                if(typeof isHandler === 'function') {
+                  rem.push(atts[i].nodeName)
+                  c.addEventListener(evtName, function(evt){
+                    argv = []
+                    argv.push(evt)
+                    v = handler[1].slice(0, -1).split(',')
+                    if(v) v.forEach(function(v){ argv.push(v) })
+                    
+                    isHandler.apply(c, argv)
+                  })
+                }
               }
+              i++
+              next()
+            } else {
+              rem.map(function(f){ c.removeAttribute(f) })
             }
           }
+          next()
         }
       })
     }
