@@ -36,7 +36,7 @@ if (typeof exports !== 'undefined') {
 }
 },{}],3:[function(require,module,exports){
 /** 
- * Keet.js v2.0.7 Alpha release: https://github.com/syarul/keet
+ * Keet.js v2.0.8 Alpha release: https://github.com/syarul/keet
  * an API for web application
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -102,7 +102,6 @@ function Keet(tagName, context) {
             tempDiv.childNodes[0].checked = false
         }
         process_event(tempDiv)
-        process_on_change(tempDiv)
         return tempDiv.childNodes[0]
       }
   ,   parseStr = function(appObj, watch){
@@ -125,7 +124,6 @@ function Keet(tagName, context) {
                 tempDiv = document.createElement('div')
                 tempDiv.innerHTML = tmpl
                 process_event(tempDiv)
-                process_on_change(tempDiv)
                 elemArr.push(tempDiv.childNodes[0])
               })
               watcher3(appObj.list)
@@ -162,7 +160,6 @@ function Keet(tagName, context) {
           tempDiv = document.createElement('div')
           tempDiv.innerHTML = str
           process_event(tempDiv)
-          process_on_change(tempDiv)
           elemArr.push(tempDiv.childNodes[0])
           watcher2(appObj)
         }
@@ -204,26 +201,6 @@ function Keet(tagName, context) {
             }
           }
           next()
-        }
-      })
-    }
-    listKnodeChild = []
-  }
-
-  , process_on_change = function(kNode) {    
-    var listKnodeChild = []
-    if (kNode.hasChildNodes()) {
-      loopChilds(listKnodeChild, kNode)
-      listKnodeChild.forEach(function(c, i) {
-        if (c.nodeType === 1 && c.hasAttributes()) {
-          if (c.getAttribute('type') === 'file' && c.tagName === 'INPUT') {
-            var change = testEval(ctx.base['change']) ? eval(ctx.base['change']) : false
-            if (typeof change === 'function') {
-              c.addEventListener('change', function(evt) {
-                return change.apply(c, [evt])
-              })
-            }
-          }
         }
       })
     }
@@ -486,7 +463,6 @@ function Keet(tagName, context) {
     if(oldNode.textContent  === "" && newNode.textContent ){
       oldNode.textContent = newNode.textContent
     }
-
     output = {}
   }
 
@@ -502,13 +478,6 @@ function Keet(tagName, context) {
     newArr.push(newElem)
     loopChilds(oldArr, oldElem)
     loopChilds(newArr, newElem)
-    if(oldArr.length !== newArr.length){
-      // console.warn('old element has different length to the new element')
-      // if nodeList length is different, replace the HTMLString
-      // oldElem.innerHTML = newElem.innerHTML
-      // return false
-    }
-
     oldArr.forEach(function(ele, idx, arr) {
       if (ele.nodeType === 1 && ele.hasAttributes()) {
         nodeUpdate(newArr[idx], ele)
@@ -670,10 +639,14 @@ Keet.prototype.setAttr = function(child, attribute, newProperty) {
   this.getBase(child, attribute, newProperty)
 }
 
-Keet.prototype.renderSub = function(child, display) {
-  this.base[child].style = {
-    display: display
-  }
+Keet.prototype.toggle = function(child, display) {
+  var styl = this.base[child].style
+  Object.assign(styl, { display: display })
+  this.base[child].style = styl
+}
+
+Keet.prototype.contentUpdate = function(child, content) {
+  this.base[child].template = content
 }
 },{"./cat":1,"./copy":2,"./tag":4}],4:[function(require,module,exports){
 var tag = function() {
