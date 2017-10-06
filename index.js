@@ -133,7 +133,7 @@ function Keet(tagName, context) {
     var listKnodeChild = [], hask, evtName, evthandler, handler, isHandler, argv, i, atts, v, rem = []
     if (kNode.hasChildNodes()) {
       loopChilds(listKnodeChild, kNode)
-      listKnodeChild.forEach(function(c, i) {
+      listKnodeChild.forEach(function(c) {
         if (c.nodeType === 1 && c.hasAttributes()) {
           i = 0
           function next(){
@@ -176,8 +176,9 @@ function Keet(tagName, context) {
   }
 
   this.flush = function(component){
-    var ele = getId(component)
+    var ele = getId(component) || getId(ctx.el)
     if(ele) ele.innerHTML = ''
+    return this
   }
 
   /**

@@ -7,7 +7,7 @@
     "debug": "browserify index.js --debug --standalone Keet > dist/keet.debug.js",
     "dist": "browserify index.js --standalone Keet > dist/keet.js && node markdown.config.js",
     "distcompress": "browserify index.js --standalone Keet | uglifyjs > dist/keet.min.js",
-    "test": "mocha test/test.js --compilers js:babel-core/register",
+    "test": "mocha test/test.js --require babel-core/register",
     "cover": "nyc --reporter=lcov --reporter=text npm run test",
     "test-ci": "nyc npm run test",
     "coveralls": "nyc report --reporter=text-lcov | coveralls"

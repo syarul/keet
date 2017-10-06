@@ -11,8 +11,8 @@ const tmpl = {
 
 const app = new Keet
 
-tmpl.clicker = evt => console.log(evt)
+tmpl.clicker = evt => console.log(evt.type)
 
-tmpl.mouseout = evt => console.log(evt)
+tmpl.mouseout = evt => console.log(evt.type)
 
 app.link('app', tmpl)

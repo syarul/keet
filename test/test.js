@@ -20,6 +20,7 @@ describe('mocha tests', function () {
       global.document = dom.window.document
       const window = dom.window
       global.window = window
+      global.Event = window.Event
       global.log = console.log.bind(console)
     }
   )
@@ -51,6 +52,38 @@ describe('mocha tests', function () {
     app.mount(instance).link('app')
 
     assert.equal(document.querySelector('#hello').childNodes[0].nodeValue, 'hello world')
+  })
+
+  it('handle click event', function () {
+
+    class App extends Keet {
+      constructor(){
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{clicker}}',
+      clicker: {
+        tag: 'button',
+        'k-click': 'clickHandler()'
+      },
+      clickHandler: function(evt){
+        assert.equal(evt.type, 'click')
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    const click = new Event('click', {
+      'bubbles': true,
+      'cancelable': true
+    })
+
+    app.vdom().childNodes[0].dispatchEvent(click)
+
   })
 
 })
