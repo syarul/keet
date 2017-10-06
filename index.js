@@ -1,5 +1,5 @@
 /** 
- * Keet.js v2.0.8 Alpha release: https://github.com/syarul/keet
+ * Keet.js v2.0.9 Alpha release: https://github.com/syarul/keet
  * an API for web application
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -414,9 +414,10 @@ function Keet(tagName, context) {
     if(!newNode) return false
     var oAttr = newNode.attributes
     var output = {};
-
-    for(var i = oAttr.length - 1; i >= 0; i--) {
-       output[oAttr[i].name] = oAttr[i].value
+    if(oAttr){
+      for(var i = oAttr.length - 1; i >= 0; i--) {
+         output[oAttr[i].name] = oAttr[i].value
+      }
     }
     for (var iAttr in output) {
       if(oldNode.attributes[iAttr] && oldNode.attributes[iAttr].name === iAttr && oldNode.attributes[iAttr].value != output[iAttr]){
