@@ -2,6 +2,11 @@ class App extends Keet {
   constructor() {
     super()
   }
+
+  componentOnUpdate(mutation){
+    console.log(mutation.type)
+  }
+
 }
 
 const app = new App()
@@ -14,25 +19,14 @@ const obj = {
     style: {
       'font-style': 'italic'
     },
-    template: 'hello world'
+    template: '<h2>hello world</h2>'
   }
 }
 
 app.mount(obj).link('app') //'app' is the mount point of our DOM
 
-var observer = new MutationObserver(mutations =>
-  mutations.forEach(mutation => console.log(mutation))
-)
+app.contentUpdate('example', '<h2>hello keet!</h2>')
 
-const vdom = app.vdom()
-
-var config = {
-  attributes: true,
-  childList: true,
-  characterData: true,
-  subtree: true
-}
-
-observer.observe(vdom, config)
-
-app.contentUpdate('example', 'hello keet!')
+setTimeout(() => {
+  app.setAttr('example', 'style', { 'font-style': 'normal' })
+}, 3000)

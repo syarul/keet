@@ -1,4 +1,4 @@
-var tag = function() {
+module.exports = function() {
   function ktag(tag, value, attributes, styles) {
     var attr, idx, te, a = [].slice.call(arguments),
       ret = ['<', a[0], '>', a[1], '</', a[0], '>']
@@ -14,28 +14,19 @@ var tag = function() {
     }
     if (a.length > 3 && typeof a[3] === 'object') {
       idx = ret.indexOf('>')
-      if (~idx) {
-        te = [idx, 0, ' style="']
-        for (attr in a[3]) {
-          te.push(attr)
-          te.push(':')
-          te.push(a[3][attr])
-          te.push(';')
-        }
-        te.push('"')
-        ret.splice.apply(ret, te)
+      te = [idx, 0, ' style="']
+      for (attr in a[3]) {
+        te.push(attr)
+        te.push(':')
+        te.push(a[3][attr])
+        te.push(';')
       }
+      te.push('"')
+      ret.splice.apply(ret, te)
     }
     return ret
   }
   var args = [].slice.call(arguments),
     arr = ktag.apply(null, args)
   return arr.join('')
-}
-
-if (typeof exports !== 'undefined') {
-  if (typeof module !== 'undefined' && module.exports) {
-    exports = module.exports = tag
-  }
-  exports.tag = tag
 }

@@ -26,8 +26,9 @@ setTimeout(function() {
   // c['k-list'].shift()
   // c.list.unshift({first: 'john', last: 'doe'}, {first: 'rocky', last: 'bulba'})
   // c.list.splice(0, 2)
-  // c.list.splice(1, 1, {first: 'awil', last: 'awile'})
-  c.list.update(2, {
-    bg: 'red'
-  })
+  c.list.splice(1, 1, {first: 'awil', last: 'awile'})
+  // c.list.update(2, {
+  //   bg: 'red'
+  // })
+  // c.list.shift()
 }, 2000)

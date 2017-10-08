@@ -1,6 +1,6 @@
 {
   "name": "keet",
-  "version": "2.0.9",
+  "version": "2.1.0",
   "description": "A solution to write clean interface for web application",
   "main": "index.js",
   "scripts": {
@@ -40,13 +40,14 @@
     "gulp-shell": "^0.6.3",
     "markdown-magic": "^0.1.19",
     "mocha": "^4.0.0",
+    "mutation-observer": "^1.0.3",
+    "mutationobserver-shim": "^0.3.2",
     "nyc": "^11.2.1"
   },
   "nyc": {
     "include": [
       "index.js",
       "tag.js",
-      "cat.js",
       "copy.js"
     ],
     "sourceMap": false,

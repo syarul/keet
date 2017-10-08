@@ -1,5 +1,5 @@
 /** 
- * Keet.js v2.0.9 Alpha release: https://github.com/syarul/keet
+ * Keet.js v2.1.0 Alpha release: https://github.com/syarul/keet
  * an API for web application
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -8,7 +8,6 @@
  * Released under the MIT License.
  */
 'use strict'
-var cat = require('./cat')
 var copy = require('./copy')
 var tag = require('./tag')
 
@@ -17,38 +16,21 @@ module.exports = Keet
 function Keet(tagName, context) {
   var ctx = this
   ,   argv = [].slice.call(arguments)
-  ,   context = argv.filter(function(c) { return typeof c === 'object'})[0]
-  ,   isDoc = (function() {
-        return typeof document == 'object' ? true : false
-      }())
+  ,   context = argv.filter(function(c) {    
+        return typeof c === 'object'
+      })[0]
   ,   getId = function(id) {
-        var ret        
-        if (isDoc) {
-            ret = document.getElementById(id)
-        } else {
-            throw ('Not a document object model.')
-        }
-        return ret
+        return document.getElementById(id)
       }
   ,   testEval = function(ev) {
         try { return eval(ev) } 
         catch (e) { return false }
-      }
-  ,   camelCase = function(s) {
-        var rx = /\-([a-z])/g
-        return s.replace(rx, function(a, b) {
-          return b.toUpperCase()
-        })
-      }
-  ,   guid = function(){
-        return (Math.round(Math.random()*0x1000000)).toString(32)
       }
   ,   genElement = function(child){
         var tempDiv = document.createElement('div')
         var cloneChild = copy(child)
         delete cloneChild.template
         delete cloneChild.tag
-        delete cloneChild.click
         delete cloneChild.style
         delete cloneChild.__ref__
         for(var attr in cloneChild){
@@ -59,21 +41,23 @@ function Keet(tagName, context) {
         var s = tag(child.tag, child.template ? child.template : '', cloneChild, child.style)
         tempDiv.innerHTML = s
         if(child.tag === 'input'){
-          if (child.click) tempDiv.childNodes[0].click()
-          if (child.checked) tempDiv.childNodes[0].checked = 'checked'
-          else if(child.checked === false)
-            tempDiv.childNodes[0].checked = false
+          if (child.checked) 
+            tempDiv.childNodes[0].checked = true
+          else
+            tempDiv.childNodes[0].removeAttribute('checked')
         }
         process_event(tempDiv)
         return tempDiv.childNodes[0]
       }
   ,   parseStr = function(appObj, watch){
-        var str = appObj.template ? appObj.template : ''
+        if(typeof appObj != 'object') throw new Error('instance is not an object')
+        var str = appObj.template
         ,   childs = str.match(/{{([^{}]+)}}/g, '$1')
         ,   regc
         ,   child
         ,   tempDiv
         ,   elemArr = []
+
         if(childs){
 
           if(Array.isArray(appObj.list)) {
@@ -101,7 +85,7 @@ function Keet(tagName, context) {
                 // check if current  objectr has prop
                 child = appObj[regc]
                 // check global object
-                if(!child) child = testEval(regc) ? eval(regc) : false
+                if(!child) child = testEval(regc)
               }
               if(child && typeof child === 'object'){
                 var newElement = genElement(child)
@@ -131,42 +115,41 @@ function Keet(tagName, context) {
 
   var process_event = function(kNode) {
     var listKnodeChild = [], hask, evtName, evthandler, handler, isHandler, argv, i, atts, v, rem = []
-    if (kNode.hasChildNodes()) {
-      loopChilds(listKnodeChild, kNode)
-      listKnodeChild.forEach(function(c) {
-        if (c.nodeType === 1 && c.hasAttributes()) {
-          i = 0
-          function next(){
-            atts = c.attributes
-            if(i < atts.length) {
-              hask = /^k-/.test(atts[i].nodeName)
-              if(hask){
-                evtName = atts[i].nodeName.split('-')[1]
-                evthandler = atts[i].nodeValue
-                handler = evthandler.split('(')
-                isHandler = testEval(ctx.base[handler[0]]) ? eval(ctx.base[handler[0]]) : false
-                if(typeof isHandler === 'function') {
-                  rem.push(atts[i].nodeName)
-                  c.addEventListener(evtName, function(evt){
-                    argv = []
-                    argv.push(evt)
-                    v = handler[1].slice(0, -1).split(',')
-                    if(v) v.forEach(function(v){ argv.push(v) })
-                    
-                    isHandler.apply(c, argv)
+    loopChilds(listKnodeChild, kNode)
+    listKnodeChild.forEach(function(c) {
+      if (c.nodeType === 1 && c.hasAttributes()) {
+        i = 0
+        function next(){
+          atts = c.attributes
+          if(i < atts.length) {
+            hask = /^k-/.test(atts[i].nodeName)
+            if(hask){
+              evtName = atts[i].nodeName.split('-')[1]
+              evthandler = atts[i].nodeValue
+              handler = evthandler.split('(')
+              isHandler = testEval(ctx.base[handler[0]])
+              if(typeof isHandler === 'function') {
+                rem.push(atts[i].nodeName)
+                c.addEventListener(evtName, function(evt){
+                  argv = []
+                  argv.push(evt)
+                  v = handler[1].slice(0, -1).split(',').filter(function(f){
+                    return f != ''
                   })
-                }
+                  if(v.length) v.forEach(function(v){ argv.push(v) })
+                  isHandler.apply(c, argv)
+                })
               }
-              i++
-              next()
-            } else {
-              rem.map(function(f){ c.removeAttribute(f) })
             }
+            i++
+            next()
+          } else {
+            rem.map(function(f){ c.removeAttribute(f) })
           }
-          next()
         }
-      })
-    }
+        next()
+      }
+    })
     listKnodeChild = []
   }
 
@@ -188,8 +171,7 @@ function Keet(tagName, context) {
   this.render = function(){
     var ele = getId(ctx.el)
     if(!ele){
-      console.warn('error: cannot find DOM with id: '+ctx.el+' skip rendering..')
-      return false
+      throw new Error('cannot find DOM with id: '+ctx.el+' skip rendering..')
     }
     if(context) ctx.base = context
     var elArr = parseStr(ctx.base, true)
@@ -198,6 +180,23 @@ function Keet(tagName, context) {
 
       if(i === elArr.length - 1){
         document.addEventListener('_loaded', window._loaded && typeof window._loaded === 'function' ? window._loaded(ctx.el) : null, false)
+
+        if(typeof window.MutationObserver == 'function'){
+          var observer = new MutationObserver(function(mutations){
+            if(typeof ctx.componentOnUpdate == 'function') ctx.componentOnUpdate.apply(ctx, mutations)
+          })
+
+          var config = {
+            attributes: true,
+            childList: true,
+            characterData: true,
+            subtree: true
+          }
+
+          observer.observe(ele, config)
+        }
+
+
       }
     }
 
@@ -215,48 +214,43 @@ function Keet(tagName, context) {
   }
 
   var watcher = function(instance, index){
-    var obj, attr, ele, copyInstance, newElem
+    var obj, attr, attr2, ele, copyInstance, newElem
     for (attr in instance){
       instance.watch(attr, function(idx, o, n) {
-        instance.unwatch(attr)
+        for (attr2 in instance){
+          instance.unwatch(attr2)
+        }
         obj = {}
         obj[idx] = n
         ele = getId(ctx.el)
-        if(idx !== 'click'){
-          copyInstance = copy(instance)
-          Object.assign(copyInstance, obj)
-          newElem = genElement(copyInstance)
-          updateElem(ele.childNodes[index], newElem)
-        } else {
-          ele.childNodes[index].click()
-        }
+        Object.assign(instance, obj)
+        newElem = genElement(instance)
+        updateElem(ele.childNodes[index], newElem)
         watcher(instance, index)
       })
     }
   }
 
   var watcher2 = function(instance){
-    var obj, attr, ele, copyInstance, newElem
+    var obj, attr, attr2, ele, copyInstance, newElem
     for (attr in instance){
       instance.watch(attr, function(idx, o, n) {
-        instance.unwatch(attr)
+        for (attr2 in instance){
+          instance.unwatch(attr2)
+        }
         obj = {}
         obj[idx] = n
         ele = getId(ctx.el)
-        if(idx !== 'click'){
-          copyInstance = copy(instance)
-          Object.assign(copyInstance, obj)
-          newElem = genElement(copyInstance)
-          updateElem(ele, newElem)
-        } else {
-          ele.click()
-        }
+        Object.assign(instance, obj)
+        newElem = genElement(instance)
+        updateElem(ele, newElem)
         watcher2(instance)
       })
     }
   }
 
   var watcher3 = function(instance){
+    // console.log(instance)
     var pristineLen = copy(instance), opsList, op, query
     
     opsList = function() { return ['push', 'pop', 'shift', 'unshift', 'splice', 'update'] }
@@ -285,7 +279,7 @@ function Keet(tagName, context) {
       instance[f] = function() {
         if(op.length > 0) {
           var fargv = [].slice.call(arguments)
-          if(!pristineLen[fargv[0]]) return false
+          // if(!pristineLen[fargv[0]]) return false
           if(f === 'update')
             fargv[1] = Object.assign(pristineLen[fargv[0]], fargv[1])
           Array.prototype[f].apply(this, fargv)
@@ -421,8 +415,7 @@ function Keet(tagName, context) {
     }
     for (var iAttr in output) {
       if(oldNode.attributes[iAttr] && oldNode.attributes[iAttr].name === iAttr && oldNode.attributes[iAttr].value != output[iAttr]){
-        if(iAttr === 'click') oldNode.click()
-        else oldNode.setAttribute(iAttr, output[iAttr])
+        oldNode.setAttribute(iAttr, output[iAttr])
       }
     }
     if(oldNode.textContent  === "" && newNode.textContent ){
