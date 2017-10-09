@@ -18,7 +18,7 @@ module.exports = function(argv) {
 }
 },{}],2:[function(require,module,exports){
 /** 
- * Keet.js v2.1.2 Alpha release: https://github.com/syarul/keet
+ * Keet.js v2.1.3 Alpha release: https://github.com/syarul/keet
  * an API for web application
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -270,7 +270,6 @@ function Keet(tagName, context) {
   }
 
   var watcher3 = function(instance){
-    // console.log(instance)
     var pristineLen = copy(instance), opsList, op, query
     
     opsList = function() { return ['push', 'pop', 'shift', 'unshift', 'splice', 'update'] }
@@ -414,6 +413,7 @@ function Keet(tagName, context) {
   }
 
   var nodeUpdate = function(newNode, oldNode, watcher2) {
+    if(!newNode) return false
     var oAttr = newNode.attributes
     var output = {};
     if(oAttr){
