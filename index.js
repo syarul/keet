@@ -38,7 +38,7 @@ function Keet(tagName, context) {
             delete cloneChild[attr]
           }
         }
-        var s = tag(child.tag, child.template ? child.template : '', cloneChild, child.style)
+        var s = child.tag ? tag(child.tag, child.template ? child.template : '', cloneChild, child.style) : child.template
         tempDiv.innerHTML = s
         if(child.tag === 'input'){
           if (child.checked) 
@@ -205,8 +205,9 @@ function Keet(tagName, context) {
   this.update = function(appObj){
     var ele = getId(ctx.el)
     var elArr = parseStr(appObj, true)
+    ele.innerHTML = ''
     for (var i = 0; i < elArr.length; i++) {
-      ele.replaceChild(elArr[i], ele.childNodes[i])
+      ele.appendChild(elArr[i])
       if(i === elArr.length - 1){
         document.addEventListener('_update', window._update && typeof window._update === 'function' ? window._update(ctx.el) : null, false)
       }
@@ -277,17 +278,15 @@ function Keet(tagName, context) {
 
     op.forEach(function(f, i, r){
       instance[f] = function() {
-        if(op.length > 0) {
-          var fargv = [].slice.call(arguments)
-          // if(!pristineLen[fargv[0]]) return false
-          if(f === 'update')
-            fargv[1] = Object.assign(pristineLen[fargv[0]], fargv[1])
-          Array.prototype[f].apply(this, fargv)
-          //propagate splice with single arguments
-          if(fargv.length === 1 && f === 'splice')
-            fargv.push(pristineLen.length - fargv[0])
-          query(f, fargv)
-        }
+        var fargv = [].slice.call(arguments)
+        // if(!pristineLen[fargv[0]]) return false
+        if(f === 'update')
+          fargv[1] = Object.assign(pristineLen[fargv[0]], fargv[1])
+        Array.prototype[f].apply(this, fargv)
+        //propagate splice with single arguments
+        if(fargv.length === 1 && f === 'splice')
+          fargv.push(pristineLen.length - fargv[0])
+        query(f, fargv)
       }
     })
   }
@@ -299,16 +298,12 @@ function Keet(tagName, context) {
 
   var arrProtoPop = function(){
     var ele = getId(ctx.el)
-    if(ele.childNodes.length) {
-      ele.removeChild(ele.lastChild)
-    }
+    ele.removeChild(ele.lastChild)
   }
 
   var arrProtoShift = function(){
     var ele = getId(ctx.el)
-    if(ele.childNodes.length) {
-      ele.removeChild(ele.firstChild)
-    }
+    ele.removeChild(ele.firstChild)
   }
 
   var arrProtoUnShift = function(){
@@ -333,11 +328,7 @@ function Keet(tagName, context) {
     ,   tempDiv
     ,   argv = [].slice.call(arguments)
     ,   start = [].shift.call(argv)
-    ,   count
-    if(typeof argv[0] === 'number'){
-      count = [].shift.call(argv)
-    }
-
+    ,   count = [].shift.call(argv)
     tempDiv = document.createElement('div')
     if(argv.length){
       i = 0
@@ -346,7 +337,6 @@ function Keet(tagName, context) {
         i++
       }
     }
-
     childLen = copy(ele.childNodes.length)
     tempDivChildLen = copy(tempDiv.childNodes.length)
     if (count && count > 0) {
@@ -405,7 +395,6 @@ function Keet(tagName, context) {
   }
 
   var nodeUpdate = function(newNode, oldNode) {
-    if(!newNode) return false
     var oAttr = newNode.attributes
     var output = {};
     if(oAttr){
@@ -418,7 +407,7 @@ function Keet(tagName, context) {
         oldNode.setAttribute(iAttr, output[iAttr])
       }
     }
-    if(oldNode.textContent  === "" && newNode.textContent ){
+    if(oldNode.textContent  === '' && newNode.textContent || oldNode.textContent != newNode.textContent){
       oldNode.textContent = newNode.textContent
     }
     output = {}
@@ -505,9 +494,6 @@ Keet.prototype.link = function(id, value) {
 
   this.el = argv[0]
   if (argv.length === 2){
-    if(!argv[1].tag){
-      argv[1].tag = document.getElementById(id).tagName.toLowerCase()
-    }
     this.base = argv[1]
   }
   this.render()
@@ -544,22 +530,24 @@ Keet.prototype.getBase = function(child, attribute, newProp) {
 }
 
 Keet.prototype.addClass = function(child, newClass) {
+  var self = this
   var b = this.getBase(child, 'class')
 
   var isArr = function() {
     b.push(newClass)
-    this.getBase(child, 'class', b)
+    self.getBase(child, 'class', b)
   }
 
   return Array.isArray(b) && isArr()
 }
 
 Keet.prototype.removeClass = function(child, oldClass) {
+  var self = this
   var b = this.getBase(child, 'class')
 
   var hIdx = function(idx) {
     b.splice(idx, 1)
-    this.getBase(child, 'class', b)
+    self.getBase(child, 'class', b)
   }
 
   var isArr = function() {
@@ -571,13 +559,14 @@ Keet.prototype.removeClass = function(child, oldClass) {
 }
 
 Keet.prototype.swapClass = function(child, condition, classesArray) {
+  var self = this
   var b = this.getBase(child, 'class')
 
   if (condition) classesArray.reverse()
 
   var hIdx = function(idx) {
     b.splice(idx, 1, classesArray[1])
-    this.getBase(child, 'class', b)
+    self.getBase(child, 'class', b)
   }
 
   var isArr = function() {

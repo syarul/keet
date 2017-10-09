@@ -13,7 +13,7 @@ gulp.task('main', function () {
 })
 gulp.task('watch', function() {
   livereload.listen()
-  gulp.watch('./index.js', ['main'])
+  gulp.watch('./*.js', ['main'])
 })
 
 gulp.task('default', ['watch'])

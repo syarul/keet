@@ -503,7 +503,6 @@ describe(`keet.js v-${ver} test`, function () {
 
   })
 
-
   it('array shift', function(){
 
 
@@ -609,7 +608,719 @@ describe(`keet.js v-${ver} test`, function () {
 
     instance.list.splice(1, 1, {me: 'awile'})
 
-    // assert.equal(document.querySelector('SPAN').childNodes[1].nodeValue, 'awile')
+    let els = document.querySelectorAll('SPAN')
+
+    assert.equal(els[1].innerHTML, 'awile')
+
+  })
+
+  it('array splice without removal', function(){
+
+
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '<span>{{me}}</span>',
+      list: [
+        {me: 'john'},
+        {me: 'juan'},
+        {me: 'susan'}
+      ]
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    instance.list.splice(1, 0, {me: 'awile'})
+
+    let els = document.querySelectorAll('SPAN')
+
+    assert.equal(els[1].innerHTML == 'awile' && els.length == 4, true)
+
+  })
+
+  it('array splice ignore', function(){
+
+
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '<span>{{me}}</span>',
+      list: [
+        {me: 'john'},
+        {me: 'juan'},
+        {me: 'susan'}
+      ]
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    instance.list.splice(1, 0)
+
+    let els = document.querySelectorAll('SPAN')
+
+    assert.equal(els.length == 3, true)
+
+  })
+
+  it('array splice single argument', function(){
+
+
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '<span>{{me}}</span>',
+      list: [
+        {me: 'john'},
+        {me: 'juan'},
+        {me: 'susan'}
+      ]
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    instance.list.splice(1)
+
+    let els = document.querySelectorAll('SPAN')
+
+    assert.equal(els.length == 1 && els[0].innerHTML == 'john', true)
+
+  })
+
+  it('array unshift', function(){
+
+
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '<span>{{me}}</span>',
+      list: [
+        {me: 'john'},
+        {me: 'juan'},
+        {me: 'susan'}
+      ]
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    instance.list.unshift({me: 'foo'})
+
+    let els = document.querySelectorAll('SPAN')
+
+    assert.equal(els[0].innerHTML == 'foo' && els.length == 4, true)
+
+  })
+
+  it('array push', function(){
+
+
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '<span>{{me}}</span>',
+      list: [
+        {me: 'john'},
+        {me: 'juan'},
+        {me: 'susan'}
+      ]
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    instance.list.push({me: 'mofoo'})
+
+    let els = document.querySelectorAll('SPAN')
+
+    assert.equal(els[els.length - 1].innerHTML == 'mofoo' && els.length == 4, true)
+
+  })
+
+  it('update child id', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{me}}',
+      me: {
+        tag: 'div',
+        id: 'test'
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    instance.me.id = 'mutate'
+
+    let el = document.querySelector('#mutate')
+
+    assert.equal(el.nodeType, 1)
+
+  })
+
+  it('update child nodeValue', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{me}}',
+      me: {
+        tag: 'div',
+        id: 'me', // must have id for change to happen
+        template: ''
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    instance.me.template = 'mofoo'
+
+    assert.equal(document.querySelector('#me').childNodes[0].nodeValue, 'mofoo')
+
+  })
+
+  it('ignore update when supplied same value', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{me}}',
+      me: {
+        tag: 'div',
+        template: 'aw'
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    instance.me.template = 'aw'
+
+    assert.equal(document.querySelector('#app').childNodes[0].childNodes[0].nodeValue, 'aw')
+
+  })
+
+  it('watcher 2', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: 'test'
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    instance.template = 'foo'
+
+    assert.equal(document.querySelector('#app').innerHTML, 'foo')
+
+  })
+
+  it('compose new object', function(next){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: 'test'
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    const instance2 = {
+      template: '{{wo}}{{wu}}',
+      wo: {
+        tag: 'span',
+        template: 'hello'
+      },
+      wu: {
+        tag: 'span',
+        template: ' world'
+      }
+    }
+
+    window._update = function(){
+      assert.equal(document.querySelector('#app').innerHTML, '<span>hello</span><span> world</span>')
+      window._update = null
+      next()
+    }
+
+    app.compose(instance2)
+
+
+  })
+
+  it('compose new object', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: 'test'
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    const instance2 = {
+      template: '{{wo}}{{wu}}',
+      wo: {
+        tag: 'span',
+        template: 'hello'
+      },
+      wu: {
+        tag: 'span',
+        template: ' world'
+      }
+    }
+
+    app.compose(instance2)
+
+    assert.equal(document.querySelector('#app').innerHTML, '<span>hello</span><span> world</span>')
+
+  })
+
+  it('link with arguments', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: 'test'
+    }
+
+    app.flush('app').link('app', instance)
+
+    assert.equal(document.querySelector('#app').innerHTML, 'test')
+
+  })
+
+  it('cluster', function(next){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: 'test'
+    }
+
+    function fn(){
+      assert.equal(document.querySelector('#app').innerHTML, 'test')
+      next()
+    }
+
+    app.mount(instance).flush('app').link('app').cluster(fn)
+
+  })
+
+  it('ignore cluster arguments not of function', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: 'test'
+    }
+
+    const fn = ''
+
+    app.mount(instance).flush('app').link('app').cluster(fn)
+
+    assert.equal(document.querySelector('#app').innerHTML, 'test')
+
+  })
+
+  it('get list', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '<span>{{name}}</span>',
+      list: [
+        {name: 'joe'}
+      ]
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    assert.equal(Array.isArray(app.list()), true)
+
+  })
+
+  it('get not a list', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '<span>{{name}}</span>'
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    assert.equal(app.list().length, 0)
+
+  })
+
+  it('add class', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{wo}}',
+      wo: {
+        tag: 'span',
+        class: ['do', 'me'],
+        template: 'hello'
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    app.addClass('wo', 'sup')
+
+    assert.equal(document.querySelector('#app').innerHTML, '<span class="do me sup">hello</span>')
+
+  })
+
+  it('remove class', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{wo}}',
+      wo: {
+        tag: 'span',
+        class: ['do', 'me'],
+        template: 'hello'
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    app.removeClass('wo', 'me')
+
+    assert.equal(document.querySelector('#app').innerHTML, '<span class="do">hello</span>')
+
+  })
+
+  it('not remove class', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{wo}}',
+      wo: {
+        tag: 'span',
+        class: ['do', 'me'],
+        template: 'hello'
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    app.removeClass('wo', 'mee')
+
+    assert.equal(document.querySelector('#app').innerHTML, '<span class="do me">hello</span>')
+
+  })
+
+  it('swap class', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{wo}}',
+      wo: {
+        tag: 'span',
+        class: ['do'],
+        template: 'hello'
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    app.swapClass('wo', true, ['me', 'do'])
+
+    assert.equal(document.querySelector('#app').innerHTML, '<span class="me">hello</span>')
+
+  })
+
+  it('swap class reverse', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{wo}}',
+      wo: {
+        tag: 'span',
+        class: ['me'],
+        template: 'hello'
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    app.swapClass('wo', false, ['me', 'do'])
+
+    assert.equal(document.querySelector('#app').innerHTML, '<span class="do">hello</span>')
+
+  })
+
+  it('not swap class', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{wo}}',
+      wo: {
+        tag: 'span',
+        class: ['do'],
+        template: 'hello'
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    app.swapClass('wo', false, ['some', 'do'])
+
+    assert.equal(document.querySelector('#app').innerHTML, '<span class="do">hello</span>')
+
+  })
+
+  it('swap attributes', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{wo}}',
+      wo: {
+        tag: 'span',
+        id: 'hello',
+        template: 'hello'
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    app.swapAttr('wo', true, ['hello', 'do'], 'id')
+
+    assert.equal(document.querySelector('#app').innerHTML, '<span id="do">hello</span>')
+
+  })
+
+  it('swap attributes reverse', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{wo}}',
+      wo: {
+        tag: 'span',
+        id: 'do',
+        template: 'hello'
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    app.swapAttr('wo', false, ['hello', 'do'], 'id')
+
+    assert.equal(document.querySelector('#app').innerHTML, '<span id="hello">hello</span>')
+
+  })
+
+  it('set attribute', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{wo}}',
+      wo: {
+        tag: 'span',
+        id: 'do',
+        template: 'hello'
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    app.setAttr('wo', 'id', 'foo')
+
+    assert.equal(document.querySelector('#app').innerHTML, '<span id="foo">hello</span>')
+
+  })
+
+  it('toggle display', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{wo}}',
+      wo: {
+        tag: 'span',
+        style: {
+          display: 'none'
+        },
+        template: 'hello'
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    app.toggle('wo', 'block')
+
+    assert.equal(document.querySelector('#app').innerHTML, '<span style="display:block;">hello</span>')
+
+  })
+
+  it('content update', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{wo}}',
+      wo: {
+        tag: 'span',
+        template: 'hello'
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    app.contentUpdate('wo', 'hello wold')
+
+    assert.equal(document.querySelector('#app').innerHTML, '<span>hello wold</span>')
 
   })
 
