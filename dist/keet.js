@@ -18,7 +18,7 @@ module.exports = function(argv) {
 }
 },{}],2:[function(require,module,exports){
 /** 
- * Keet.js v2.1.1 Alpha release: https://github.com/syarul/keet
+ * Keet.js v2.1.2 Alpha release: https://github.com/syarul/keet
  * an API for web application
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -263,7 +263,7 @@ function Keet(tagName, context) {
         ele = getId(ctx.el)
         Object.assign(instance, obj)
         newElem = genElement(instance)
-        updateElem(ele, newElem)
+        updateElem(ele, newElem, true)
         watcher2(instance)
       })
     }
@@ -413,7 +413,7 @@ function Keet(tagName, context) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling)
   }
 
-  var nodeUpdate = function(newNode, oldNode) {
+  var nodeUpdate = function(newNode, oldNode, watcher2) {
     var oAttr = newNode.attributes
     var output = {};
     if(oAttr){
@@ -426,7 +426,10 @@ function Keet(tagName, context) {
         oldNode.setAttribute(iAttr, output[iAttr])
       }
     }
-    if(oldNode.textContent  === '' && newNode.textContent || oldNode.textContent != newNode.textContent){
+    if(oldNode.textContent  === '' && newNode.textContent){
+      oldNode.textContent = newNode.textContent
+    }
+    if(watcher2 && oldNode.textContent != newNode.textContent){
       oldNode.textContent = newNode.textContent
     }
     output = {}
@@ -438,7 +441,7 @@ function Keet(tagName, context) {
         oldNode.nodeValue = newNode.nodeValue
   }
 
-  var updateElem = function(oldElem, newElem){
+  var updateElem = function(oldElem, newElem, watcher2){
     var oldArr = [], newArr = []
     oldArr.push(oldElem)
     newArr.push(newElem)
@@ -446,7 +449,7 @@ function Keet(tagName, context) {
     loopChilds(newArr, newElem)
     oldArr.forEach(function(ele, idx, arr) {
       if (ele.nodeType === 1 && ele.hasAttributes()) {
-        nodeUpdate(newArr[idx], ele)
+        nodeUpdate(newArr[idx], ele, watcher2)
       } else if (ele.nodeType === 3) {
         nodeUpdateHTML(newArr[idx], ele)
       }
