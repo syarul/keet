@@ -1299,6 +1299,34 @@ describe(`keet.js v-${ver} test`, function () {
 
   })
 
+  it('get display', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{wo}}',
+      wo: {
+        tag: 'span',
+        style: {
+          display: 'none'
+        },
+        template: 'hello'
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    app.getDisplay('wo')
+
+    assert.equal(app.getDisplay('wo'), 'none')
+
+  })
+
   it('content update', function(){
     class App extends Keet {
       constructor() {

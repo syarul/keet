@@ -1,5 +1,5 @@
 /** 
- * Keet.js v2.1.0 Alpha release: https://github.com/syarul/keet
+ * Keet.js v2.1.1 Alpha release: https://github.com/syarul/keet
  * an API for web application
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -590,6 +590,10 @@ Keet.prototype.toggle = function(child, display) {
   var styl = this.base[child].style
   Object.assign(styl, { display: display })
   this.base[child].style = styl
+}
+
+Keet.prototype.getDisplay = function(child){
+  return this.base[child].style.display
 }
 
 Keet.prototype.contentUpdate = function(child, content) {
