@@ -1,5 +1,5 @@
 /** 
- * Keet.js v2.1.3 Alpha release: https://github.com/syarul/keet
+ * Keet.js v2.1.4 Alpha release: https://github.com/syarul/keet
  * an API for web application
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -130,15 +130,14 @@ function Keet(tagName, context) {
               isHandler = testEval(ctx.base[handler[0]])
               if(typeof isHandler === 'function') {
                 rem.push(atts[i].nodeName)
-                c.addEventListener(evtName, function(evt){
-                  argv = []
-                  argv.push(evt)
-                  v = handler[1].slice(0, -1).split(',').filter(function(f){
-                    return f != ''
-                  })
-                  if(v.length) v.forEach(function(v){ argv.push(v) })
-                  isHandler.apply(c, argv)
+                argv = []
+                v = handler[1].slice(0, -1).split(',').filter(function(f){
+                  return f != ''
                 })
+                if(v.length) v.forEach(function(v){ argv.push(v) })
+
+                c.addEventListener(evtName, isHandler.bind.apply(isHandler, [c].concat(argv)), false)
+
               }
             }
             i++

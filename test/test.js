@@ -340,7 +340,7 @@ describe(`keet.js v-${ver} test`, function () {
         tag: 'button',
         'k-click': 'clickHandler2(test,harder)'
       },
-      clickHandler2: function(evt, sec, third){
+      clickHandler2: function(sec, third, evt){
         assert.equal(third, 'harder')
         next()
       }
