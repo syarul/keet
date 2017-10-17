@@ -13,9 +13,42 @@ A solution to write clean interface for web application.
 
 - Live up to the standard of [Unix Philosophy](http://www.faqs.org/docs/artu/ch01s06.html)
 
-## Intro
+## Streamlike flow
 
-Basic example:-
+This view layer is meant to be used as a compliment to [Node.js stream](https://nodejs.org/api/stream.html) design philosophy and to take that advantage fully in the browser environment. As sample case of usage;
+
+```javascript
+const str = require('string-to-stream')
+const fetchStream = require('utils/fetchStream')
+const through = require('through2')
+const Keet = require('keet')
+
+class App extends Keet {
+  constructor(){
+  }
+  
+  _clickHandler(evt){
+    console.log('I\'m cool yo!')
+  }
+}
+
+const app = new App()
+
+const sink = through((buf, _, next) => {
+  let json = JSON.parse(buf.toString())
+  // delegate event handler to component
+  json.clickHandler = app._clickHandler.bind(app)
+  app.mount(json).link('app')
+  next()
+})
+
+str('./data.json').pipe(fetchStream).pipe(sink)
+
+module.exports = app
+
+```
+
+## Basic usage
 
 ```javascript
 
@@ -120,40 +153,7 @@ const child = () => {
 app.mount(first).link('app').cluster(child)
 ```
 
-
-## Streamlike flow
-
-To have even more robust data handling, we should load via JSON. With the advent of Node.js stream in the browser using [readable-stream](https://www.npmjs.com/package/readable-stream) we can manage and control our application structure and data flow concisely
-
-```javascript
-const str = require('string-to-stream')
-const fetchStream = require('utils/fetchStream')
-const through = require('through2')
-const Keet = require('keet')
-
-class App extends Keet {
-  constructor(){
-    super()
-  }
-  _clickHandler(evt){
-    console.log('I\'m cool yo!')
-  }
-}
-
-const app = new App()
-
-const sink = through((buf, _, next) => {
-  let json = JSON.parse(buf.toString())
-  json.clickHandler = app._clickHandler.bind(app) // delegate event handler to component
-  app.mount(json).link('app')
-  next()
-})
-
-str('./data.json').pipe(fetchStream).pipe(sink)
-
-module.exports = app
-
-```
+See sample folder for more usage
 
 ## License
 
