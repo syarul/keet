@@ -1,6 +1,6 @@
 {
   "name": "keet",
-  "version": "2.1.4",
+  "version": "2.2.0",
   "description": "A solution to write clean interface for web application",
   "main": "index.js",
   "scripts": {
@@ -33,16 +33,20 @@
     "babel-core": "^6.26.0",
     "babel-plugin-istanbul": "^4.1.5",
     "babel-preset-env": "^1.6.0",
+    "body-parser": "^1.18.2",
     "browserify": "^14.4.0",
     "coveralls": "^3.0.0",
+    "express": "^4.16.2",
     "gulp": "^3.9.1",
     "gulp-livereload": "^3.8.1",
     "gulp-shell": "^0.6.3",
+    "jsdom": "^11.3.0",
     "markdown-magic": "^0.1.19",
     "mocha": "^4.0.0",
     "mutation-observer": "^1.0.3",
     "mutationobserver-shim": "^0.3.2",
-    "nyc": "^11.2.1"
+    "nyc": "^11.2.1",
+    "string-to-stream": "^1.1.0"
   },
   "nyc": {
     "include": [
@@ -54,6 +58,6 @@
     "instrument": false
   },
   "dependencies": {
-    "jsdom": "^11.3.0"
+    "through2": "^2.0.3"
   }
 }

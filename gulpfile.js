@@ -11,9 +11,21 @@ gulp.task('main', function () {
     .pipe(shell('npm run debug'))
     .pipe(livereload())
 })
+
 gulp.task('watch', function() {
   livereload.listen()
   gulp.watch('./*.js', ['main'])
+})
+
+gulp.task('bundleStream', function () {
+  gulp.src('')
+    .pipe(shell('browserify ./sample/stream.js -o ./sample/stream.bundle.js --debug'))
+    .pipe(livereload())
+})
+
+gulp.task('stream', function() {
+  livereload.listen()
+  gulp.watch(['./sample/stream.js', './vpipe.js'], ['bundleStream'])
 })
 
 gulp.task('default', ['watch'])

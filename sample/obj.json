@@ -1,0 +1,9 @@
+{
+  "template": "{{foo}}",
+  "mountPoint": "app",
+  "foo": {
+  	"tag": "button",
+  	"template": "click me",
+  	"k-click": "clickHandler()"
+  }
+}

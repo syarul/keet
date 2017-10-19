@@ -18,7 +18,7 @@ module.exports = function(argv) {
 }
 },{}],2:[function(require,module,exports){
 /** 
- * Keet.js v2.1.4 Alpha release: https://github.com/syarul/keet
+ * Keet.js v2.2.0 Alpha release: https://github.com/syarul/keet
  * an API for web application
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

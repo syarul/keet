@@ -1,7 +1,7 @@
 # keet.js v2
 
 <!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
-[![npm package](https://img.shields.io/badge/npm-2.1.4-blue.svg)](https://www.npmjs.com/package/keet) [![browser build](https://img.shields.io/badge/wzrd.in-2.1.4-ff69b4.svg)](https://wzrd.in/standalone/keet@latest) [![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet) [![Build Status](https://travis-ci.org/syarul/keet.svg?branch=master)](https://travis-ci.org/syarul/keet) [![Coverage Status](https://coveralls.io/repos/github/syarul/keet/badge.svg?branch=master)](https://coveralls.io/github/syarul/keet?branch=master)
+[![npm package](https://img.shields.io/badge/npm-2.2.0-blue.svg)](https://www.npmjs.com/package/keet) [![browser build](https://img.shields.io/badge/wzrd.in-2.2.0-ff69b4.svg)](https://wzrd.in/standalone/keet@latest) [![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet) [![Build Status](https://travis-ci.org/syarul/keet.svg?branch=master)](https://travis-ci.org/syarul/keet) [![Coverage Status](https://coveralls.io/repos/github/syarul/keet/badge.svg?branch=master)](https://coveralls.io/github/syarul/keet?branch=master)
 <!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
 <!-- AUTO-GENERATED-CONTENT:END -->
 
@@ -19,12 +19,13 @@ This view layer is meant to be used as a compliment to [Node.js stream](https://
 
 ```javascript
 const str = require('string-to-stream')
-const fetchStream = require('utils/fetchStream')
-const through = require('through2')
+const FetchStream = require('keet/fetchStream')
 const Keet = require('keet')
+const vpipe = require('keet/vpipe')
 
 class App extends Keet {
   constructor(){
+    super()
   }
   
   _clickHandler(evt){
@@ -34,18 +35,29 @@ class App extends Keet {
 
 const app = new App()
 
-const sink = through((buf, _, next) => {
-  let json = JSON.parse(buf.toString())
-  // delegate event handler to component
-  json.clickHandler = app._clickHandler.bind(app)
-  app.mount(json).link('app')
-  next()
-})
+const sink = new vpipe(app)
+
+const fetchStream = new FetchStream()
 
 str('./data.json').pipe(fetchStream).pipe(sink)
 
 module.exports = app
 
+```
+
+
+The ```data.json``` sample
+
+```json
+{
+  "template": "{{foo}}",
+  "mountPoint": "app",
+  "foo": {
+    "tag": "button",
+    "template": "click me",
+    "k-click": "clickHandler()"
+  }
+}
 ```
 
 ## Basic usage
