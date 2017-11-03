@@ -1,5 +1,5 @@
 /** 
- * Keet.js v2.2.1 Alpha release: https://github.com/syarul/keet
+ * Keet.js v2.2.2 Alpha release: https://github.com/syarul/keet
  * an API for web application
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -93,7 +93,7 @@ function Keet(tagName, context) {
               } else if(!child){
                 tempDiv = document.createElement('div')
                 tempDiv.innerHTML = c
-				        process_event(tempDiv)
+                process_event(tempDiv)
                 elemArr.push(tempDiv.childNodes[0])
               }
 
