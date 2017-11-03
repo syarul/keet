@@ -1,5 +1,5 @@
 /** 
- * Keet.js v2.2.0 Alpha release: https://github.com/syarul/keet
+ * Keet.js v2.2.1 Alpha release: https://github.com/syarul/keet
  * an API for web application
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -93,6 +93,7 @@ function Keet(tagName, context) {
               } else if(!child){
                 tempDiv = document.createElement('div')
                 tempDiv.innerHTML = c
+				        process_event(tempDiv)
                 elemArr.push(tempDiv.childNodes[0])
               }
 
@@ -170,7 +171,8 @@ function Keet(tagName, context) {
   this.render = function(){
     var ele = getId(ctx.el)
     if(!ele){
-      throw new Error('cannot find DOM with id: '+ctx.el+' skip rendering..')
+      // throw new Error('cannot find DOM with id: '+ctx.el+' skip rendering..')
+      console.warn('cannot find DOM with id: '+ctx.el+' skip rendering..')
     }
     if(context) ctx.base = context
     var elArr = parseStr(ctx.base, true)
@@ -180,7 +182,7 @@ function Keet(tagName, context) {
       if(i === elArr.length - 1){
         document.addEventListener('_loaded', window._loaded && typeof window._loaded === 'function' ? window._loaded(ctx.el) : null, false)
 
-        if(typeof window.MutationObserver == 'function'){
+        /*if(typeof window.MutationObserver == 'function'){
           var observer = new MutationObserver(function(mutations){
             if(typeof ctx.componentOnUpdate == 'function') ctx.componentOnUpdate.apply(ctx, mutations)
           })
@@ -193,7 +195,7 @@ function Keet(tagName, context) {
           }
 
           observer.observe(ele, config)
-        }
+        }*/
 
 
       }
@@ -364,7 +366,10 @@ function Keet(tagName, context) {
     var argv = [].slice.call(arguments)
     ,   ele = getId(ctx.el)
     ,   index = [].shift.call(argv)
-    updateElem(ele.childNodes[index], genTemplate(argv[0]))
+    ,   newData = [].shift.call(argv)
+    ,   offset = [].shift.call(argv)
+    offset = offset || 0
+    updateElem(ele.childNodes[index+offset], genTemplate(newData))
   }
 
   var genTemplate = function(obj){
@@ -376,6 +381,7 @@ function Keet(tagName, context) {
     })
     tempDiv = document.createElement('div')
     tempDiv.innerHTML = tmpl
+    process_event(tempDiv)
     return tempDiv.childNodes[0]
   }
 

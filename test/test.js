@@ -441,6 +441,9 @@ describe(`keet.js v-${ver} test`, function () {
   })
 
   it('won\'t render on not found declared dom', function(next){
+
+    console.warn = function(){}
+
     class App extends Keet {
       constructor() {
         super()
