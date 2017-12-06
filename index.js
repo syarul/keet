@@ -1,5 +1,5 @@
 /** 
- * Keet.js v2.2.3 Alpha release: https://github.com/syarul/keet
+ * Keet.js v2.2.4 Alpha release: https://github.com/syarul/keet
  * an API for web application
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -368,7 +368,7 @@ function Keet(tagName, context) {
     ,   index = [].shift.call(argv)
 
     if(argv.length == 2 && typeof argv[1] == 'number'){
-      updateElem(ele.childNodes[index+arg[1]], genTemplate(argv[0]))
+      updateElem(ele.childNodes[index+argv[1]], genTemplate(argv[0]))
     } else {
       updateElem(ele.childNodes[index], genTemplate(argv[0]))
     }
