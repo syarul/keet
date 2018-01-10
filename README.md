@@ -15,9 +15,7 @@ A solution to write clean interface for web application.
 
 ## Perf Test
 
-> This test is run with keet.js version 1.0.8
-
-See how it performs compare to other frameworks
+> Tested with keet.js version 1.0.8
 
 <img src="img/2018-01-10.png" width="700">
 
@@ -183,5 +181,5 @@ See sample folder for more usage
 
 The MIT License (MIT)
 
-Copyright (c) 2017 Shahrul Nizam Selamat
+Copyright (c) 2018 Shahrul Nizam Selamat
   
