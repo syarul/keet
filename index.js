@@ -1,10 +1,10 @@
 /** 
- * Keet.js v2.2.4 Alpha release: https://github.com/syarul/keet
- * an API for web application
+ * Keet.js v2.2.5 Alpha release: https://github.com/syarul/keet
+ * A solution to write clean interface for web application
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keet.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
  *
- * Copyright 2017, Shahrul Nizam Selamat
+ * Copyright 2018, Shahrul Nizam Selamat
  * Released under the MIT License.
  */
 'use strict'
@@ -181,23 +181,6 @@ function Keet(tagName, context) {
 
       if(i === elArr.length - 1){
         document.addEventListener('_loaded', window._loaded && typeof window._loaded === 'function' ? window._loaded(ctx.el) : null, false)
-
-        /*if(typeof window.MutationObserver == 'function'){
-          var observer = new MutationObserver(function(mutations){
-            if(typeof ctx.componentOnUpdate == 'function') ctx.componentOnUpdate.apply(ctx, mutations)
-          })
-
-          var config = {
-            attributes: true,
-            childList: true,
-            characterData: true,
-            subtree: true
-          }
-
-          observer.observe(ele, config)
-        }*/
-
-
       }
     }
 
@@ -420,6 +403,12 @@ function Keet(tagName, context) {
     }
     if(watcher2 && oldNode.textContent != newNode.textContent){
       oldNode.textContent = newNode.textContent
+    }
+    if(oldNode.type == 'checkbox' && !oldNode.checked && newNode.checked){
+      oldNode.checked = true
+    }
+    if(oldNode.type == 'checkbox' && oldNode.checked && !newNode.checked){
+      oldNode.checked = false
     }
     output = {}
   }

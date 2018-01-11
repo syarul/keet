@@ -36,6 +36,8 @@ describe(`keet.js v-${ver} test`, function () {
     }
   )
 
+  
+
   it('has document', function () {
     var div = document.createElement('div')
     assert.equal(div.nodeName, 'DIV')
@@ -584,6 +586,33 @@ describe(`keet.js v-${ver} test`, function () {
     instance.list.update(0, { me : 'susan'})
 
     assert.equal(document.querySelector('SPAN').childNodes[0].nodeValue, 'susan')
+
+  })
+
+  it('array update shift +1', function(){
+
+
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '<span>{{me}}</span>',
+      list: [
+        {me: 'john'},
+        {me: 'juan'}
+      ]
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    instance.list.update(0, { me : 'susan'}, 1)
+
+    assert.equal(document.querySelectorAll('SPAN')[1].childNodes[0].nodeValue, 'susan')
 
   })
 
@@ -1354,5 +1383,181 @@ describe(`keet.js v-${ver} test`, function () {
     assert.equal(document.querySelector('#app').innerHTML, '<span>hello wold</span>')
 
   })
+
+  it('checkbox checked', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{wo}}',
+      wo: {
+        tag: 'input',
+        type: 'checkbox',
+        checked: '',
+        'k-click': 'clickHandler()'
+      },
+      clickHandler: function(evt){
+        assert.equal(app.vdom().childNodes[0].checked, true)
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    const clickCheckbox = new Event('click', {
+      'bubbles': true,
+      'cancelable': true
+    })
+
+    app.vdom().childNodes[0].dispatchEvent(clickCheckbox)
+
+  })
+
+  it('checkbox unchecked', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{wo}}',
+      wo: {
+        tag: 'input',
+        type: 'checkbox',
+        checked: 'checked',
+        'k-click': 'clickHandler()'
+      },
+      clickHandler: function(evt){
+        assert.equal(app.vdom().childNodes[0].checked, false)
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    const clickCheckbox = new Event('click', {
+      'bubbles': true,
+      'cancelable': true
+    })
+
+    app.vdom().childNodes[0].dispatchEvent(clickCheckbox)
+
+  })
+
+  it('checkbox checked from instance prop', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{wo}}',
+      wo: {
+        tag: 'input',
+        type: 'checkbox',
+        checked: ''
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    instance.wo.checked = 'checked'
+
+    assert.equal(app.vdom().childNodes[0].checked, true)
+
+  })
+
+  it('checkbox unchecked from instance prop', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{wo}}',
+      wo: {
+        tag: 'input',
+        type: 'checkbox',
+        checked: 'checked'
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    instance.wo.checked = ''
+
+    assert.equal(app.vdom().childNodes[0].checked, false)
+
+  })
+
+  
+
+  /*it('no new dom', function () {
+
+    class App extends Keet {
+      constructor(){
+        super()
+      }
+    }
+
+    const app = new App()
+
+    let hexesIns
+
+    const hexesFn = () => {
+
+      let hexes = new App()
+
+      hexesIns = {
+        template: '{{h}}{{g}}',
+        h: {
+          tag: 'div',
+          id: 'h'
+        },
+        g: {
+          tag: 'div',
+          id: 'g'
+        }
+      }
+
+      hexes.mount(hexesIns).link('loader')
+    } 
+
+    let instance = {
+      template: '{{loader}}{{dashboard}}',
+      loader: {
+        tag: 'div',
+        id: 'loader',
+        class: '["show"]',
+      },
+      dashboard: {
+        tag: 'div',
+        id: 'dashboard',
+        class: '["hidden"]',
+      }
+    }
+
+    app.mount(instance).flush('app').link('app').cluster(hexesFn)
+
+    hexesIns.template = '{{h}}'
+
+    app.swapClass('loader', false, ['show', 'hidden'])
+    app.swapClass('dashboard', true, ['show', 'hidden'])
+
+    // log(app.vdom().childNodes[0].id)
+
+  })*/
 
 })
