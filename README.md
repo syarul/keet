@@ -15,9 +15,13 @@ A solution to write clean interface for web application.
 
 ## Perf Test
 
-> Tested with keet.js version 1.0.8
+> Tested with keet.js version 1.0.8 / latest
 
-<img src="img/2018-01-10.png" width="700">
+<img src="img/2018-01-12.png" width="517">
+
+_(Results for Microsoft Edge 41 + Windows 10 on Dell OptiPlex 5040)_
+
+> Performance best in Microsoft Edge, slightly lower in Chrome (*Both version of keet.js does not make of difference)
 
 You can get the test from https://github.com/syarul/preact-perf
 
