@@ -13,20 +13,6 @@ A solution to write clean interface for web application.
 
 - Live up to the standard of [Unix Philosophy](http://www.faqs.org/docs/artu/ch01s06.html)
 
-## Perf Test
-
-> Tested with keet.js version 1.0.8 / latest
-
-<img src="img/2018-01-12.png" width="517">
-
-_(Results for Microsoft Edge 41 + Windows 10 on Dell OptiPlex 5040)_
-
-> Performance best in Microsoft Edge, slightly lower in Chrome (*Both version of keet.js does not make of difference)
-
-You can get the test from https://github.com/syarul/preact-perf
-
-The todoMVC you can get it here https://github.com/syarul/keetjs-todomvc
-
 ## Streamlike flow
 
 This view layer is meant to be used as a compliment to [Node.js stream](https://nodejs.org/api/stream.html) design philosophy and to take that advantage fully in the browser environment. As sample case of usage;
