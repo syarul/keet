@@ -1,9 +1,10 @@
 {
   "name": "keet",
-  "version": "2.2.5-rc2",
-  "description": "A solution to write clean interface for web application",
-  "main": "index.js",
+  "version": "2.3.0",
+  "description": "Minimalist view layer for the web",
+  "main": "rebase.js",
   "scripts": {
+    "start": "parcel index.html",
     "debug": "browserify index.js --debug --standalone Keet > dist/keet.debug.js",
     "dist": "browserify index.js --standalone Keet > dist/keet.js && node markdown.config.js",
     "distcompress": "browserify index.js --standalone Keet | uglifyjs > dist/keet.min.js",
@@ -17,11 +18,9 @@
     "url": "git+https://github.com/syarul/keet.git"
   },
   "keywords": [
-    "dom",
-    "component",
-    "view",
-    "stream",
-    "framework"
+    "templating",
+    "minimal",
+    "view layer"
   ],
   "author": "Shahrul Nizam Selamat",
   "license": "MIT",
@@ -30,34 +29,9 @@
   },
   "homepage": "https://github.com/syarul/keet#readme",
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-plugin-istanbul": "^4.1.5",
-    "babel-preset-env": "^1.6.0",
-    "body-parser": "^1.18.2",
-    "browserify": "^14.4.0",
-    "coveralls": "^3.0.0",
-    "express": "^4.16.2",
-    "gulp": "^3.9.1",
-    "gulp-livereload": "^3.8.1",
-    "gulp-shell": "^0.6.3",
-    "jsdom": "^11.3.0",
-    "markdown-magic": "^0.1.19",
-    "mocha": "^4.0.0",
-    "mutation-observer": "^1.0.3",
-    "mutationobserver-shim": "^0.3.2",
-    "nyc": "^11.2.1",
+    "markdown-magic": "^0.1.20",
+    "parcel-bundler": "^1.4.1",
     "string-to-stream": "^1.1.0"
   },
-  "nyc": {
-    "include": [
-      "index.js",
-      "tag.js",
-      "copy.js"
-    ],
-    "sourceMap": false,
-    "instrument": false
-  },
-  "dependencies": {
-    "through2": "^2.0.3"
-  }
+  "dependencies": {}
 }
