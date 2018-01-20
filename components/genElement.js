@@ -3,7 +3,7 @@ import tag from './tag'
 import tmplHandler from './tmplHandler'
 import processEvent from './processEvent'
 
-export default (child, context, key, index) => {
+export default (child, context) => {
   let tempDiv = document.createElement('div')
   let cloneChild = copy(child)
   delete cloneChild.template
@@ -16,9 +16,8 @@ export default (child, context, key, index) => {
       delete cloneChild[attr]
     }
   }
-  console.log(key)
   // process template if has handlebars value
-  let tpl = tmplHandler(child.template, context, key, index)
+  let tpl = tmplHandler(child.template, context, child['keet-id'])
 
   let s = child.tag ? 
   	tag(child.tag,                //html tag

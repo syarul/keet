@@ -1,4 +1,5 @@
 import genElement from './genElement'
+import { genId } from './utils'
 export default (context, watch) => {
   if(typeof context.base != 'object') throw new Error('instance is not an object')
   let elemArr = []
@@ -9,8 +10,10 @@ export default (context, watch) => {
     Object.keys(context.base).map((key, index) => {
       let child = context.base[key]
       if (child && typeof child === 'object') {
-
-        let newElement = genElement(child, context, key, index)
+        let id = genId()
+        child['keet-id'] = id
+        context.base[key]['keet-id'] = id
+        let newElement = genElement(child, context)
         elemArr.push(newElement)
       } else {
       	// log('key is not object')

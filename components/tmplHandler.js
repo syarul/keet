@@ -1,6 +1,6 @@
 import proxy from './proxy'
 
-export default (str, context, key, index) => {
+export default (str, context, tmplId) => {
   let arrProps = str.match(/{{([^{}]+)}}/g), tmpl = ''
   let proxies = []
   if (arrProps && arrProps.length) {
@@ -8,7 +8,7 @@ export default (str, context, key, index) => {
       let rep = s.replace(/{{([^{}]+)}}/g, '$1')
       if(context[rep] !== undefined){
       	str = str.replace(/{{([^{}]+)}}/, context[rep])
-    	  let pr = proxy(context, rep, key, index)
+    	  let pr = proxy(context, rep, tmplId)
         proxies.push(pr)
       }
     })
