@@ -1,15 +1,21 @@
 import Keet from '../rebase'
 
-// console.clear()
-// let log = console.log.bind(console)
+console.clear()
+let log = console.log.bind(console)
 
 class App extends Keet {
   constructor() {
     super()
     this.count = 0
+    this.randomNum = Math.round(Math.random() * 100)
   }
   add() {
     this.count++
+    this.roll()
+  }
+  roll(){
+    this.randomNum = Math.round(Math.random() * 100)
+    log(this)
   }
 }
 
@@ -24,6 +30,10 @@ const model = {
     tag: 'button',
     'k-click': 'add()',
     template: '{{count}} click'
+  },
+  random: {
+    tag: 'button',
+    template: 'roll:{{randomNum}}'
   }
 }
 

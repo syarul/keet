@@ -1,25 +1,26 @@
-const loopChilds = function(arr, elem) {
-  for (var child = elem.firstChild; child !== null; child = child.nextSibling) {
+const loopChilds = (arr, elem) => {
+  for (let child = elem.firstChild; child !== null; child = child.nextSibling) {
     arr.push(child)
     if (child.hasChildNodes()) {
       loopChilds(arr, child)
     }
   }
 }
-const insertAfter = function(newNode, referenceNode, parentNode) {
+
+const insertAfter = (newNode, referenceNode, parentNode) => {
   referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling)
 }
 
-const nodeUpdate = function(newNode, oldNode, watcher2) {
+const nodeUpdate = (newNode, oldNode, watcher2) => {
   if(!newNode) return false
-  var oAttr = newNode.attributes
-  var output = {};
+  let oAttr = newNode.attributes
+  ,   output = {};
   if(oAttr){
-    for(var i = oAttr.length - 1; i >= 0; i--) {
+    for(let i = oAttr.length - 1; i >= 0; i--) {
        output[oAttr[i].name] = oAttr[i].value
     }
   }
-  for (var iAttr in output) {
+  for (let iAttr in output) {
     if(oldNode.attributes[iAttr] && oldNode.attributes[iAttr].name === iAttr && oldNode.attributes[iAttr].value != output[iAttr]){
       oldNode.setAttribute(iAttr, output[iAttr])
     }
@@ -39,19 +40,19 @@ const nodeUpdate = function(newNode, oldNode, watcher2) {
   output = {}
 }
 
-const nodeUpdateHTML = function(newNode, oldNode) {
+const nodeUpdateHTML = (newNode, oldNode) => {
   if(!newNode) return false
   if(newNode.nodeValue !== oldNode.nodeValue)
       oldNode.nodeValue = newNode.nodeValue
 }
 
-const updateElem = function(oldElem, newElem, watcher2){
+const updateElem = (oldElem, newElem, watcher2) => {
   var oldArr = [], newArr = []
   oldArr.push(oldElem)
   newArr.push(newElem)
   loopChilds(oldArr, oldElem)
   loopChilds(newArr, newElem)
-  oldArr.forEach(function(ele, idx, arr) {
+  oldArr.map((ele, idx, arr) => {
     if (ele.nodeType === 1 && ele.hasAttributes()) {
       nodeUpdate(newArr[idx], ele, watcher2)
     } else if (ele.nodeType === 3) {

@@ -1,8 +1,8 @@
 import proxy from './proxy'
+
 export default (str, context, key, index) => {
   let arrProps = str.match(/{{([^{}]+)}}/g), tmpl = ''
   let proxies = []
-  // log(arrProps)
   if (arrProps && arrProps.length) {
     arrProps.forEach(s => {
       let rep = s.replace(/{{([^{}]+)}}/g, '$1')
@@ -18,5 +18,4 @@ export default (str, context, key, index) => {
     tmpl: str,
     proxies: proxies
   }
-  // log(tmpl)
 }
