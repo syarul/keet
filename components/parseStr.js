@@ -1,13 +1,27 @@
-import genElement from './genElement'
+import genElement from './generateElement'
+import tmplHandler from './tmplHandler'
+import tmplArrayHandler from './tmplArrayHandler'
+import processEvent from './processEvent'
 import { genId } from './utils'
-export default (context, watch) => {
-  if(typeof context.base != 'object') throw new Error('instance is not an object')
+
+export default context => {
+  if (typeof context.base != 'object') throw new Error('instance is not an object')
   let elemArr = []
-  if(Array.isArray(context.base.list)){
-  	// do array base
+  if (Array.isArray(context.base.list)) {
+    // do array base
+    let tpl = tmplArrayHandler.call(context)
+    tpl.tmpl.map(ptmpl => {
+      let tempDiv = document.createElement('div')
+      tempDiv.innerHTML = ptmpl
+      processEvent(tempDiv, context, tpl.proxyRes)
+      elemArr.push(tempDiv.childNodes[0])
+    })
+
+    context.list = tpl.proxyRes
+
   } else {
-  	// do object base
-    Object.keys(context.base).map((key, index) => {
+    // do object base
+    Object.keys(context.base).map(key => {
       let child = context.base[key]
       if (child && typeof child === 'object') {
         let id = genId()
@@ -16,11 +30,12 @@ export default (context, watch) => {
         let newElement = genElement(child, context)
         elemArr.push(newElement)
       } else {
-      	// log('key is not object')
-        // tempDiv = document.createElement('div')
-        // tempDiv.innerHTML = c
-        // process_event(tempDiv)
-        // elemArr.push(tempDiv.childNodes[0])
+        let child = context.base[key]
+        let tpl = tmplHandler(child, context)
+        let tempDiv = document.createElement('div')
+        tempDiv.innerHTML = tpl.tmpl
+        processEvent(tempDiv, context, tpl.proxyRes)
+        elemArr.push(tempDiv.childNodes[0])
       }
     })
   }

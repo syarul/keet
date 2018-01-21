@@ -1,16 +1,21 @@
 import Keet from '../keet'
 
 /**
- * usage on how to update state
+ * usage on how to update states reactively
 */
 
 class App extends Keet {
   constructor() {
     super()
-    this.count = 0 // set our initial state in the constructor
+    this.count = 0
+    this.randomNum = 25
   }
   add() {
     this.count++
+    this.roll()
+  }
+  roll(){
+    this.randomNum = Math.round(Math.random() * 100)
   }
 }
 
@@ -25,6 +30,10 @@ const vmodel = {
     tag: 'button',
     'k-click': 'add()',
     template: '{{count}} click'
+  },
+  random: {
+    tag: 'button',
+    template: 'roll:{{randomNum}}'
   }
 }
 

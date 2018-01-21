@@ -1,21 +1,41 @@
-import { getId, selector } from './utils'
-import genElement from './genElement'
-import { updateElem } from './element-utils'
+import copy from './copy'
+import genElement from './generateElement'
+import { selector } from './utils'
+import { updateElem } from './elementUtils'
 
-export default (context, rep, tmplId) => {
+const updateContext = (key, contextPristine, obj) => {
+  let context = copy(contextPristine)
+  Object.keys(context.base).map(handlerKey => {
+    let tmplBase = context.base[handlerKey].template
+    if(tmplBase){
+      let hasTmpl = tmplBase.match(`{{${key}}}`)
+      if (hasTmpl && hasTmpl.length) {
+        Object.assign(context, obj)
+      }
+    }
+
+    let styleBase = context.base[handlerKey].style
+    if (styleBase) {
+      Object.keys(styleBase).map(style => {
+        let hasStyleAttr = styleBase[style].match(`{{${key}}}`)
+        if (hasStyleAttr) Object.assign(context, obj)
+      })
+    }
+
+    let id = context.base[handlerKey]['keet-id']
+      , ele = selector(id)
+      , newElem = genElement(context.base[handlerKey], context)
+    updateElem(ele, newElem)
+
+  })
+}
+
+export default context => {
   const watchObject = obj => new Proxy(obj, {
     set(target, key, value) {
-      // console.log('set', { key, value })
-      // let ele = getId(context.el)
-
-      console.log(key, value, tmplId)
       let obj = {}
       obj[key] = value
-      Object.assign(context, obj)
-      console.log(context)
-      // let newElem = genElement(context.base[_key], context, _key)
-      // log(_key, context.base[_key], index)
-      // updateElem(ele.childNodes[index], newElem)
+      updateContext(key, context, obj)
       return target[key] = value
     }
   })

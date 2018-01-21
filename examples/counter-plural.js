@@ -7,10 +7,12 @@ import Keet from '../keet'
 class App extends Keet {
   constructor() {
     super()
-    this.count = 0 // set our initial state in the constructor
+    this.count = 0
+    this.plural = ''
   }
   add() {
     this.count++
+    if(this.count > 1) this.plural = 's'
   }
 }
 
@@ -24,7 +26,7 @@ const vmodel = {
   counter: {
     tag: 'button',
     'k-click': 'add()',
-    template: '{{count}} click'
+    template: '{{count}} click{{plural}}'
   }
 }
 

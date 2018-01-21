@@ -1,8 +1,8 @@
 function ktag(...args) {
   let attr 
-  ,   idx
-  ,   te
-  ,   ret = ['<', args[0], '>', args[1], '</', args[0], '>']
+    , idx
+    , te
+    , ret = ['<', args[0], '>', args[1], '</', args[0], '>']
   
   if (args.length > 2 && typeof args[2] === 'object') {
     for (attr in args[2]) {

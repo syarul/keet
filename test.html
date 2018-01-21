@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  	<script type="text/javascript" src="./keet-min.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+  <script type="text/javascript">
+  	class App extends Keet {
+	  constructor() {
+	    super()
+	    this.color = 'red'
+	  }
+	  toggle() {
+	    this.color = this.color == 'red' ? 'blue' : 'red'
+	  }
+	}
+
+	const app = new App
+
+	const vmodel = {
+	  header: {
+	    tag: 'h1',
+	    template: 'My Simple Toggler'
+	  },
+	  toggler: {
+	    tag: 'button',
+	    'k-click': 'toggle()',
+	    template: 'toggle'
+	  },
+	  showcase: {
+	    tag: 'button',
+	    style: {
+	      background: '{{color}}'
+	    },
+	    template: 'this button color is {{color}}'
+	  }
+	}
+
+	app.mount(vmodel).link('app')
+  </script>
+</html>
