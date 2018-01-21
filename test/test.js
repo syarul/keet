@@ -1,8 +1,8 @@
 const assert = require('assert')
 const { JSDOM } = require('jsdom')
 
-const Keet = require('../')
-const tag = require('../tag')
+const Keet = require('../keet')
+const { getId } = require('../components/utils')
 const fs = require('fs')
 const pkg = fs.readFileSync('package.json', 'utf8')
 
@@ -29,10 +29,12 @@ describe(`keet.js v-${ver} test`, function () {
       global.window = window
       global.Event = window.Event
 
-      const MutationObserver = require('mutation-observer')
-
-      global.MutationObserver = window.MutationObserver = MutationObserver
       global.log = console.log.bind(console)
+
+      window._loaded = function(){
+        console.log('loaded')
+      }
+
     }
   )
 
@@ -54,7 +56,6 @@ describe(`keet.js v-${ver} test`, function () {
     const app = new App()
 
     const instance = {
-      template: '{{hello}}',
       hello: {
         tag: 'div',
         id: 'hello',
@@ -73,31 +74,36 @@ describe(`keet.js v-${ver} test`, function () {
       constructor(){
         super()
       }
+      clickHandler(evt){
+        assert.equal(evt.type, 'click')
+      }
     }
 
     const app = new App()
 
     const instance = {
-      template: '{{clicker}}',
       clicker: {
         tag: 'button',
         'k-click': 'clickHandler()'
-      },
-      clickHandler: function(evt){
-        assert.equal(evt.type, 'click')
       }
     }
 
-    app.mount(instance).flush('app').link('app')
+    app.mount(instance).link('app')
 
     const click = new Event('click', {
       'bubbles': true,
       'cancelable': true
     })
 
-    app.vdom().childNodes[0].dispatchEvent(click)
+    getId('app').childNodes[0].dispatchEvent(click)
 
   })
+
+  it('window loaded', function () {
+
+  })
+
+  return false
 
   it('tag input type', function () {
     const t = tag('input', null, { checked: true, type: 'checkbox'})

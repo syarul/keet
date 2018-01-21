@@ -105,7 +105,7 @@ const vmodel = {
   },
   counter: {
     tag: 'button',
-    'k-click': 'add()',
+    'k-click': 'add()', // eventListener click, assign key properties starting with 'k-<event>'
     template: '{{count}} click'
   }
 }
@@ -115,7 +115,7 @@ app.mount(vmodel).link('app')
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/counter.js) -->
 <!-- AUTO-GENERATED-CONTENT:END -->
 
-**More samples in examples directory**
+More samples in [examples](https://github.com/syarul/keet/tree/keet-rebase/examples) directory
 
 ## License
 

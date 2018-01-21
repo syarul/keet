@@ -23,7 +23,7 @@ const vmodel = {
   },
   counter: {
     tag: 'button',
-    'k-click': 'add()',
+    'k-click': 'add()', // eventListener click, assign key properties starting with 'k-<event>'
     template: '{{count}} click'
   }
 }

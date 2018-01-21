@@ -27,11 +27,23 @@
   },
   "homepage": "https://github.com/syarul/keet#readme",
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-plugin-istanbul": "^4.1.5",
     "babel-preset-env": "^1.6.1",
     "babelify": "^8.0.0",
+    "jsdom": "^11.5.1",
     "markdown-magic": "^0.1.20",
+    "nyc": "^11.4.1",
     "parcel-bundler": "^1.4.1",
     "string-to-stream": "^1.1.0"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "nyc": {
+    "include": [
+      "keet.js",
+      "components"
+    ],
+    "sourceMap": false,
+    "instrument": false
+  }
 }
