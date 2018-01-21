@@ -2,7 +2,7 @@
   "name": "keet",
   "version": "3.0.0",
   "description": "Minimalist view layer for the web",
-  "main": "rebase.js",
+  "main": "keet.js",
   "scripts": {
     "start": "parcel index.html",
     "dist": " browserify keet.js --standalone Keet -t [ babelify --presets [ env ] ] | uglifyjs > keet-min.js",
@@ -31,8 +31,10 @@
     "babel-plugin-istanbul": "^4.1.5",
     "babel-preset-env": "^1.6.1",
     "babelify": "^8.0.0",
+    "coveralls": "^3.0.0",
     "jsdom": "^11.5.1",
     "markdown-magic": "^0.1.20",
+    "mocha": "^5.0.0",
     "nyc": "^11.4.1",
     "parcel-bundler": "^1.4.1",
     "string-to-stream": "^1.1.0"
