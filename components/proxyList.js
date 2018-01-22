@@ -29,7 +29,7 @@ const arrProtoSplice = function(...argv){
   if (count && count > 0) {
     for (i = start; i < childLen + 1; i++) {
       len = start + count
-      if (i < len) {
+      if (i < len && ele.childNodes[start]) {
         ele.removeChild(ele.childNodes[start])
         if (i === len - 1 && tempDivChildLen > 0) {
           c = start - 1
@@ -43,7 +43,10 @@ const arrProtoSplice = function(...argv){
   } else if (argv.length) {
     c = start - 1
     for (k = start; k < tempDivChildLen + start; k++) {
-      insertAfter(tempDiv.childNodes[0], ele.childNodes[c], ele)
+      if(ele.childNodes[c])
+        insertAfter(tempDiv.childNodes[0], ele.childNodes[c], ele)
+      else
+        ele.appendChild(tempDiv.childNodes[0])
       c++
     }
   }
@@ -62,9 +65,11 @@ export default (list, context) => {
   const watchObject = obj => new Proxy(obj, {
     set(target, key, value) {
       let num = parseInt(key)
-      if(Number.isInteger(num)){
+        , intNum = Number.isInteger(num)
+      if(intNum){
         arrProtoUpdate.apply(context, [num, value])
       }
+      // Number.isInteger(value) && value < 1  ** falsish
       return target[key] = value
     },
     deleteProperty (target, key, value) {
