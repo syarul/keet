@@ -4,7 +4,7 @@ import { getId, selector } from './utils'
 import { updateElem, insertAfter } from './elementUtils'
 import genTemplate from './genTemplate'
 
-const arrProtoSplice = function(){
+const arrProtoSplice = function(...argv){
   let ele = getId(this.el)
     , childLen
     , len
@@ -14,7 +14,6 @@ const arrProtoSplice = function(){
     , c
     , tempDivChildLen
     , tempDiv
-    , argv = [].slice.call(arguments)
     , start = [].shift.call(argv)
     , count = [].shift.call(argv)
   tempDiv = document.createElement('div')
