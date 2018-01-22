@@ -11,6 +11,22 @@
 import { getId } from './components/utils'
 import parseStr from './components/parseStr'
 
+console.clear()
+window.log = console.log.bind(console)
+
+const next = function(...args) {
+  let [ i, ele, els ] = args
+  if(i < els.length) {
+    ele.appendChild(els[i])
+    i++
+    next.apply(this, [ i, ele, els ])
+  } else {
+    if(this.componentDidMount && typeof this.componentDidMount === 'function'){
+      this.componentDidMount()
+    }
+  }
+}
+
 module.exports = class Keet {
   constructor(context) {
     this.base = context || {}
@@ -28,16 +44,10 @@ module.exports = class Keet {
     let ele = getId(this.el)
     if (ele) ele.innerHTML = ''
 
-    let els = parseStr(this, true),
-      i = 0
-    while (i < els.length) {
-      ele.appendChild(els[i])
+    let els = parseStr(this, true)
+      , i = 0
 
-      if (i === els.length - 1) {
-        document.addEventListener('_loaded', window._loaded && typeof window._loaded === 'function' ? window._loaded(this.el) : null, false)
-      }
-      i++
-    }
+    next.apply(this, [ i, ele, els ])
     return this
   }
   cluster(...args){
