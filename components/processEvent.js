@@ -1,7 +1,8 @@
 import { testEval } from './utils'
 import { loopChilds } from './elementUtils'
  
-const next = (i, c, rem, context, proxy) => {
+const next = function(i, c, rem, proxy) {
+  // log(this)
   let hask
     , evtName
     , evthandler
@@ -17,7 +18,7 @@ const next = (i, c, rem, context, proxy) => {
       evtName = atts[i].nodeName.split('-')[1]
       evthandler = atts[i].nodeValue
       handler = evthandler.split('(')
-      isHandler = testEval(context[handler[0]])
+      isHandler = testEval(this[handler[0]])
       if(typeof isHandler === 'function') {
         rem.push(atts[i].nodeName)
         argv = []
@@ -28,20 +29,20 @@ const next = (i, c, rem, context, proxy) => {
       }
     }
     i++
-    next(i, c, rem, context, proxy)
+    next.apply(this, [ i, c, rem, proxy ])
   } else {
     rem.map(f => c.removeAttribute(f))
   }
 }
 
-export default (kNode, context, proxy) => {
+export default function(kNode, proxy) {
   let listKnodeChild = []
     , rem = []
     , i = 0
   loopChilds(listKnodeChild, kNode)
   listKnodeChild.map(c => {
     if (c.nodeType === 1 && c.hasAttributes())
-      next(i, c, rem, context, proxy)
+      next.apply(this, [ i, c, rem, proxy ])
   })
   listKnodeChild = []
 }

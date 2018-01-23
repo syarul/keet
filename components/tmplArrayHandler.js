@@ -16,7 +16,7 @@ export default function() {
     })
   }
 
-  let proxyRes = proxy(list, this)
+  let proxyRes = proxy.call(this, list)
 
   return {
     tmpl: strList,

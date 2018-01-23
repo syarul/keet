@@ -1,6 +1,5 @@
-import genElement from './generateElement'
 import copy from './copy'
-import { getId, selector } from './utils'
+import { getId } from './utils'
 import { updateElem, insertAfter } from './elementUtils'
 import genTemplate from './genTemplate'
 
@@ -61,21 +60,22 @@ const arrProtoUpdate = function(index, value) {
   }
 }
 
-export default (list, context) => {
+export default function(list) {
+  const self = this
   const watchObject = obj => new Proxy(obj, {
     set(target, key, value) {
       let num = parseInt(key)
         , intNum = Number.isInteger(num)
       if(intNum){
-        arrProtoUpdate.apply(context, [num, value])
+        arrProtoUpdate.apply(self, [num, value])
       }
       // Number.isInteger(value) && value < 1  ** falsish
       return target[key] = value
     },
-    deleteProperty (target, key, value) {
+    deleteProperty (target, key) {
       let num = parseInt(key)
       if(Number.isInteger(num)){
-        arrProtoSplice.apply(context, [num, 1])
+        arrProtoSplice.apply(self, [num, 1])
       }
       return target[key]
     }

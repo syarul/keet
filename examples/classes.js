@@ -14,56 +14,32 @@ class App extends Keet {
     this.parseClassList = JSON.stringify(this.classList)
   }
   _add() {
-    /**
-     * add( String [, String] )
-     *   Add specified class values. If these classes already exist in 
-     *   attribute of the element, then they are ignored.
-    */
+    // add( String [, String] )
     this.classList.add('next')
     this.parseClassList = JSON.stringify(this.classList)
   }
   _rem() {
-    /**
-     * remove( String [, String] )
-     *   Remove specified class values.
-     *   Note: Removing a class that does not exist, does NOT throw an error.
-    */
+    // remove( String [, String] )
     this.classList.remove('next')
     this.parseClassList = JSON.stringify(this.classList)
   }
   _item() {
-    /**
-     * item( Number )
-     *   Return class value by index in collection.
-    */
+    // item( Number )
     let c = this.classList.item(1)
     this.parseClassList = c
   }
   _toggle(){
-    /**
-     * toggle( String [, force] )
-     *   When only one argument is present: Toggle class value; i.e., if class 
-     *   exists then remove it and return false, if not, then add it and return 
-     *   true. When a second argument is present: If the second argument 
-     *   evaluates to true, add specified class value, and if it evaluates to 
-     *   false, remove it.
-    */
+    // toggle( String [, force] )
     this.classList.toggle('main')
     this.parseClassList = JSON.stringify(this.classList)
   }
   _contains(){
-    /**
-     * contains( String )
-     *   Checks if specified class value exists in class attribute of the element.
-    */
+    // contains( String )
     let c = this.classList.contains('next')
     this.parseClassList = c
   }
   _replace(){
-    /**
-     * replace( oldClass, newClass )
-     *   Replaces an existing class with a new class.
-    */
+    // replace( oldClass, newClass )
     this.classList.replace('main', 'foo')
     this.parseClassList = JSON.stringify(this.classList)
   }

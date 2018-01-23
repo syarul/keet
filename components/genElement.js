@@ -4,24 +4,22 @@ import tmplHandler from './tmplHandler'
 import tmplStylesHandler from './tmplStylesHandler'
 import tmplClassHandler from './tmplClassHandler'
 import processEvent from './processEvent'
-import processContext from './processContext'
 import proxy from './proxy'
-import { testEval } from './utils'
 
-export default (child, context) => {
+export default function(child) {  
   let tempDiv = document.createElement('div')
   let cloneChild = copy(child)
   delete cloneChild.template
   delete cloneChild.tag
   delete cloneChild.style
   delete cloneChild.class
-
+  // log(this)
   // process template if has handlebars value
-  let tpl = child.template ? tmplHandler(child.template, context) : null
+  let tpl = child.template ? tmplHandler.call(this, child.template) : null
   // process styles if has handlebars value
-  let styleTpl = tmplStylesHandler(child.style, context)
+  let styleTpl = tmplStylesHandler.call(this, child.style)
   // process classes if has handlebars value
-  let classTpl = tmplClassHandler(child, context)
+  let classTpl = tmplClassHandler.call(this, child)
   if(classTpl) cloneChild.class = classTpl
 
   let s = child.tag ?
@@ -39,10 +37,10 @@ export default (child, context) => {
       tempDiv.childNodes[0].removeAttribute('checked')
   }
 
-  let proxyRes = proxy(context)
+  let proxyRes = proxy.call(this)
 
-  context._proxy_ = proxyRes
+  this._proxy_ = proxyRes
 
-  processEvent(tempDiv, context, proxyRes)
+  processEvent.apply(this, [ tempDiv, proxyRes ])
   return tempDiv.childNodes[0]
 }

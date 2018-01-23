@@ -1,14 +1,12 @@
-import proxy from './proxy'
-
-export default (child, context) => {
+export default function(child) {
   if(child.class){
     let c = child.class.match(/{{([^{}]+)}}/g)
     let classStr = ''
     if (c && c.length) {
       c.forEach(s => {
         let rep = s.replace(/{{([^{}]+)}}/g, '$1')
-        if (context[rep] !== undefined) {
-          context[rep].cstore.map(c => {
+        if (this[rep] !== undefined) {
+          this[rep].cstore.map(c => {
             classStr += `${c} `
           })
         }

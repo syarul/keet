@@ -1,7 +1,6 @@
-import proxy from './proxy'
 import copy from './copy'
 
-export default (styles, context) => {
+export default function(styles) {
   let copyStyles = copy(styles)
   if (styles) {
     Object.keys(copyStyles).map(style => {
@@ -9,8 +8,8 @@ export default (styles, context) => {
       if (arrProps && arrProps.length) {
         arrProps.map(s => {
           let rep = s.replace(/{{([^{}]+)}}/g, '$1')
-          if (context[rep] !== undefined) {
-            copyStyles[style] = copyStyles[style].replace(/{{([^{}]+)}}/, context[rep])
+          if (this[rep] !== undefined) {
+            copyStyles[style] = copyStyles[style].replace(/{{([^{}]+)}}/, this[rep])
           }
         })
       }

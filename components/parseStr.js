@@ -1,40 +1,40 @@
-import genElement from './generateElement'
+import genElement from './genElement'
 import tmplHandler from './tmplHandler'
 import tmplArrayHandler from './tmplArrayHandler'
 import processEvent from './processEvent'
 import { genId } from './utils'
 
-export default context => {
-  if (typeof context.base != 'object') throw new Error('instance is not an object')
+export default function() {
+  if (typeof this.base != 'object') throw new Error('instance is not an object')
   let elemArr = []
-  if (Array.isArray(context.base.list)) {
+  if (Array.isArray(this.base.list)) {
     // do array base
-    let tpl = tmplArrayHandler.call(context)
+    let tpl = tmplArrayHandler.call(this)
     tpl.tmpl.map(ptmpl => {
       let tempDiv = document.createElement('div')
       tempDiv.innerHTML = ptmpl
-      processEvent(tempDiv, context, tpl.proxyRes)
+      processEvent.apply(this, [ tempDiv, tpl.proxyRes ])
       elemArr.push(tempDiv.childNodes[0])
     })
 
-    context.list = tpl.proxyRes
+    this.list = tpl.proxyRes
 
   } else {
     // do object base
-    Object.keys(context.base).map(key => {
-      let child = context.base[key]
+    Object.keys(this.base).map(key => {
+      let child = this.base[key]
       if (child && typeof child === 'object') {
         let id = genId()
         child['keet-id'] = id
-        context.base[key]['keet-id'] = id
-        let newElement = genElement(child, context)
+        this.base[key]['keet-id'] = id
+        let newElement = genElement.call(this, child)
         elemArr.push(newElement)
       } else {
-        let child = context.base[key]
-        let tpl = tmplHandler(child, context)
+        let child = this.base[key]
+        let tpl = tmplHandler.call(this, child)
         let tempDiv = document.createElement('div')
-        tempDiv.innerHTML = tpl.tmpl
-        processEvent(tempDiv, context, tpl.proxyRes)
+        tempDiv.innerHTML = tpl
+        processEvent.apply(this, [ tempDiv, tpl.proxyRes ])
         elemArr.push(tempDiv.childNodes[0])
       }
     })

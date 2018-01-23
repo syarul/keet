@@ -4,7 +4,6 @@ export default function(obj) {
   let arrProps = this.base.template.match(/{{([^{}]+)}}/g)
     ,  tmpl
     , tempDiv
-    , ele
   tmpl = this.base.template
   arrProps.map(s => {
     let rep = s.replace(/{{([^{}]+)}}/g, '$1')
@@ -12,6 +11,6 @@ export default function(obj) {
   })
   tempDiv = document.createElement('div')
   tempDiv.innerHTML = tmpl
-  processEvent(tempDiv, this)
+  processEvent.call(this, tempDiv)
   return tempDiv.childNodes[0]
 }

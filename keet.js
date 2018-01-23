@@ -11,8 +11,8 @@
 import { getId } from './components/utils'
 import parseStr from './components/parseStr'
 
-// console.clear()
-// window.log = console.log.bind(console)
+console.clear()
+window.log = console.log.bind(console)
 
 const next = function(...args) {
   let [ i, ele, els ] = args
@@ -21,10 +21,10 @@ const next = function(...args) {
     i++
     next.apply(this, [ i, ele, els ])
   } else {
-    // bind methods to proxy
+    // bind proxy to methods
     Object.getOwnPropertyNames(this.__proto__)
-    .filter(fn => fn !== 'constructor')
-    .map(fn => this[fn] = this[fn].bind(this._proxy_))
+      .filter(fn => fn !== 'constructor')
+      .map(fn => this[fn] = this[fn].bind(this._proxy_))
 
     if(this.componentDidMount && typeof this.componentDidMount === 'function'){
       this.componentDidMount()
@@ -47,11 +47,9 @@ module.exports = class Keet {
   }
   render() {
     let ele = getId(this.el)
-    if (ele) ele.innerHTML = ''
-
-    let els = parseStr(this, true)
+      , els = parseStr.call(this)
       , i = 0
-
+    if (ele) ele.innerHTML = ''
     next.apply(this, [ i, ele, els ])
     return this
   }
