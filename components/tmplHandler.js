@@ -1,5 +1,3 @@
-import proxy from './proxy'
-
 export default (str, context, genElement) => {
   let arrProps = str.match(/{{([^{}]+)}}/g)
   if (arrProps && arrProps.length) {
@@ -10,9 +8,5 @@ export default (str, context, genElement) => {
       }
     })
   }
-  let proxyRes = proxy(context)
-  return {
-    tmpl: str,
-    proxyRes: proxyRes
-  }
+  return str
 }

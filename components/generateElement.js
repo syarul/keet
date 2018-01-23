@@ -4,6 +4,9 @@ import tmplHandler from './tmplHandler'
 import tmplStylesHandler from './tmplStylesHandler'
 import tmplClassHandler from './tmplClassHandler'
 import processEvent from './processEvent'
+import processContext from './processContext'
+import proxy from './proxy'
+import { testEval } from './utils'
 
 export default (child, context) => {
   let tempDiv = document.createElement('div')
@@ -23,7 +26,7 @@ export default (child, context) => {
 
   let s = child.tag ?
     tag(child.tag,              // html tag
-      tpl ? tpl.tmpl : '',      // nodeValue
+      tpl ? tpl : '',           // nodeValue
       cloneChild,               // attributes including classes
       styleTpl                  // styles
     ) : child.template          // fallback if non exist, render the template as string
@@ -36,6 +39,10 @@ export default (child, context) => {
       tempDiv.childNodes[0].removeAttribute('checked')
   }
 
-  processEvent(tempDiv, context, tpl ? tpl.proxyRes : null)
+  let proxyRes = proxy(context)
+
+  context._proxy_ = proxyRes
+
+  processEvent(tempDiv, context, proxyRes)
   return tempDiv.childNodes[0]
 }
