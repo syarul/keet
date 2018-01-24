@@ -3,6 +3,7 @@ import tmplHandler from './tmplHandler'
 import tmplArrayHandler from './tmplArrayHandler'
 import processEvent from './processEvent'
 import { genId } from './utils'
+import proxy from './proxy'
 
 export default function() {
   if (typeof this.base != 'object') throw new Error('instance is not an object')
@@ -34,7 +35,9 @@ export default function() {
         let tpl = tmplHandler.call(this, child)
         let tempDiv = document.createElement('div')
         tempDiv.innerHTML = tpl
-        processEvent.apply(this, [ tempDiv, tpl.proxyRes ])
+        let proxyRes = proxy.call(this)
+        this._proxy_ = proxyRes
+        processEvent.apply(this, [ tempDiv, proxyRes ])
         elemArr.push(tempDiv.childNodes[0])
       }
     })

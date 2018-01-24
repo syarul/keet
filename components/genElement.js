@@ -13,7 +13,7 @@ export default function(child) {
   delete cloneChild.tag
   delete cloneChild.style
   delete cloneChild.class
-  // log(this)
+  // console.log(this)
   // process template if has handlebars value
   let tpl = child.template ? tmplHandler.call(this, child.template) : null
   // process styles if has handlebars value

@@ -12,6 +12,7 @@ export default function(child) {
         }
       })
     }
-    return classStr.trim()
+    return classStr.length ? classStr.trim() : child.class
   }
+  return false
 }

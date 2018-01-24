@@ -23,6 +23,7 @@ const updateContext = function(key, obj) {
     let id = this.base[handlerKey]['keet-id']
       , ele = selector(id)
       , newElem = genElement.call(this, this.base[handlerKey])
+    // console.log(handlerKey, ele)
     updateElem(ele, newElem)
 
   })

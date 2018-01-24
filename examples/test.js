@@ -7,11 +7,9 @@ class App extends Keet {
     this.app = 'App'
   }
   change(res){
-  	// log(this)
   	this.app = res
   }
   do(){
-  	// log(this)
   	this.greeting = 'do'
   }
 }
