@@ -2,7 +2,12 @@ const assert = require('assert')
 const { JSDOM } = require('jsdom')
 
 const Keet = require('../keet')
+
 const { getId } = require('../components/utils')
+
+const tag = require('../components/tag').default
+const copy = require('../components/copy').default
+
 const fs = require('fs')
 const pkg = fs.readFileSync('package.json', 'utf8')
 
@@ -28,17 +33,10 @@ describe(`keet.js v-${ver} test`, function () {
 
       global.window = window
       global.Event = window.Event
-
       global.log = console.log.bind(console)
-
-      window._loaded = function(){
-        console.log('loaded')
-      }
 
     }
   )
-
-  
 
   it('has document', function () {
     var div = document.createElement('div')
@@ -46,6 +44,36 @@ describe(`keet.js v-${ver} test`, function () {
   })
 
   it('write text content', function () {
+    
+    class App extends Keet {
+      constructor(){
+        super()
+        this.greeting = ''
+      }
+      greet(){
+        this.greeting = 'world'
+      }
+      componentDidMount(){
+        this.greet()
+        assert.equal(document.querySelector('#hw').childNodes[0].nodeValue, 'hello world')
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      hello: {
+        tag: 'div',
+        id: 'hw',
+        template: 'hello {{greeting}}'
+      }
+    }
+
+    app.mount(instance).link('app')
+
+  })
+
+  it('ignore render when DOM not found', function () {
     
     class App extends Keet {
       constructor(){
@@ -58,14 +86,41 @@ describe(`keet.js v-${ver} test`, function () {
     const instance = {
       hello: {
         tag: 'div',
-        id: 'hello',
-        template: 'hello world'
+        template: 'hello'
       }
     }
 
-    app.mount(instance).link('app')
+    app.mount(instance).link('app-not-found')
 
-    assert.equal(document.querySelector('#hello').childNodes[0].nodeValue, 'hello world')
+    assert.equal(document.querySelector('#app-not-found'), null)
+
+  })
+
+  it('run clusters if function', function () {
+    
+    class App extends Keet {
+      constructor(){
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      hello: {
+        tag: 'div',
+        template: 'hello'
+      }
+    }
+
+    let [ a, b ] = [ 0 , 0 ]
+
+    const fn = [ function(){ a = 1 }, function(){ b =  2 }, 'not-a-function' ]
+
+    app.mount(instance).link('app').cluster(...fn)
+
+    assert.equal(a + b , 3)
+
   })
 
   it('handle click event', function () {
@@ -99,12 +154,6 @@ describe(`keet.js v-${ver} test`, function () {
 
   })
 
-  it('window loaded', function () {
-
-  })
-
-  return false
-
   it('tag input type', function () {
     const t = tag('input', null, { checked: true, type: 'checkbox'})
     assert.equal(t, '<input type="checkbox" checked></input>')
@@ -127,16 +176,28 @@ describe(`keet.js v-${ver} test`, function () {
   })
 
   it('construct', function () {
-    const app = new Keet('div', {
-      template: '{{hello}}{{non}}',
+    const app = new Keet({
       hello: {
         tag: 'span',
         template: 'hello keet!'
       }
     })
-    app.flush('app').link('app')
+    app.link('app')
     assert.equal(document.querySelector('SPAN').childNodes[0].nodeValue, 'hello keet!')
   })
+
+  it('copy array', function () {
+    
+    let arr = [ 1, 2, 3 ]
+
+    let cp = copy(arr)
+
+    cp[0] = 2, cp[1] = 4, cp[2] = 6 
+
+    assert.equal(arr.join(''), '123')
+  })
+
+  return false
 
   it('evaluation false', function(){
     class App extends Keet {
