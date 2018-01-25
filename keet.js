@@ -11,7 +11,7 @@
 import { getId } from './components/utils'
 import parseStr from './components/parseStr'
 
-// window.log = console.log.bind(console)
+window.log = console.log.bind(console)
 
 const next = function(...args) {
   let [ i, ele, els ] = args
@@ -33,8 +33,9 @@ const next = function(...args) {
 }
 
 export default class Keet {
-  constructor(context) {
-    this.base = context || {}
+  constructor(...args) {
+    this.base = {}
+    this.args = args || []
     Object.defineProperty(this, '__proxy__', {
       enumerable: false,
       writable: true
@@ -55,7 +56,7 @@ export default class Keet {
   }
   render() {
     let ele = getId(this.el)
-      , els = parseStr.call(this)
+      , els = parseStr.apply(this, this.args)
       , i = 0
     if (ele) {
       ele.innerHTML = ''

@@ -2,7 +2,10 @@ import genElement from './genElement'
 import { selector } from './utils'
 import { updateElem } from './elementUtils'
 
-const updateContext = function(key, obj) {
+const updateContext = function(...args) {
+  let key = [].shift.call(args)
+    , obj = [].shift.call(args)
+  log(args)
   Object.keys(this.base).map(handlerKey => {
     let tmplBase = this.base[handlerKey].template
     if(tmplBase){
@@ -24,19 +27,19 @@ const updateContext = function(key, obj) {
 
     let id = this.base[handlerKey]['keet-id']
       , ele = selector(id)
-      , newElem = genElement.call(this, this.base[handlerKey])
+      , newElem = genElement.apply(this, [ this.base[handlerKey], ...args ])
     updateElem(ele, newElem)
 
   })
 }
 
-export default function() {
+export default function(...args) {
   const self = this
   const watchObject = obj => new Proxy(obj, {
     set(target, key, value) {
       let obj = {}
       obj[key] = value
-      updateContext.apply(self, [ key, obj ])
+      updateContext.apply(self, [ key, obj, ...args ])
       return target[key] = value
     }
   })

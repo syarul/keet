@@ -937,7 +937,7 @@ describe(`keet.js v-${ver} test`, function () {
 
     app.mount(instance).link('app')
 
-    log(document.querySelector('#app').innerHTML, '')
+    assert.equal(document.querySelector('#app').childNodes[0].nodeValue, null)
 
   })
 
@@ -945,10 +945,14 @@ describe(`keet.js v-${ver} test`, function () {
     class App extends Keet {
       constructor() {
         super()
+        this.ch = ''
       }
       clickHandler(evt){
         log(document.querySelector('#testcheck').checked)
         // assert.equal(app.vdom().childNodes[0].checked, true)
+      }
+      change(bool){
+        this.ch = bool
       }
     }
 
@@ -959,19 +963,24 @@ describe(`keet.js v-${ver} test`, function () {
         tag: 'input',
         type: 'checkbox',
         id: 'testcheck',
-        checked: '',
+        checked: '{{ch}}',
         'k-click': 'clickHandler()'
       }
     }
 
     app.mount(instance).link('app')
 
-    const clickCheckbox = new Event('click', {
-      'bubbles': true,
-      'cancelable': true
-    })
+    app.change(false)
 
-    document.querySelector('#app').childNodes[0].dispatchEvent(clickCheckbox)
+    log(document.querySelector('#testcheck').checked)
+
+
+    // const clickCheckbox = new Event('click', {
+    //   'bubbles': true,
+    //   'cancelable': true
+    // })
+
+    // document.querySelector('#app').childNodes[0].dispatchEvent(clickCheckbox)
 
   })
 

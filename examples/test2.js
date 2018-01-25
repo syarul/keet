@@ -1,33 +1,34 @@
 import Keet from 'keet'
 
+// let log = console.log.bind(console)
+
 class App extends Keet {
-  constructor() {
+  constructor(...args) {
     super()
+    this.ch = false
+    this.cb = 'foo'
+    this.args = args
+  }
+  clickHandler(evt){
+    // log(document.querySelector('#testcheck').checked)
+    // assert.equal(app.vdom().childNodes[0].checked, true)
+  }
+  change(bool){
+    this.ch = bool
   }
 }
 
-const app = new App()
+window.app = new App('checked', 'toss')
 
 const instance = {
-  template: '<span>{{me}}</span>',
-  list: [
-    { me: 'foo'},
-    { me: 'bar'},
-    { me: 'bur'},
-    { me: 'dur'}
-  ]
+  wo: {
+    tag: 'input',
+    type: 'checkbox',
+    id: 'testcheck',
+    checked: '{{ch}}',
+    toss: '{{cb}}',
+    'k-click': 'clickHandler()'
+  }
 }
 
 app.mount(instance).link('app')
-
-// app.list.splice(3, 1, { me: 'boom'}, { me: 'boom2'}, { me: 'boom3'})
-
-// app.list.splice(0, 4, { me: 'boom'})
-// app.list.shift()
-// app.list.unshift({ me: 'boom'}, { me: 'boom2'}, { me: 'boom3'})
-// app.list.pop()
-delete app.list[1]
-
-let els = document.querySelectorAll('SPAN')
-
-// console.log(els)

@@ -3,10 +3,12 @@ import tag from './tag'
 import tmplHandler from './tmplHandler'
 import tmplStylesHandler from './tmplStylesHandler'
 import tmplClassHandler from './tmplClassHandler'
+import tmplAttrHandler from './tmplAttrHandler'
 import processEvent from './processEvent'
 import proxy from './proxy'
 
-export default function(child) {  
+export default function(...args) {
+  let child = [].shift.call(args)
   let tempDiv = document.createElement('div')
   let cloneChild = copy(child)
   delete cloneChild.template
@@ -21,6 +23,10 @@ export default function(child) {
   // process classes if has handlebars value
   let classTpl = tmplClassHandler.call(this, child)
   if(classTpl) cloneChild.class = classTpl
+  //custom attributes handler
+  if(args && args.length){
+    tmplAttrHandler.apply(this, [ cloneChild, ...args ])
+  }
 
   let s = child.tag ?
     tag(child.tag,              // html tag
@@ -31,13 +37,13 @@ export default function(child) {
 
   tempDiv.innerHTML = s
   if (child.tag === 'input') {
-    if (child.checked)
+    if (cloneChild.checked)
       tempDiv.childNodes[0].checked = true
     else
       tempDiv.childNodes[0].removeAttribute('checked')
   }
 
-  let proxyRes = proxy.call(this)
+  let proxyRes = proxy.apply(this, [ ...args ])
 
   this.__proxy__ = proxyRes
 

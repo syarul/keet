@@ -27,9 +27,6 @@ const nodeUpdate = (newNode, oldNode, watcher2) => {
   if (oldNode.textContent === '' && newNode.textContent) {
     oldNode.textContent = newNode.textContent
   }
-  if (watcher2 && oldNode.textContent != newNode.textContent) {
-    oldNode.textContent = newNode.textContent
-  }
   if (oldNode.type == 'checkbox' && !oldNode.checked && newNode.checked) {
     oldNode.checked = true
   }

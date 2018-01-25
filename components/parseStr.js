@@ -5,7 +5,7 @@ import processEvent from './processEvent'
 import { genId } from './utils'
 import proxy from './proxy'
 
-export default function() {
+export default function(...args) {
   if (typeof this.base != 'object') throw new Error('instance is not an object')
   let elemArr = []
   if (Array.isArray(this.base.list)) {
@@ -28,7 +28,7 @@ export default function() {
         let id = genId()
         child['keet-id'] = id
         this.base[key]['keet-id'] = id
-        let newElement = genElement.call(this, child)
+        let newElement = genElement.apply(this, [child, ...args])
         elemArr.push(newElement)
       } else {
         let child = this.base[key]
