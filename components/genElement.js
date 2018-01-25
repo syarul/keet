@@ -39,7 +39,7 @@ export default function(child) {
 
   let proxyRes = proxy.call(this)
 
-  this._proxy_ = proxyRes
+  this.__proxy__ = proxyRes
 
   processEvent.apply(this, [ tempDiv, proxyRes ])
   return tempDiv.childNodes[0]

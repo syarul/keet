@@ -1,5 +1,5 @@
 /** 
- * Keetjs v3.0.0 Alpha release: https://github.com/syarul/keet
+ * Keetjs v3.0.0 Alpha release: https://github.com/keetjs/keet.js
  * Minimalist view layer for the web
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keetjs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -11,6 +11,8 @@
 import { getId } from './components/utils'
 import parseStr from './components/parseStr'
 
+// window.log = console.log.bind(console)
+
 const next = function(...args) {
   let [ i, ele, els ] = args
   if(i < els.length) {
@@ -18,20 +20,25 @@ const next = function(...args) {
     i++
     next.apply(this, [ i, ele, els ])
   } else {
-    // bind proxy to methods
+    // bind proxy to component methods
     Object.getOwnPropertyNames(this.__proto__)
       .filter(fn => fn !== 'constructor')
-      .map(fn => this[fn] = this[fn].bind(this._proxy_))
+      .map(fn => this[fn] = this[fn].bind(this.__proxy__))
 
+    // component lifeCycle after mounting
     if(this.componentDidMount && typeof this.componentDidMount === 'function'){
       this.componentDidMount()
     }
   }
 }
 
-module.exports = class Keet {
+export default class Keet {
   constructor(context) {
     this.base = context || {}
+    Object.defineProperty(this, '__proxy__', {
+      enumerable: false,
+      writable: true
+    })
   }
   mount(instance) {
     this.base = instance
@@ -39,6 +46,10 @@ module.exports = class Keet {
   }
   link(id) {
     this.el = id
+    // component lifeCycle before mounting
+    if(this.componentWillMount && typeof this.componentWillMount === 'function'){
+      this.componentWillMount()
+    }
     this.render()
     return this
   }

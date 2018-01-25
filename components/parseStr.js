@@ -36,7 +36,7 @@ export default function() {
         let tempDiv = document.createElement('div')
         tempDiv.innerHTML = tpl
         let proxyRes = proxy.call(this)
-        this._proxy_ = proxyRes
+        this.__proxy__ = proxyRes
         processEvent.apply(this, [ tempDiv, proxyRes ])
         elemArr.push(tempDiv.childNodes[0])
       }

@@ -30,13 +30,6 @@ const arrProtoSplice = function(...argv){
       len = start + count
       if (i < len && ele.childNodes[start]) {
         ele.removeChild(ele.childNodes[start])
-        if (i === len - 1 && tempDivChildLen > 0) {
-          c = start - 1
-          for (j = start; j < tempDivChildLen + start; j++) {
-            insertAfter(tempDiv.childNodes[0], ele.childNodes[c], ele)
-            c++
-          }
-        }
       }
     }
   } else if (argv.length) {
@@ -73,10 +66,7 @@ export default function(list) {
       return target[key] = value
     },
     deleteProperty (target, key) {
-      let num = parseInt(key)
-      if(Number.isInteger(num)){
-        arrProtoSplice.apply(self, [num, 1])
-      }
+      arrProtoSplice.apply(self, [parseInt(key), 1])
       return target[key]
     }
   })

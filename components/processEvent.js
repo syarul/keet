@@ -2,7 +2,6 @@ import { testEval } from './utils'
 import { loopChilds } from './elementUtils'
  
 const next = function(i, c, rem, proxy) {
-  // log(this)
   let hask
     , evtName
     , evthandler

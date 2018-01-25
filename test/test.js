@@ -1,7 +1,7 @@
 const assert = require('assert')
 const { JSDOM } = require('jsdom')
 
-const Keet = require('../keet')
+const Keet = require('../keet').default
 
 const { getId, testEval } = require('../components/utils')
 
@@ -67,6 +67,31 @@ describe(`keet.js v-${ver} test`, function () {
         tag: 'div',
         id: 'hw',
         template: 'hello {{greeting}}'
+      }
+    }
+
+    app.mount(instance).link('app')
+
+  })
+
+  it('will mount', function () {
+    
+    class App extends Keet {
+      constructor(){
+        super()
+      }
+      componentWillMount(){
+        assert.equal(document.querySelector('#hw2'), null)
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      hello: {
+        tag: 'div',
+        id: 'hw2',
+        template: 'hello'
       }
     }
 
@@ -557,7 +582,7 @@ describe(`keet.js v-${ver} test`, function () {
 
   })
 
-  /*it('parsing not template', function(){
+  it('parsing as template', function(){
     class App extends Keet {
       constructor() {
         super()
@@ -570,10 +595,469 @@ describe(`keet.js v-${ver} test`, function () {
 
     const app = new App()
 
-    const instance = { 'not-a-template': 'just a {{apply}}' }
+    const instance = { 'template': 'just a {{apply}}' }
     app.mount(instance).link('app')
     app.change('another')
-    log(document.querySelector('#app').childNodes[0].nodeValue, 'just a string')
+    assert.equal(document.querySelector('#app').childNodes[0].nodeValue, 'just a value')
+  })
+
+  it('parsing as style', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+        this.apply = 'value'
+      }
+      change(res){
+        this.apply = res
+      }
+    }
+
+    const app = new App()
+
+    const instance = { 
+      test: {
+        tag: 'div',
+        style: {
+          color: 'red'
+        },
+        template: 'duh'
+      }
+    }
+    app.mount(instance).link('app')
+    app.change('another')
+    assert.equal(document.querySelector('#app').childNodes[0].getAttribute('style'), 'color:red;')
+  })
+
+  it('array shift', function(){
+
+
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '<span>{{me}}</span>',
+      list: [
+        {me: 'john'},
+        {me: 'juan'}
+      ]
+    }
+
+    app.mount(instance).link('app')
+
+    app.list.shift()
+
+    assert.equal(document.querySelector('SPAN').childNodes[0].nodeValue, 'juan')
+
+  })
+
+  it('array pop', function(){
+
+
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '<span>{{me}}</span>',
+      list: [
+        {me: 'john'},
+        {me: 'juan'},
+        {me: 'ruan'}
+      ]
+    }
+
+    app.mount(instance).link('app')
+
+    app.list.pop()
+
+    assert.equal(document.querySelectorAll('SPAN').length, 2)
+
+  })
+  
+  it('array update', function(){
+
+
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '<span>{{me}}</span>',
+      list: [
+        {me: 'john'},
+        {me: 'juan'}
+      ]
+    }
+
+    app.mount(instance).link('app')
+
+    app.list[0] = { me : 'susan'}
+
+    assert.equal(document.querySelector('SPAN').childNodes[0].nodeValue, 'susan')
+
+  })
+
+  it('array unshift', function(){
+
+
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '<span>{{me}}</span>',
+      list: [
+        {me: 'john'},
+        {me: 'juan'},
+        {me: 'susan'}
+      ]
+    }
+
+    app.mount(instance).link('app')
+
+    app.list.unshift({me: 'foo'})
+
+    let els = document.querySelectorAll('SPAN')
+
+    assert.equal(els[0].innerHTML == 'foo' && els.length == 4, true)
+
+  })
+
+  it('array push', function(){
+
+
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '<span>{{me}}</span>',
+      list: [
+        {me: 'john'},
+        {me: 'juan'},
+        {me: 'susan'}
+      ]
+    }
+
+    app.mount(instance).link('app')
+
+    app.list.push({me: 'foo'})
+
+    let els = document.querySelectorAll('SPAN')
+
+    assert.equal(els[els.length - 1].innerHTML == 'foo' && els.length == 4, true)
+
+  })
+
+  it('array splice without removal', function(){
+
+
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '<span>{{me}}</span>',
+      list: [
+        {me: 'john'},
+        {me: 'juan'},
+        {me: 'susan'}
+      ]
+    }
+
+    app.mount(instance).link('app')
+
+    app.list.splice(1, 0, {me: 'awile'})
+
+    let els = document.querySelectorAll('SPAN')
+
+    assert.equal(els[1].innerHTML == 'awile' && els.length == 4, true)
+
+  })
+
+  it('array splice ignore', function(){
+
+
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '<span>{{me}}</span>',
+      list: [
+        {me: 'john'},
+        {me: 'juan'},
+        {me: 'susan'}
+      ]
+    }
+
+    app.mount(instance).link('app')
+
+    app.list.splice(1, 0)
+
+    let els = document.querySelectorAll('SPAN')
+
+    assert.equal(els.length == 3, true)
+
+  })
+
+  it('array splice single argument', function(){
+
+
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '<span>{{me}}</span>',
+      list: [
+        {me: 'john'},
+        {me: 'juan'},
+        {me: 'susan'}
+      ]
+    }
+
+    app.mount(instance).link('app')
+
+    app.list.splice(1)
+
+    let els = document.querySelectorAll('SPAN')
+
+    assert.equal(els.length == 1 && els[0].innerHTML == 'john', true)
+
+  })
+
+  it('array push on empty list', function(){
+
+
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '<span>{{me}}</span>',
+      list: []
+    }
+
+    app.mount(instance).link('app')
+
+    app.list.push({ me: 'some'})
+
+    let els = document.querySelectorAll('SPAN')
+
+    assert.equal(els.length == 1 && els[0].innerHTML == 'some', true)
+
+  })
+
+  it('nodeValue empty string', function(){
+
+
+    class App extends Keet {
+      constructor() {
+        super()
+        this.str = ''
+      }
+      mod(str){
+        this.str = str
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      ugh: {
+        tag: 'div',
+        template: '{{str}}'
+      }
+    }
+
+    app.mount(instance).link('app')
+
+    app.mod('test')
+
+    assert.equal(document.querySelector('#app').childNodes[0].innerHTML, 'test')
+
+  })
+
+  it('node no attr', function(){
+
+
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      ugh: {
+        tag: 'div'
+      }
+    }
+
+    document.querySelector('#app').innerHTML = ''
+
+    app.mount(instance).link('app')
+
+    log(document.querySelector('#app').innerHTML, '')
+
+  })
+
+  it('checkbox checked', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+      clickHandler(evt){
+        log(document.querySelector('#testcheck').checked)
+        // assert.equal(app.vdom().childNodes[0].checked, true)
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      wo: {
+        tag: 'input',
+        type: 'checkbox',
+        id: 'testcheck',
+        checked: '',
+        'k-click': 'clickHandler()'
+      }
+    }
+
+    app.mount(instance).link('app')
+
+    const clickCheckbox = new Event('click', {
+      'bubbles': true,
+      'cancelable': true
+    })
+
+    document.querySelector('#app').childNodes[0].dispatchEvent(clickCheckbox)
+
+  })
+
+  /*it('checkbox unchecked', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{wo}}',
+      wo: {
+        tag: 'input',
+        type: 'checkbox',
+        checked: 'checked',
+        'k-click': 'clickHandler()'
+      },
+      clickHandler: function(evt){
+        assert.equal(app.vdom().childNodes[0].checked, false)
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    const clickCheckbox = new Event('click', {
+      'bubbles': true,
+      'cancelable': true
+    })
+
+    app.vdom().childNodes[0].dispatchEvent(clickCheckbox)
+
+  })
+
+  it('checkbox checked from instance prop', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{wo}}',
+      wo: {
+        tag: 'input',
+        type: 'checkbox',
+        checked: ''
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    instance.wo.checked = 'checked'
+
+    assert.equal(app.vdom().childNodes[0].checked, true)
+
+  })
+
+  it('checkbox unchecked from instance prop', function(){
+    class App extends Keet {
+      constructor() {
+        super()
+      }
+    }
+
+    const app = new App()
+
+    const instance = {
+      template: '{{wo}}',
+      wo: {
+        tag: 'input',
+        type: 'checkbox',
+        checked: 'checked'
+      }
+    }
+
+    app.mount(instance).flush('app').link('app')
+
+    instance.wo.checked = ''
+
+    assert.equal(app.vdom().childNodes[0].checked, false)
+
   })*/
 
   return false
@@ -785,87 +1269,6 @@ describe(`keet.js v-${ver} test`, function () {
 
   })
 
-  it('array shift', function(){
-
-
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '<span>{{me}}</span>',
-      list: [
-        {me: 'john'},
-        {me: 'juan'}
-      ]
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.list.shift()
-
-    assert.equal(document.querySelector('SPAN').childNodes[0].nodeValue, 'juan')
-
-  })
-
-  it('array pop', function(){
-
-
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '<span>{{me}}</span>',
-      list: [
-        {me: 'john'},
-        {me: 'juan'}
-      ]
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.list.pop()
-
-    assert.equal(document.querySelector('SPAN').childNodes[0].nodeValue, 'john')
-
-  })
-
-  it('array update', function(){
-
-
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '<span>{{me}}</span>',
-      list: [
-        {me: 'john'},
-        {me: 'juan'}
-      ]
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.list.update(0, { me : 'susan'})
-
-    assert.equal(document.querySelector('SPAN').childNodes[0].nodeValue, 'susan')
-
-  })
-
   it('array update shift +1', function(){
 
 
@@ -920,156 +1323,6 @@ describe(`keet.js v-${ver} test`, function () {
     let els = document.querySelectorAll('SPAN')
 
     assert.equal(els[1].innerHTML, 'awile')
-
-  })
-
-  it('array splice without removal', function(){
-
-
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '<span>{{me}}</span>',
-      list: [
-        {me: 'john'},
-        {me: 'juan'},
-        {me: 'susan'}
-      ]
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.list.splice(1, 0, {me: 'awile'})
-
-    let els = document.querySelectorAll('SPAN')
-
-    assert.equal(els[1].innerHTML == 'awile' && els.length == 4, true)
-
-  })
-
-  it('array splice ignore', function(){
-
-
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '<span>{{me}}</span>',
-      list: [
-        {me: 'john'},
-        {me: 'juan'},
-        {me: 'susan'}
-      ]
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.list.splice(1, 0)
-
-    let els = document.querySelectorAll('SPAN')
-
-    assert.equal(els.length == 3, true)
-
-  })
-
-  it('array splice single argument', function(){
-
-
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '<span>{{me}}</span>',
-      list: [
-        {me: 'john'},
-        {me: 'juan'},
-        {me: 'susan'}
-      ]
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.list.splice(1)
-
-    let els = document.querySelectorAll('SPAN')
-
-    assert.equal(els.length == 1 && els[0].innerHTML == 'john', true)
-
-  })
-
-  it('array unshift', function(){
-
-
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '<span>{{me}}</span>',
-      list: [
-        {me: 'john'},
-        {me: 'juan'},
-        {me: 'susan'}
-      ]
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.list.unshift({me: 'foo'})
-
-    let els = document.querySelectorAll('SPAN')
-
-    assert.equal(els[0].innerHTML == 'foo' && els.length == 4, true)
-
-  })
-
-  it('array push', function(){
-
-
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '<span>{{me}}</span>',
-      list: [
-        {me: 'john'},
-        {me: 'juan'},
-        {me: 'susan'}
-      ]
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.list.push({me: 'mofoo'})
-
-    let els = document.querySelectorAll('SPAN')
-
-    assert.equal(els[els.length - 1].innerHTML == 'mofoo' && els.length == 4, true)
 
   })
 
@@ -1605,125 +1858,6 @@ describe(`keet.js v-${ver} test`, function () {
 
   })
 
-  it('checkbox checked', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '{{wo}}',
-      wo: {
-        tag: 'input',
-        type: 'checkbox',
-        checked: '',
-        'k-click': 'clickHandler()'
-      },
-      clickHandler: function(evt){
-        assert.equal(app.vdom().childNodes[0].checked, true)
-      }
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    const clickCheckbox = new Event('click', {
-      'bubbles': true,
-      'cancelable': true
-    })
-
-    app.vdom().childNodes[0].dispatchEvent(clickCheckbox)
-
-  })
-
-  it('checkbox unchecked', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '{{wo}}',
-      wo: {
-        tag: 'input',
-        type: 'checkbox',
-        checked: 'checked',
-        'k-click': 'clickHandler()'
-      },
-      clickHandler: function(evt){
-        assert.equal(app.vdom().childNodes[0].checked, false)
-      }
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    const clickCheckbox = new Event('click', {
-      'bubbles': true,
-      'cancelable': true
-    })
-
-    app.vdom().childNodes[0].dispatchEvent(clickCheckbox)
-
-  })
-
-  it('checkbox checked from instance prop', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '{{wo}}',
-      wo: {
-        tag: 'input',
-        type: 'checkbox',
-        checked: ''
-      }
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.wo.checked = 'checked'
-
-    assert.equal(app.vdom().childNodes[0].checked, true)
-
-  })
-
-  it('checkbox unchecked from instance prop', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '{{wo}}',
-      wo: {
-        tag: 'input',
-        type: 'checkbox',
-        checked: 'checked'
-      }
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.wo.checked = ''
-
-    assert.equal(app.vdom().childNodes[0].checked, false)
-
-  })
-
-  
 
   /*it('no new dom', function () {
 
