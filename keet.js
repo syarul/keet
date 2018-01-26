@@ -11,7 +11,7 @@
 import { getId } from './components/utils'
 import parseStr from './components/parseStr'
 
-//window.log = console.log.bind(console)
+window.log = console.log.bind(console)
 
 const next = function(...args) {
   let [ i, ele, els ] = args
