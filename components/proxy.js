@@ -5,7 +5,7 @@ import { updateElem } from './elementUtils'
 const updateContext = function(...args) {
   let key = [].shift.call(args)
     , obj = [].shift.call(args)
-  log(args)
+
   Object.keys(this.base).map(handlerKey => {
     let tmplBase = this.base[handlerKey].template
     if(tmplBase){
@@ -13,8 +13,6 @@ const updateContext = function(...args) {
       if (hasTmpl && hasTmpl.length) {
         Object.assign(this, obj)
       }
-    } else {
-      return false
     }
 
     let styleBase = this.base[handlerKey].style
@@ -27,7 +25,12 @@ const updateContext = function(...args) {
 
     let id = this.base[handlerKey]['keet-id']
       , ele = selector(id)
-      , newElem = genElement.apply(this, [ this.base[handlerKey], ...args ])
+      , newElem
+
+    if(this.hasOwnProperty(key)) this[key] = obj[key]
+
+    newElem = genElement.apply(this, [ this.base[handlerKey], ...args ])
+
     updateElem(ele, newElem)
 
   })
@@ -40,6 +43,8 @@ export default function(...args) {
       let obj = {}
       obj[key] = value
       updateContext.apply(self, [ key, obj, ...args ])
+      //ignore TypeError in strict mode
+      if(value === false) value = 'false'
       return target[key] = value
     }
   })

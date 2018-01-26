@@ -5,11 +5,11 @@
   "main": "keet.js",
   "scripts": {
     "start": "webpack-dev-server -d",
-    "dist": "browserify keet.js --standalone Keet -t [ babelify --presets [ env ] ] | uglifyjs > keet-min.js",
     "test": "mocha test/test.js --require babel-core/register",
     "cover": "nyc --reporter=lcov --reporter=text npm run test",
     "test-ci": "nyc npm run test",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls"
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "bundle": "webpack --config webpack.bundle.js"
   },
   "repository": {
     "type": "git",

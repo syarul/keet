@@ -9,7 +9,7 @@ const config = {
     fs: 'empty'
   },
   entry: [
-    './examples/test2.js',
+    './examples/list.js',
     './view/layout.pug'
   ],
   output: {
@@ -65,6 +65,11 @@ if (process.env.NODE_ENV === 'production') {
   delete config.devServer
 
   config.entry = './keet'
+
+  config.output = {
+    path: path.resolve(__dirname, '/'),
+    filename: 'keet-min.js'
+  },
 
   config.plugins.splice(1, 1)
 

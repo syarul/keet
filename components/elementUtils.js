@@ -10,14 +10,12 @@ const loopChilds = (arr, elem) => {
 
 const insertAfter = (newNode, referenceNode) => referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling)
 
-const nodeUpdate = (newNode, oldNode, watcher2) => {
-  if (!newNode) return false
-  let oAttr = newNode.attributes,
-    output = {}
-  if (oAttr) {
-    for (let i = oAttr.length - 1; i >= 0; i--) {
-      output[oAttr[i].name] = oAttr[i].value
-    }
+const nodeUpdate = (newNode, oldNode) => {
+  // if (!newNode) return false
+  let oAttr = newNode.attributes
+  , output = {}
+  for (let i = oAttr.length - 1; i >= 0; i--) {
+    output[oAttr[i].name] = oAttr[i].value
   }
   for (let iAttr in output) {
     if (oldNode.attributes[iAttr] && oldNode.attributes[iAttr].name === iAttr && oldNode.attributes[iAttr].value != output[iAttr]) {
@@ -37,12 +35,12 @@ const nodeUpdate = (newNode, oldNode, watcher2) => {
 }
 
 const nodeUpdateHTML = (newNode, oldNode) => {
-  if (!newNode) return false
+  // if (!newNode) return false
   if (newNode.nodeValue !== oldNode.nodeValue)
     oldNode.nodeValue = newNode.nodeValue
 }
 
-const updateElem = (oldElem, newElem, watcher2) => {
+const updateElem = (oldElem, newElem) => {
   var oldArr = [],
     newArr = []
   oldArr.push(oldElem)
@@ -50,9 +48,9 @@ const updateElem = (oldElem, newElem, watcher2) => {
   loopChilds(oldArr, oldElem)
   loopChilds(newArr, newElem)
   oldArr.map((ele, idx, arr) => {
-    if (ele.nodeType === 1 && ele.hasAttributes()) {
-      nodeUpdate(newArr[idx], ele, watcher2)
-    } else if (ele.nodeType === 3) {
+    if (ele && ele.nodeType === 1 && ele.hasAttributes()) {
+      nodeUpdate(newArr[idx], ele)
+    } else if (ele && ele.nodeType === 3) {
       nodeUpdateHTML(newArr[idx], ele)
     }
     if (idx === arr.length - 1) {

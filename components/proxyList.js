@@ -32,15 +32,14 @@ const arrProtoSplice = function(...argv){
         ele.removeChild(ele.childNodes[start])
       }
     }
-  } else if (argv.length) {
-    c = start - 1
-    for (k = start; k < tempDivChildLen + start; k++) {
-      if(ele.childNodes[c])
-        insertAfter(tempDiv.childNodes[0], ele.childNodes[c], ele)
-      else
-        ele.appendChild(tempDiv.childNodes[0])
-      c++
-    }
+  } 
+  c = start - 1
+  for (k = start; k < tempDivChildLen + start; k++) {
+    if(ele.childNodes[c])
+      insertAfter(tempDiv.childNodes[0], ele.childNodes[c], ele)
+    else
+      ele.appendChild(tempDiv.childNodes[0])
+    c++
   }
 }
 
@@ -62,12 +61,15 @@ export default function(list) {
       if(intNum){
         arrProtoUpdate.apply(self, [num, value])
       }
-      // Number.isInteger(value) && value < 1  ** falsish
+      //ignore TypeError in strict mode
+      if(value < 1) value = '0'
       return target[key] = value
     },
     deleteProperty (target, key) {
       arrProtoSplice.apply(self, [parseInt(key), 1])
-      return target[key]
+      //ignore TypeError in strict mode
+      let num = parseInt(key)
+      return num < 1 ? 'false' : target[key]
     }
   })
 
