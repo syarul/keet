@@ -9,7 +9,7 @@ Minimalist view layer for the web.
 
 ## What is Keetjs
 
-> *Keetjs* specific goal is to offer less APIs, familiar/vanilla code structures and a possible remedy to *choice paralysis*. It was never intended to be super fast and superior compare most major web frameworks, but generally is more flexible with loose coupling, less complicated design and workflow and it's only around 4KB gzip in size.
+> *Keetjs* specific goal is to offer less APIs, familiar/vanilla code structures and a possible remedy to *choice paralysis*. It was never intended to be super fast and superior compare most major web frameworks, but generally is more flexible with loose coupling, less complicated design and workflow.
 
 ## Getting Started
 

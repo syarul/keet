@@ -41,8 +41,8 @@ const nodeUpdateHTML = (newNode, oldNode) => {
 }
 
 const updateElem = (oldElem, newElem) => {
-  var oldArr = [],
-    newArr = []
+  let oldArr = []
+    , newArr = []
   oldArr.push(oldElem)
   newArr.push(newElem)
   loopChilds(oldArr, oldElem)

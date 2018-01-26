@@ -28,6 +28,7 @@
   "homepage": "https://github.com/syarul/keet#readme",
   "devDependencies": {
     "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.1",
     "babel-loader": "^7.1.2",
     "babel-plugin-istanbul": "^4.1.5",
     "babel-preset-env": "^1.6.1",
@@ -56,7 +57,11 @@
     "instrument": false
   },
   "babel": {
-    "presets": ["env"],
-    "plugins": ["istanbul"]
+    "presets": [
+      "env"
+    ],
+    "plugins": [
+      "istanbul"
+    ]
   }
 }

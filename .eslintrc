@@ -1,0 +1,31 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 7,
+    "sourceType": "module"
+  },
+  "parser": "babel-eslint",
+  "rules": {
+    "strict": 0,
+    "indent": ["error", 2],
+    "quotes": [2, "single"],
+    "linebreak-style": [2, "windows"],
+    "semi": ["error", "never"],
+    "no-console":0,
+    "comma-dangle" : 0
+  },
+  "env": {
+    "es6": true,
+    "browser": true
+  },
+  "extends": "eslint:recommended",
+  "globals": {
+    "process",
+    "require",
+    "log",
+    "TouchLynxTHREE",
+    "module",
+    "exports",
+    "_ev",
+    "sourceMap"
+  }
+}

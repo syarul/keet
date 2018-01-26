@@ -8,7 +8,6 @@ const arrProtoSplice = function(...argv){
     , childLen
     , len
     , i
-    , j
     , k
     , c
     , tempDivChildLen

@@ -33,7 +33,7 @@ const next = function(...args) {
 }
 
 export default class Keet {
-  constructor(...args) {
+  constructor() {
     this.base = {}
     Object.defineProperty(this, '__proxy__', {
       enumerable: false,
