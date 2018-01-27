@@ -44,7 +44,7 @@ export default function(...args) {
       obj[key] = value
       updateContext.apply(self, [ key, obj, ...args ])
       //ignore TypeError in strict mode
-      if(value === false) value = 'false'
+      if(value === false || value === '') value = 'false'
       return target[key] = value
     }
   })

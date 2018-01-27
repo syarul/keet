@@ -11,9 +11,9 @@ const loopChilds = (arr, elem) => {
 const insertAfter = (newNode, referenceNode) => referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling)
 
 const nodeUpdate = (newNode, oldNode) => {
-  // if (!newNode) return false
   let oAttr = newNode.attributes
   , output = {}
+
   for (let i = oAttr.length - 1; i >= 0; i--) {
     output[oAttr[i].name] = oAttr[i].value
   }
@@ -35,7 +35,6 @@ const nodeUpdate = (newNode, oldNode) => {
 }
 
 const nodeUpdateHTML = (newNode, oldNode) => {
-  // if (!newNode) return false
   if (newNode.nodeValue !== oldNode.nodeValue)
     oldNode.nodeValue = newNode.nodeValue
 }
