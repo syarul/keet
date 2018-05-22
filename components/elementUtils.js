@@ -13,6 +13,12 @@ exports.loopChilds = loopChilds
 
 var nodeUpdate = function (newNode, oldNode) {
   if (!newNode) return
+  // diff current newNodes and oldNodes, and make update
+  // if nodes is not of same length throw an error
+  // todo: create another component with the effected state(s)
+  if (newNode.length !== oldNode.length){
+    throw new Error('Nodes is not of same length, detach effected node as another component')
+  }
   var oAttr = newNode.attributes
   var output = {}
 
@@ -41,13 +47,13 @@ var nodeUpdateHTML = function (newNode, oldNode) {
   if (newNode.nodeValue !== oldNode.nodeValue) { oldNode.nodeValue = newNode.nodeValue }
 }
 
-exports.updateElem = function (oldElem, newElem) {
+exports.updateElem = function (oldElem, newElem, ignoreNodes) {
   var oldArr = []
   var newArr = []
   oldArr.push(oldElem)
   newArr.push(newElem)
-  loopChilds(oldArr, oldElem)
-  loopChilds(newArr, newElem)
+  loopChilds(oldArr, oldElem, ignoreNodes)
+  loopChilds(newArr, newElem, ignoreNodes)
   oldArr.map(function (ele, idx, arr) {
     if (ele && ele.nodeType === 1 && ele.hasAttributes()) {
       nodeUpdate(newArr[idx], ele)

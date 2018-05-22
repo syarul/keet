@@ -1,6 +1,6 @@
 'use strict'
 /**
- * Keetjs v3.4.4 Alpha release: https://github.com/keetjs/keet.js
+ * Keetjs v3.4.5 Alpha release: https://github.com/keetjs/keet.js
  * Minimalist view layer for the web
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keetjs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -16,12 +16,12 @@ var parseStr = require('./components/parseStr')
 var genTemplate = require('./components/genTemplate')
 var updateElem = require('./components/elementUtils').updateElem
 
-var next = function (i, ele, els) {
+var next = function (i, els) {
   var self = this
   if (i < els.length) {
-    if (!ele.childNodes[i]) ele.appendChild(els[i])
+    if (!this._el.childNodes[i]) this._el.appendChild(els[i])
     i++
-    next.apply(this, [ i, ele, els ])
+    next.apply(this, [ i, els ])
   } else {
     var watchObject = function (obj) {
       return new Proxy(obj, {
@@ -51,6 +51,10 @@ var next = function (i, ele, els) {
 function Keet () {
   this.base = {}
   Object.defineProperty(this, '__stateList__', {
+    enumerable: false,
+    writable: true
+  })
+  Object.defineProperty(this, '_el', {
     enumerable: false,
     writable: true
   })
@@ -94,11 +98,9 @@ Keet.prototype.link = function (id) {
 
 Keet.prototype.render = function () {
   // Render this component to the target DOM
-  var ele = getId(this.el)
+  this._el = getId(this.el)
   var els = parseStr.apply(this, this.args)
-  if (ele) {
-    next.apply(this, [ 0, ele, els ])
-  }
+  this._el && next.apply(this, [ 0, els ])
   return this
 }
 
@@ -113,39 +115,38 @@ Keet.prototype.cluster = function () {
   }
 }
 
-Keet.prototype.add = function (obj) {
+Keet.prototype.add = function (obj, createId) {
   // Method to add a new object to component model
-  var ele = getId(this.el)
   if (Array.isArray(this.base.model)) {
-    obj['keet-id'] = genId()
+    if(createId) obj['keet-id'] = genId()
     this.base.model = this.base.model.concat(obj)
-    ele.appendChild(genTemplate.call(this, obj))
+    this._el && this._el.appendChild(genTemplate.apply(this, [ obj, createId ]))
   }
 }
 
-Keet.prototype.destroy = function (id, attr) {
+Keet.prototype.destroy = function (id, attr, node) {
   // Method to destroy a submodel of a component
   if (Array.isArray(this.base.model)) {
     this.base.model = this.base.model.filter(function (obj, index) {
       if (id === obj[attr]) {
-        var node = selector(obj['keet-id'])
-        if (node) node.remove()
+        node = node || selector(obj['keet-id'])
+        node && node.remove()
       } else { return obj }
     })
   }
 }
 
-Keet.prototype.update = function (id, attr, newAttr) {
+Keet.prototype.update = function (id, attr, updateAttr, node) {
   // Method to update a submodel of a component
   var self = this
   if (Array.isArray(this.base.model)) {
     this.base.model = this.base.model.map(function (obj, idx, model) {
       if (id === obj[attr]) {
-        if (newAttr && typeof newAttr === 'object') {
-          Object.assign(obj, newAttr)
+        if (updateAttr && typeof updateAttr === 'function'){
+          obj = updateAttr(obj)
         }
-        var node = selector(obj['keet-id'])
-        if (node) updateElem(node, genTemplate.call(self, obj))
+        node = node || selector(obj['keet-id'])
+        node && updateElem(node, genTemplate.call(self, obj))
       }
       return obj
     })

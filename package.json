@@ -1,20 +1,31 @@
 {
   "name": "keet",
-  "version": "3.4.4",
-  "author": "Shahrul Nizam Selamat",
+  "version": "3.4.5",
   "description": "Minimalist view layer for the web",
-  "babel": {
-    "presets": [
-      "env"
-    ],
-    "plugins": [
-      "istanbul"
-    ]
+  "main": "keet.js",
+  "scripts": {
+    "start": "webpack-dev-server -d",
+    "test": "mocha test/test.js --require babel-core/register",
+    "cover": "nyc --reporter=lcov --reporter=text npm run test",
+    "test-ci": "nyc npm run test",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "bundle": "browserify keet.js --standalone Keet | uglifyjs --compress --mangle > keet-min.js && node markdown.config.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keetjs/keet.js.git"
+  },
+  "keywords": [
+    "templating",
+    "minimal",
+    "view layer"
+  ],
+  "author": "Shahrul Nizam Selamat",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/syarul/keet/issues"
+    "url": "https://github.com/keetjs/keet.js/issues"
   },
-  "dependencies": {},
+  "homepage": "https://github.com/keetjs/keet.js#readme",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
@@ -34,14 +45,7 @@
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.11.1"
   },
-  "homepage": "https://github.com/syarul/keet#readme",
-  "keywords": [
-    "templating",
-    "minimal",
-    "view layer"
-  ],
-  "license": "MIT",
-  "main": "keet.js",
+  "dependencies": {},
   "nyc": {
     "include": [
       "keet.js",
@@ -50,17 +54,12 @@
     "sourceMap": false,
     "instrument": false
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/syarul/keet.git"
-  },
-  "scripts": {
-    "bundle": "browserify keet.js --standalone Keet | uglifyjs --compress --mangle > keet-min.js && node markdown.config.js",
-    "cover": "nyc --reporter=lcov --reporter=text npm run test",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "start": "webpack-dev-server -d",
-    "test": "mocha test/test.js --require babel-core/register",
-    "test-ci": "nyc npm run test"
-  },
-  "git_branch": "master"
+  "babel": {
+    "presets": [
+      "env"
+    ],
+    "plugins": [
+      "istanbul"
+    ]
+  }
 }

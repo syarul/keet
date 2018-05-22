@@ -19,11 +19,76 @@ var updateContext = function () {
     var newElem
     var args = [].slice.call(arguments)
     newElem = genElement.apply(self, [self.base[handlerKey]].concat(args))
-    updateElem(ele, newElem)
+    updateElem(ele, newElem, self.ignoreNodes)
   })
 }
 
-var nextState = function (i, args) {
+var vselect = function(id) {
+  return document.querySelector('[keet-v="' + id + '"]')
+}
+
+var processTernary = function(ident, node){
+
+  var propToReplace = ident.type === 'propOnly' ? ident.props[0].replace(/{{([^{}]+)}}/g, '$1') : ident.proto
+  console.log(propToReplace)
+  var t = propToReplace.split('?')
+  var condition = t[0]
+  var leftHand = t[1].split(':')[0]
+  var rightHand = t[1].split(':')[1]
+
+  var current
+
+  if(this[condition]){
+    current = leftHand
+  } else {
+    current = rightHand
+  }
+
+  if(node){
+    if(ident.type === 'propOnly')
+        node.setAttribute(ident.attr, ident.proto.replace(/{{([^{}]+)}}/, current))
+    else {
+      console.log(current, ident)
+      node.setAttribute(current, '')
+      node.removeAttribute(ident.currentValue)
+    }
+  }
+
+  ident.currentValue = current
+}
+
+var updateNode = function (value) {
+  var self = this
+  var indexRef = this.__identStores__.map(function(i){
+    return i.state
+  }).indexOf(value)
+  console.log(value, indexRef)
+  if(~indexRef){
+    var ident = this.__identStores__[indexRef]
+    var node = vselect(ident.id)
+
+    if(ident.type === 'attrOnly'){
+      if(ident.isTernary){
+        processTernary.apply(self, [ ident, node ])
+      } else {
+        if(node){
+          ident.node.setAttribute(self[value], '')
+          ident.node.removeAttribute(ident.currentValue)
+        }
+        ident.currentValue = self[value]
+      }
+    } else if(ident.type === 'propOnly'){
+      if(ident.isTernary){
+        processTernary.apply(this, [ ident, node ])
+      } else {
+        ident.node.setAttribute(ident.attr, ident.proto.replace(/{{([^{}]+)}}/, this[value]))
+      }
+
+    }
+  }
+}
+
+var nextState = function (i) {
   var self = this
   if (i < this.__stateList__.length) {
     var state = this.__stateList__[i]
@@ -36,19 +101,18 @@ var nextState = function (i, args) {
       },
       set: function (val) {
         value = val
-        updateContext.apply(self, args)
+        updateNode.call(self, state)
       }
     })
     i++
-    nextState.apply(this, [ i, args ])
+    nextState.call(this, i)
   } else {
     //
   }
 }
 
-var setState = function (args) {
-  var self = this
-  nextState.apply(self, [ 0, args ])
+var setState = function () {
+  nextState.call(this, 0)
 }
 
 var updateStateList = function (state) {
