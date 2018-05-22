@@ -8,12 +8,14 @@ var pkg = fs.readFileSync('package.json', 'utf8')
 
 var ver = JSON.parse(pkg).version
 
+var git_branch = JSON.parse(pkg).git_branch
+
 var c = [
   `[![npm package](https://img.shields.io/badge/npm-${ver}-blue.svg)](https://www.npmjs.com/package/keet)`,
-  `[![browser build](https://img.shields.io/badge/rawgit-${ver}-ff69b4.svg)](https://cdn.rawgit.com/keetjs/keet.js/master/keet-min.js)`,
+  `[![browser build](https://img.shields.io/badge/rawgit-${ver}-ff69b4.svg)](https://cdn.rawgit.com/syarul/keet/${git_branch}/keet-min.js)`,
   `[![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet)`,
-  `[![Build Status](https://travis-ci.org/keetjs/keet.js.svg?branch=master)](https://travis-ci.org/keetjs/keet.js)`,
-  `[![Coverage Status](https://coveralls.io/repos/github/keetjs/keet.js/badge.svg?branch=master)](https://coveralls.io/github/keetjs/keet.js?branch=master)`,
+  `[![Build Status](https://travis-ci.org/keetjs/keet.js.svg?branch=${git_branch})](https://travis-ci.org/syarul/keet)`,
+  `[![Coverage Status](https://coveralls.io/repos/github/keetjs/keet.js/badge.svg?branch=${git_branch})](https://coveralls.io/github/syarul/keet?branch=${git_branch})`,
   `[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)`
 ]
 

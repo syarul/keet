@@ -61,5 +61,6 @@
     "start": "webpack-dev-server -d",
     "test": "mocha test/test.js --require babel-core/register",
     "test-ci": "nyc npm run test"
-  }
+  },
+  "git_branch": "master"
 }
