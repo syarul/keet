@@ -1,171 +1,132 @@
-# keet.js v2
+<!-- AUTO-GENERATED-CONTENT:START (VER) -->
+# Keetjs v3.4.4
+<!-- AUTO-GENERATED-CONTENT:START (VER) -->
+<!-- AUTO-GENERATED-CONTENT:END -->
 
 <!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
-[![npm package](https://img.shields.io/badge/npm-2.2.5-blue.svg)](https://www.npmjs.com/package/keet) [![browser build](https://img.shields.io/badge/wzrd.in-2.2.5-ff69b4.svg)](https://wzrd.in/standalone/keet@latest) [![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet) [![Build Status](https://travis-ci.org/syarul/keet.svg?branch=master)](https://travis-ci.org/syarul/keet) [![Coverage Status](https://coveralls.io/repos/github/syarul/keet/badge.svg?branch=master)](https://coveralls.io/github/syarul/keet?branch=master)
+[![npm package](https://img.shields.io/badge/npm-3.4.4-blue.svg)](https://www.npmjs.com/package/keet) [![browser build](https://img.shields.io/badge/rawgit-3.4.4-ff69b4.svg)](https://cdn.rawgit.com/keetjs/keet.js/master/keet-min.js) [![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet) [![Build Status](https://travis-ci.org/keetjs/keet.js.svg?branch=master)](https://travis-ci.org/keetjs/keet.js) [![Coverage Status](https://coveralls.io/repos/github/keetjs/keet.js/badge.svg?branch=master)](https://coveralls.io/github/keetjs/keet.js?branch=master) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 <!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
 <!-- AUTO-GENERATED-CONTENT:END -->
 
-A solution to write clean interface for web application.
+Minimalist view layer for the web.
 
-- Stop polluting html template/string within JavaScript codes, know when your code smells [iffy](https://sourcemaking.com/refactoring/smells)
+## What is Keetjs
 
-- Get youself a service by having your application to be of [small-program design](https://sourcemaking.com/antipatterns/spaghetti-code) 
+> *Keetjs* specific goal is to offer less APIs, familiar/vanilla code structures and a possible remedy to *choice paralysis*. It was never intended to be super fast and superior compare most major web frameworks, but generally is more flexible with loose coupling, less complicated design and workflow. It's also 4kb gzip in size. 
 
-- Live up to the standard of [Unix Philosophy](http://www.faqs.org/docs/artu/ch01s06.html)
+## Getting Started
 
-## Streamlike flow
+To try out Keetjs is to include it from a CDN or npm.
 
-This view layer is meant to be used as a compliment to [Node.js stream](https://nodejs.org/api/stream.html) design philosophy and to take that advantage fully in the browser environment. As sample case of usage;
+Create a HTML file:-
 
-```javascript
-const str = require('string-to-stream')
-const FetchStream = require('keet/fetchStream')
-const Keet = require('keet')
-const vpipe = require('keet/vpipe')
+```html
+<html>
+  <head>
+    <script src="//cdn.rawgit.com/keetjs/keet.js/master/keet-min.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+  <script>
+    // your codes goes here
+  </script>
+</html>
+```
+Or from npm:-
 
+```npm install keet```
+
+## Sample Usage
+
+
+### Hello World
+
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/hello.js) -->
+<!-- The below code snippet is automatically added from ./examples/hello.js -->
+```js
+import Keet from 'keet'
+
+/**
+ * start by constructing a class expression as child of "Keet"
+ */
 class App extends Keet {
-  constructor(){
+  constructor () {
     super()
-  }
-  
-  _clickHandler(evt){
-    console.log('I\'m cool yo!')
+    this.state = 'World'
   }
 }
 
 const app = new App()
 
-const sink = new vpipe(app)
-
-const fetchStream = new FetchStream()
-
-str('./data.json').pipe(fetchStream).pipe(sink)
-
-module.exports = app
-
-```
-
-
-The ```data.json``` sample
-
-```json
-{
-  "template": "{{foo}}",
-  "mountPoint": "app",
-  "foo": {
-    "tag": "button",
-    "template": "click me",
-    "k-click": "clickHandler()"
-  }
+/**
+ * vmodel is a decoupled js object mounted to the component.
+ * we could assign dynamic state to our component, DOM mutation
+ * does not override the component state reference which always
+ * remain pristine
+ */
+const vmodel = {
+  header: {
+    template: `
+      <h1>My Simple Vmodel</h1>
+      <p>vmodel is a decoupled javascript object mounted to the component</p>
+    `
+  },
+  simple: 'Hello {{state}}'
 }
+
+app.mount(vmodel).link('app')
 ```
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/helloWorld.js) -->
+<!-- AUTO-GENERATED-CONTENT:END -->
 
-## Basic usage
+### Counter
 
-```javascript
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/counter.js) -->
+<!-- The below code snippet is automatically added from ./examples/counter.js -->
+```js
+import Keet from 'keet'
 
-const Keet = require('keet')
+/**
+ * usage on how to update state
+*/
 
 class App extends Keet {
-  constructor(){
+  constructor () {
     super()
+    this.count = 0 // set our initial state in the constructor
+  }
+  add () {
+    this.count++
   }
 }
 
 const app = new App()
 
-const obj = {
-    template: '{{example}}',
-    example: {
-        tag: 'div',
-        style: {
-            'font-style': 'italic'
-        },
-        template: 'hello world'
-    }
-}
-
-app.mount(obj).link('app') //'app' is the mount point of our DOM
-
-```
-
-Which will result into
-
-```html
-<div id="app">
-  <!--result start-->
-  <div id="example" style="font-style:italic;">hello world</div>
-  <!--result end-->
-</div>
-```
-
-Once mounted, the attributes of applied object are observables,
-
-```javascript
-obj.example.template = 'hello keet!'
-
-```
-the corresponding DOM will reactively changed into 
-```html
-<div id="app">
-  <!--result start-->
-  <div id="example" style="font-style:italic;">hello keet!</div>
-  <!--result end-->
-</div>
-```
-And the better option is by using the built-in helper function, or you can write your own helper
-```javascript
-app.contentUpdate('example', 'hello keet!')
-
-```
-To use event handlers we can simply assign key properties of the object with strings starting with 'k-' i.e for click event:- 'k-click' 
-
-```javascript
-const event = {
-    template: '{{example}}',
-    example: {
-        tag: 'button',
-        'k-click': 'clickHandler()',
-        template: 'click me'
-    },
-    clickHandler: function(evt){
-      console.log('I was clicked!')
-    }
-}
-
-app.mount(event).link('app')
-
-```
-
-## Delegation
-
-To mount multiple Javascript objects that inherit properties from another object, use ```Keet.prototype.cluster```
-
-```javascript
-const first = {
-    template: '{{me}}',
-    me: {
-        tag: 'div',
-        id: 'me'
-    }
-}
-
-const child = () => {
-  const second = {
-    template: '{{cool}}',
-    cool: {
-        tag: 'div',
-        template: 'I\'m cool yo!'
-    }
+const vmodel = {
+  header: {
+    template: `
+      <h1>My Simple Counter</h1>
+      <p>Usage on how to update states reactively</p>
+    `
+  },
+  counter: {
+    tag: 'button',
+    /**
+     * eventListener click, assign key properties starting
+     * with 'k-<event>'
+     */
+    'k-click': 'add()',
+    template: '{{count}}'
   }
-  const sec = new App()
-  sec.mount(second).link('me')
-} 
+}
 
-app.mount(first).link('app').cluster(child)
+app.mount(vmodel).link('app')
 ```
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/counter.js) -->
+<!-- AUTO-GENERATED-CONTENT:END -->
 
-See sample folder for more usage
+More samples in [examples](https://github.com/keetjs/keet.js/tree/master/examples) directory
 
 ## License
 

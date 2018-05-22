@@ -1,15 +1,26 @@
 const assert = require('assert')
 const { JSDOM } = require('jsdom')
 
-const Keet = require('../')
-const tag = require('../tag')
+const Keet = require('../keet')
+
+const { getId } = require('../components/utils')
+
+const tag = require('../components/tag')
+const copy = require('../components/copy')
+const ClassList = require('../classList')
+
 const fs = require('fs')
 const pkg = fs.readFileSync('package.json', 'utf8')
 
 const ver = JSON.parse(pkg).version
 
-describe(`keet.js v-${ver} test`, function () {
+const describe = global.describe // standard
+const it = global.it // standard
+const before = global.before
 
+let Event
+
+describe(`keet.js v-${ver} test`, function () {
   before(() => {
     const dom = new JSDOM(`
       <!DOCTYPE html>
@@ -22,21 +33,18 @@ describe(`keet.js v-${ver} test`, function () {
         </body>
       </html>`)
 
-      global.document = dom.window.document
+    global.document = dom.window.document
 
-      const window = dom.window
+    const window = dom.window
 
-      global.window = window
-      global.Event = window.Event
+    global.window = window
+    Event = window.Event
+    global.log = console.log.bind(console)
+  })
 
-      const MutationObserver = require('mutation-observer')
-
-      global.MutationObserver = window.MutationObserver = MutationObserver
-      global.log = console.log.bind(console)
-    }
-  )
-
-  
+  var clear = function () {
+    document.getElementById('app').innerHTML = ''
+  }
 
   it('has document', function () {
     var div = document.createElement('div')
@@ -44,69 +52,109 @@ describe(`keet.js v-${ver} test`, function () {
   })
 
   it('write text content', function () {
-    
     class App extends Keet {
-      constructor(){
+      constructor () {
         super()
+        this.greeting = ''
+      }
+      greet () {
+        this.greeting = 'world'
+      }
+      componentDidMount () {
+        this.greet()
+        assert.equal(document.querySelector('#hw').childNodes[0].nodeValue, 'hello world')
+        clear()
       }
     }
-
     const app = new App()
-
     const instance = {
-      template: '{{hello}}',
       hello: {
         tag: 'div',
-        id: 'hello',
-        template: 'hello world'
+        id: 'hw',
+        template: 'hello {{greeting}}'
       }
     }
+    app.mount(instance).link('app').cluster()
+  })
 
+  it('will mount', function () {
+    class App extends Keet {
+      componentWillMount () {
+        assert.equal(document.querySelector('#hw2'), null)
+      }
+    }
+    const app = new App()
+    const instance = {
+      hello: {
+        tag: 'div',
+        id: 'hw2',
+        template: 'hello'
+      }
+    }
     app.mount(instance).link('app')
+  })
 
-    assert.equal(document.querySelector('#hello').childNodes[0].nodeValue, 'hello world')
+  it('ignore render when DOM not found', function () {
+    class App extends Keet {}
+    const app = new App()
+    const instance = {
+      hello: {
+        tag: 'div',
+        template: 'hello'
+      }
+    }
+    app.mount(instance).link('app-not-found')
+    assert.equal(document.querySelector('#app-not-found'), null)
+  })
+
+  it('run clusters if function', function () {
+    class App extends Keet {}
+    const app = new App()
+    const instance = {
+      hello: {
+        tag: 'div',
+        template: 'hello'
+      }
+    }
+    let [ a, b ] = [ 0, 0 ]
+    const fn = [ function () { a = 1 }, function () { b = 2 }, 'not-a-function' ]
+    app.mount(instance).link('app').cluster(...fn)
+    assert.equal(a + b, 3)
   })
 
   it('handle click event', function () {
-
     class App extends Keet {
-      constructor(){
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '{{clicker}}',
-      clicker: {
-        tag: 'button',
-        'k-click': 'clickHandler()'
-      },
-      clickHandler: function(evt){
+      clickHandler (evt) {
         assert.equal(evt.type, 'click')
       }
     }
-
-    app.mount(instance).flush('app').link('app')
-
+    const app = new App()
+    const instance = {
+      clicker: {
+        tag: 'button',
+        'k-click': 'clickHandler()'
+      }
+    }
+    app.mount(instance).link('app')
     const click = new Event('click', {
       'bubbles': true,
       'cancelable': true
     })
-
-    app.vdom().childNodes[0].dispatchEvent(click)
-
+    getId('app').childNodes[0].dispatchEvent(click)
   })
 
   it('tag input type', function () {
-    const t = tag('input', null, { checked: true, type: 'checkbox'})
+    const t = tag('input', null, {
+      checked: true,
+      type: 'checkbox'
+    })
     assert.equal(t, '<input type="checkbox" checked></input>')
-
   })
 
   it('tag class', function () {
-    const t = tag('div', null, { class: ['mean', 'more']})
+    const t = tag('div', null, {
+      class: ['mean', 'more']
+    })
     assert.equal(t, '<div class="mean more"></div>')
   })
 
@@ -116,78 +164,102 @@ describe(`keet.js v-${ver} test`, function () {
   })
 
   it('tag with style', function () {
-    const t = tag('div', 'hello', null, { display: 'block', 'font-style': 'italic' })
+    const t = tag('div', 'hello', null, {
+      display: 'block',
+      'font-style': 'italic'
+    })
     assert.equal(t, '<div style="display:block;font-style:italic;">hello</div>')
   })
 
-  it('construct', function () {
-    const app = new Keet('div', {
-      template: '{{hello}}{{non}}',
-      hello: {
-        tag: 'span',
-        template: 'hello keet!'
-      }
-    })
-    app.flush('app').link('app')
-    assert.equal(document.querySelector('SPAN').childNodes[0].nodeValue, 'hello keet!')
+  it('copy array', function () {
+    let arr = [ 1, 2, 3 ]
+    let cp = copy(arr)
+    cp[0] = 2
+    cp[1] = 4
+    cp[2] = 6
+    assert.equal(arr.join(''), '123')
+    clear()
   })
 
-  it('evaluation false', function(){
+  it('evaluation string', function () {
     class App extends Keet {
-      constructor(){
+      constructor () {
         super()
+        this.do = 'a'
+        this.me = 'favor'
       }
     }
     const app = new App()
     const instance = {
-      template: '{{do}}{{me}}'
+      template: '{{do}} {{me}}'
     }
-    app.mount(instance).flush('app').link('app')
-    assert.equal(document.querySelector('#app').innerHTML, '{{do}}{{me}}')
+    app.mount(instance).link('app')
+    assert.equal(document.querySelector('#app').innerHTML, 'a favor')
+    clear()
   })
 
-  it('ignore function prop', function(){
+  /*it('error parsing type of non-object', function (next) {
+    class App extends Keet {}
+    const app = new App()
+    function cb (err) {
+      assert.equal(err instanceof Error, true)
+      next()
+    }
+    function test () {
+      process.nextTick(() => {
+        const instance = 'just a string'
+        app.mount(instance).link('app')
+      })
+    }
+    process.prependOnceListener('uncaughtException', cb)
+    test()
+  })*/
+
+  it('evaluation string 2', function () {
     class App extends Keet {
-      constructor() {
+      constructor () {
         super()
+        this.do = 'a'
+        this.me = 'favor'
       }
     }
     const app = new App()
     const instance = {
-      template: '{{example}}',
-      example: {
+      child: {
+        template: 'do me'
+      }
+    }
+    app.mount(instance).link('app')
+    assert.equal(document.querySelector('#app').innerHTML, '<div>do me</div>')
+    clear()
+  })
+
+  it('classes', function () {
+    class App extends Keet {
+      constructor () {
+        super()
+        this.classes = new ClassList()
+        this.classes.add('foo', 'bar')
+      }
+    }
+    const app = new App()
+    const instance = {
+      ch: {
         tag: 'div',
-        id: 'example',
-        functionAttr: function(){
-          return 'none'
-        }
+        class: '{{classes}}',
+        id: 'ch',
+        template: 'do me'
       }
     }
-    app.mount(instance).flush('app').link('app')
-    var output = [], oAttr = document.querySelector('#example').attributes
-    if(oAttr){
-      for(var i = oAttr.length - 1; i >= 0; i--) {
-        let c = {}
-        c.name = oAttr[i].name
-        c.value = oAttr[i].value
-        output.push(c)
-      }
-    }
-    let res = output.filter(f => f.name == 'functionAttr')
-    assert.equal(res.length, 0)
+    app.mount(instance).link('app')
+    assert.equal(document.querySelector('#ch').getAttribute('class'), 'foo bar')
+    clear()
   })
 
-  it('checkbox unchecked', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
+  it('checkbox unchecked', function () {
+    class App extends Keet {}
     const app = new App()
-
     const instance = {
-      template: '{{example}}',
       example: {
         tag: 'input',
         id: 'inputExample',
@@ -196,21 +268,15 @@ describe(`keet.js v-${ver} test`, function () {
       }
     }
 
-    app.mount(instance).flush('app').link('app')
+    app.mount(instance).link('app')
     assert.equal(document.querySelector('#inputExample').checked, false)
+    clear()
   })
 
-  it('checkbox checked', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
+  it('checkbox checked', function () {
+    class App extends Keet {}
     const app = new App()
-
     const instance = {
-      template: '{{example}}',
       example: {
         tag: 'input',
         id: 'inputExample',
@@ -218,1346 +284,756 @@ describe(`keet.js v-${ver} test`, function () {
         type: 'checkbox'
       }
     }
-
-    app.mount(instance).flush('app').link('app')
+    app.mount(instance).link('app')
     assert.equal(document.querySelector('#inputExample').checked, true)
+    clear()
   })
 
-  it('error parsing type of non-object', function(next){
+  it('state not assigned', function () {
+    class App extends Keet {}
+    const app = new App()
+    const instance = {
+      template: '{{foo}}'
+    }
+    app.mount(instance).link('app')
+    assert.equal(document.querySelector('#app').innerHTML, '{{foo}}')
+    clear()
+  })
+
+  // it('parsing template without handlerbar value', function () {
+  //   class App extends Keet {}
+  //   const app = new App()
+  //   const instance = {
+  //     template: '<span id="test">no handler to handle</span>',
+  //     model: [
+  //       { id: 'surname', name: 'john' }
+  //     ]
+  //   }
+  //   app.mount(instance).link('app')
+  //   assert.equal(document.querySelector('#test'), null)
+  //   clear()
+  // })
+
+  it('ignore handler when is not a function', function () {
     class App extends Keet {
-      constructor() {
+      constructor () {
         super()
+        this.clickHandler = true
       }
     }
-
     const app = new App()
+    const instance = {
+      me: {
+        tag: 'button',
+        'k-click': 'clickHandler()'
+      }
+    }
+    app.mount(instance).link('app')
+    clear()
+  })
 
-    function cb(err) {
-        assert.equal(err instanceof Error, true)
+  it('handler with argument', function (next) {
+    class App extends Keet {
+      clickHandler (sec, evt) {
+        assert.equal(sec, 'harder')
+        clear()
         next()
-    }
-    function test(){
-        process.nextTick(() => {
-          const instance = 'just a string'
-          app.mount(instance).flush('app').link('app')
-        })
-    }
-    process.prependOnceListener('uncaughtException', cb)
-    test()
-
-  })
-
-  it('parsing just template', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = { template: 'just a string' }
-    app.mount(instance).flush('app').link('app')
-    assert.equal(document.querySelector('#app').childNodes[0].nodeValue, 'just a string')
-  })
-
-  it('parsing array list', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = { 
-      template: '<span id={{id}}>{{name}}</span>',
-      list: [
-        { id: 'surname', name: 'john' }
-      ]
-    }
-    app.mount(instance).flush('app').link('app')
-    assert.equal(document.querySelector('#surname').childNodes[0].nodeValue, 'john')
-
-  })
-
-  it('error parsing child as string', function(next){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    function cb(err) {
-        assert.equal(err instanceof Error, true)
-        next()
-    }
-    function test(){
-        process.nextTick(() => {
-          const instance = { 
-            template: '{{a}}',
-            a: 'test' 
-          }
-          app.mount(instance).flush('app').link('app')
-        })
-    }
-    process.prependOnceListener('uncaughtException', cb)
-    test()
-  })
-
-  it('ignore handler when is not a function', function(){
-    class App extends Keet {
-      constructor() {
-        super()
       }
     }
 
     const app = new App()
 
     const instance = {
-      template: '{{me}}',
       me: {
         tag: 'button',
-        'k-click': 'clickHandler2()'
-      },
-      clickHandler2: true
-    }
-    app.mount(instance).flush('app').link('app')
-  })
-
-  it('handler with argument', function(next){
-    class App extends Keet {
-      constructor() {
-        super()
+        'k-click': 'clickHandler(harder)'
       }
     }
-
-    const app = new App()
-
-    const instance = {
-      template: '{{me}}',
-      me: {
-        tag: 'button',
-        'k-click': 'clickHandler2(test,harder)'
-      },
-      clickHandler2: function(sec, third, evt){
-        assert.equal(third, 'harder')
-        next()
-      }
-    }
-    app.mount(instance).flush('app').link('app')
+    app.mount(instance).link('app')
 
     const click = new Event('click', {
       'bubbles': true,
       'cancelable': true
     })
-
-    app.vdom().childNodes[0].dispatchEvent(click)
-
+    document.getElementById('app').childNodes[0].dispatchEvent(click)
   })
 
-  it('vdom removed', function(){
+  it('toggle display', function () {
     class App extends Keet {
-      constructor() {
+      constructor () {
         super()
+        this.display = 'none'
+      }
+      change (state) {
+        this.display = state
       }
     }
-
     const app = new App()
-
     const instance = {
-      template: '{{me}}',
-      me: {
-        tag: 'div',
-        id: 'test'
+      wo: {
+        tag: 'span',
+        style: {
+          display: '{{display}}'
+        },
+        template: 'hello'
       }
     }
-
-    app.mount(instance).flush('app').link('app')
-
-    const instance2 = { template: 'test' }
-
-    const test = new App()
-
-    test.mount(instance2).link('test')
-
-    app.vdom().childNodes[0].remove()
-
-    assert.equal(test.vdom(), undefined)
-
+    app.mount(instance).link('app')
+    app.change('block')
+    assert.equal(document.querySelector('#app').childNodes[0].style.display, 'block')
+    clear()
   })
 
-  it('flush default', function(){
+  it('static style', function () {
     class App extends Keet {
-      constructor() {
+      constructor () {
         super()
+        this.display = 'none'
       }
     }
-
     const app = new App()
-
     const instance = {
-      template: '{{me}}',
-      me: {
-        tag: 'div',
-        id: 'test'
+      wo: {
+        tag: 'span',
+        style: {
+          color: 'red'
+        },
+        template: 'hello'
+      }
+    }
+    app.mount(instance).link('app')
+    assert.equal(document.querySelector('#app').childNodes[0].style.color, 'red')
+    clear()
+  })
+
+  it('toggle display without state', function () {
+    class App extends Keet {}
+    const app = new App()
+    const instance = {
+      wo: {
+        tag: 'span',
+        style: {
+          background: '{{none}}'
+        },
+        template: 'hello'
+      }
+    }
+    app.mount(instance).link('app')
+    clear()
+  })
+
+  it('has classes', function () {
+    class App extends Keet {}
+    const app = new App()
+    const instance = {
+      wo: {
+        tag: 'span',
+        id: 'ch',
+        class: 'foo bar',
+        template: 'hello'
+      }
+    }
+    app.mount(instance).link('app')
+    assert.equal(document.querySelector('#ch').getAttribute('class'), 'foo bar')
+    clear()
+  })
+
+  it('has classes state not assigned', function () {
+    class App extends Keet {}
+    const app = new App()
+    const instance = {
+      wo: {
+        tag: 'span',
+        class: 'foo {{bar}}',
+        template: 'hello'
       }
     }
 
     app.mount(instance).link('app')
-
-    app.flush()
-
-    assert.equal(app.vdom().innerHTML, '')
-
+    assert.equal(document.querySelector('#app').childNodes[0].getAttribute('class'), 'foo {{bar}}')
+    clear()
   })
 
-  it('return undefined on not found declared dom', function(){
+  it('parsing as template', function () {
     class App extends Keet {
-      constructor() {
+      constructor () {
         super()
+        this.apply = 'value'
+      }
+      change (res) {
+        this.apply = res
       }
     }
-
     const app = new App()
-
-    const instance = {
-      template: '{{me}}',
-      me: {
-        tag: 'div',
-        id: 'test'
-      }
-    }
-
+    const instance = { 'template': 'just a {{apply}}' }
     app.mount(instance).link('app')
-
-
-    app.el = 'wrong-dom-id'
-
-    app.flush()
-
-    assert.equal(app.vdom(), undefined)
-
+    app.change('change')
+    assert.equal(document.querySelector('#app').childNodes[0].nodeValue, 'just a change')
+    clear()
   })
 
-  it('won\'t render on not found declared dom', function(next){
-
-    console.warn = function(){}
-
+  it('parsing as style', function () {
     class App extends Keet {
-      constructor() {
+      constructor () {
         super()
+        this.apply = 'value'
+      }
+      change (res) {
+        this.apply = res
       }
     }
-
     const app = new App()
-
     const instance = {
-      template: '{{me}}',
-      me: {
+      test: {
         tag: 'div',
-        id: 'test'
-      }
-    }
-
-    app.mount(instance)
-
-    app.el = 'not-a-dom-id'
-
-    function cb(err) {
-      assert.equal(err instanceof Error, true)
-      next()
-    }
-
-    function test(){
-        process.nextTick(() => {
-          app.render()
-        })
-    }
-
-    process.prependOnceListener('uncaughtException', cb)
-    test()
-  })
-
-  it('register listener', function(next){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '{{me}}',
-      me: {
-        tag: 'div',
-        id: 'test'
-      }
-    }
-
-    window._loaded = function(el){
-      assert.equal(el, 'app')
-      window._loaded = null
-      next()
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-  })
-
-  it('array shift', function(){
-
-
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '<span>{{me}}</span>',
-      list: [
-        {me: 'john'},
-        {me: 'juan'}
-      ]
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.list.shift()
-
-    assert.equal(document.querySelector('SPAN').childNodes[0].nodeValue, 'juan')
-
-  })
-
-  it('array pop', function(){
-
-
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '<span>{{me}}</span>',
-      list: [
-        {me: 'john'},
-        {me: 'juan'}
-      ]
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.list.pop()
-
-    assert.equal(document.querySelector('SPAN').childNodes[0].nodeValue, 'john')
-
-  })
-
-  it('array update', function(){
-
-
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '<span>{{me}}</span>',
-      list: [
-        {me: 'john'},
-        {me: 'juan'}
-      ]
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.list.update(0, { me : 'susan'})
-
-    assert.equal(document.querySelector('SPAN').childNodes[0].nodeValue, 'susan')
-
-  })
-
-  it('array update shift +1', function(){
-
-
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '<span>{{me}}</span>',
-      list: [
-        {me: 'john'},
-        {me: 'juan'}
-      ]
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.list.update(0, { me : 'susan'}, 1)
-
-    assert.equal(document.querySelectorAll('SPAN')[1].childNodes[0].nodeValue, 'susan')
-
-  })
-
-  it('array splice', function(){
-
-
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '<span>{{me}}</span>',
-      list: [
-        {me: 'john'},
-        {me: 'juan'},
-        {me: 'susan'}
-      ]
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.list.splice(1, 1, {me: 'awile'})
-
-    let els = document.querySelectorAll('SPAN')
-
-    assert.equal(els[1].innerHTML, 'awile')
-
-  })
-
-  it('array splice without removal', function(){
-
-
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '<span>{{me}}</span>',
-      list: [
-        {me: 'john'},
-        {me: 'juan'},
-        {me: 'susan'}
-      ]
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.list.splice(1, 0, {me: 'awile'})
-
-    let els = document.querySelectorAll('SPAN')
-
-    assert.equal(els[1].innerHTML == 'awile' && els.length == 4, true)
-
-  })
-
-  it('array splice ignore', function(){
-
-
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '<span>{{me}}</span>',
-      list: [
-        {me: 'john'},
-        {me: 'juan'},
-        {me: 'susan'}
-      ]
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.list.splice(1, 0)
-
-    let els = document.querySelectorAll('SPAN')
-
-    assert.equal(els.length == 3, true)
-
-  })
-
-  it('array splice single argument', function(){
-
-
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '<span>{{me}}</span>',
-      list: [
-        {me: 'john'},
-        {me: 'juan'},
-        {me: 'susan'}
-      ]
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.list.splice(1)
-
-    let els = document.querySelectorAll('SPAN')
-
-    assert.equal(els.length == 1 && els[0].innerHTML == 'john', true)
-
-  })
-
-  it('array unshift', function(){
-
-
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '<span>{{me}}</span>',
-      list: [
-        {me: 'john'},
-        {me: 'juan'},
-        {me: 'susan'}
-      ]
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.list.unshift({me: 'foo'})
-
-    let els = document.querySelectorAll('SPAN')
-
-    assert.equal(els[0].innerHTML == 'foo' && els.length == 4, true)
-
-  })
-
-  it('array push', function(){
-
-
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '<span>{{me}}</span>',
-      list: [
-        {me: 'john'},
-        {me: 'juan'},
-        {me: 'susan'}
-      ]
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.list.push({me: 'mofoo'})
-
-    let els = document.querySelectorAll('SPAN')
-
-    assert.equal(els[els.length - 1].innerHTML == 'mofoo' && els.length == 4, true)
-
-  })
-
-  it('update child id', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '{{me}}',
-      me: {
-        tag: 'div',
-        id: 'test'
-      }
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.me.id = 'mutate'
-
-    let el = document.querySelector('#mutate')
-
-    assert.equal(el.nodeType, 1)
-
-  })
-
-  it('update child nodeValue', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '{{me}}',
-      me: {
-        tag: 'div',
-        id: 'me', // must have id for change to happen
-        template: ''
-      }
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.me.template = 'mofoo'
-
-    assert.equal(document.querySelector('#me').childNodes[0].nodeValue, 'mofoo')
-
-  })
-
-  it('ignore update when supplied same value', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '{{me}}',
-      me: {
-        tag: 'div',
-        template: 'aw'
-      }
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.me.template = 'aw'
-
-    assert.equal(document.querySelector('#app').childNodes[0].childNodes[0].nodeValue, 'aw')
-
-  })
-
-  it('watcher 2', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: 'test'
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.template = 'foo'
-
-    assert.equal(document.querySelector('#app').innerHTML, 'foo')
-
-  })
-
-  it('compose new object', function(next){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: 'test'
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    const instance2 = {
-      template: '{{wo}}{{wu}}',
-      wo: {
-        tag: 'span',
-        template: 'hello'
-      },
-      wu: {
-        tag: 'span',
-        template: ' world'
-      }
-    }
-
-    window._update = function(){
-      assert.equal(document.querySelector('#app').innerHTML, '<span>hello</span><span> world</span>')
-      window._update = null
-      next()
-    }
-
-    app.compose(instance2)
-
-
-  })
-
-  it('compose new object', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: 'test'
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    const instance2 = {
-      template: '{{wo}}{{wu}}',
-      wo: {
-        tag: 'span',
-        template: 'hello'
-      },
-      wu: {
-        tag: 'span',
-        template: ' world'
-      }
-    }
-
-    app.compose(instance2)
-
-    assert.equal(document.querySelector('#app').innerHTML, '<span>hello</span><span> world</span>')
-
-  })
-
-  it('link with arguments', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: 'test'
-    }
-
-    app.flush('app').link('app', instance)
-
-    assert.equal(document.querySelector('#app').innerHTML, 'test')
-
-  })
-
-  it('cluster', function(next){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: 'test'
-    }
-
-    function fn(){
-      assert.equal(document.querySelector('#app').innerHTML, 'test')
-      next()
-    }
-
-    app.mount(instance).flush('app').link('app').cluster(fn)
-
-  })
-
-  it('ignore cluster arguments not of function', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: 'test'
-    }
-
-    const fn = ''
-
-    app.mount(instance).flush('app').link('app').cluster(fn)
-
-    assert.equal(document.querySelector('#app').innerHTML, 'test')
-
-  })
-
-  it('get list', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '<span>{{name}}</span>',
-      list: [
-        {name: 'joe'}
-      ]
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    assert.equal(Array.isArray(app.list()), true)
-
-  })
-
-  it('get not a list', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '<span>{{name}}</span>'
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    assert.equal(app.list().length, 0)
-
-  })
-
-  it('add class', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '{{wo}}',
-      wo: {
-        tag: 'span',
-        class: ['do', 'me'],
-        template: 'hello'
-      }
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    app.addClass('wo', 'sup')
-
-    assert.equal(document.querySelector('#app').innerHTML, '<span class="do me sup">hello</span>')
-
-  })
-
-  it('remove class', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '{{wo}}',
-      wo: {
-        tag: 'span',
-        class: ['do', 'me'],
-        template: 'hello'
-      }
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    app.removeClass('wo', 'me')
-
-    assert.equal(document.querySelector('#app').innerHTML, '<span class="do">hello</span>')
-
-  })
-
-  it('not remove class', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '{{wo}}',
-      wo: {
-        tag: 'span',
-        class: ['do', 'me'],
-        template: 'hello'
-      }
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    app.removeClass('wo', 'mee')
-
-    assert.equal(document.querySelector('#app').innerHTML, '<span class="do me">hello</span>')
-
-  })
-
-  it('swap class', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '{{wo}}',
-      wo: {
-        tag: 'span',
-        class: ['do'],
-        template: 'hello'
-      }
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    app.swapClass('wo', true, ['me', 'do'])
-
-    assert.equal(document.querySelector('#app').innerHTML, '<span class="me">hello</span>')
-
-  })
-
-  it('swap class reverse', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '{{wo}}',
-      wo: {
-        tag: 'span',
-        class: ['me'],
-        template: 'hello'
-      }
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    app.swapClass('wo', false, ['me', 'do'])
-
-    assert.equal(document.querySelector('#app').innerHTML, '<span class="do">hello</span>')
-
-  })
-
-  it('not swap class', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '{{wo}}',
-      wo: {
-        tag: 'span',
-        class: ['do'],
-        template: 'hello'
-      }
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    app.swapClass('wo', false, ['some', 'do'])
-
-    assert.equal(document.querySelector('#app').innerHTML, '<span class="do">hello</span>')
-
-  })
-
-  it('swap attributes', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '{{wo}}',
-      wo: {
-        tag: 'span',
-        id: 'hello',
-        template: 'hello'
-      }
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    app.swapAttr('wo', true, ['hello', 'do'], 'id')
-
-    assert.equal(document.querySelector('#app').innerHTML, '<span id="do">hello</span>')
-
-  })
-
-  it('swap attributes reverse', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '{{wo}}',
-      wo: {
-        tag: 'span',
-        id: 'do',
-        template: 'hello'
-      }
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    app.swapAttr('wo', false, ['hello', 'do'], 'id')
-
-    assert.equal(document.querySelector('#app').innerHTML, '<span id="hello">hello</span>')
-
-  })
-
-  it('set attribute', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '{{wo}}',
-      wo: {
-        tag: 'span',
-        id: 'do',
-        template: 'hello'
-      }
-    }
-
-    app.mount(instance).flush('app').link('app')
-
-    app.setAttr('wo', 'id', 'foo')
-
-    assert.equal(document.querySelector('#app').innerHTML, '<span id="foo">hello</span>')
-
-  })
-
-  it('toggle display', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
-    const app = new App()
-
-    const instance = {
-      template: '{{wo}}',
-      wo: {
-        tag: 'span',
         style: {
-          display: 'none'
+          color: 'red'
         },
-        template: 'hello'
+        template: 'duh'
       }
     }
-
-    app.mount(instance).flush('app').link('app')
-
-    app.toggle('wo', 'block')
-
-    assert.equal(document.querySelector('#app').innerHTML, '<span style="display:block;">hello</span>')
-
+    app.mount(instance).link('app')
+    app.change('another')
+    assert.equal(document.querySelector('#app').childNodes[0].getAttribute('style'), 'color:red;')
+    clear()
   })
 
-  it('get display', function(){
+  it('nodeValue empty string', function () {
     class App extends Keet {
-      constructor() {
+      constructor () {
         super()
+        this.str = ''
+      }
+      mod (str) {
+        this.str = str
       }
     }
-
     const app = new App()
-
     const instance = {
-      template: '{{wo}}',
-      wo: {
-        tag: 'span',
-        style: {
-          display: 'none'
-        },
-        template: 'hello'
+      ugh: {
+        tag: 'div',
+        template: '{{str}}'
       }
     }
-
-    app.mount(instance).flush('app').link('app')
-
-    app.getDisplay('wo')
-
-    assert.equal(app.getDisplay('wo'), 'none')
-
+    app.mount(instance).link('app')
+    app.mod('test')
+    assert.equal(document.querySelector('#app').childNodes[0].innerHTML, 'test')
+    clear()
   })
 
-  it('content update', function(){
-    class App extends Keet {
-      constructor() {
-        super()
-      }
-    }
-
+  it('node no attr', function () {
+    class App extends Keet {}
     const app = new App()
-
     const instance = {
-      template: '{{wo}}',
-      wo: {
-        tag: 'span',
-        template: 'hello'
+      ugh: {
+        tag: 'div'
       }
     }
-
-    app.mount(instance).flush('app').link('app')
-
-    app.contentUpdate('wo', 'hello wold')
-
-    assert.equal(document.querySelector('#app').innerHTML, '<span>hello wold</span>')
-
+    document.querySelector('#app').innerHTML = ''
+    app.mount(instance).link('app')
+    assert.equal(document.querySelector('#app').childNodes[0].nodeValue, null)
+    clear()
   })
 
-  it('checkbox checked', function(){
+  it('checkbox checked programmatically', function () {
     class App extends Keet {
-      constructor() {
+      constructor (...args) {
         super()
+        this.ch = false
+        this.args = args
+      }
+      change (bool) {
+        this.ch = bool
       }
     }
 
-    const app = new App()
+    const app = new App('checked', 'toss')
 
     const instance = {
-      template: '{{wo}}',
       wo: {
         tag: 'input',
         type: 'checkbox',
-        checked: '',
-        'k-click': 'clickHandler()'
-      },
-      clickHandler: function(evt){
-        assert.equal(app.vdom().childNodes[0].checked, true)
+        id: 'testcheck',
+        checked: '{{ch}}'
       }
     }
-
-    app.mount(instance).flush('app').link('app')
-
-    const clickCheckbox = new Event('click', {
-      'bubbles': true,
-      'cancelable': true
-    })
-
-    app.vdom().childNodes[0].dispatchEvent(clickCheckbox)
-
+    app.mount(instance).link('app')
+    app.change(true)
+    assert.equal(document.querySelector('#testcheck').checked, true)
+    clear()
   })
 
-  it('checkbox unchecked', function(){
+  it('checkbox checked programmatically falsish', function () {
     class App extends Keet {
-      constructor() {
+      constructor (...args) {
         super()
+        this.ch = true
+        this.args = args
+      }
+      change (bool) {
+        this.ch = bool
       }
     }
-
-    const app = new App()
-
+    const app = new App('checked', 'toss')
     const instance = {
-      template: '{{wo}}',
       wo: {
         tag: 'input',
         type: 'checkbox',
-        checked: 'checked',
-        'k-click': 'clickHandler()'
-      },
-      clickHandler: function(evt){
-        assert.equal(app.vdom().childNodes[0].checked, false)
+        id: 'testcheck',
+        checked: '{{ch}}'
       }
     }
-
-    app.mount(instance).flush('app').link('app')
-
-    const clickCheckbox = new Event('click', {
-      'bubbles': true,
-      'cancelable': true
-    })
-
-    app.vdom().childNodes[0].dispatchEvent(clickCheckbox)
-
+    app.mount(instance).link('app')
+    app.change(false)
+    assert.equal(document.querySelector('#testcheck').checked, false)
+    clear()
   })
 
-  it('checkbox checked from instance prop', function(){
+  it('undeclared args', function () {
     class App extends Keet {
-      constructor() {
+      constructor (...args) {
         super()
+        this.args = args
+      }
+      change (bool) {
+        this.ch = bool
       }
     }
-
-    const app = new App()
-
+    const app = new App('checked', 'toss')
     const instance = {
-      template: '{{wo}}',
       wo: {
         tag: 'input',
         type: 'checkbox',
-        checked: ''
+        id: 'testcheck',
+        checked: '{{ch}}'
       }
     }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.wo.checked = 'checked'
-
-    assert.equal(app.vdom().childNodes[0].checked, true)
-
+    app.mount(instance).link('app')
+    app.change(true)
+    clear()
   })
 
-  it('checkbox unchecked from instance prop', function(){
+  it('undeclared args', function () {
     class App extends Keet {
-      constructor() {
+      constructor () {
         super()
+        this.ch = true
+      }
+      change (bool) {
+        this.ch = bool
       }
     }
-
     const app = new App()
-
     const instance = {
-      template: '{{wo}}',
-      wo: {
-        tag: 'input',
-        type: 'checkbox',
-        checked: 'checked'
+      foo: {
+        tag: 'div'
       }
     }
-
-    app.mount(instance).flush('app').link('app')
-
-    instance.wo.checked = ''
-
-    assert.equal(app.vdom().childNodes[0].checked, false)
-
+    app.mount(instance).link('app')
+    app.change(true)
+    clear()
   })
 
-  
-
-  /*it('no new dom', function () {
-
-    class App extends Keet {
-      constructor(){
-        super()
-      }
-    }
-
-    const app = new App()
-
-    let hexesIns
-
-    const hexesFn = () => {
-
-      let hexes = new App()
-
-      hexesIns = {
-        template: '{{h}}{{g}}',
-        h: {
+  it('ignore update nodeType 1', function () {
+    const foo = () => {
+      class App extends Keet {}
+      let app = new App()
+      let instance = {
+        foo: {
           tag: 'div',
-          id: 'h'
-        },
-        g: {
-          tag: 'div',
-          id: 'g'
+          template: 'foo'
         }
       }
+      app.mount(instance).link('foo')
+      return app
+    }
 
-      hexes.mount(hexesIns).link('loader')
-    } 
+    class App extends Keet {
+      constructor () {
+        super()
+        this.swap = 'foo'
+      }
+      swapchild () {
+        this.swap = 'bar'
+      }
+    }
+    const app = new App()
+    const instance = {
+      foo: {
+        tag: 'div',
+        template: '<div id="{{swap}}"></div>'
+      }
+    }
+    app.mount(instance).link('app').cluster(foo)
+    app.swapchild()
+    clear()
+  })
 
-    let instance = {
-      template: '{{loader}}{{dashboard}}',
-      loader: {
-        tag: 'div',
-        id: 'loader',
-        class: '["show"]',
-      },
-      dashboard: {
-        tag: 'div',
-        id: 'dashboard',
-        class: '["hidden"]',
+  it('ignore update nodeType 3', function () {
+    const foo = () => {
+      class App extends Keet {}
+      let app = new App()
+
+      let instance = {
+        foo: {
+          tag: 'div',
+          template: 'foo'
+        }
+      }
+      app.mount(instance).link('foo')
+
+      return app
+    }
+
+    class App extends Keet {
+      constructor () {
+        super()
+        this.test = 'test!'
+      }
+      swapchild () {
+        this.test = 'test2!'
       }
     }
 
-    app.mount(instance).flush('app').link('app').cluster(hexesFn)
+    const app = new App()
 
-    hexesIns.template = '{{h}}'
+    const instance = {
+      foo: {
+        tag: 'div',
+        id: 'foo'
+      }
+    }
 
-    app.swapClass('loader', false, ['show', 'hidden'])
-    app.swapClass('dashboard', true, ['show', 'hidden'])
+    app.mount(instance).link('app').cluster(foo)
 
-    // log(app.vdom().childNodes[0].id)
+    app.swapchild()
+    clear()
+  })
 
-  })*/
+  /* it('remove custom attributes if false in value', function () {
+    class App extends Keet {
+      constructor (...args) {
+        super()
+        this.args = args
+      }
+    }
+    const app = new App('checked')
+    const instance = {
+      template: `
+        <span>{{me}}
+          <input type="checkbox" checked="{{checked}}"></input>
+        </span>`,
+      list: [
+        {
+          me: 'john yis',
+          checked: false
+        },
+        {
+          me: 'juan ju',
+          checked: true
+        },
+        {
+          me: 'susan li',
+          checked: false
+        },
+        {
+          me: 'dugon ho',
+          checked: false
+        }
+      ]
+    }
+    app.mount(instance).link('app')
+    app.list.pop()
+    app.list.shift()
+    app.list.splice(0, 1)
+    assert.equal(document.querySelector('span').innerHTML, 'susan li <input type="checkbox"> ')
+    clear()
+  }) */
 
+  it('force rerender dom', function () {
+    class App extends Keet {}
+
+    const app = new App()
+
+    const instance = {
+      foo: {
+        tag: 'div',
+        id: 'foo'
+      }
+    }
+
+    app.mount(instance).link('app')
+    app.base['bar'] = {
+      tag: 'div',
+      id: 'bar'
+    }
+    app.render(true)
+    assert.equal(document.getElementById('app').childNodes.length, 2)
+    clear()
+  })
+
+  it('mounting/unmounting node', function () {
+    class App extends Keet {
+      constructor () {
+        super()
+        this.active = 'block'
+      }
+      toggle () {
+        this.active = this.active === 'block' ? 'none' : 'block'
+      }
+    }
+
+    const app = new App()
+
+    const vmodel = {
+      header: {
+        tag: 'h1',
+        template: 'My Simple Toggler'
+      },
+      toggler: {
+        tag: 'button',
+        'k-click': 'toggle()',
+        template: 'toggle'
+      }
+    }
+
+    app.mount(vmodel).link('app')
+
+    setTimeout(() => {
+      app.baseProxy['showcase'] = {
+        tag: 'button',
+        style: {
+          display: '{{active}}'
+        },
+        template: 'visible'
+      }
+    }, 1000)
+
+    setTimeout(() => {
+      delete app.baseProxy.showcase
+      clear()
+    }, 2000)
+  })
+
+  it('mock unknown node', function () {
+    class App extends Keet {}
+
+    const app = new App()
+
+    const vmodel = {
+      header: {
+        tag: 'h1',
+        template: 'My Simple Toggler'
+      },
+      toggler: {
+        tag: 'button',
+        'k-click': 'toggle()',
+        template: 'toggle'
+      }
+    }
+
+    app.mount(vmodel).link('app')
+
+    setTimeout(() => {
+      app.base.toggler['keet-id'] = 'bla bla'
+      delete app.baseProxy.toggler
+    }, 1000)
+  })
+
+  it('add new node', function () {
+    class App extends Keet {}
+
+    const app = new App()
+
+    const vmodel = {
+      foo: {
+        tag: 'div',
+        id: 'foo',
+        template: 'foo'
+      },
+      bar: {
+        tag: 'div',
+        id: 'bar',
+        template: 'bar'
+      }
+    }
+
+    app.mount(vmodel).link('app')
+
+    setTimeout(() => {
+      delete app.baseProxy.bar
+      app.flush()
+    }, 1000)
+  })
+
+  it('add new node', function () {
+    class App extends Keet {}
+
+    const app = new App()
+
+    const vmodel = {
+      foo: {
+        tag: 'div',
+        id: 'foo',
+        template: 'foo'
+      },
+      bar: {
+        tag: 'div',
+        id: 'bar',
+        template: 'bar'
+      }
+    }
+
+    app.mount(vmodel).link('app')
+
+    // setTimeout(() => {
+    delete app.baseProxy.bar
+    // }, 1000)
+  })
+
+  it('flush on non-exist node', function (next) {
+    class App extends Keet {}
+
+    const app = new App()
+
+    const vmodel = {
+      foo: {
+        tag: 'div',
+        id: 'foo',
+        template: 'foo'
+      },
+      bar: {
+        tag: 'div',
+        id: 'bar',
+        template: 'bar'
+      }
+    }
+
+    app.mount(vmodel).link('app')
+
+    setTimeout(() => {
+      app.el = 'non'
+      app.flush()
+      clear()
+      next()
+    }, 10)
+  })
+
+  it('model list add', function () {
+    class App extends Keet {
+      constructor (...args) {
+        super()
+        this.args = args
+      }
+    }
+    const app = new App('checked')
+
+    let model = []
+
+    let len = 5
+
+    for (let i = 0; i < len; i++) {
+      model = model.concat({
+        id: i,
+        me: (Math.random() * 1e12).toString(32),
+        checked: i % 2 !== 0
+      })
+    }
+
+    const instance = {
+      template: `
+        <li id="{{id}}">{{me}}
+          <input type="checkbox" checked="{{checked}}"></input>
+        </li>`,
+      model: model
+    }
+
+    app.mount(instance).link('app')
+
+    app.add({
+      id: model.length,
+      me: 'test!',
+      checked: false
+    })
+
+    clear()
+  })
+
+  it('model list destroy', function () {
+    class App extends Keet {
+      constructor (...args) {
+        super()
+        this.args = args
+      }
+    }
+    const app = new App('checked')
+
+    let model = []
+
+    let len = 5
+
+    for (let i = 0; i < len; i++) {
+      model = model.concat({
+        id: i,
+        me: (Math.random() * 1e12).toString(32),
+        checked: i % 2 !== 0
+      })
+    }
+
+    const instance = {
+      template: `
+        <li id="{{id}}">{{me}}
+          <input type="checkbox" checked="{{checked}}"></input>
+        </li>`,
+      model: model
+    }
+
+    app.mount(instance).link('app')
+
+    app.destroy(1, 'id')
+
+    clear()
+  })
+
+  it('model list update', function () {
+    class App extends Keet {
+      constructor (...args) {
+        super()
+        this.args = args
+      }
+      test (id) {
+        //
+      }
+    }
+    const app = new App('checked')
+
+    let model = []
+
+    let len = 5
+
+    for (let i = 0; i < len; i++) {
+      model = model.concat({
+        id: i,
+        me: (Math.random() * 1e12).toString(32),
+        checked: i % 2 !== 0
+      })
+    }
+
+    const instance = {
+      template: `
+        <li id="{{id}}">{{me}}
+          <input k-click="test({{id}})" type="checkbox" checked="{{checked}}"></input>
+        </li>`,
+      model: model
+    }
+
+    app.mount(instance).link('app')
+
+    app.update(0, 'id', {
+      me: 'cool',
+      checked: true
+    })
+
+    clear()
+  })
 })

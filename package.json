@@ -1,63 +1,65 @@
 {
   "name": "keet",
-  "version": "2.2.5-rc2",
-  "description": "A solution to write clean interface for web application",
-  "main": "index.js",
-  "scripts": {
-    "debug": "browserify index.js --debug --standalone Keet > dist/keet.debug.js",
-    "dist": "browserify index.js --standalone Keet > dist/keet.js && node markdown.config.js",
-    "distcompress": "browserify index.js --standalone Keet | uglifyjs > dist/keet.min.js",
-    "test": "mocha test/test.js --require babel-core/register",
-    "cover": "nyc --reporter=lcov --reporter=text npm run test",
-    "test-ci": "nyc npm run test",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls"
+  "version": "3.4.4",
+  "author": "Shahrul Nizam Selamat",
+  "description": "Minimalist view layer for the web",
+  "babel": {
+    "presets": [
+      "env"
+    ],
+    "plugins": [
+      "istanbul"
+    ]
+  },
+  "bugs": {
+    "url": "https://github.com/syarul/keet/issues"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-istanbul": "^4.1.5",
+    "babel-preset-env": "^1.6.1",
+    "browserify": "^15.2.0",
+    "coveralls": "^3.0.0",
+    "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^2.30.1",
+    "jsdom": "^11.5.1",
+    "markdown-magic": "^0.1.20",
+    "mocha": "^5.0.0",
+    "nyc": "^11.4.1",
+    "pug": "^2.0.0-rc.4",
+    "pug-html-loader": "^1.1.5",
+    "uglify-js": "^3.3.8",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.11.1"
+  },
+  "homepage": "https://github.com/syarul/keet#readme",
+  "keywords": [
+    "templating",
+    "minimal",
+    "view layer"
+  ],
+  "license": "MIT",
+  "main": "keet.js",
+  "nyc": {
+    "include": [
+      "keet.js",
+      "components"
+    ],
+    "sourceMap": false,
+    "instrument": false
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/syarul/keet.git"
   },
-  "keywords": [
-    "dom",
-    "component",
-    "view",
-    "stream",
-    "framework"
-  ],
-  "author": "Shahrul Nizam Selamat",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/syarul/keet/issues"
-  },
-  "homepage": "https://github.com/syarul/keet#readme",
-  "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-plugin-istanbul": "^4.1.5",
-    "babel-preset-env": "^1.6.0",
-    "body-parser": "^1.18.2",
-    "browserify": "^14.4.0",
-    "coveralls": "^3.0.0",
-    "express": "^4.16.2",
-    "gulp": "^3.9.1",
-    "gulp-livereload": "^3.8.1",
-    "gulp-shell": "^0.6.3",
-    "jsdom": "^11.3.0",
-    "markdown-magic": "^0.1.19",
-    "mocha": "^4.0.0",
-    "mutation-observer": "^1.0.3",
-    "mutationobserver-shim": "^0.3.2",
-    "nyc": "^11.2.1",
-    "string-to-stream": "^1.1.0"
-  },
-  "nyc": {
-    "include": [
-      "index.js",
-      "tag.js",
-      "copy.js"
-    ],
-    "sourceMap": false,
-    "instrument": false
-  },
-  "dependencies": {
-    "through2": "^2.0.3"
+  "scripts": {
+    "bundle": "browserify keet.js --standalone Keet | uglifyjs --compress --mangle > keet-min.js && node markdown.config.js",
+    "cover": "nyc --reporter=lcov --reporter=text npm run test",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "start": "webpack-dev-server -d",
+    "test": "mocha test/test.js --require babel-core/register",
+    "test-ci": "nyc npm run test"
   }
 }
