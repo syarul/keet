@@ -1,0 +1,20 @@
+{
+	"opts": {
+    	"template": "node_modules/tui-jsdoc-template"
+	},
+	"templates": {
+		"name": "Tui JSDoc Template",
+	    "logo": {
+	        "url": "http://nhnent.github.io/tui.component.tree/latest/styles/logo.png",
+	        "width": "150px",
+	        "height": "13px",
+	        "link": "https://github.com/nhnent/tui.jsdoc-template"
+	    },
+	    "footerText": "My awesome footer text",
+	    "useCollapsibles": true,
+	    "tabNames": {
+	        "api": "API",
+	        "tutorials": "Examples"
+	    }
+	}
+}

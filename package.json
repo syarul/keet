@@ -41,6 +41,7 @@
     "nyc": "^11.4.1",
     "pug": "^2.0.0-rc.4",
     "pug-html-loader": "^1.1.5",
+    "tui-jsdoc-template": "^1.2.2",
     "uglify-js": "^3.3.8",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.11.1"
@@ -61,5 +62,6 @@
     "plugins": [
       "istanbul"
     ]
-  }
+  },
+  "git_branch": "ident"
 }

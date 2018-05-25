@@ -1,6 +1,5 @@
-'use strict'
 /**
- * Keetjs v3.4.5 Alpha release: https://github.com/keetjs/keet.js
+ * Keetjs v3.5.0 Alpha release: https://github.com/syarul/keet<br>
  * Minimalist view layer for the web
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keetjs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -8,6 +7,11 @@
  * Copyright 2018, Shahrul Nizam Selamat
  * Released under the MIT License.
  */
+
+/**
+ * @author Shahrul Nizam Selamat <hottincup@gmail.com>
+ */
+'use strict'
 
 var getId = require('./components/utils').getId
 var genId = require('./components/utils').genId
