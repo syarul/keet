@@ -28,17 +28,36 @@ var nextState = function (i, args) {
   if (i < this.__stateList__.length) {
     var state = this.__stateList__[i]
     var value = this[state]
-    Object.defineProperty(this, state, {
-      enumerable: false,
-      configurable: true,
-      get: function () {
-        return value
-      },
-      set: function (val) {
-        value = val
-        updateContext.apply(self, args)
+    if (typeof value !== 'object') {
+      // handle parent state update if the state is not an object
+      Object.defineProperty(this, state, {
+        enumerable: false,
+        configurable: true,
+        get: function () {
+          return value
+        },
+        set: function (val) {
+          value = val
+          updateContext.apply(self, args)
+        }
+      })
+    } else {
+      // traverse object to handle state update
+      for (var attr in value) {
+        var inVal = value[attr]
+        Object.defineProperty(value, attr, {
+          enumerable: false,
+          configurable: true,
+          get: function () {
+            return inVal
+          },
+          set: function (val) {
+            inVal = val
+            updateContext.apply(self, args)
+          }
+        })
       }
-    })
+    }
     i++
     nextState.apply(this, [ i, args ])
   } else {

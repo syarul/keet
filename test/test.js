@@ -1036,4 +1036,36 @@ describe(`keet.js v-${ver} test`, function () {
 
     clear()
   })
+
+  it('state with object notation', function () {
+    
+    class App extends Keet {
+      constructor () {
+        super()
+        this.state = {
+          name: 'john',
+          age: 31
+        }
+      }
+      change () {
+        this.state.name = 'keet'
+      }
+    }
+
+    const app = new App()
+
+    const vmodel = {
+      template: `
+        <span>state : {{state.name}}</span>
+      `
+    }
+
+    app.mount(vmodel).link('app')
+
+    app.change()
+
+    assert.equal(document.getElementById('app').childNodes[0].innerHTML, 'state : keet')
+
+    clear()
+  })
 })

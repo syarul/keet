@@ -8,7 +8,7 @@ const config = {
     fs: 'empty'
   },
   entry: [
-    './examples/index.js',
+    './examples/objectPropState.js',
     './view/layout.pug'
   ],
   output: {
