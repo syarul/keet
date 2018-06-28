@@ -27,7 +27,7 @@ var config = {
     },
 
     VER () {
-      return `# Keetjs v${ver}`
+      return `# Keet v${ver}`
     }
 
   }

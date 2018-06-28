@@ -198,7 +198,7 @@ describe(`keet.js v-${ver} test`, function () {
     clear()
   })
 
-  /*it('error parsing type of non-object', function (next) {
+  /* it('error parsing type of non-object', function (next) {
     class App extends Keet {}
     const app = new App()
     function cb (err) {
@@ -213,7 +213,7 @@ describe(`keet.js v-${ver} test`, function () {
     }
     process.prependOnceListener('uncaughtException', cb)
     test()
-  })*/
+  }) */
 
   it('evaluation string 2', function () {
     class App extends Keet {
@@ -1038,7 +1038,6 @@ describe(`keet.js v-${ver} test`, function () {
   })
 
   it('state with object notation', function () {
-    
     class App extends Keet {
       constructor () {
         super()

@@ -15,7 +15,7 @@ class App extends Keet {
   changeAge () {
     this.state.age = 12
   }
-  anotherState(){
+  anotherState () {
     this.another = 'bar'
   }
 }

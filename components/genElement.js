@@ -30,7 +30,7 @@ var nextState = function (i, args) {
     var state = this.__stateList__[i]
     var value = this[state]
     // if value is undefined, likely has object notation we convert it to array
-    if(!value) value = strInterpreter(state)
+    if (!value) value = strInterpreter(state)
     if (!Array.isArray(value)) {
       // handle parent state update if the state is not an object
       Object.defineProperty(this, state, {
