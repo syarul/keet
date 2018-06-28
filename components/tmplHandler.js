@@ -14,7 +14,7 @@ module.exports = function (str, updateStateList) {
         }
       } else {
         if (self[isObjectNotation[0]] !== undefined) {
-          updateStateList(isObjectNotation[0])
+          updateStateList(rep)
           str = str.replace(/{{([^{}]+)}}/, self[isObjectNotation[0]][isObjectNotation[1]])
         }
       }

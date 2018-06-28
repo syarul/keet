@@ -7,6 +7,7 @@ var tmplAttrHandler = require('./tmplAttrHandler')
 var processEvent = require('./processEvent')
 var updateElem = require('./elementUtils').updateElem
 var selector = require('./utils').selector
+var strInterpreter = require('./strInterpreter')
 
 var updateContext = function () {
   var self = this
@@ -28,7 +29,9 @@ var nextState = function (i, args) {
   if (i < this.__stateList__.length) {
     var state = this.__stateList__[i]
     var value = this[state]
-    if (typeof value !== 'object') {
+    // if value is undefined, likely has object notation we convert it to array
+    if(!value) value = strInterpreter(state)
+    if (!Array.isArray(value)) {
       // handle parent state update if the state is not an object
       Object.defineProperty(this, state, {
         enumerable: false,
@@ -41,22 +44,20 @@ var nextState = function (i, args) {
           updateContext.apply(self, args)
         }
       })
-    } else {
-      // traverse object to handle state update
-      for (var attr in value) {
-        var inVal = value[attr]
-        Object.defineProperty(value, attr, {
-          enumerable: false,
-          configurable: true,
-          get: function () {
-            return inVal
-          },
-          set: function (val) {
-            inVal = val
-            updateContext.apply(self, args)
-          }
-        })
-      }
+    } else if (value && Array.isArray(value)) {
+      // using split object notation as base for state update
+      var inVal = this[value[0]][value[1]]
+      Object.defineProperty(this[value[0]], value[1], {
+        enumerable: false,
+        configurable: true,
+        get: function () {
+          return inVal
+        },
+        set: function (val) {
+          inVal = val
+          updateContext.apply(self, args)
+        }
+      })
     }
     i++
     nextState.apply(this, [ i, args ])
