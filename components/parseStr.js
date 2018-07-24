@@ -8,7 +8,6 @@ var nodesVisibility = require('./nodesVisibility')
 var sum = require('hash-sum')
 
 module.exports = function () {
-  // if (typeof this.base !== 'object') throw new Error('instance is not an object')
   var self = this
   var elemArr = []
   var args = [].slice.call(arguments)
@@ -53,15 +52,16 @@ module.exports = function () {
       }
     })
   } else if(typeof this.base === 'string') {
-    self.__stateList__ = []
-    var tpl = tmplHandler.call(self, this.base, function (state) {
+    this.__stateList__ = []
+    var tpl = tmplHandler.call(this, this.base, function (state) {
       self.__stateList__ = self.__stateList__.concat(state)
     })
-    tpl = nodesVisibility.call(self, tpl)
+
+    tpl = nodesVisibility.call(this, tpl)
     var tempDiv = document.createElement('div')
     tempDiv.innerHTML = tpl
-    setState.call(self, args)
-    processEvent.call(self, tempDiv)
+    setState.call(this, args)
+    processEvent.call(this, tempDiv)
     tempDiv.childNodes.forEach(function (c) {
       if(c.nodeType === 1) {
         c.setAttribute('data-checksum', sum(c.outerHTML))

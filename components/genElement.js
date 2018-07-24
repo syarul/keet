@@ -45,7 +45,8 @@ var nextState = function (i, args) {
     var state = this.__stateList__[i]
     var value = this[state]
     // if value is undefined, likely has object notation we convert it to array
-    if (!value) value = strInterpreter(state)
+    if (value === undefined) value = strInterpreter(state)
+
     if (value && Array.isArray(value)) {
       // using split object notation as base for state update
       var inVal = this[value[0]][value[1]]
@@ -82,8 +83,7 @@ var nextState = function (i, args) {
 }
 
 var setState = function (args) {
-  var self = this
-  nextState.apply(self, [ 0, args ])
+  nextState.apply(this, [ 0, args ])
 }
 
 var updateStateList = function (state) {

@@ -10,14 +10,6 @@ class App extends Keet {
   }
 }
 
-const app = new App()
+const app = new App
 
-const vmodel = {
-  myCounter: {
-    tag: 'button',
-    'k-click': 'add()',
-    template: '{{count}}'
-  }
-}
-
-app.mount(vmodel).link('app')
+app.mount('<button k-click="add()">{{count}}</button>').link('app')

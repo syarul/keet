@@ -3,14 +3,10 @@ import Keet from 'keet'
 class App extends Keet {
   constructor () {
     super()
-    this.state = 'World'
+    this.myDynamicState = 'World'
   }
 }
 
-const app = new App()
+const app = new App
 
-const vmodel = {
-  template: 'Hello {{state}}'
-}
-
-app.mount(vmodel).link('app')
+app.mount('Hello {{myDynamicState}}').link('app')

@@ -199,23 +199,6 @@ describe(`keet.js v-${ver} test`, function () {
     clear()
   })
 
-  /* it('error parsing type of non-object', function (next) {
-    class App extends Keet {}
-    const app = new App()
-    function cb (err) {
-      assert.equal(err instanceof Error, true)
-      next()
-    }
-    function test () {
-      process.nextTick(() => {
-        const instance = 'just a string'
-        app.mount(instance).link('app')
-      })
-    }
-    process.prependOnceListener('uncaughtException', cb)
-    test()
-  }) */
-
   it('evaluation string 2', function () {
     class App extends Keet {
       constructor () {
@@ -300,20 +283,6 @@ describe(`keet.js v-${ver} test`, function () {
     assert.equal(document.querySelector('#app').innerHTML, '{{foo}}')
     clear()
   })
-
-  // it('parsing template without handlerbar value', function () {
-  //   class App extends Keet {}
-  //   const app = new App()
-  //   const instance = {
-  //     template: '<span id="test">no handler to handle</span>',
-  //     model: [
-  //       { id: 'surname', name: 'john' }
-  //     ]
-  //   }
-  //   app.mount(instance).link('app')
-  //   assert.equal(document.querySelector('#test'), null)
-  //   clear()
-  // })
 
   it('ignore handler when is not a function', function () {
     class App extends Keet {
@@ -711,46 +680,6 @@ describe(`keet.js v-${ver} test`, function () {
     clear()
   })
 
-  /* it('remove custom attributes if false in value', function () {
-    class App extends Keet {
-      constructor (...args) {
-        super()
-        this.args = args
-      }
-    }
-    const app = new App('checked')
-    const instance = {
-      template: `
-        <span>{{me}}
-          <input type="checkbox" checked="{{checked}}"></input>
-        </span>`,
-      list: [
-        {
-          me: 'john yis',
-          checked: false
-        },
-        {
-          me: 'juan ju',
-          checked: true
-        },
-        {
-          me: 'susan li',
-          checked: false
-        },
-        {
-          me: 'dugon ho',
-          checked: false
-        }
-      ]
-    }
-    app.mount(instance).link('app')
-    app.list.pop()
-    app.list.shift()
-    app.list.splice(0, 1)
-    assert.equal(document.querySelector('span').innerHTML, 'susan li <input type="checkbox"> ')
-    clear()
-  }) */
-
   it('force rerender dom', function () {
     class App extends Keet {}
 
@@ -816,85 +745,7 @@ describe(`keet.js v-${ver} test`, function () {
     }, 2000)
   })
 
-  /*it('mock unknown node', function () {
-    class App extends Keet {}
-
-    const app = new App()
-
-    const vmodel = {
-      header: {
-        tag: 'h1',
-        template: 'My Simple Toggler'
-      },
-      toggler: {
-        tag: 'button',
-        'k-click': 'toggle()',
-        template: 'toggle'
-      }
-    }
-
-    app.mount(vmodel).link('app')
-
-    setTimeout(() => {
-      app.base.toggler['keet-id'] = 'bla bla'
-      delete app.baseProxy.toggler
-    }, 1000)
-  })*/
-
-  /*it('add new node', function (next) {
-    class App extends Keet {}
-
-    const app = new App()
-
-    const vmodel = {
-      foo: {
-        tag: 'div',
-        id: 'foo',
-        template: 'foo'
-      },
-      bar: {
-        tag: 'div',
-        id: 'bar',
-        template: 'bar'
-      }
-    }
-
-    app.mount(vmodel).link('app')
-    delete app.baseProxy.bar
-    setTimeout(() => {
-      // delete app.baseProxy.bar
-      // app.flush()
-      // clear()
-      next()
-    }, 1000)
-  })*/
-
-  /*it('add new node2', function () {
-    class App extends Keet {}
-
-    const app = new App()
-
-    const vmodel = {
-      foo: {
-        tag: 'div',
-        id: 'foo',
-        template: 'foo'
-      },
-      bar: {
-        tag: 'div',
-        id: 'bar',
-        template: 'bar'
-      }
-    }
-
-    app.mount(vmodel).link('app')
-
-    // setTimeout(() => {
-    delete app.baseProxy.bar
-    // }, 1000)
-  })*/
-
-  /*it('flush on non-exist node', function (next) {
+  it('flush on non-exist node', function (next) {
     clear()
     class App extends Keet {}
 
@@ -915,15 +766,13 @@ describe(`keet.js v-${ver} test`, function () {
 
     app.mount(vmodel).link('app')
 
-    console.log(app.base)
-
     setTimeout(() => {
       app.el = 'non'
       app.flush()
       clear()
       next()
     }, 10)
-  })*/
+  })
 
   it('model list add', function () {
     class App extends Keet {
@@ -1001,6 +850,44 @@ describe(`keet.js v-${ver} test`, function () {
     clear()
   })
 
+  it('model list destroy no node found', function () {
+    class App extends Keet {
+      constructor (...args) {
+        super()
+        this.args = args
+      }
+    }
+    const app = new App('checked')
+
+    let model = []
+
+    let len = 5
+
+    for (let i = 0; i < len; i++) {
+      model = model.concat({
+        id: i,
+        me: (Math.random() * 1e12).toString(32),
+        checked: i % 2 !== 0
+      })
+    }
+
+    const instance = {
+      template: `
+        <li id="{{id}}">{{me}}
+          <input type="checkbox" checked="{{checked}}"></input>
+        </li>`,
+      model: model
+    }
+
+    app.mount(instance).link('app')
+
+    let id = app.base.model[1].id
+    document.getElementById(id).remove()
+    app.destroy(1, 'id')
+
+    clear()
+  })
+
   it('model list update', function () {
     class App extends Keet {
       constructor (...args) {
@@ -1039,6 +926,87 @@ describe(`keet.js v-${ver} test`, function () {
       me: 'cool',
       checked: true
     })
+
+    clear()
+  })
+
+  it('model list update no node found', function () {
+    class App extends Keet {
+      constructor (...args) {
+        super()
+        this.args = args
+      }
+      test (id) {
+        //
+      }
+    }
+    const app = new App('checked')
+
+    let model = []
+
+    let len = 5
+
+    for (let i = 0; i < len; i++) {
+      model = model.concat({
+        id: i,
+        me: (Math.random() * 1e12).toString(32),
+        checked: i % 2 !== 0
+      })
+    }
+
+    const instance = {
+      template: `
+        <li id="{{id}}">{{me}}
+          <input k-click="test({{id}})" type="checkbox" checked="{{checked}}"></input>
+        </li>`,
+      model: model
+    }
+
+    app.mount(instance).link('app')
+
+    let id = app.base.model[0].id
+    document.getElementById(id).remove()
+
+    app.update(0, 'id', {
+      me: 'cool',
+      checked: true
+    })
+
+    clear()
+  })
+
+  it('model list update not assign arguments', function () {
+    class App extends Keet {
+      constructor (...args) {
+        super()
+        this.args = args
+      }
+    }
+    const app = new App('checked')
+
+    let model = []
+
+    let len = 5
+
+    for (let i = 0; i < len; i++) {
+      model = model.concat({
+        id: i,
+        me: (Math.random() * 1e12).toString(32),
+        checked: i % 2 !== 0
+      })
+    }
+
+    const instance = {
+      template: `
+        <li id="{{id}}">{{me}}
+          <input k-click="test({{id}})" type="checkbox" checked="{{checked}}"></input>
+        </li>`,
+      model: model
+    }
+
+    app.mount(instance).link('app')
+
+    app.update(0, 'id')
 
     clear()
   })
@@ -1146,6 +1114,38 @@ describe(`keet.js v-${ver} test`, function () {
 
     assert.equal(document.getElementById('app'), null)
 
+  })
+
+  it('proxy remove a child object', function () {
+
+    let newApp = document.createElement('div')
+
+    newApp.id = 'app'
+
+    document.body.append(newApp)
+
+    class App extends Keet {}
+
+    const app = new App()
+
+    const vmodel = {
+      foo: {
+        tag: 'div',
+        id: 'foo',
+        template: 'foo'
+      },
+      bar: {
+        tag: 'div',
+        id: 'bar',
+        template: 'bar'
+      }
+    }
+
+    app.mount(vmodel).link('app')
+
+    delete app.baseProxy.bar
+
+    assert.equal(document.getElementById('app').childNodes.length, 1)
   })
 
 

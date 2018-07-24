@@ -12,7 +12,7 @@ Minimalist view layer for the web.
 
 ## What is Keet
 
-> *Keet* specific goal is to offer less APIs, familiar/vanilla code structures and a possible remedy to *choice paralysis*. It was never intended to be super fast and superior compare most major web frameworks, but generally is more flexible with loose coupling, less complicated design and workflow. It's also 4kb gzip in size. 
+> *Keet* specific goal is to offer less APIs, familiar/vanilla code structures and a possible remedy to [*choice paralysis*](https://the-pastry-box-project.net/addy-osmani/2014-January-19). It was never intended to be superior in features compare to most major web frameworks and waste no effort to become such. Generally *Keet* is more flexible, decent render performance with loose coupling, less complicated design and workflow. You might surprise with the logic and small learning curve it offers. It's also only 4kb gzip in size. Under the hood it use [set-dom](https://github.com/DylanPiercey/set-dom) and [hash-sum](https://github.com/bevacqua/hash-sum) to do ```DOM-diffing```.
 
 ## Getting Started
 
@@ -42,9 +42,8 @@ Or from npm:-
 
 ### Hello World
 
-Start by constructing a class expression as child of "Keet". We declare a variable
-```vmodel```an assign a javascript object which we pass as an argument to this 
-component. We can assign dynamic state with handlebars i.e: ```{{<myDynamicState>}}```
+Start by constructing a class expression as child of "Keet". Suppy a string argument
+the component. Within the string, you can assign dynamic state within handlebars i.e: ```{{<myDynamicState>}}```
 
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/hello.js) -->
 <!-- The below code snippet is automatically added from ./examples/hello.js -->
@@ -54,17 +53,13 @@ import Keet from 'keet'
 class App extends Keet {
   constructor () {
     super()
-    this.state = 'World'
+    this.myDynamicState = 'World'
   }
 }
 
-const app = new App()
+const app = new App
 
-const vmodel = {
-  template: 'Hello {{state}}'
-}
-
-app.mount(vmodel).link('app')
+app.mount('Hello {{myDynamicState}}').link('app')
 ```
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/helloWorld.js) -->
 <!-- AUTO-GENERATED-CONTENT:END -->
@@ -88,22 +83,48 @@ class App extends Keet {
   }
 }
 
-const app = new App()
+const app = new App
 
-const vmodel = {
-  myCounter: {
-    tag: 'button',
-    'k-click': 'add()',
-    template: '{{count}}'
-  }
-}
-
-app.mount(vmodel).link('app')
+app.mount('<button k-click="add()">{{count}}</button>').link('app')
 ```
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/counter.js) -->
 <!-- AUTO-GENERATED-CONTENT:END -->
 
-More samples in [examples](https://github.com/syarul/keet/tree/master/examples) directory
+## Dynamic Nodes
+
+To work with dynamic nodes you can wrap your html string with ```{{?<state>}}<myDynamicNode>{{/<state>}}``` and assign boolean
+value to the state 
+
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/conditionalNodes.js) -->
+<!-- The below code snippet is automatically added from ./examples/conditionalNodes.js -->
+```js
+import Keet from 'keet'
+
+class App extends Keet {
+  constructor(){
+    super()
+    this.show = false
+  }
+  change(){
+    this.show = this.show ? false : true
+  }
+}
+
+const app = new App
+
+app.mount(`
+  <div id="1">one</div>
+  {{?show}}
+  <div id="2">two</div>
+  {{/show}}
+  <div id="3">three</div>
+`).link('app')
+
+setInterval(() => app.change(), 2000)
+```
+<!-- AUTO-GENERATED-CONTENT:END -->
+
+For more usage cases visit the [examples](https://github.com/syarul/keet/tree/master/examples) directory
 
 ## License
 

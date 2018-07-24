@@ -7,6 +7,7 @@ module.exports = function (str, updateStateList) {
     arrProps.map(function (s) {
       var rep = s.replace(/{{([^{}]+)}}/g, '$1')
       var isObjectNotation = strInterpreter(rep)
+      // console.log(rep, self)
       if (!isObjectNotation) {
         if (self[rep] !== undefined) {
           updateStateList(rep)

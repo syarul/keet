@@ -119,40 +119,34 @@ Keet.prototype.cluster = function () {
 Keet.prototype.add = function (obj) {
   // Method to add a new object to component model
   var ele = getId(this.el)
-  if (Array.isArray(this.base.model)) {
-    obj['keet-id'] = genId()
-    this.base.model = this.base.model.concat(obj)
-    ele.appendChild(genTemplate.call(this, obj))
-  }
+  obj['keet-id'] = genId()
+  this.base.model = this.base.model.concat(obj)
+  ele.appendChild(genTemplate.call(this, obj))
 }
 
 Keet.prototype.destroy = function (id, attr) {
   // Method to destroy a submodel of a component
-  if (Array.isArray(this.base.model)) {
-    this.base.model = this.base.model.filter(function (obj, index) {
-      if (id === obj[attr]) {
-        var node = selector(obj['keet-id'])
-        if (node) node.remove()
-      } else { return obj }
-    })
-  }
+  this.base.model = this.base.model.filter(function (obj, index) {
+    if (id === obj[attr]) {
+      var node = selector(obj['keet-id'])
+      if (node) node.remove()
+    } else { return obj }
+  })
 }
 
 Keet.prototype.update = function (id, attr, newAttr) {
   // Method to update a submodel of a component
   var self = this
-  if (Array.isArray(this.base.model)) {
-    this.base.model = this.base.model.map(function (obj, idx, model) {
-      if (id === obj[attr]) {
-        if (newAttr && typeof newAttr === 'object') {
-          Object.assign(obj, newAttr)
-        }
-        var node = selector(obj['keet-id'])
-        if (node) setDOM(node, genTemplate.call(self, obj))
+  this.base.model = this.base.model.map(function (obj, idx, model) {
+    if (id === obj[attr]) {
+      if (newAttr && typeof newAttr === 'object') {
+        Object.assign(obj, newAttr)
       }
-      return obj
-    })
-  }
+      var node = selector(obj['keet-id'])
+      if (node) setDOM(node, genTemplate.call(self, obj))
+    }
+    return obj
+  })
 }
 
 module.exports = Keet

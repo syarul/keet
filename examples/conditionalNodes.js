@@ -1,25 +1,24 @@
 import Keet from 'keet'
 
+class App extends Keet {
+  constructor(){
+    super()
+    this.show = false
+  }
+  change(){
+    this.show = this.show ? false : true
+  }
+}
 
-class App extends Keet {}
+const app = new App
 
-    const app = new App()
+app.mount(`
+  <div id="1">one</div>
+  {{?show}}
+  <div id="2">two</div>
+  {{/show}}
+  <div id="3">three</div>
+`).link('app')
 
-    const vmodel = {
-      foo: {
-        tag: 'div',
-        id: 'foo',
-        template: 'foo'
-      },
-      bar: {
-        tag: 'div',
-        id: 'bar',
-        template: 'bar'
-      }
-    }
+setInterval(() => app.change(), 2000)
 
-    app.mount(vmodel).link('app')
-
-    setTimeout(() => {
-    delete app.baseProxy.bar
-    }, 2000)
