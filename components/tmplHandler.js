@@ -14,10 +14,10 @@ module.exports = function (str, updateStateList) {
           str = str.replace(/{{([^{}]+)}}/, self[rep])
         }
       } else {
-          updateStateList(rep)
-          str = str.replace(/{{([^{}]+)}}/, self[isObjectNotation[0]][isObjectNotation[1]])
+        updateStateList(rep)
+        str = str.replace(/{{([^{}]+)}}/, self[isObjectNotation[0]][isObjectNotation[1]])
       }
-      if(rep.match(/^\?/g)){
+      if (rep.match(/^\?/g)) {
         updateStateList(rep.replace('?', ''))
       }
     })

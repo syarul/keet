@@ -16,7 +16,7 @@ var updateContext = function () {
   var ele
   var newElem
   var args = [].slice.call(arguments)
-  if(typeof this.base === 'object'){
+  if (typeof this.base === 'object') {
     Object.keys(this.base).map(function (handlerKey) {
       var id = self.base[handlerKey]['keet-id']
       ele = selector(id)
@@ -24,7 +24,7 @@ var updateContext = function () {
         ele = document.getElementById(self.el)
       }
       newElem = genElement.apply(self, [self.base[handlerKey]].concat(args))
-      if(self.base.hasOwnProperty('template')){
+      if (self.base.hasOwnProperty('template')) {
         newElem.id = self.el
       }
       setDOM(ele, newElem)
@@ -117,16 +117,16 @@ var genElement = function () {
   }
 
   var s = child.tag
-    ? tag(child.tag,            // html tag
-      tpl || '',                // nodeValue
-      cloneChild,               // attributes including classes
-      styleTpl                  // inline styles
-    ) : tpl                     // fallback if non exist, render the template as string
+    ? tag(child.tag, // html tag
+      tpl || '', // nodeValue
+      cloneChild, // attributes including classes
+      styleTpl // inline styles
+    ) : tpl // fallback if non exist, render the template as string
 
   s = nodesVisibility.call(this, s)
   tempDiv.innerHTML = s
   tempDiv.childNodes.forEach(function (c) {
-    if(c.nodeType === 1) {
+    if (c.nodeType === 1) {
       c.setAttribute('data-checksum', sum(c.outerHTML))
     }
   })
@@ -144,7 +144,7 @@ var genElement = function () {
   return typeof child === 'string'
     ? tempDiv
     : child.tag ? tempDiv.childNodes[0]
-    : tempDiv
+      : tempDiv
 }
 
 exports.genElement = genElement

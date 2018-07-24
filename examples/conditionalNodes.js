@@ -1,16 +1,16 @@
 import Keet from 'keet'
 
 class App extends Keet {
-  constructor(){
+  constructor () {
     super()
     this.show = false
   }
-  change(){
-    this.show = this.show ? false : true
+  change () {
+    this.show = !this.show
   }
 }
 
-const app = new App
+const app = new App()
 
 app.mount(`
   <div id="1">one</div>
@@ -21,4 +21,3 @@ app.mount(`
 `).link('app')
 
 setInterval(() => app.change(), 2000)
-

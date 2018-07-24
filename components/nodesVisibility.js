@@ -1,6 +1,6 @@
-module.exports = function(string) {
-  var self = this 
-  this.__stateList__.map(function(state) {
+module.exports = function (string) {
+  var self = this
+  this.__stateList__.map(function (state) {
     if (!self[state]) {
       var f = '\\{\\{\\?' + state + '\\}\\}'
       var b = '\\{\\{\\/' + state + '\\}\\}'
@@ -10,12 +10,12 @@ module.exports = function(string) {
       var re = new RegExp(regx)
       var isConditional = re.test(string)
       var match = string.match(re)
-      if(isConditional && match){ 
+      if (isConditional && match) {
         string = string.replace(match[2], '')
       }
     }
-    string = string.replace('{{?'+state+'}}', '')
-    string = string.replace('{{/'+state+'}}', '')
+    string = string.replace('{{?' + state + '}}', '')
+    string = string.replace('{{/' + state + '}}', '')
   })
   return string
 }

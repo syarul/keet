@@ -10,6 +10,6 @@ class App extends Keet {
   }
 }
 
-const app = new App
+const app = new App()
 
 app.mount('<button k-click="add()">{{count}}</button>').link('app')

@@ -57,7 +57,7 @@ class App extends Keet {
   }
 }
 
-const app = new App
+const app = new App()
 
 app.mount('Hello {{myDynamicState}}').link('app')
 ```
@@ -83,7 +83,7 @@ class App extends Keet {
   }
 }
 
-const app = new App
+const app = new App()
 
 app.mount('<button k-click="add()">{{count}}</button>').link('app')
 ```
@@ -101,16 +101,16 @@ value to the state
 import Keet from 'keet'
 
 class App extends Keet {
-  constructor(){
+  constructor () {
     super()
     this.show = false
   }
-  change(){
-    this.show = this.show ? false : true
+  change () {
+    this.show = !this.show
   }
 }
 
-const app = new App
+const app = new App()
 
 app.mount(`
   <div id="1">one</div>

@@ -7,6 +7,6 @@ class App extends Keet {
   }
 }
 
-const app = new App
+const app = new App()
 
 app.mount('Hello {{myDynamicState}}').link('app')

@@ -39,8 +39,7 @@ var next = function (i, ele, els) {
         }
       })
     }
-    if(typeof this.base === 'object')
-      this.baseProxy = watchObject(this.base)
+    if (typeof this.base === 'object') { this.baseProxy = watchObject(this.base) }
 
     // component lifeCycle after mounting
     if (this.componentDidMount && typeof this.componentDidMount === 'function') {
@@ -68,7 +67,7 @@ Keet.prototype.mount = function (instance) {
         instance[key]['template'] = instance[key]['template'].trim().replace(/\s+/g, ' ')
       }
     })
-  } else if(typeof instance === 'string') {
+  } else if (typeof instance === 'string') {
     instance = instance.trim().replace(/\s+/g, ' ')
   }
   this.base = instance

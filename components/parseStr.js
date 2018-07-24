@@ -23,7 +23,7 @@ module.exports = function () {
     this.base.model.map(function (m) {
       elemArr.push(genTemplate.call(self, m))
     })
-  } else if(typeof this.base === 'object') {
+  } else if (typeof this.base === 'object') {
     // do object base
     Object.keys(this.base).map(function (key) {
       var child = self.base[key]
@@ -44,14 +44,14 @@ module.exports = function () {
         setState.call(self, args)
         processEvent.call(self, tempDiv)
         tempDiv.childNodes.forEach(function (c) {
-          if(c.nodeType === 1) {
+          if (c.nodeType === 1) {
             c.setAttribute('data-checksum', sum(c.outerHTML))
           }
           elemArr.push(c)
         })
       }
     })
-  } else if(typeof this.base === 'string') {
+  } else if (typeof this.base === 'string') {
     this.__stateList__ = []
     var tpl = tmplHandler.call(this, this.base, function (state) {
       self.__stateList__ = self.__stateList__.concat(state)
@@ -63,7 +63,7 @@ module.exports = function () {
     setState.call(this, args)
     processEvent.call(this, tempDiv)
     tempDiv.childNodes.forEach(function (c) {
-      if(c.nodeType === 1) {
+      if (c.nodeType === 1) {
         c.setAttribute('data-checksum', sum(c.outerHTML))
       }
       elemArr.push(c)
