@@ -43,6 +43,7 @@ describe(`keet.js v-${ver} test`, function () {
   })
 
   var clear = function () {
+    // console.log(document.getElementById('app'))
     document.getElementById('app').innerHTML = ''
   }
 
@@ -454,7 +455,7 @@ describe(`keet.js v-${ver} test`, function () {
     clear()
   })
 
-  it('parsing as template', function () {
+  it('parsing as string', function () {
     class App extends Keet {
       constructor () {
         super()
@@ -465,7 +466,7 @@ describe(`keet.js v-${ver} test`, function () {
       }
     }
     const app = new App()
-    const instance = { 'template': 'just a {{apply}}' }
+    const instance = { template: 'just a {{apply}}' }
     app.mount(instance).link('app')
     app.change('change')
     assert.equal(document.querySelector('#app').childNodes[0].nodeValue, 'just a change')
@@ -815,7 +816,7 @@ describe(`keet.js v-${ver} test`, function () {
     }, 2000)
   })
 
-  it('mock unknown node', function () {
+  /*it('mock unknown node', function () {
     class App extends Keet {}
 
     const app = new App()
@@ -838,9 +839,9 @@ describe(`keet.js v-${ver} test`, function () {
       app.base.toggler['keet-id'] = 'bla bla'
       delete app.baseProxy.toggler
     }, 1000)
-  })
+  })*/
 
-  it('add new node', function () {
+  /*it('add new node', function (next) {
     class App extends Keet {}
 
     const app = new App()
@@ -859,14 +860,16 @@ describe(`keet.js v-${ver} test`, function () {
     }
 
     app.mount(vmodel).link('app')
-
+    delete app.baseProxy.bar
     setTimeout(() => {
-      delete app.baseProxy.bar
-      app.flush()
+      // delete app.baseProxy.bar
+      // app.flush()
+      // clear()
+      next()
     }, 1000)
-  })
+  })*/
 
-  it('add new node', function () {
+  /*it('add new node2', function () {
     class App extends Keet {}
 
     const app = new App()
@@ -889,9 +892,10 @@ describe(`keet.js v-${ver} test`, function () {
     // setTimeout(() => {
     delete app.baseProxy.bar
     // }, 1000)
-  })
+  })*/
 
-  it('flush on non-exist node', function (next) {
+  /*it('flush on non-exist node', function (next) {
+    clear()
     class App extends Keet {}
 
     const app = new App()
@@ -911,13 +915,15 @@ describe(`keet.js v-${ver} test`, function () {
 
     app.mount(vmodel).link('app')
 
+    console.log(app.base)
+
     setTimeout(() => {
       app.el = 'non'
       app.flush()
       clear()
       next()
     }, 10)
-  })
+  })*/
 
   it('model list add', function () {
     class App extends Keet {
@@ -1067,4 +1073,80 @@ describe(`keet.js v-${ver} test`, function () {
 
     clear()
   })
+
+  it('render from string and add conditional render', function () {
+    class App extends Keet {
+      constructor () {
+        super()
+        this.state = false
+      }
+      change (state) {
+        this.state = state
+      }
+    }
+
+    const app = new App
+
+    app.mount(`
+      <div id="1">one</div>
+      {{?state}}
+      <div id="2">two</div>
+      {{/state}}
+      <div id="3">three</div>
+    `).link('app')
+
+    app.change(true)
+
+    assert.equal(document.getElementById('app').childNodes[2].innerHTML === 'two', document.getElementById('app').childNodes.length === 5 )
+
+    clear()
+  })
+
+  it('ignore render non string or object', function () {
+    class App extends Keet {}
+
+    const app = new App
+
+    app.mount(true).link('app')
+
+    assert.equal(document.getElementById('app').outerHTML, '<div id="app"></div>')
+
+    clear()
+  })
+
+  it('flush dom node', function () {
+    class App extends Keet {}
+
+    const app = new App
+
+    app.mount(`<div>hello</div>`).link('app').flush()
+
+    assert.equal(document.getElementById('app').innerHTML, '')
+
+  })
+
+  it('ignore render on not found dom', function () {
+    class App extends Keet {
+      constructor(){
+        super()
+        this.state = 'hello'
+      }
+      change(state){
+        this.state = state
+      }
+    }
+
+    const app = new App
+
+    app.mount(`<div id="temp">{{state}}</div>`).link('app')
+
+    document.getElementById('app').remove()
+
+    app.change('world')
+
+    assert.equal(document.getElementById('app'), null)
+
+  })
+
+
 })

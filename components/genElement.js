@@ -5,23 +5,38 @@ var tmplStylesHandler = require('./tmplStylesHandler')
 var tmplClassHandler = require('./tmplClassHandler')
 var tmplAttrHandler = require('./tmplAttrHandler')
 var processEvent = require('./processEvent')
-var updateElem = require('./elementUtils').updateElem
 var selector = require('./utils').selector
 var strInterpreter = require('./strInterpreter')
+var nodesVisibility = require('./nodesVisibility')
+var sum = require('hash-sum')
+var setDOM = require('set-dom')
 
 var updateContext = function () {
   var self = this
-  Object.keys(this.base).map(function (handlerKey) {
-    var id = self.base[handlerKey]['keet-id']
-    var ele = selector(id)
-    if (!ele && typeof self.base[handlerKey] === 'string') {
-      ele = document.getElementById(self.el)
+  var ele
+  var newElem
+  var args = [].slice.call(arguments)
+  if(typeof this.base === 'object'){
+    Object.keys(this.base).map(function (handlerKey) {
+      var id = self.base[handlerKey]['keet-id']
+      ele = selector(id)
+      if (!ele && typeof self.base[handlerKey] === 'string') {
+        ele = document.getElementById(self.el)
+      }
+      newElem = genElement.apply(self, [self.base[handlerKey]].concat(args))
+      if(self.base.hasOwnProperty('template')){
+        newElem.id = self.el
+      }
+      setDOM(ele, newElem)
+    })
+  } else {
+    ele = document.getElementById(self.el)
+    if (ele) {
+      newElem = genElement.apply(self, [self.base].concat(args))
+      newElem.id = self.el
+      setDOM(ele, newElem)
     }
-    var newElem
-    var args = [].slice.call(arguments)
-    newElem = genElement.apply(self, [self.base[handlerKey]].concat(args))
-    updateElem(ele, newElem)
-  })
+  }
 }
 
 var nextState = function (i, args) {
@@ -31,20 +46,7 @@ var nextState = function (i, args) {
     var value = this[state]
     // if value is undefined, likely has object notation we convert it to array
     if (!value) value = strInterpreter(state)
-    if (!Array.isArray(value)) {
-      // handle parent state update if the state is not an object
-      Object.defineProperty(this, state, {
-        enumerable: false,
-        configurable: true,
-        get: function () {
-          return value
-        },
-        set: function (val) {
-          value = val
-          updateContext.apply(self, args)
-        }
-      })
-    } else if (value && Array.isArray(value)) {
+    if (value && Array.isArray(value)) {
       // using split object notation as base for state update
       var inVal = this[value[0]][value[1]]
       Object.defineProperty(this[value[0]], value[1], {
@@ -55,6 +57,19 @@ var nextState = function (i, args) {
         },
         set: function (val) {
           inVal = val
+          updateContext.apply(self, args)
+        }
+      })
+    } else {
+      // handle parent state update if the state is not an object
+      Object.defineProperty(this, state, {
+        enumerable: false,
+        configurable: true,
+        get: function () {
+          return value
+        },
+        set: function (val) {
+          value = val
           updateContext.apply(self, args)
         }
       })
@@ -105,13 +120,19 @@ var genElement = function () {
     ? tag(child.tag,            // html tag
       tpl || '',                // nodeValue
       cloneChild,               // attributes including classes
-      styleTpl                  // styles
+      styleTpl                  // inline styles
     ) : tpl                     // fallback if non exist, render the template as string
 
+  s = nodesVisibility.call(this, s)
   tempDiv.innerHTML = s
+  tempDiv.childNodes.forEach(function (c) {
+    if(c.nodeType === 1) {
+      c.setAttribute('data-checksum', sum(c.outerHTML))
+    }
+  })
   if (child.tag === 'input') {
     if (cloneChild.checked) {
-      tempDiv.childNodes[0].checked = true
+      tempDiv.childNodes[0].setAttribute('checked', '')
     } else {
       tempDiv.childNodes[0].removeAttribute('checked')
     }

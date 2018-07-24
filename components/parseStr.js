@@ -4,9 +4,11 @@ var tmplHandler = require('./tmplHandler')
 var processEvent = require('./processEvent')
 var genId = require('./utils').genId
 var genTemplate = require('./genTemplate')
+var nodesVisibility = require('./nodesVisibility')
+var sum = require('hash-sum')
 
 module.exports = function () {
-  if (typeof this.base !== 'object') throw new Error('instance is not an object')
+  // if (typeof this.base !== 'object') throw new Error('instance is not an object')
   var self = this
   var elemArr = []
   var args = [].slice.call(arguments)
@@ -22,7 +24,7 @@ module.exports = function () {
     this.base.model.map(function (m) {
       elemArr.push(genTemplate.call(self, m))
     })
-  } else {
+  } else if(typeof this.base === 'object') {
     // do object base
     Object.keys(this.base).map(function (key) {
       var child = self.base[key]
@@ -37,14 +39,34 @@ module.exports = function () {
         var tpl = tmplHandler.call(self, child, function (state) {
           self.__stateList__ = self.__stateList__.concat(state)
         })
+        tpl = nodesVisibility.call(self, tpl)
         var tempDiv = document.createElement('div')
         tempDiv.innerHTML = tpl
         setState.call(self, args)
         processEvent.call(self, tempDiv)
         tempDiv.childNodes.forEach(function (c) {
+          if(c.nodeType === 1) {
+            c.setAttribute('data-checksum', sum(c.outerHTML))
+          }
           elemArr.push(c)
         })
       }
+    })
+  } else if(typeof this.base === 'string') {
+    self.__stateList__ = []
+    var tpl = tmplHandler.call(self, this.base, function (state) {
+      self.__stateList__ = self.__stateList__.concat(state)
+    })
+    tpl = nodesVisibility.call(self, tpl)
+    var tempDiv = document.createElement('div')
+    tempDiv.innerHTML = tpl
+    setState.call(self, args)
+    processEvent.call(self, tempDiv)
+    tempDiv.childNodes.forEach(function (c) {
+      if(c.nodeType === 1) {
+        c.setAttribute('data-checksum', sum(c.outerHTML))
+      }
+      elemArr.push(c)
     })
   }
 

@@ -1,6 +1,6 @@
 'use strict'
 /**
- * Keetjs v3.4.6 Alpha release: https://github.com/keetjs/keet.js
+ * Keetjs v3.5.0 Alpha release: https://github.com/keetjs/keet.js
  * Minimalist view layer for the web
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keetjs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -14,7 +14,7 @@ var genId = require('./components/utils').genId
 var selector = require('./components/utils').selector
 var parseStr = require('./components/parseStr')
 var genTemplate = require('./components/genTemplate')
-var updateElem = require('./components/elementUtils').updateElem
+var setDOM = require('set-dom')
 
 var next = function (i, ele, els) {
   var self = this
@@ -39,7 +39,8 @@ var next = function (i, ele, els) {
         }
       })
     }
-    this.baseProxy = watchObject(this.base)
+    if(typeof this.base === 'object')
+      this.baseProxy = watchObject(this.base)
 
     // component lifeCycle after mounting
     if (this.componentDidMount && typeof this.componentDidMount === 'function') {
@@ -67,6 +68,8 @@ Keet.prototype.mount = function (instance) {
         instance[key]['template'] = instance[key]['template'].trim().replace(/\s+/g, ' ')
       }
     })
+  } else if(typeof instance === 'string') {
+    instance = instance.trim().replace(/\s+/g, ' ')
   }
   this.base = instance
   return this
@@ -145,7 +148,7 @@ Keet.prototype.update = function (id, attr, newAttr) {
           Object.assign(obj, newAttr)
         }
         var node = selector(obj['keet-id'])
-        if (node) updateElem(node, genTemplate.call(self, obj))
+        if (node) setDOM(node, genTemplate.call(self, obj))
       }
       return obj
     })

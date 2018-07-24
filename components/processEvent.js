@@ -1,4 +1,4 @@
-var loopChilds = require('./elementUtils').loopChilds
+var loopChilds = require('./utils').loopChilds
 
 var next = function (i, c, rem) {
   var hask

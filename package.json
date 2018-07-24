@@ -1,6 +1,6 @@
 {
   "name": "keet",
-  "version": "3.4.6",
+  "version": "3.5.0",
   "author": "Shahrul Nizam Selamat",
   "description": "Minimalist view layer for the web",
   "babel": {
@@ -14,7 +14,11 @@
   "bugs": {
     "url": "https://github.com/syarul/keet/issues"
   },
-  "dependencies": {},
+  "dependencies": {
+    "hash-sum": "^1.0.2",
+    "jsdom-global": "^3.0.2",
+    "set-dom": "^7.5.2"
+  },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
@@ -59,7 +63,7 @@
     "cover": "nyc --reporter=lcov --reporter=text npm run test",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "start": "webpack-dev-server -d",
-    "test": "mocha test/test.js --require babel-core/register",
+    "test": "mocha test/test.js --require babel-core/register --require jsdom-global/register",
     "test-ci": "nyc npm run test"
   },
   "git_branch": "master"

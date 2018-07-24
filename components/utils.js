@@ -9,3 +9,14 @@ exports.genId = function () {
 exports.selector = function (id) {
   return document.querySelector('[keet-id="' + id + '"]')
 }
+
+var loopChilds = function (arr, elem) {
+  for (var child = elem.firstChild; child !== null; child = child.nextSibling) {
+    arr.push(child)
+    if (child.hasChildNodes()) {
+      loopChilds(arr, child)
+    }
+  }
+}
+
+exports.loopChilds = loopChilds
