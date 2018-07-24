@@ -16,6 +16,16 @@ var parseStr = require('./components/parseStr')
 var genTemplate = require('./components/genTemplate')
 var setDOM = require('set-dom')
 
+/**
+ * @private
+ * @description
+ * Loop render all initially parsed html entities to 
+ * target DOM node id.
+ *
+ * @param {Int} i - The index of html entity.
+ * @param {Node} ele - The target DOM node.
+ * @param {Node} els - The list of html entities.
+ */
 var next = function (i, ele, els) {
   var self = this
   if (i < els.length) {
@@ -23,6 +33,11 @@ var next = function (i, ele, els) {
     i++
     next.apply(this, [ i, ele, els ])
   } else {
+    // Once intial render already in place consecutively
+    // watch the object in Components.prototype.base. We 
+    // can add additional object props or we can delete
+    // existing object props, which will reflect in the 
+    // component rendered elements.
     var watchObject = function (obj) {
       return new Proxy(obj, {
         set: function (target, key, value) {
@@ -39,17 +54,26 @@ var next = function (i, ele, els) {
         }
       })
     }
+    // only javascript objects is watchable
     if (typeof this.base === 'object') { this.baseProxy = watchObject(this.base) }
 
-    // component lifeCycle after mounting
+    // since component already rendered, trigger its life-cycle method
     if (this.componentDidMount && typeof this.componentDidMount === 'function') {
       this.componentDidMount()
     }
   }
 }
 
+/**
+ * @description
+ * The main constructor of Keet
+ *
+ * @param {String | arg0[, arg1[, arg2[, ...]]]} arguments - Custom property names
+ * i.e using 'checked' for input elements.
+ */
 function Keet () {
   this.base = {}
+  // this.args = [].slice.call(arguments) || []
   Object.defineProperty(this, '__stateList__', {
     enumerable: false,
     writable: true
