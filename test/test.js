@@ -820,6 +820,62 @@ describe(`keet.js v-${ver} test`, function () {
     clear()
   })
 
+  /*it('model list add not available', function (next) {
+
+    let newDiv = document.createElement('div')
+
+    newDiv.id = 'not-available'
+
+    document.getElementById('app').append(newDiv)
+
+    class App extends Keet {
+      constructor (...args) {
+        super()
+        this.args = args
+      }
+    }
+    const app = new App('checked')
+
+    let model = []
+
+    let len = 5
+
+    for (let i = 0; i < len; i++) {
+      model = model.concat({
+        id: i,
+        me: (Math.random() * 1e12).toString(32),
+        checked: i % 2 !== 0
+      })
+    }
+
+    const instance = {
+      template: `
+        <li id="{{id}}">{{me}}
+          <input type="checkbox" checked="{{checked}}"></input>
+        </li>`,
+      model: model
+    }
+
+    app.mount(instance).link('not-available')
+
+    document.getElementById('not-available').remove()
+
+    app.add({
+      id: model.length,
+      me: 'test!',
+      checked: false
+    })
+
+    setTimeout(() => {
+      document.getElementById('app').append(newDiv)
+      setTimeout(() => {
+        clear()
+        next()
+      }, 100)
+    }, 100)
+
+  })*/
+
   it('model list destroy', function () {
     class App extends Keet {
       constructor (...args) {

@@ -86,12 +86,12 @@ var next = function (i, ele, els) {
  */
 function Keet () {
   // prepare the store for states, this is the internal state-management for the
-  // components. Personally I never get to like state-management in javascript.
-  // The idea might sound devine but you'll stuck in very complicated get-to-master
+  // components. Personally I never get to like state-management in JavaScript.
+  // The idea might sound divine but you'll stuck in very complicated get-to-master
   // this framework/flow cycles where you always write the state in some external 
   // store and write long logics to do small stuffs and they are very slow. On the 
   // other hand, this internal store is relatively simple, has references and the 
-  // availablity of sharing across multiple components in any case.
+  // availability of sharing across multiple components in any case.
   Object.defineProperty(this, '__stateList__', {
     enumerable: false,
     writable: true
@@ -100,7 +100,7 @@ function Keet () {
 
 Keet.prototype.mount = function (instance) {
   // Before we begin to parse an instance, do a run-down checks
-  // to clean up backtick string which usually has line spacing
+  // to clean up back-tick string which usually has line spacing
   if (typeof instance === 'object') {
     Object.keys(instance).map(function (key) {
       if (typeof instance[key] === 'string') {
@@ -119,7 +119,7 @@ Keet.prototype.mount = function (instance) {
 
 Keet.prototype.flush = function (instance) {
   // Custom method to clean up the component DOM tree
-  // usefull if we need to do clean up rerender
+  // useful if we need to do clean up rerender.
   var ele = getId(this.el)
   if (ele) ele.innerHTML = ''
   return this
@@ -127,8 +127,8 @@ Keet.prototype.flush = function (instance) {
 
 Keet.prototype.link = function (id) {
   // The target DOM where the rendering will took place.
-  // We could also apply lifeCycle method before the
-  // render happen
+  // We could also apply life-cycle method before the
+  // render happen.
   this.el = id
   if (this.componentWillMount && typeof this.componentWillMount === 'function') {
     this.componentWillMount()
@@ -149,7 +149,7 @@ Keet.prototype.render = function () {
 
 Keet.prototype.cluster = function () {
   // Chain method to run external function(s), this basically serve
-  // as initializer for all child components within the instance tree
+  // as an initializer for all child components within the instance tree
   var args = [].slice.call(arguments)
   if (args.length > 0) {
     args.map(function (f) {
@@ -160,6 +160,7 @@ Keet.prototype.cluster = function () {
 
 Keet.prototype.add = function (obj, interceptor) {
   // Method to add a new object to component model
+  var self = this
   var ele = getId(this.el)
   obj['keet-id'] = genId()
   this.base.model = this.base.model.concat(obj)
@@ -167,7 +168,17 @@ Keet.prototype.add = function (obj, interceptor) {
   if(interceptor && typeof interceptor === 'function'){
     interceptor.call(this)
   }
-  ele.appendChild(genTemplate.call(this, obj))
+  if(ele)
+    ele.appendChild(genTemplate.call(this, obj))
+  else {
+    // if element is not ready we keep checking the initial availability
+    var t = setInterval(function(){
+      if(ele) {
+        clearInterval(t)
+        ele.appendChild(genTemplate.call(self, obj))
+      }
+    }, 0)
+  }
 }
 
 Keet.prototype.destroy = function (id, attr, interceptor) {

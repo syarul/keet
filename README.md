@@ -12,7 +12,7 @@ Minimalist view layer for the web.
 
 ## What is Keet
 
-> *Keet* specific goal is to offer less APIs, familiar/vanilla code structures and a possible remedy to [*choice paralysis*](https://the-pastry-box-project.net/addy-osmani/2014-January-19). It was never intended to be superior in features compare to most major web frameworks and waste no effort to become such. Generally *Keet* is more flexible, decent render performance with loose coupling, less complicated design and workflow. You might surprise with the logic and small learning curve it offers. It's also only 5kb gzip in size. Under the hood it use [set-dom](https://github.com/DylanPiercey/set-dom) and [hash-sum](https://github.com/bevacqua/hash-sum) to do ```DOM-diffing```.
+> *Keet* specific goal is to offer less APIs, familiar/vanilla code structures and a possible remedy to [*choice paralysis*](https://the-pastry-box-project.net/addy-osmani/2014-January-19). It was never intended superior in features compare to most major web frameworks and waste no effort to become such. Generally *Keet* is more flexible, decent render performance with loose coupling, less complicated design and workflow. You might surprise with the logic and small learning curve it offers. It's also only 5kb gzip in size. Under the hood it use [set-dom](https://github.com/DylanPiercey/set-dom) and [hash-sum](https://github.com/bevacqua/hash-sum) to do ```DOM-diffing```.
 
 ## Getting Started
 
