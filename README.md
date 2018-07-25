@@ -42,7 +42,7 @@ Or from npm:-
 
 ### Hello World
 
-Start by constructing a class expression as child of "Keet". Suppy a string argument
+Start by constructing a class expression as child of "Keet". Supply a string argument
 the component. Within the string, you can assign a state within handlebars i.e: ```{{<myState>}}```
 
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/hello.js) -->
