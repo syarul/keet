@@ -173,6 +173,7 @@ Keet.prototype.add = function (obj, interceptor) {
   else {
     // if element is not ready we keep checking the initial availability
     var t = setInterval(function(){
+      ele = getId(self.el)
       if(ele) {
         clearInterval(t)
         ele.appendChild(genTemplate.call(self, obj))
@@ -202,6 +203,7 @@ Keet.prototype.update = function (id, attr, newAttr, interceptor) {
   // Method to update a submodel of a component
   var self = this
   this.base.model = this.base.model.map(function (obj, idx, model) {
+    console.log(id, obj, attr, obj[attr])
     if (id === obj[attr]) {
       if (newAttr && typeof newAttr === 'object') {
         Object.assign(obj, newAttr)
