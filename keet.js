@@ -104,11 +104,6 @@ function Keet () {
     enumerable: false,
     writable: true
   })
-
-  // trigger component life-cycle method
-  if (this.componentWillMount && typeof this.componentWillMount === 'function') {
-    this.componentWillMount()
-  }
 }
 
 Keet.prototype.mount = function (instance) {
