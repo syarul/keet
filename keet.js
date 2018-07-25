@@ -16,6 +16,8 @@ var parseStr = require('./components/parseStr')
 var genTemplate = require('./components/genTemplate')
 var setDOM = require('set-dom')
 
+setDOM.key = 'keet-id'
+
 /**
  * @private
  * @description
@@ -71,6 +73,7 @@ var next = function (i, ele, els) {
  * @param {String | arg0[, arg1[, arg2[, ...]]]} arguments - Custom property names
  * i.e using 'checked' for input elements.
  * Usage :-
+ *
  *    const App extends Keet {
  *      constructor(...args) {
  *        super()
@@ -78,6 +81,7 @@ var next = function (i, ele, els) {
  *      }
  *    }
  *    const app = new App('checked')
+ *
  * for example usage cases see https://github.com/syarul/keet/blob/master/examples/check.js
  */
 function Keet () {
@@ -86,8 +90,8 @@ function Keet () {
   // The idea might sound devine but you'll stuck in very complicated get-to-master
   // this framework/flow cycles where you always write the state in some external 
   // store and write long logics to do small stuffs and they are very slow. On the 
-  // other hand, this internal store is relatively simple, has referance and 
-  // across multiple components able to share the state in any case.
+  // other hand, this internal store is relatively simple, has references and the 
+  // availablity of sharing across multiple components in any case.
   Object.defineProperty(this, '__stateList__', {
     enumerable: false,
     writable: true

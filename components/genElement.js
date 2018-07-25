@@ -11,6 +11,8 @@ var nodesVisibility = require('./nodesVisibility')
 var sum = require('hash-sum')
 var setDOM = require('set-dom')
 
+setDOM.key = 'keet-id'
+
 var updateContext = function () {
   var self = this
   var ele
