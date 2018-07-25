@@ -809,6 +809,12 @@ describe(`keet.js v-${ver} test`, function () {
       id: model.length,
       me: 'test!',
       checked: false
+    }, function(){})
+
+    app.add({
+      id: model.length,
+      me: 'test2!',
+      checked: false
     })
 
     clear()
@@ -845,7 +851,9 @@ describe(`keet.js v-${ver} test`, function () {
 
     app.mount(instance).link('app')
 
-    app.destroy(1, 'id')
+    app.destroy(1, 'id', function(){})
+
+    app.destroy(2, 'id')
 
     clear()
   })
@@ -925,7 +933,7 @@ describe(`keet.js v-${ver} test`, function () {
     app.update(0, 'id', {
       me: 'cool',
       checked: true
-    })
+    }, function(){})
 
     clear()
   })

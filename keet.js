@@ -1,6 +1,6 @@
 'use strict'
 /**
- * Keetjs v3.5.1 Alpha release: https://github.com/keetjs/keet.js
+ * Keetjs v3.5.2 Alpha release: https://github.com/keetjs/keet.js
  * Minimalist view layer for the web
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keetjs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -158,25 +158,36 @@ Keet.prototype.cluster = function () {
   }
 }
 
-Keet.prototype.add = function (obj) {
+Keet.prototype.add = function (obj, interceptor) {
   // Method to add a new object to component model
   var ele = getId(this.el)
   obj['keet-id'] = genId()
   this.base.model = this.base.model.concat(obj)
+  // if interceptor is declared execute it before node update
+  if(interceptor && typeof interceptor === 'function'){
+    interceptor.call(this)
+  }
   ele.appendChild(genTemplate.call(this, obj))
 }
 
-Keet.prototype.destroy = function (id, attr) {
+Keet.prototype.destroy = function (id, attr, interceptor) {
   // Method to destroy a submodel of a component
+  var self = this
   this.base.model = this.base.model.filter(function (obj, index) {
     if (id === obj[attr]) {
       var node = selector(obj['keet-id'])
-      if (node) node.remove()
+      if (node) { 
+        // if interceptor is declared execute it before node update
+        if(interceptor && typeof interceptor === 'function'){
+          interceptor.call(self)
+        }
+        node.remove() 
+      }
     } else { return obj }
   })
 }
 
-Keet.prototype.update = function (id, attr, newAttr) {
+Keet.prototype.update = function (id, attr, newAttr, interceptor) {
   // Method to update a submodel of a component
   var self = this
   this.base.model = this.base.model.map(function (obj, idx, model) {
@@ -185,7 +196,13 @@ Keet.prototype.update = function (id, attr, newAttr) {
         Object.assign(obj, newAttr)
       }
       var node = selector(obj['keet-id'])
-      if (node) setDOM(node, genTemplate.call(self, obj))
+      if (node) {
+        // if interceptor is declared execute it before node update
+        if(interceptor && typeof interceptor === 'function'){
+          interceptor.call(self)
+        }
+        setDOM(node, genTemplate.call(self, obj))
+      }
     }
     return obj
   })
