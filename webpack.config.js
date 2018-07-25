@@ -8,7 +8,7 @@ const config = {
     fs: 'empty'
   },
   entry: [
-    './examples/conditionalNodes.js',
+    './examples/virtualNodes.js',
     './view/layout.pug'
   ],
   output: {

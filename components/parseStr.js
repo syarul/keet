@@ -62,6 +62,7 @@ module.exports = function () {
     tempDiv.innerHTML = tpl
     setState.call(this, args)
     processEvent.call(this, tempDiv)
+
     tempDiv.childNodes.forEach(function (c) {
       if (c.nodeType === 1) {
         c.setAttribute('data-checksum', sum(c.outerHTML))

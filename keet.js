@@ -54,6 +54,14 @@ var next = function (i, ele, els) {
         }
       })
     }
+
+    // virtual Nodes rendering resolver
+    if(this.__virtualNodes__) {
+      this.__virtualNodes__.map(function(vNode) {
+        vNode.flush().render()
+      })
+    }
+
     // only javascript objects is watchable
     if (typeof this.base === 'object') { this.baseProxy = watchObject(this.base) }
 
@@ -92,6 +100,10 @@ function Keet () {
     enumerable: false,
     writable: true
   })
+  Object.defineProperty(this, '__virtualNodes__', {
+    enumerable: false,
+    writable: true
+  })
 }
 
 Keet.prototype.mount = function (instance) {
@@ -125,7 +137,7 @@ Keet.prototype.link = function (id) {
   // The target DOM where the rendering will took place.
   // We could also apply lifeCycle method before the
   // render happen
-  this.el = id
+  this.el = this.el || id
   if (this.componentWillMount && typeof this.componentWillMount === 'function') {
     this.componentWillMount()
   }
@@ -185,6 +197,11 @@ Keet.prototype.update = function (id, attr, newAttr) {
     }
     return obj
   })
+}
+
+Keet.prototype.register = function () {
+  this.__virtualNodes__ = [].slice.call(arguments)
+  return this
 }
 
 module.exports = Keet

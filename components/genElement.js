@@ -37,6 +37,13 @@ var updateContext = function () {
       setDOM(ele, newElem)
     }
   }
+
+  // virtual Nodes rendering resolver
+  if(this.__virtualNodes__) {
+    this.__virtualNodes__.map(function(vNode) {
+      vNode.flush().render()
+    })
+  }
 }
 
 var nextState = function (i, args) {
