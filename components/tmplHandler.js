@@ -7,15 +7,14 @@ module.exports = function (str, updateStateList) {
     arrProps.map(function (s) {
       var rep = s.replace(/{{([^{}]+)}}/g, '$1')
       var isObjectNotation = strInterpreter(rep)
-      // console.log(rep, self)
       if (!isObjectNotation) {
         if (self[rep] !== undefined) {
           updateStateList(rep)
-          str = str.replace(/{{([^{}]+)}}/, self[rep])
+          str = str.replace('{{'+rep+'}}', self[rep])
         }
       } else {
         updateStateList(rep)
-        str = str.replace(/{{([^{}]+)}}/, self[isObjectNotation[0]][isObjectNotation[1]])
+        str = str.replace('{{'+rep+'}}', self[isObjectNotation[0]][isObjectNotation[1]])
       }
       if (rep.match(/^\?/g)) {
         updateStateList(rep.replace('?', ''))
@@ -24,3 +23,4 @@ module.exports = function (str, updateStateList) {
   }
   return str
 }
+

@@ -1,6 +1,6 @@
 'use strict'
 /**
- * Keetjs v3.5.0 Alpha release: https://github.com/keetjs/keet.js
+ * Keetjs v3.5.1 Alpha release: https://github.com/keetjs/keet.js
  * Minimalist view layer for the web
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keetjs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
