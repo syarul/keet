@@ -39,6 +39,13 @@ var updateContext = function () {
       setDOM(ele, newElem)
     }
   }
+  batchPool.status = 'ready'
+}
+
+// batch pool update states to DOM
+var batchPool = {
+  ttl: null,
+  status: 'ready'
 }
 
 var nextState = function (i, args) {
@@ -73,7 +80,19 @@ var nextState = function (i, args) {
         },
         set: function (val) {
           value = val
-          updateContext.apply(self, args)
+
+          // if(batchPool.status === 'pooling'){
+          //   return
+          // } else {
+
+          //   batchPool.status = 'pooling'
+
+          //   clearTimeout(batchPool.ttl)
+
+          //   batchPool.ttl = setTimeout(function(){
+              updateContext.apply(self, args)
+          //   }, 0)
+          // }
         }
       })
     }

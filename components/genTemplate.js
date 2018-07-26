@@ -1,32 +1,33 @@
 var processEvent = require('./processEvent')
-
+var ternaryOps = require('./ternaryOps')
+var testEvent = require('./utils').testEvent
 var tmpl = ''
-
-function next (i, obj, arrProps, args) {
-  if (i < arrProps.length) {
-    var rep = arrProps[i].replace(/{{([^{}]+)}}/g, '$1')
-    tmpl = tmpl.replace(/{{([^{}]+)}}/, obj[rep])
-    if (args && ~args.indexOf(rep) && !obj[rep]) {
-      var re = new RegExp(' ' + rep + '="' + obj[rep] + '"', 'g')
-      tmpl = tmpl.replace(re, '')
-    }
-    i++
-    next(i, obj, arrProps, args)
-  } else {
-
-  }
-}
 
 module.exports = function (obj) {
   var args = this.args
   var arrProps = this.base.template.match(/{{([^{}]+)}}/g)
   var tempDiv
+  var rep
   tmpl = this.base.template
-  next(0, obj, arrProps, args)
+  for(var i=0, len = arrProps.length;i<len;i++){
+    rep = arrProps[i].replace(/{{([^{}]+)}}/g, '$1')
+    var isTernary = ternaryOps.call(obj, rep)
+    if(isTernary){
+      if (args && ~args.indexOf(isTernary.state)){
+        tmpl = tmpl.replace('{{'+rep+'}}', isTernary.value)
+      } else 
+        tmpl = tmpl.replace('{{'+rep+'}}', isTernary.value)
+    } else {
+      tmpl = tmpl.replace('{{'+rep+'}}', obj[rep])
+    }
+    if (args && ~args.indexOf(rep) && !obj[rep]) {
+      var re = new RegExp(' ' + rep + '="' + obj[rep] + '"', 'g')
+      tmpl = tmpl.replace(re, '')
+    }
+  }
   tempDiv = document.createElement('div')
   tempDiv.innerHTML = tmpl
-  var isevt = / k-/.test(tmpl)
-  if (isevt) { processEvent.call(this, tempDiv) }
+  testEvent(tmpl) && processEvent.call(this, tempDiv)
   tempDiv.childNodes[0].setAttribute('keet-id', obj['keet-id'])
   return tempDiv.childNodes[0]
 }

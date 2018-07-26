@@ -52,7 +52,7 @@ describe(`keet.js v-${ver} test`, function () {
     assert.equal(div.nodeName, 'DIV')
   })
 
-  it('write text content', function () {
+  it('write text content', function (next) {
     class App extends Keet {
       constructor () {
         super()
@@ -63,8 +63,12 @@ describe(`keet.js v-${ver} test`, function () {
       }
       componentDidMount () {
         this.greet()
-        assert.equal(document.querySelector('#hw').childNodes[0].nodeValue, 'hello world')
-        clear()
+        setTimeout(() => {
+
+          assert.equal(document.querySelector('#hw').childNodes[0].nodeValue, 'hello world')
+          clear()
+          next()
+        },10)
       }
     }
     const app = new App()

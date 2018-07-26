@@ -6,7 +6,7 @@ class App extends Keet {
     this.args = args
   }
 }
-const app = new App('checked')
+const app = new App('complete')
 
 let model = []
 
@@ -16,14 +16,14 @@ for (let i = 0; i < len; i++) {
   model = model.concat({
     id: i,
     me: (Math.random() * 1e12).toString(32),
-    checked: i % 2 !== 0
+    complete: i % 2 ? true : false
   })
 }
 
 const instance = {
   template: `
     <li id="{{id}}">{{me}}
-      <input type="checkbox" checked="{{checked}}"></input>
+      <input type="checkbox" {{complete?checked:''}}></input>
     </li>`,
   model: model
 }

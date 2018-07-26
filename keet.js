@@ -12,6 +12,9 @@
 var getId = require('./components/utils').getId
 var genId = require('./components/utils').genId
 var selector = require('./components/utils').selector
+var fn = require('./components/utils').fn
+var checkNodeAvailabity = require('./components/utils').checkNodeAvailabity
+var available = require('./components/utils').available
 var parseStr = require('./components/parseStr')
 var genTemplate = require('./components/genTemplate')
 var setDOM = require('set-dom')
@@ -160,26 +163,13 @@ Keet.prototype.cluster = function () {
 
 Keet.prototype.add = function (obj, interceptor) {
   // Method to add a new object to component model
-  var self = this
   var ele = getId(this.el)
   obj['keet-id'] = genId()
   this.base.model = this.base.model.concat(obj)
   // if interceptor is declared execute it before node update
-  if(interceptor && typeof interceptor === 'function'){
-    interceptor.call(this)
-  }
-  if(ele)
-    ele.appendChild(genTemplate.call(this, obj))
-  else {
-    // if element is not ready we keep checking the initial availability
-    var t = setInterval(function(){
-      ele = getId(self.el)
-      if(ele) {
-        clearInterval(t)
-        ele.appendChild(genTemplate.call(self, obj))
-      }
-    }, 0)
-  }
+  interceptor && fn(interceptor) && interceptor.call(this)
+  // update the node, if it not avaialbe we keep checking the availabilty for a time
+  ele && ele.appendChild(genTemplate.call(this, obj)) || checkNodeAvailabity.call(this, obj, genTemplate, available)
 }
 
 Keet.prototype.destroy = function (id, attr, interceptor) {
@@ -190,9 +180,7 @@ Keet.prototype.destroy = function (id, attr, interceptor) {
       var node = selector(obj['keet-id'])
       if (node) { 
         // if interceptor is declared execute it before node update
-        if(interceptor && typeof interceptor === 'function'){
-          interceptor.call(self)
-        }
+        interceptor && fn(interceptor) && interceptor.call(self)
         node.remove() 
       }
     } else { return obj }
@@ -203,7 +191,6 @@ Keet.prototype.update = function (id, attr, newAttr, interceptor) {
   // Method to update a submodel of a component
   var self = this
   this.base.model = this.base.model.map(function (obj, idx, model) {
-    console.log(id, obj, attr, obj[attr])
     if (id === obj[attr]) {
       if (newAttr && typeof newAttr === 'object') {
         Object.assign(obj, newAttr)
@@ -211,9 +198,7 @@ Keet.prototype.update = function (id, attr, newAttr, interceptor) {
       var node = selector(obj['keet-id'])
       if (node) {
         // if interceptor is declared execute it before node update
-        if(interceptor && typeof interceptor === 'function'){
-          interceptor.call(self)
-        }
+        interceptor && fn(interceptor) && interceptor.call(self)
         setDOM(node, genTemplate.call(self, obj))
       }
     }
