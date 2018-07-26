@@ -13,10 +13,7 @@ module.exports = function (obj) {
     rep = arrProps[i].replace(/{{([^{}]+)}}/g, '$1')
     var isTernary = ternaryOps.call(obj, rep)
     if(isTernary){
-      if (args && ~args.indexOf(isTernary.state)){
-        tmpl = tmpl.replace('{{'+rep+'}}', isTernary.value)
-      } else 
-        tmpl = tmpl.replace('{{'+rep+'}}', isTernary.value)
+      tmpl = tmpl.replace('{{'+rep+'}}', isTernary.value)
     } else {
       tmpl = tmpl.replace('{{'+rep+'}}', obj[rep])
     }

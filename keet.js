@@ -13,7 +13,7 @@ var getId = require('./components/utils').getId
 var genId = require('./components/utils').genId
 var selector = require('./components/utils').selector
 var fn = require('./components/utils').fn
-var checkNodeAvailabity = require('./components/utils').checkNodeAvailabity
+var checkNodeAvailability = require('./components/utils').checkNodeAvailability
 var available = require('./components/utils').available
 var parseStr = require('./components/parseStr')
 var genTemplate = require('./components/genTemplate')
@@ -169,7 +169,7 @@ Keet.prototype.add = function (obj, interceptor) {
   // if interceptor is declared execute it before node update
   interceptor && fn(interceptor) && interceptor.call(this)
   // update the node, if it not avaialbe we keep checking the availabilty for a time
-  ele && ele.appendChild(genTemplate.call(this, obj)) || checkNodeAvailabity.call(this, obj, genTemplate, available)
+  ele && ele.appendChild(genTemplate.call(this, obj)) || checkNodeAvailability.call(this, obj, genTemplate, available)
 }
 
 Keet.prototype.destroy = function (id, attr, interceptor) {

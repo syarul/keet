@@ -23,7 +23,7 @@ var loopChilds = function (arr, elem) {
 
 exports.loopChilds = loopChilds
 
-exports.checkNodeAvailabity = function(obj, genTemplate, callback) {
+exports.checkNodeAvailability = function(obj, genTemplate, callback) {
   var ele
   var checked = false
   var id = this.el
