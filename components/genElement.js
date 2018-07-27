@@ -7,6 +7,7 @@ var tmplAttrHandler = require('./tmplAttrHandler')
 var processEvent = require('./processEvent')
 var selector = require('./utils').selector
 var strInterpreter = require('./strInterpreter')
+var modelParse = require('./modelParse')
 var nodesVisibility = require('./nodesVisibility')
 var sum = require('hash-sum')
 var setDOM = require('set-dom')
@@ -81,18 +82,18 @@ var nextState = function (i, args) {
         set: function (val) {
           value = val
 
-          // if(batchPool.status === 'pooling'){
-          //   return
-          // } else {
+          if(batchPool.status === 'pooling'){
+            return
+          } else {
 
-          //   batchPool.status = 'pooling'
+            batchPool.status = 'pooling'
 
-          //   clearTimeout(batchPool.ttl)
+            clearTimeout(batchPool.ttl)
 
-          //   batchPool.ttl = setTimeout(function(){
+            batchPool.ttl = setTimeout(function(){
               updateContext.apply(self, args)
-          //   }, 0)
-          // }
+            }, 0)
+          }
         }
       })
     }
@@ -144,6 +145,7 @@ var genElement = function () {
       styleTpl // inline styles
     ) : tpl // fallback if non exist, render the template as string
 
+  s = modelParse.call(this, s)
   s = nodesVisibility.call(this, s)
   tempDiv.innerHTML = s
   tempDiv.childNodes.forEach(function (c) {

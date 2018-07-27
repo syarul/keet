@@ -3,6 +3,11 @@ var ternaryOps = require('./ternaryOps')
 
 module.exports = function (str, updateStateList) {
   var self = this
+  // var modelRegex = /(\{\{model:([^{}]+)\}\})(.*?)(\{\{\/model:([^{}]+)\}\})/g
+  // if(modelRegex.test(str)) {
+  //   self.__modelList__ = str.match(modelRegex)
+  //   str = str.replace(modelRegex, '')
+  // }
   var arrProps = str.match(/{{([^{}]+)}}/g)
   if (arrProps && arrProps.length) {
     arrProps.map(function (s) {
@@ -23,6 +28,10 @@ module.exports = function (str, updateStateList) {
       }
       if (rep.match(/^\?/g)) {
         updateStateList(rep.replace('?', ''))
+      }
+      if (rep.match(/^model:/g)) {
+        self.__modelList__ = self.__modelList__ || []
+        self.__modelList__.push(rep.replace('model:', ''))
       }
     })
   }

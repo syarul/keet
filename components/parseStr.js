@@ -5,6 +5,7 @@ var processEvent = require('./processEvent')
 var genId = require('./utils').genId
 var testEvent = require('./utils').testEvent
 var genTemplate = require('./genTemplate')
+var modelParse = require('./modelParse')
 var nodesVisibility = require('./nodesVisibility')
 var sum = require('hash-sum')
 
@@ -57,16 +58,16 @@ module.exports = function () {
     var tpl = tmplHandler.call(this, this.base, function (state) {
       self.__stateList__ = self.__stateList__.concat(state)
     })
-
+    tpl = modelParse.call(this, tpl)
     tpl = nodesVisibility.call(this, tpl)
     var tempDiv = document.createElement('div')
     tempDiv.innerHTML = tpl
     setState.call(this, args)
     testEvent(tpl) && processEvent.call(this, tempDiv)
     tempDiv.childNodes.forEach(function (c) {
-      if (c.nodeType === 1) {
-        c.setAttribute('data-checksum', sum(c.outerHTML))
-      }
+      // if (c.nodeType === 1) {
+        // c.setAttribute('data-checksum', sum(c.outerHTML))
+      // }
       elemArr.push(c)
     })
   }

@@ -1,3 +1,4 @@
+var sum = require('hash-sum')
 var loopChilds = require('./utils').loopChilds
 
 var next = function (i, c, rem) {
@@ -38,8 +39,11 @@ module.exports = function (kNode) {
   var rem = []
   loopChilds(listKnodeChild, kNode)
   listKnodeChild.map(function (c) {
-    if (c.nodeType === 1 && c.hasAttributes()) {
-      next.apply(self, [ 0, c, rem ])
+    if(c.nodeType === 1){
+      c.setAttribute('data-checksum', sum(c.outerHTML))
+      if (c.hasAttributes()) {
+        next.apply(self, [ 0, c, rem ])
+      }
     }
   })
   listKnodeChild = []

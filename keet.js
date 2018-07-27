@@ -99,6 +99,11 @@ function Keet () {
     enumerable: false,
     writable: true
   })
+
+  Object.defineProperty(this, '__modelList__', {
+    enumerable: false,
+    writable: true
+  })
 }
 
 Keet.prototype.mount = function (instance) {
