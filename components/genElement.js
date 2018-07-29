@@ -1,45 +1,19 @@
-var copy = require('./copy')
-var tag = require('./tag')
 var tmplHandler = require('./tmplHandler')
-var tmplStylesHandler = require('./tmplStylesHandler')
-var tmplClassHandler = require('./tmplClassHandler')
-var tmplAttrHandler = require('./tmplAttrHandler')
 var processEvent = require('./processEvent')
-var selector = require('./utils').selector
+var getId = require('./utils').getId
+var testEvent = require('./utils').testEvent
 var strInterpreter = require('./strInterpreter')
+var componentParse = require('./componentParse')
 var modelParse = require('./modelParse')
 var nodesVisibility = require('./nodesVisibility')
-var sum = require('hash-sum')
-var setDOM = require('set-dom')
-
-setDOM.key = 'keet-id'
+var morph = require('morphdom')
 
 var updateContext = function () {
   var self = this
-  var ele
-  var newElem
-  var args = [].slice.call(arguments)
-  if (typeof this.base === 'object') {
-    Object.keys(this.base).map(function (handlerKey) {
-      var id = self.base[handlerKey]['keet-id']
-      ele = selector(id)
-      if (!ele && typeof self.base[handlerKey] === 'string') {
-        ele = document.getElementById(self.el)
-      }
-      newElem = genElement.apply(self, [self.base[handlerKey]].concat(args))
-      if (self.base.hasOwnProperty('template')) {
-        newElem.id = self.el
-      }
-      setDOM(ele, newElem)
-    })
-  } else {
-    ele = document.getElementById(self.el)
-    if (ele) {
-      newElem = genElement.apply(self, [self.base].concat(args))
-      newElem.id = self.el
-      setDOM(ele, newElem)
-    }
-  }
+  var ele = getId(this.el)
+  var newElem = genElement.call(this, this.base)
+  newElem.id = self.el
+  morph(ele, newElem)
   batchPool.status = 'ready'
 }
 
@@ -49,7 +23,20 @@ var batchPool = {
   status: 'ready'
 }
 
-var nextState = function (i, args) {
+var batchPoolExec = function () {
+  var self = this
+  if (batchPool.status === 'pooling') {
+
+  } else {
+    batchPool.status = 'pooling'
+    clearTimeout(batchPool.ttl)
+    batchPool.ttl = setTimeout(function () {
+      updateContext.call(self)
+    }, 0)
+  }
+}
+
+var nextState = function (i) {
   var self = this
   if (i < this.__stateList__.length) {
     var state = this.__stateList__[i]
@@ -68,7 +55,7 @@ var nextState = function (i, args) {
         },
         set: function (val) {
           inVal = val
-          updateContext.apply(self, args)
+          batchPoolExec.call(self)
         }
       })
     } else {
@@ -81,93 +68,34 @@ var nextState = function (i, args) {
         },
         set: function (val) {
           value = val
-
-          if(batchPool.status === 'pooling'){
-            return
-          } else {
-
-            batchPool.status = 'pooling'
-
-            clearTimeout(batchPool.ttl)
-
-            batchPool.ttl = setTimeout(function(){
-              updateContext.apply(self, args)
-            }, 0)
-          }
+          batchPoolExec.call(self)
         }
       })
     }
     i++
-    nextState.apply(this, [ i, args ])
-  } else {
-    //
+    nextState.call(this, i)
   }
 }
 
 var setState = function (args) {
-  nextState.apply(this, [ 0, args ])
+  nextState.call(this, 0)
 }
 
 var updateStateList = function (state) {
   this.__stateList__ = this.__stateList__.concat(state)
 }
 
-var genElement = function () {
-  var child = [].shift.call(arguments)
-  var args = [].slice.call(arguments)
-
+var genElement = function (template) {
   var tempDiv = document.createElement('div')
-  var cloneChild = copy(child)
-  delete cloneChild.template
-  delete cloneChild.tag
-  delete cloneChild.style
-  delete cloneChild.class
-  // process template if has handlebars value
-  this.__stateList__ = []
+  var tpl = tmplHandler.call(this, template, updateStateList.bind(this))
+  tpl = componentParse.call(this, tpl)
+  tpl = modelParse.call(this, tpl)
+  tpl = nodesVisibility.call(this, tpl)
+  tempDiv.innerHTML = tpl
 
-  var tpl = child.template
-    ? tmplHandler.call(this, child.template, updateStateList.bind(this))
-    : typeof child === 'string' ? tmplHandler.call(this, child, updateStateList.bind(this)) : null
-  // process styles if has handlebars value
-  var styleTpl = tmplStylesHandler.call(this, child.style, updateStateList.bind(this))
-  // process classes if has handlebars value
-  var classTpl = tmplClassHandler.call(this, child, updateStateList.bind(this))
-  if (classTpl) cloneChild.class = classTpl
-  // custom attributes handler
-  if (args && args.length) {
-    tmplAttrHandler.apply(this, [ cloneChild ].concat(args))
-  }
-
-  var s = child.tag
-    ? tag(child.tag, // html tag
-      tpl || '', // nodeValue
-      cloneChild, // attributes including classes
-      styleTpl // inline styles
-    ) : tpl // fallback if non exist, render the template as string
-
-  s = modelParse.call(this, s)
-  s = nodesVisibility.call(this, s)
-  tempDiv.innerHTML = s
-  tempDiv.childNodes.forEach(function (c) {
-    if (c.nodeType === 1) {
-      c.setAttribute('data-checksum', sum(c.outerHTML))
-    }
-  })
-  if (child.tag === 'input') {
-    if (cloneChild.checked) {
-      tempDiv.childNodes[0].setAttribute('checked', '')
-    } else {
-      tempDiv.childNodes[0].removeAttribute('checked')
-    }
-  }
-
-  setState.call(this, args)
-
-  processEvent.call(this, tempDiv)
-  return typeof child === 'string'
-    ? tempDiv
-    : child.tag ? tempDiv.childNodes[0]
-      : tempDiv
+  setState.call(this)
+  testEvent(tpl) && processEvent.call(this, tempDiv)
+  return tempDiv
 }
 
 exports.genElement = genElement
