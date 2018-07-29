@@ -15,15 +15,13 @@
     "url": "https://github.com/syarul/keet/issues"
   },
   "dependencies": {
-    "hash-sum": "^1.0.2",
-    "set-dom": "^7.5.2"
+    "morphdom": "^2.3.3"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-plugin-istanbul": "^4.1.5",
     "babel-preset-env": "^1.6.1",
-    "bel": "^6.0.0",
     "browserify": "^15.2.0",
     "coveralls": "^3.0.0",
     "html-loader": "^0.5.5",
@@ -32,8 +30,6 @@
     "jsdom-global": "^3.0.2",
     "markdown-magic": "^0.1.20",
     "mocha": "^5.0.0",
-    "morphdom": "^2.3.3",
-    "nanomorph": "^5.1.3",
     "nyc": "^11.4.1",
     "pug": "^2.0.0-rc.4",
     "pug-html-loader": "^1.1.5",
