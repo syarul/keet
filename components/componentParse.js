@@ -7,7 +7,6 @@ module.exports = function (string) {
       var match = string.match(re)
       if (match) {
         var tpl = self[component].render('asString')
-        self.__componentStub__ = self.__componentStub__ || {}
         self.__componentStub__[component] = tpl
         string = string.replace(match[0], tpl)
       }

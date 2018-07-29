@@ -25,13 +25,11 @@ module.exports = function (str, updateStateList) {
         updateStateList(rep.replace('?', ''))
       }
       // resolve model
-      self.__modelList__ = self.__modelList__ || []
       if (rep.match(/^model:/g)) {
         var modelRep = rep.replace('model:', '')
         if (!~self.__modelList__.indexOf(modelRep)) { self.__modelList__.push(modelRep) }
       }
       // resolve component
-      self.__componentList__ = self.__componentList__ || []
       if (rep.match(/^component:/g)) {
         var componentRep = rep.replace('component:', '')
         if (!~self.__componentList__.indexOf(componentRep)) { self.__componentList__.push(componentRep) }

@@ -1,10 +1,10 @@
 <!-- AUTO-GENERATED-CONTENT:START (VER) -->
-# Keet v3.5.2
+# Keet v4.0.0
 <!-- AUTO-GENERATED-CONTENT:START (VER) -->
 <!-- AUTO-GENERATED-CONTENT:END -->
 
 <!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
-[![npm package](https://img.shields.io/badge/npm-3.5.2-blue.svg)](https://www.npmjs.com/package/keet) [![browser build](https://img.shields.io/badge/rawgit-3.5.2-ff69b4.svg)](https://cdn.rawgit.com/syarul/keet/master/keet-min.js) [![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet) [![Build Status](https://travis-ci.org/syarul/keet.svg?branch=master)](https://travis-ci.org/syarul/keet) [![Coverage Status](https://coveralls.io/repos/github/syarul/keet/badge.svg?branch=master)](https://coveralls.io/github/syarul/keet?branch=master) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![npm package](https://img.shields.io/badge/npm-4.0.0-blue.svg)](https://www.npmjs.com/package/keet) [![browser build](https://img.shields.io/badge/rawgit-4.0.0-ff69b4.svg)](https://cdn.rawgit.com/syarul/keet/master/keet-min.js) [![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet) [![Build Status](https://travis-ci.org/syarul/keet.svg?branch=master)](https://travis-ci.org/syarul/keet) [![Coverage Status](https://coveralls.io/repos/github/syarul/keet/badge.svg?branch=master)](https://coveralls.io/github/syarul/keet?branch=master) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 <!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
 <!-- AUTO-GENERATED-CONTENT:END -->
 
@@ -48,18 +48,18 @@ the component. Within the string, you can assign a state within handlebars i.e: 
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/hello.js) -->
 <!-- The below code snippet is automatically added from ./examples/hello.js -->
 ```js
-import Keet from 'keet'
+import Keet from '../'
+import { getId } from '../components/utils'
 
 class App extends Keet {
-  constructor () {
-    super()
-    this.myState = 'World'
-  }
+   state = 'World'
 }
 
 const app = new App()
 
-app.mount('Hello {{myState}}').link('app')
+app.mount('Hello {{state}}').link('app')
+
+console.assert(getId('app').innerHTML === 'Hello World', 'Hello World test')
 ```
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/helloWorld.js) -->
 <!-- AUTO-GENERATED-CONTENT:END -->
@@ -71,13 +71,13 @@ Basic idea how we can create a simple counter
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/counter.js) -->
 <!-- The below code snippet is automatically added from ./examples/counter.js -->
 ```js
-import Keet from 'keet'
+import Keet from '../'
+import { getId } from '../components/utils'
 
 class App extends Keet {
-  constructor () {
-    super()
-    this.count = 0
-  }
+
+  count = 0
+
   add () {
     this.count++
   }
@@ -85,7 +85,16 @@ class App extends Keet {
 
 const app = new App()
 
-app.mount('<button k-click="add()">{{count}}</button>').link('app')
+app.mount('<button id="counter" k-click="add()">{{count}}</button>').link('app')
+
+const click = new Event('click', {'bubbles': true, 'cancelable': true })
+
+const counter = getId('counter')
+
+counter.dispatchEvent(click)
+
+// dom updates is handled by batch pool, to check it we simply add to setTimeout event
+setTimeout(() => console.assert(counter.innerHTML === '1', 'counter test'))
 ```
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/counter.js) -->
 <!-- AUTO-GENERATED-CONTENT:END -->

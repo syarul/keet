@@ -23,6 +23,14 @@ exports.testEvent = function (tmpl) {
   return / k-/.test(tmpl)
 }
 
+/**
+ * @private
+ * @description
+ * Check a node availability in 50ms, if not found silenty skip the event
+ *
+ * @param {string} id - the node id
+ * @param {function} callback - the function to execute once the node is found
+ */
 exports.checkNodeAvailability = function (id, callback) {
   var ele
   var checked = false
@@ -37,7 +45,19 @@ exports.checkNodeAvailability = function (id, callback) {
   setTimeout(function () {
     if (!checked) {
       clearInterval(t)
-      // throw new Error('Unable to find html entity with id ' + id + '.')
     }
   }, 50)
+}
+
+/**
+ * @private
+ * @description
+ * Confirm that a value is truthy, throws an error message otherwise.
+ *
+ * @param {*} val - the val to test.
+ * @param {string} msg - the error message on failure.
+ * @throws {Error}
+ */
+exports.assert = function (val, msg) {
+  if (!val) throw new Error('keet: ' + msg)
 }

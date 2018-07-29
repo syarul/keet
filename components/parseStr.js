@@ -14,6 +14,9 @@ module.exports = function (stub) {
   var tpl
   if (typeof this.base === 'string') {
     this.__stateList__ = this.__stateList__ || []
+    this.__modelList__ = this.__modelList__ || []
+    this.__componentList__ = this.__componentList__ || []
+    this.__componentStub__ = this.__componentStub__ || {}
     tpl = tmplHandler.call(this, this.base, function (state) {
       self.__stateList__ = self.__stateList__.concat(state)
     })
@@ -29,6 +32,7 @@ module.exports = function (stub) {
         this.__componentList__.map(function (component) {
           var c = self[component]
           if (c) {
+            // do initial checking of the node availability
             checkNodeAvailability(c.el, function () {
               c.stubRender(self.__componentStub__[component])
             })

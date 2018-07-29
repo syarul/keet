@@ -1,12 +1,14 @@
-import Keet from 'keet'
+import Keet from '../'
+import { getId } from '../components/utils'
 
 class App extends Keet {
-  constructor () {
-    super()
-    this.myState = 'World'
-  }
+   state = 'World'
 }
 
 const app = new App()
 
-app.mount('Hello {{myState}}').link('app')
+app.mount('Hello {{state}}').link('app')
+
+console.assert(getId('app').innerHTML === 'Hello World', 'Hello World test')
+
+

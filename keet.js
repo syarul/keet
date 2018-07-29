@@ -1,6 +1,6 @@
 'use strict'
 /**
- * Keetjs v3.5.2 Alpha release: https://github.com/keetjs/keet.js
+ * Keetjs v4.0.0 Alpha release: https://github.com/keetjs/keet.js
  * Minimalist view layer for the web
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keetjs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -19,50 +19,18 @@ var processEvent = require('./components/processEvent')
  * @description
  * The main constructor of Keet
  *
- * @param {String | arg0[, arg1[, arg2[, ...]]]} arguments - Custom property names
- * i.e using 'checked' for input elements.
- * Usage :-
+ * Basic Usage :-
  *
  *    const App extends Keet {
- *      constructor(...args) {
+ *      constructor() {
  *        super()
- *        this.args = args
  *      }
  *    }
- *    const app = new App('checked')
+ *    const app = new App()
+ *    app.mount('hello world').link('app')
  *
- * for example usage cases see https://github.com/syarul/keet/blob/master/examples/check.js
  */
-function Keet () {
-  // this is the internal state-management for the components. Personally I never
-  // get to like state-management in JavaScript. The idea might sound divine but
-  // you'll stuck in very complicated get-to-master this framework/flow cycles
-  // where you always write the state in some external store and write long logic
-  // to do small stuff and they are very slow. On the other hand, this internal
-  // store is relatively simple, has references and the availability of sharing
-  // across multiple components in any case.
-
-  // prepare store for states
-  Object.defineProperty(this, '__stateList__', {
-    enumerable: false,
-    writable: true
-  })
-  // prepare store for models
-  Object.defineProperty(this, '__modelList__', {
-    enumerable: false,
-    writable: true
-  })
-  // prepare store for components
-  Object.defineProperty(this, '__componentList__', {
-    enumerable: false,
-    writable: true
-  })
-  // prepare template referrer for components
-  Object.defineProperty(this, '__componentStub__', {
-    enumerable: false,
-    writable: true
-  })
-}
+function Keet () {}
 
 Keet.prototype.mount = function (instance) {
   // Before we begin to parse an instance, do a run-down checks
