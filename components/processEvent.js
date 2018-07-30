@@ -12,7 +12,6 @@ var next = function (i, c, rem) {
   var atts = c.attributes
 
   if (i < atts.length) {
-    // (?:([^-]*).)(?=\(([^{}]+)\))
     hask = /^k-/.test(atts[i].nodeName)
     if (hask) {
       evtName = atts[i].nodeName.replace(/^[^-]+-/, '')

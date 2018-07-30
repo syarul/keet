@@ -9,30 +9,56 @@ var nodesVisibility = require('./nodesVisibility')
 var morph = require('morphdom')
 
 var updateContext = function () {
-  var self = this
   var ele = getId(this.el)
   var newElem = genElement.call(this, this.base)
-  newElem.id = self.el
-  morph(ele, newElem)
+
+  // morp as sub-component
+  if(this.IS_STUB){
+    morph(ele, newElem.childNodes[0])
+  } else {
+  // otherwise moph as whole
+    newElem.id = this.el
+    morph(ele, newElem)
+  }
+  // exec life-cycle componentDidUpdate
+  if(this.componentDidUpdate && typeof this.componentDidUpdate === 'function'){
+    this.componentDidUpdate()
+  }
   batchPool.status = 'ready'
 }
 
 // batch pool update states to DOM
 var batchPool = {
-  ttl: null,
+  ttl: 0,
   status: 'ready'
 }
 
+// The idea behind this is to reduce morphing the DOM when multiple updates 
+// hit the deck. If possible we want to pool them before initiating DOM 
+// morphing, but in the event the update is not fast enough we want to return 
+// to normal synchronous update.
 var batchPoolExec = function () {
   var self = this
   if (batchPool.status === 'pooling') {
-
+    return
   } else {
     batchPool.status = 'pooling'
-    clearTimeout(batchPool.ttl)
+    // if batchpool is not yet executed or it was idle (after 100ms)
+    // direct morph the DOM
+    if(!batchPool.ttl) {
+      updateContext.call(this)
+    } else {
+    // we wait until pooling is ready before initiating DOM morphing
+      clearTimeout(batchPool.ttl)
+      batchPool.ttl = setTimeout(function () {
+        updateContext.call(self)
+      }, 0)
+    }
+    // we clear the batch pool if it more then 100ms from
+    // last update
     batchPool.ttl = setTimeout(function () {
-      updateContext.call(self)
-    }, 0)
+      batchPool.ttl = 0
+    }, 100)
   }
 }
 
@@ -82,7 +108,7 @@ var setState = function (args) {
 }
 
 var updateStateList = function (state) {
-  this.__stateList__ = this.__stateList__.concat(state)
+  if(!~this.__stateList__.indexOf(state)) this.__stateList__ = this.__stateList__.concat(state)
 }
 
 var genElement = function (template) {
@@ -91,6 +117,7 @@ var genElement = function (template) {
   tpl = componentParse.call(this, tpl)
   tpl = modelParse.call(this, tpl)
   tpl = nodesVisibility.call(this, tpl)
+  
   tempDiv.innerHTML = tpl
 
   setState.call(this)

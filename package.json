@@ -34,6 +34,7 @@
     "jsdom-global": "^3.0.2",
     "markdown-magic": "^0.1.20",
     "mocha": "^5.0.0",
+    "nanohtml": "^1.2.4",
     "nyc": "^11.4.1",
     "pug": "^2.0.0-rc.4",
     "pug-html-loader": "^1.1.5",
@@ -45,7 +46,21 @@
   "keywords": [
     "templating",
     "minimal",
-    "view layer"
+    "view layer",
+    "html",
+    "template-string",
+    "strings",
+    "template",
+    "string",
+    "hyperhtml",
+    "hyperdom",
+    "fast",
+    "small",
+    "lite",
+    "tiny",
+    "nano",
+    "diff",
+    "render"
   ],
   "license": "MIT",
   "main": "keet.js",
@@ -66,7 +81,7 @@
     "cover": "nyc --reporter=lcov --reporter=text npm run test",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "start": "webpack-dev-server -d",
-    "test": "mocha test/test.js --require babel-core/register --require jsdom-global/register",
+    "test": "mocha test/test.js --require babel-core/register --require jsdom-global/register --timeout 10000",
     "test-ci": "nyc npm run test"
   },
   "git_branch": "master"

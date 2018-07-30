@@ -31,22 +31,27 @@ exports.testEvent = function (tmpl) {
  * @param {string} id - the node id
  * @param {function} callback - the function to execute once the node is found
  */
-exports.checkNodeAvailability = function (id, callback) {
-  var ele
+exports.checkNodeAvailability = function (component, componentName, callback) {
   var checked = false
-  var t = setInterval(function () {
-    ele = getId(id)
-    if (ele) {
-      clearInterval(t)
-      checked = true
-      callback()
-    }
-  }, 0)
-  setTimeout(function () {
-    if (!checked) {
-      clearInterval(t)
-    }
-  }, 50)
+  var ele = getId(component.el)
+
+  if(ele) return ele
+  else {
+    var t = setInterval(function () {
+      ele = getId(id)
+      if (ele) {
+        clearInterval(t)
+        checked = true
+        callback(ele)
+      }
+    }, 0)
+    setTimeout(function () {
+      if (!checked) {
+        clearInterval(t)
+      }
+    }, 50)
+  }
+
 }
 
 /**
@@ -59,5 +64,5 @@ exports.checkNodeAvailability = function (id, callback) {
  * @throws {Error}
  */
 exports.assert = function (val, msg) {
-  if (!val) throw new Error('keet: ' + msg)
+  if (!val) throw new Error('(keet) ' + msg)
 }

@@ -9,11 +9,12 @@
  * Released under the MIT License.
  */
 
-var getId = require('./components/utils').getId
 var parseStr = require('./components/parseStr')
 var setState = require('./components/genElement').setState
-var testEvent = require('./components/utils').testEvent
 var processEvent = require('./components/processEvent')
+var getId = require('./components/utils').getId
+var testEvent = require('./components/utils').testEvent
+var assert = require('./components/utils').assert
 
 /**
  * @description
@@ -21,11 +22,7 @@ var processEvent = require('./components/processEvent')
  *
  * Basic Usage :-
  *
- *    const App extends Keet {
- *      constructor() {
- *        super()
- *      }
- *    }
+ *    const App extends Keet {}
  *    const app = new App()
  *    app.mount('hello world').link('app')
  *
@@ -34,17 +31,15 @@ function Keet () {}
 
 Keet.prototype.mount = function (instance) {
   // Before we begin to parse an instance, do a run-down checks
-  // to clean up back-tick string which usually has line spacing
-  if (typeof instance === 'object') {
-    Object.keys(instance).map(function (key) {
-      if (typeof instance[key] === 'string') {
-        instance[key] = instance[key].trim().replace(/\s+/g, ' ')
-      } else if (typeof instance[key] === 'object' && typeof instance[key]['template'] === 'string') {
-        instance[key]['template'] = instance[key]['template'].trim().replace(/\s+/g, ' ')
-      }
-    })
-  } else if (typeof instance === 'string') {
+  // to clean up back-tick string which usually has line spacing.
+  if (typeof instance === 'string') {
     instance = instance.trim().replace(/\s+/g, ' ')
+  // If instance is an html element (usually using template literals), 
+  // convert it back to string.
+  } else if(typeof instance === 'object' && instance['nodeType']) {
+    instance = instance.outerHTML.toString()
+  } else {
+    assert(typeof instance === 'string' || typeof instance === 'object', 'Parameter is not a string or a html element.')
   }
   // we store the pristine instance in Component.base
   this.base = instance
@@ -54,7 +49,8 @@ Keet.prototype.mount = function (instance) {
 Keet.prototype.flush = function (instance) {
   // Custom method to clean up the component DOM tree
   // useful if we need to do clean up rerender.
-  var ele = getId(this.el)
+  var el = instance || this.el
+  var ele = getId(el)
   if (ele) ele.innerHTML = ''
   return this
 }
@@ -63,6 +59,7 @@ Keet.prototype.link = function (id) {
   // The target DOM where the rendering will took place.
   // We could also apply life-cycle method before the
   // render happen.
+  if(!id) assert(id, 'No id is given as parameter.')
   this.el = id
   if (this.componentWillMount && typeof this.componentWillMount === 'function') {
     this.componentWillMount()
@@ -96,12 +93,10 @@ Keet.prototype.cluster = function () {
   }
 }
 
-Keet.prototype.stubRender = function (tpl) {
-  var el = getId(this.el)
-  if (el) {
-    setState.call(this)
-    testEvent(tpl) && processEvent.call(this, el)
-  }
+Keet.prototype.stubRender = function (tpl, node) {
+  // sub-component rendering
+  setState.call(this)
+  testEvent(tpl) && processEvent.call(this, node)
 }
 
 module.exports = Keet
