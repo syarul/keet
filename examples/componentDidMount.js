@@ -1,5 +1,5 @@
 import Keet from '../'
-import { getId } from '../components/utils'
+import { getId } from '../utils'
 
 class App extends Keet {
    componentDidMount(){

@@ -1,11 +1,9 @@
 import Keet from '../'
-import { getId } from '../components/utils'
-import html from 'nanohtml'
+import { html, getId } from '../utils'
 
 let count = 1000000
 
 let c = 0
-let t
 
 class App extends Keet {
   data = count + 1
@@ -15,17 +13,13 @@ class App extends Keet {
   }
   componentDidUpdate(){
   	c++
-    clearTimeout(t)
-  	t = setTimeout(() => console.log(c), 100)
   }
 }
 
 const app = new App()
 
 app.mount(html`
-  <div>
-    <div id="container">{{data}}</div>
-  </div>
+  <div id="container">{{data}}</div>
 `).link('app')
 
 

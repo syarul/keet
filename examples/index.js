@@ -1,1 +1,1 @@
-import './objectPropState'
+import './model'

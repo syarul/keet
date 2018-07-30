@@ -11,10 +11,11 @@
 
 var parseStr = require('./components/parseStr')
 var setState = require('./components/genElement').setState
+var genElement = require('./components/genElement').genElement
 var processEvent = require('./components/processEvent')
-var getId = require('./components/utils').getId
-var testEvent = require('./components/utils').testEvent
-var assert = require('./components/utils').assert
+var getId = require('./utils').getId
+var testEvent = require('./utils').testEvent
+var assert = require('./utils').assert
 
 /**
  * @description
@@ -97,6 +98,12 @@ Keet.prototype.stubRender = function (tpl, node) {
   // sub-component rendering
   setState.call(this)
   testEvent(tpl) && processEvent.call(this, node)
+}
+
+Keet.prototype.callBatchPoolUpdate = function() {
+  // force component to update, if any state / non-state
+  // value changed DOM diffing will occur
+  genElement.call(this, true)
 }
 
 module.exports = Keet

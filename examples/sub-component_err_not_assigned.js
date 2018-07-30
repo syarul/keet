@@ -1,6 +1,5 @@
 import Keet from '../'
-import { getId } from '../components/utils'
-import html from 'nanohtml'
+import { getId, html } from '../utils'
 
 class Sub extends Keet {
   // provide the node id where this sub will rendered

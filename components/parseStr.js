@@ -1,12 +1,12 @@
 var setState = require('./genElement').setState
 var tmplHandler = require('./tmplHandler')
 var processEvent = require('./processEvent')
-var getId = require('./utils').getId
-var testEvent = require('./utils').testEvent
+var getId = require('../utils').getId
+var testEvent = require('../utils').testEvent
 var componentParse = require('./componentParse')
 var modelParse = require('./modelParse')
 var nodesVisibility = require('./nodesVisibility')
-var checkNodeAvailability = require('./utils').checkNodeAvailability
+var checkNodeAvailability = require('../utils').checkNodeAvailability
 
 
 var renderSub = function(c, cName, node) {

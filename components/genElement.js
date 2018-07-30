@@ -1,7 +1,7 @@
 var tmplHandler = require('./tmplHandler')
 var processEvent = require('./processEvent')
-var getId = require('./utils').getId
-var testEvent = require('./utils').testEvent
+var getId = require('../utils').getId
+var testEvent = require('../utils').testEvent
 var strInterpreter = require('./strInterpreter')
 var componentParse = require('./componentParse')
 var modelParse = require('./modelParse')
@@ -111,17 +111,17 @@ var updateStateList = function (state) {
   if(!~this.__stateList__.indexOf(state)) this.__stateList__ = this.__stateList__.concat(state)
 }
 
-var genElement = function (template) {
+var genElement = function (force) {
   var tempDiv = document.createElement('div')
   var tpl = tmplHandler.call(this, updateStateList.bind(this))
   tpl = componentParse.call(this, tpl)
   tpl = modelParse.call(this, tpl)
   tpl = nodesVisibility.call(this, tpl)
-  
   tempDiv.innerHTML = tpl
 
   setState.call(this)
   testEvent(tpl) && processEvent.call(this, tempDiv)
+  if(force) batchPoolExec.call(this)
   return tempDiv
 }
 

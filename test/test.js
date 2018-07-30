@@ -1,7 +1,7 @@
 const assert = require('assert')
 const { JSDOM } = require('jsdom')
 
-const { getId } = require('../components/utils')
+const { getId } = require('../utils')
 
 const fs = require('fs')
 
@@ -142,10 +142,30 @@ describe(`keet.js v-${ver} test`, function () {
   })
 
   it('object notation', function (next) {
-    require('../examples/objectPropState')
+    require('../examples/object-literals')
     // batch pool has initiated, so we have to check outside of the event loop
     setTimeout(() => {
-      assert.equal(getId('container').innerHTML, '<span>bar</span> <span>state : keet</span> <span>age : 12</span>')
+      assert.equal(getId('app').innerHTML, '<span>bar</span><span> state : keet</span><span> age : 12</span>')
+      clear()
+      next()
+    })
+  })
+
+  it('multi state of the same name', function (next) {
+    require('../examples/multi-state')
+    // batch pool has initiated, so we have to check outside of the event loop
+    setTimeout(() => {
+      assert.equal(getId('app').innerHTML, 'I say: horray horray horray!')
+      clear()
+      next()
+    })
+  })
+
+  it('multi state of the same name changed', function (next) {
+    require('../examples/multi-state-diff')
+    // batch pool has initiated, so we have to check outside of the event loop
+    setTimeout(() => {
+      assert.equal(getId('app').innerHTML, 'I say: horray horray horray horrayyy!')
       clear()
       next()
     })
