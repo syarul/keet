@@ -113,7 +113,7 @@ var updateStateList = function (state) {
 
 var genElement = function (template) {
   var tempDiv = document.createElement('div')
-  var tpl = tmplHandler.call(this, template, updateStateList.bind(this))
+  var tpl = tmplHandler.call(this, updateStateList.bind(this))
   tpl = componentParse.call(this, tpl)
   tpl = modelParse.call(this, tpl)
   tpl = nodesVisibility.call(this, tpl)

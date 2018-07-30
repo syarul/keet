@@ -1,7 +1,8 @@
 var strInterpreter = require('./strInterpreter')
 var ternaryOps = require('./ternaryOps')
-module.exports = function (str, updateStateList) {
+module.exports = function (updateStateList) {
   var self = this
+  var str = this.base
   var arrProps = str.match(/{{([^{}]+)}}/g)
   if (arrProps && arrProps.length) {
     arrProps.map(function (s) {

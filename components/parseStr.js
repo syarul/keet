@@ -22,7 +22,7 @@ module.exports = function (stub) {
     this.__modelList__ = this.__modelList__ || []
     this.__componentList__ = this.__componentList__ || []
     this.__componentStub__ = this.__componentStub__ || {}
-    tpl = tmplHandler.call(this, this.base, function (state) {
+    tpl = tmplHandler.call(this, function (state) {
       if(!~self.__stateList__.indexOf(state)) self.__stateList__ = self.__stateList__.concat(state)
     })
     tpl = componentParse.call(this, tpl)

@@ -38,11 +38,11 @@ exports.checkNodeAvailability = function (component, componentName, callback) {
   if(ele) return ele
   else {
     var t = setInterval(function () {
-      ele = getId(id)
+      ele = getId(component.el)
       if (ele) {
         clearInterval(t)
         checked = true
-        callback(ele)
+        callback(component, componentName, ele)
       }
     }, 0)
     setTimeout(function () {
