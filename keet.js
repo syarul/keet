@@ -34,7 +34,7 @@ Keet.prototype.mount = function (instance) {
   // to clean up back-tick string which usually has line spacing.
   if (typeof instance === 'string') {
     instance = instance.trim().replace(/\s+/g, ' ')
-  // If instance is an html element (usually using template literals), 
+  // If instance is a html element (usually using template literals), 
   // convert it back to string.
   } else if(typeof instance === 'object' && instance['nodeType']) {
     instance = instance.outerHTML.toString()

@@ -1,14 +1,16 @@
-import Keet from '../keet'
+import Keet from '../'
+import { getId } from '../components/utils'
+import html from 'nanohtml'
 
 class App extends Keet {
-  constructor () {
-    super()
-    this.state = {
-      name: 'john',
-      age: 31
-    }
-    this.another = 'foo'
+
+  state = {
+    name: 'john',
+    age: 31
   }
+
+  another = 'foo'
+  
   change () {
     this.state.name = 'keet'
   }
@@ -22,25 +24,24 @@ class App extends Keet {
 
 const app = new App()
 
-const vmodel = {
-  template: `
+app.mount(html`
+  <div id="container">
     <span>{{another}}</span>
     <span>state : {{state.name}}</span>
     <span>age : {{state.age}}</span>
-  `
-}
+  </div>
+`).link('app')
 
-app.mount(vmodel).link('app')
 
+app.change()
+// batch pool has started since
+
+// ensure state does not mutate
+app.anotherState()
+app.changeAge()
+
+// batch pool has initiated, so we have to check outside of the event loop
 setTimeout(() => {
-  app.change()
-}, 2000)
+  console.assert(getId('container').innerHTML === '<span>bar</span> <span>state : keet</span> <span>age : 12</span>', 'batch-pool update')
+})
 
-setTimeout(() => {
-  // ensure state does not mutate
-  app.anotherState()
-}, 3000)
-
-setTimeout(() => {
-  app.changeAge()
-}, 4000)

@@ -106,7 +106,7 @@ describe(`keet.js v-${ver} test`, function () {
 
   it('sub-component not assigned', function (next) {
     require('../examples/sub-component_err_not_assigned')
-    // batch pool has initated, so we have to check outside of the event loop
+    // batch pool has initiated, so we have to check outside of the event loop
     setTimeout(() => {
       assert.equal(getId('container').innerHTML, '{{component:subc}}')
       clear()
@@ -123,7 +123,7 @@ describe(`keet.js v-${ver} test`, function () {
   it('event click', function (next) {
     require('../examples/counter')
     const counter = getId('counter')
-    // batch pool has initated, so we have to check outside of the event loop
+    // batch pool has initiated, so we have to check outside of the event loop
     setTimeout(() => {
       assert.equal(counter.innerHTML, '1')
       clear()
@@ -133,9 +133,19 @@ describe(`keet.js v-${ver} test`, function () {
 
   it('batch-pool 1 million updates', function (next) {
     require('../examples/batch-pool')
-    // batch pool has initated, so we have to check outside of the event loop
+    // batch pool has initiated, so we have to check outside of the event loop
     setTimeout(() => {
       assert.equal(getId('container').innerHTML, '1')
+      clear()
+      next()
+    })
+  })
+
+  it('object notation', function (next) {
+    require('../examples/objectPropState')
+    // batch pool has initiated, so we have to check outside of the event loop
+    setTimeout(() => {
+      assert.equal(getId('container').innerHTML, '<span>bar</span> <span>state : keet</span> <span>age : 12</span>')
       clear()
       next()
     })
