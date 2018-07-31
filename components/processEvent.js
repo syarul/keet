@@ -1,26 +1,28 @@
-var loopChilds = require('./utils').loopChilds
+var loopChilds = require('../utils').loopChilds
 
 var next = function (i, c, rem) {
   var hask
   var evtName
-  var evthandler
   var handler
+  var handlerArgs
   var isHandler
   var argv
   var v
+  var h
   var atts = c.attributes
 
   if (i < atts.length) {
     hask = /^k-/.test(atts[i].nodeName)
     if (hask) {
-      evtName = atts[i].nodeName.split('-')[1]
-      evthandler = atts[i].nodeValue
-      handler = evthandler.split('(')
-      isHandler = this[handler[0]]
+      evtName = atts[i].nodeName.replace(/^[^-]+-/, '')
+      handler = atts[i].nodeValue.match(/[a-zA-Z]+(?![^(]*\))/)[0]
+      h = atts[i].nodeValue.match(/\(([^{}]+)\)/)
+      handlerArgs = h ? h[1] : ''
+      isHandler = this[handler]
       if (typeof isHandler === 'function') {
         rem.push(atts[i].nodeName)
         argv = []
-        v = handler[1].slice(0, -1).split(',').filter(function (f) { return f !== '' })
+        v = handlerArgs.split(',').filter(function (f) { return f !== '' })
         if (v.length) v.map(function (v) { argv.push(v) })
         c.addEventListener(evtName, isHandler.bind.apply(isHandler.bind(this), [c].concat(argv)), false)
       }

@@ -1,10 +1,10 @@
 <!-- AUTO-GENERATED-CONTENT:START (VER) -->
-# Keet v3.5.2
+# Keet v4.0.0
 <!-- AUTO-GENERATED-CONTENT:START (VER) -->
 <!-- AUTO-GENERATED-CONTENT:END -->
 
 <!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
-[![npm package](https://img.shields.io/badge/npm-3.5.2-blue.svg)](https://www.npmjs.com/package/keet) [![browser build](https://img.shields.io/badge/rawgit-3.5.2-ff69b4.svg)](https://cdn.rawgit.com/syarul/keet/master/keet-min.js) [![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet) [![Build Status](https://travis-ci.org/syarul/keet.svg?branch=master)](https://travis-ci.org/syarul/keet) [![Coverage Status](https://coveralls.io/repos/github/syarul/keet/badge.svg?branch=master)](https://coveralls.io/github/syarul/keet?branch=master) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![npm package](https://img.shields.io/badge/npm-4.0.0-blue.svg)](https://www.npmjs.com/package/keet) [![browser build](https://img.shields.io/badge/rawgit-4.0.0-ff69b4.svg)](https://cdn.rawgit.com/syarul/keet/master/keet-min.js) [![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet) [![Build Status](https://travis-ci.org/syarul/keet.svg?branch=master)](https://travis-ci.org/syarul/keet) [![Coverage Status](https://coveralls.io/repos/github/syarul/keet/badge.svg?branch=master)](https://coveralls.io/github/syarul/keet?branch=master) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 <!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
 <!-- AUTO-GENERATED-CONTENT:END -->
 
@@ -12,7 +12,7 @@ Minimalist view layer for the web.
 
 ## What is Keet
 
-> *Keet* specific goal is to offer less APIs, familiar/vanilla code structures and a possible remedy to [*choice paralysis*](https://the-pastry-box-project.net/addy-osmani/2014-January-19). It was never intended superior in features compare to most major web frameworks and waste no effort to become such. Generally *Keet* is more flexible, decent render performance with loose coupling, less complicated design and workflow. You might surprise with the logic and small learning curve it offers. It's also only 5kb gzip in size. Under the hood it use [set-dom](https://github.com/DylanPiercey/set-dom) and [hash-sum](https://github.com/bevacqua/hash-sum) to do ```DOM-diffing```.
+> *Keet* specific goal is to offer less APIs, familiar/vanilla code structures and a possible remedy to [*choice paralysis*](https://the-pastry-box-project.net/addy-osmani/2014-January-19). It was never intended superior in features compare to most major web frameworks and waste no effort to become such. Generally *Keet* is more flexible, decent render performance with loose coupling, less complicated design and workflow. You might surprise with the logic and small learning curve it offers. It's also only 5kb gzip in size. Under the hood it use [morphdom](https://github.com/patrick-steele-idem/morphdom) to do ```DOM-diffing```.
 
 ## Getting Started
 
@@ -45,21 +45,24 @@ Or from npm:-
 Start by constructing a class expression as child of "Keet". Supply a string argument
 the component. Within the string, you can assign a state within handlebars i.e: ```{{<myState>}}```
 
+NOTE: You also can use ternary as your state i.e: ```{{<ternaryState>?show:hide}}``` where
+```<ternaryState>``` is a boolean value
+
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/hello.js) -->
 <!-- The below code snippet is automatically added from ./examples/hello.js -->
 ```js
-import Keet from 'keet'
+import Keet from '../'
+import { getId } from '../utils'
 
 class App extends Keet {
-  constructor () {
-    super()
-    this.myState = 'World'
-  }
+   state = 'World'
 }
 
 const app = new App()
 
-app.mount('Hello {{myState}}').link('app')
+app.mount('Hello {{state}}').link('app')
+
+console.assert(getId('app').innerHTML === 'Hello World', 'hello test')
 ```
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/helloWorld.js) -->
 <!-- AUTO-GENERATED-CONTENT:END -->
@@ -71,13 +74,11 @@ Basic idea how we can create a simple counter
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/counter.js) -->
 <!-- The below code snippet is automatically added from ./examples/counter.js -->
 ```js
-import Keet from 'keet'
+import Keet from '../'
+import { getId } from '../utils'
 
 class App extends Keet {
-  constructor () {
-    super()
-    this.count = 0
-  }
+  count = 0
   add () {
     this.count++
   }
@@ -85,7 +86,15 @@ class App extends Keet {
 
 const app = new App()
 
-app.mount('<button k-click="add()">{{count}}</button>').link('app')
+app.mount('<button id="counter" k-click="add()">{{count}}</button>').link('app')
+
+const click = new Event('click', {'bubbles': true, 'cancelable': true })
+
+const counter = getId('counter')
+
+counter.dispatchEvent(click)
+
+setTimeout(() => console.assert(counter.innerHTML === '1', 'counter test'))
 ```
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/counter.js) -->
 <!-- AUTO-GENERATED-CONTENT:END -->
@@ -95,24 +104,23 @@ app.mount('<button k-click="add()">{{count}}</button>').link('app')
 To work with dynamic nodes you can wrap your html string with ```{{?<state>}}<myDynamicNode>{{/<state>}}``` and assign boolean
 value to the state 
 
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/conditionalNodes.js) -->
-<!-- The below code snippet is automatically added from ./examples/conditionalNodes.js -->
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/conditional-nodes.js) -->
+<!-- The below code snippet is automatically added from ./examples/conditional-nodes.js -->
 ```js
-import Keet from 'keet'
+import Keet from '../'
+import { getId, html } from '../utils'
 
 class App extends Keet {
-  constructor () {
-    super()
-    this.show = false
-  }
-  change () {
+  show = false
+  toggle () {
     this.show = !this.show
   }
 }
 
 const app = new App()
 
-app.mount(`
+app.mount(html`
+  <button k-click="toggle()">toggle</button>
   <div id="1">one</div>
   {{?show}}
   <div id="2">two</div>
@@ -120,7 +128,101 @@ app.mount(`
   <div id="3">three</div>
 `).link('app')
 
-setInterval(() => app.change(), 2000)
+console.assert(getId('app').innerHTML === '<button>toggle</button><div id="1">one</div><div id="3">three</div>', 'conditional nodes')
+```
+<!-- AUTO-GENERATED-CONTENT:END -->
+
+## Model
+
+To work with list checkout this sample case
+
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/model.js) -->
+<!-- The below code snippet is automatically added from ./examples/model.js -->
+```js
+import Keet from '../'
+import { html, createModel, getId } from '../utils'
+
+class App extends Keet {
+  task = createModel()
+  componentWillMount(){
+    // callBatchPoolUpdate - custom method to inform changes in the model.
+    // If the component has other states that reflect the model value changes
+    // we can safely ignore calling this method.
+    this.task.subscribe(model => this.callBatchPoolUpdate())
+  }
+}
+const app = new App()
+
+app.mount(html`
+  <ul id="list">
+    {{model:task}}
+    <li id="{{id}}">{{taskName}}
+      <input type="checkbox" {{complete?checked:''}}></input>
+    </li>
+    {{/model:task}}
+  </ul>
+`).link('app')
+
+let taskName = ['run', 'jog', 'walk', 'swim', 'roll']
+
+for (let i = 0; i < taskName.length; i++) {
+  app.task.add({
+    id: i,
+    taskName: taskName[i],
+    complete: i % 2 ? true : false
+  })
+}
+
+// update a task
+app.task.update('id', {
+  id: 0,
+  taskName: 'sleep',
+  complete: true
+})
+
+// remove a task
+app.task.destroy('id', 4)
+
+setTimeout(() => console.assert(getId('list').innerHTML === '<li id="0">sleep<input type="checkbox" checked=""></li><li id="1">jog<input type="checkbox" checked=""></li><li id="2">walk<input type="checkbox"></li><li id="3">swim<input type="checkbox" checked=""></li>', 'model list'))
+```
+<!-- AUTO-GENERATED-CONTENT:END -->
+
+## Sub Component
+
+How can you have multiple components together
+
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/sub-component.js) -->
+<!-- The below code snippet is automatically added from ./examples/sub-component.js -->
+```js
+import Keet from '../'
+import { getId, html } from '../utils'
+
+class Sub extends Keet {
+  // provide the node id where this sub will rendered
+  el = 'sub'
+}
+
+const sub = new Sub()
+
+sub.mount(html`
+  <div id="sub">
+  	this is a sub-component
+  </div>
+`)
+
+class App extends Keet {
+   subc = sub
+}
+
+const app = new App()
+
+app.mount(html`
+  <div id="container">
+	{{component:subc}}	
+  </div>
+`).link('app')
+
+console.assert(getId('sub').innerHTML === 'this is a sub-component', 'sub-component rendering')
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
 

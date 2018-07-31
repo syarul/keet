@@ -1,50 +1,47 @@
-import Keet from 'keet'
+import Keet from '../'
+import { html, createModel, getId } from '../utils'
 
 class App extends Keet {
-  constructor (...args) {
-    super()
-    this.args = args
+  task = createModel()
+  componentWillMount(){
+    // callBatchPoolUpdate - custom method to inform changes in the model.
+    // If the component has other states that reflect the model value changes
+    // we can safely ignore calling this method.
+    this.task.subscribe(model => this.callBatchPoolUpdate())
   }
 }
-const app = new App('complete')
+const app = new App()
 
-let model = []
+app.mount(html`
+  <ul id="list">
+    {{model:task}}
+    <li id="{{id}}">{{taskName}}
+      <input type="checkbox" {{complete?checked:''}}></input>
+    </li>
+    {{/model:task}}
+  </ul>
+`).link('app')
 
-let len = 5
+let taskName = ['run', 'jog', 'walk', 'swim', 'roll']
 
-for (let i = 0; i < len; i++) {
-  model = model.concat({
+for (let i = 0; i < taskName.length; i++) {
+  app.task.add({
     id: i,
-    me: (Math.random() * 1e12).toString(32),
+    taskName: taskName[i],
     complete: i % 2 ? true : false
   })
 }
 
-const instance = {
-  template: `
-    <li id="{{id}}">{{me}}
-      <input type="checkbox" {{complete?checked:''}}></input>
-    </li>`,
-  model: model
-}
+// update a task
+app.task.update('id', {
+  id: 0,
+  taskName: 'sleep',
+  complete: true
+})
 
-app.mount(instance).link('app')
+// remove a task
+app.task.destroy('id', 4)
 
-setTimeout(() => {
-  app.add({
-    id: model.length,
-    me: 'test!',
-    checked: false
-  })
-}, 2000)
+setTimeout(() => console.assert(getId('list').innerHTML === '<li id="0">sleep<input type="checkbox" checked=""></li><li id="1">jog<input type="checkbox" checked=""></li><li id="2">walk<input type="checkbox"></li><li id="3">swim<input type="checkbox" checked=""></li>', 'model list'))
 
-setTimeout(() => {
-  app.destroy(1, 'id')
-}, 4000)
 
-setTimeout(() => {
-  app.update(0, 'id', {
-    me: 'cool',
-    checked: true
-  })
-}, 6000)

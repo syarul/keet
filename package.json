@@ -1,6 +1,6 @@
 {
   "name": "keet",
-  "version": "3.5.2",
+  "version": "4.0.0",
   "author": "Shahrul Nizam Selamat",
   "description": "Minimalist view layer for the web",
   "babel": {
@@ -8,20 +8,23 @@
       "env"
     ],
     "plugins": [
-      "istanbul"
+      "istanbul",
+      "transform-class-properties",
+      "transform-object-rest-spread"
     ]
   },
   "bugs": {
     "url": "https://github.com/syarul/keet/issues"
   },
   "dependencies": {
-    "hash-sum": "^1.0.2",
-    "set-dom": "^7.5.2"
+    "morphdom": "^2.3.3"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-plugin-istanbul": "^4.1.5",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "browserify": "^15.2.0",
     "coveralls": "^3.0.0",
@@ -42,13 +45,28 @@
   "keywords": [
     "templating",
     "minimal",
-    "view layer"
+    "view layer",
+    "html",
+    "template-string",
+    "strings",
+    "template",
+    "string",
+    "hyperhtml",
+    "hyperdom",
+    "fast",
+    "small",
+    "lite",
+    "tiny",
+    "nano",
+    "diff",
+    "render"
   ],
   "license": "MIT",
   "main": "keet.js",
   "nyc": {
     "include": [
       "keet.js",
+      "utils.js",
       "components"
     ],
     "sourceMap": false,
@@ -59,11 +77,11 @@
     "url": "git+https://github.com/syarul/keet.git"
   },
   "scripts": {
-    "bundle": "browserify keet.js --standalone Keet | uglifyjs --compress --mangle > keet-min.js && node markdown.config.js",
+    "bundle": "browserify keet.js --standalone Keet | uglifyjs -m -c unsafe,collapse_vars,evaluate,loops,keep_fargs=false,pure_getters,unused,dead_code > keet-min.js && node markdown.config.js",
     "cover": "nyc --reporter=lcov --reporter=text npm run test",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "start": "webpack-dev-server -d",
-    "test": "mocha test/test.js --require babel-core/register --require jsdom-global/register",
+    "test": "mocha test/test.js --require babel-core/register --require jsdom-global/register --timeout 10000",
     "test-ci": "nyc npm run test"
   },
   "git_branch": "master"
