@@ -42,18 +42,18 @@ Or from npm:-
 
 ### Hello World
 
-Start by constructing a class expression as child of "Keet". Supply a string argument
-the component. Within the string, you can assign a state within handlebars i.e: ```{{<myState>}}```
+Start by constructing a class expression as child of ```Keet```. Supply a string argument
+to the component method ```mount```. Within the string, you can assign a state within handlebars i.e: ```{{<myState>}}```.
 
-NOTE: You also can use ternary as your state i.e: ```{{<ternaryState>?show:hide}}``` where
-```<ternaryState>``` is a boolean value
+NOTE: You also may use ternary expression as your state i.e: ```{{<ternaryState>?show:hide}}``` where
+```<ternaryState>``` is a ```boolean``` value
 
 <!-- AUTO-GENERATED-CONTENT:START (HELLO) -->
 ```js
 import Keet from 'keet'
 
 class App extends Keet {
-   state = 'World'
+  state = 'World'
 }
 
 const app = new App()
@@ -70,6 +70,7 @@ Basic idea how we can create a simple counter
 <!-- AUTO-GENERATED-CONTENT:START (COUNTER) -->
 ```js
 import Keet from 'keet'
+import { html } from 'keet/utils'
 
 class App extends Keet {
   count = 0
@@ -80,7 +81,11 @@ class App extends Keet {
 
 const app = new App()
 
-app.mount('<button id="counter" k-click="add()">{{count}}</button>').link('app')
+app.mount(html`
+  <button id="counter" k-click="add()">
+    {{count}}
+  </button>
+`).link('app')
 
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
@@ -187,19 +192,19 @@ const sub = new Sub()
 
 sub.mount(html`
   <div id="sub">
-  	this is a sub-component
+    this is a sub-component
   </div>
 `)
 
 class App extends Keet {
-   subc = sub
+  subc = sub
 }
 
 const app = new App()
 
 app.mount(html`
   <div id="container">
-	{{component:subc}}	
+    {{component:subc}}
   </div>
 `).link('app')
 

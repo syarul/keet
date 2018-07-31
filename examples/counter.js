@@ -1,5 +1,5 @@
 import Keet from '../'
-import { getId } from '../utils' //rem
+import { html, getId } from '../utils'
 
 class App extends Keet {
   count = 0
@@ -10,7 +10,11 @@ class App extends Keet {
 
 const app = new App()
 
-app.mount('<button id="counter" k-click="add()">{{count}}</button>').link('app')
+app.mount(html`
+  <button id="counter" k-click="add()">
+    {{count}}
+  </button>
+`).link('app')
 
 const click = new Event('click', {'bubbles': true, 'cancelable': true }) //rem
 //rem

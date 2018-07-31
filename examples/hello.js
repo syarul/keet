@@ -2,7 +2,7 @@ import Keet from '../'
 import { getId } from '../utils' //rem
 
 class App extends Keet {
-   state = 'World'
+  state = 'World'
 }
 
 const app = new App()
