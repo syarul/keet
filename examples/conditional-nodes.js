@@ -1,5 +1,6 @@
 import Keet from '../'
-import { getId, html } from '../utils'
+import { html } from '../utils'
+import { getId } from '../utils' //rem
 
 class App extends Keet {
   show = false
@@ -19,4 +20,4 @@ app.mount(html`
   <div id="3">three</div>
 `).link('app')
 
-console.assert(getId('app').innerHTML === '<button>toggle</button><div id="1">one</div><div id="3">three</div>', 'conditional nodes')
+console.assert(getId('app').innerHTML === '<button>toggle</button><div id="1">one</div><div id="3">three</div>', 'conditional nodes') //rem

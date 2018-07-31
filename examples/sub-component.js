@@ -1,5 +1,6 @@
 import Keet from '../'
-import { getId, html } from '../utils'
+import { html } from '../utils'
+import { getId } from '../utils' //rem
 
 class Sub extends Keet {
   // provide the node id where this sub will rendered
@@ -26,10 +27,4 @@ app.mount(html`
   </div>
 `).link('app')
 
-console.assert(getId('sub').innerHTML === 'this is a sub-component', 'sub-component rendering')
-
-
-
-
-
-
+console.assert(getId('sub').innerHTML === 'this is a sub-component', 'sub-component rendering') //rem

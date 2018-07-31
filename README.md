@@ -48,11 +48,9 @@ the component. Within the string, you can assign a state within handlebars i.e: 
 NOTE: You also can use ternary as your state i.e: ```{{<ternaryState>?show:hide}}``` where
 ```<ternaryState>``` is a boolean value
 
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/hello.js) -->
-<!-- The below code snippet is automatically added from ./examples/hello.js -->
+<!-- AUTO-GENERATED-CONTENT:START (HELLO) -->
 ```js
 import Keet from '../'
-import { getId } from '../utils'
 
 class App extends Keet {
    state = 'World'
@@ -62,20 +60,16 @@ const app = new App()
 
 app.mount('Hello {{state}}').link('app')
 
-console.assert(getId('app').innerHTML === 'Hello World', 'hello test')
 ```
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/helloWorld.js) -->
 <!-- AUTO-GENERATED-CONTENT:END -->
 
 ### Counter
 
 Basic idea how we can create a simple counter
 
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/counter.js) -->
-<!-- The below code snippet is automatically added from ./examples/counter.js -->
+<!-- AUTO-GENERATED-CONTENT:START (COUNTER) -->
 ```js
 import Keet from '../'
-import { getId } from '../utils'
 
 class App extends Keet {
   count = 0
@@ -88,15 +82,7 @@ const app = new App()
 
 app.mount('<button id="counter" k-click="add()">{{count}}</button>').link('app')
 
-const click = new Event('click', {'bubbles': true, 'cancelable': true })
-
-const counter = getId('counter')
-
-counter.dispatchEvent(click)
-
-setTimeout(() => console.assert(counter.innerHTML === '1', 'counter test'))
 ```
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/counter.js) -->
 <!-- AUTO-GENERATED-CONTENT:END -->
 
 ## Dynamic Nodes
@@ -104,11 +90,10 @@ setTimeout(() => console.assert(counter.innerHTML === '1', 'counter test'))
 To work with dynamic nodes you can wrap your html string with ```{{?<state>}}<myDynamicNode>{{/<state>}}``` and assign boolean
 value to the state 
 
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/conditional-nodes.js) -->
-<!-- The below code snippet is automatically added from ./examples/conditional-nodes.js -->
+<!-- AUTO-GENERATED-CONTENT:START (CONDITIONAL_NODES) -->
 ```js
 import Keet from '../'
-import { getId, html } from '../utils'
+import { html } from '../utils'
 
 class App extends Keet {
   show = false
@@ -128,7 +113,6 @@ app.mount(html`
   <div id="3">three</div>
 `).link('app')
 
-console.assert(getId('app').innerHTML === '<button>toggle</button><div id="1">one</div><div id="3">three</div>', 'conditional nodes')
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
 
@@ -136,11 +120,10 @@ console.assert(getId('app').innerHTML === '<button>toggle</button><div id="1">on
 
 To work with list checkout this sample case
 
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/model.js) -->
-<!-- The below code snippet is automatically added from ./examples/model.js -->
+<!-- AUTO-GENERATED-CONTENT:START (MODEL) -->
 ```js
 import Keet from '../'
-import { html, createModel, getId } from '../utils'
+import { html, createModel } from '../utils'
 
 class App extends Keet {
   task = createModel()
@@ -157,7 +140,7 @@ app.mount(html`
   <ul id="list">
     {{model:task}}
     <li id="{{id}}">{{taskName}}
-      <input type="checkbox" {{complete?checked:''}}></input>
+      <input type="checkbox" {{complete?checked:''}}>
     </li>
     {{/model:task}}
   </ul>
@@ -183,7 +166,6 @@ app.task.update('id', {
 // remove a task
 app.task.destroy('id', 4)
 
-setTimeout(() => console.assert(getId('list').innerHTML === '<li id="0">sleep<input type="checkbox" checked=""></li><li id="1">jog<input type="checkbox" checked=""></li><li id="2">walk<input type="checkbox"></li><li id="3">swim<input type="checkbox" checked=""></li>', 'model list'))
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
 
@@ -191,11 +173,10 @@ setTimeout(() => console.assert(getId('list').innerHTML === '<li id="0">sleep<in
 
 How can you have multiple components together
 
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/sub-component.js) -->
-<!-- The below code snippet is automatically added from ./examples/sub-component.js -->
+<!-- AUTO-GENERATED-CONTENT:START (SUB_COMPONENT) -->
 ```js
 import Keet from '../'
-import { getId, html } from '../utils'
+import { html } from '../utils'
 
 class Sub extends Keet {
   // provide the node id where this sub will rendered
@@ -222,11 +203,12 @@ app.mount(html`
   </div>
 `).link('app')
 
-console.assert(getId('sub').innerHTML === 'this is a sub-component', 'sub-component rendering')
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
 
+<!-- AUTO-GENERATED-CONTENT:START (EXAMPLES) -->
 For more usage cases visit the [examples](https://github.com/syarul/keet/tree/master/examples) directory
+<!-- AUTO-GENERATED-CONTENT:END -->
 
 ## License
 

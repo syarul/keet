@@ -1,5 +1,6 @@
 import Keet from '../'
-import { html, createModel, getId } from '../utils'
+import { html, createModel } from '../utils'
+import { getId } from '../utils' //rem
 
 class App extends Keet {
   task = createModel()
@@ -16,7 +17,7 @@ app.mount(html`
   <ul id="list">
     {{model:task}}
     <li id="{{id}}">{{taskName}}
-      <input type="checkbox" {{complete?checked:''}}></input>
+      <input type="checkbox" {{complete?checked:''}}>
     </li>
     {{/model:task}}
   </ul>
@@ -42,6 +43,4 @@ app.task.update('id', {
 // remove a task
 app.task.destroy('id', 4)
 
-setTimeout(() => console.assert(getId('list').innerHTML === '<li id="0">sleep<input type="checkbox" checked=""></li><li id="1">jog<input type="checkbox" checked=""></li><li id="2">walk<input type="checkbox"></li><li id="3">swim<input type="checkbox" checked=""></li>', 'model list'))
-
-
+setTimeout(() => console.assert(getId('list').innerHTML === '<li id="0">sleep<input type="checkbox" checked=""></li><li id="1">jog<input type="checkbox" checked=""></li><li id="2">walk<input type="checkbox"></li><li id="3">swim<input type="checkbox" checked=""></li>', 'model list')) //rem

@@ -19,6 +19,10 @@ var c = [
   `[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)`
 ]
 
+var files = ['hello', 'counter', 'conditional-nodes','model', 'sub-component']
+
+var parse = {}
+
 var config = {
   transforms: {
     /* Match <!-- AUTO-GENERATED-CONTENT:START (SHEILDS) --> */
@@ -28,6 +32,30 @@ var config = {
 
     VER () {
       return `# Keet v${ver}`
+    },
+
+    EXAMPLES () {
+      return `For more usage cases visit the [examples](https://github.com/syarul/keet/tree/${git_branch}/examples) directory`
+    },
+
+    HELLO () {
+      return `\`\`\`js\n${parse['hello']}\`\`\``
+    },
+
+    COUNTER () {
+      return `\`\`\`js\n${parse['counter']}\`\`\``
+    },
+
+    CONDITIONAL_NODES () {
+      return `\`\`\`js\n${parse['conditional-nodes']}\`\`\``
+    },
+
+    MODEL () {
+      return `\`\`\`js\n${parse['model']}\`\`\``
+    },
+
+    SUB_COMPONENT () {
+      return `\`\`\`js\n${parse['sub-component']}\`\`\``
     }
 
   }
@@ -35,7 +63,32 @@ var config = {
 
 var markdownPath = path.join(__dirname, 'README.md')
 
-markdownMagic(markdownPath, config)
+function next(i, files){
+  if(i < files.length){
+    var file = files[i]
+    var rd = readline.createInterface({
+      input: fs.createReadStream(`examples/${file}.js`),
+      output: process.stdout,
+      terminal: false
+    })
+
+    parse[file] = ''
+
+    rd.on('line', function (line) {
+      if(!line.match('//rem')){
+        parse[file] += line + '\n'
+      }
+    })
+    rd.on('close', function(){
+      i++
+      next(i, files)
+    }) 
+  } else {
+    markdownMagic(markdownPath, config)
+  }
+}
+
+next(0, files)
 
 String.prototype.replaceAt = function (index, replacement) {
   return this.substr(0, index) + replacement + this.substr(index + replacement.length)
