@@ -15,6 +15,7 @@ var genElement = require('./components/genElement').genElement
 var processEvent = require('./components/processEvent')
 var getId = require('./utils').getId
 var testEvent = require('./utils').testEvent
+var loopChilds = require('./utils').loopChilds
 var assert = require('./utils').assert
 
 /**
@@ -31,19 +32,31 @@ var assert = require('./utils').assert
 function Keet () {}
 
 Keet.prototype.mount = function (instance) {
+  var base
+  var frag = []
   // Before we begin to parse an instance, do a run-down checks
   // to clean up back-tick string which usually has line spacing.
   if (typeof instance === 'string') {
-    instance = instance.trim().replace(/\s+/g, ' ')
+    base = instance.trim().replace(/\s+/g, ' ')
   // If instance is a html element (usually using template literals), 
   // convert it back to string.
   } else if(typeof instance === 'object' && instance['nodeType']) {
-    instance = instance.outerHTML.toString()
+    if(instance['nodeType'] === 1){
+      base = instance.outerHTML.toString()
+    } else if(instance['nodeType'] === 11 || instance['nodeType'] === 3) {
+      var serializer = new XMLSerializer()
+      base = serializer.serializeToString(instance)
+    } else {
+      assert(false, 'Unable to parse instance, unknown type.')
+    }
+    // clean up document creation from potential memory leaks
+    loopChilds(frag, instance)
+    frag.map(function(fragment){ fragment.remove() })
   } else {
     assert(typeof instance === 'string' || typeof instance === 'object', 'Parameter is not a string or a html element.')
   }
   // we store the pristine instance in Component.base
-  this.base = instance
+  this.base = base
   return this
 }
 

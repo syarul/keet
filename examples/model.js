@@ -1,86 +1,47 @@
 import Keet from '../'
-import { html } from '../utils'
-
-function createModel(){
-
-  let onChanges = []
-
-  function inform () {
-    for (let i = onChanges.length; i--;) {
-      onChanges[i](model)
-    }
-  }
-
-  let model = {
-    list: []
-  }
-
-  model.subscribe = fn => onChanges.push(fn)
-
-  model.add = function(obj) {
-    this.list = this.list.concat(obj)
-    inform()
-  }
-
-  model.update = function(lookupId, updateObj) {
-    this.list = this.list.map(obj =>
-      obj[lookupId] !== updateObj[lookupId] ? obj : ({ ...obj, ...updateObj})
-    )
-    inform()
-  }
-    
-  model.destroy = function(id, objId) {
-    this.list = this.list.filter(obj => obj[id] !== objId)
-    inform()
-  }
-
-  return model
-}
+import { html, createModel, getId } from '../utils'
 
 class App extends Keet {
-  Model = createModel()
+  task = createModel()
   componentWillMount(){
-    this.Model.subscribe(m => this.callBatchPoolUpdate())
+    // callBatchPoolUpdate - custom method to inform changes in the model.
+    // If the component has other states that reflect the model value changes
+    // we can safely ignore calling this method.
+    this.task.subscribe(model => this.callBatchPoolUpdate())
   }
 }
 const app = new App()
 
 app.mount(html`
   <ul id="list">
-    {{model:Model}}
-    <li id="{{id}}">{{me}}
+    {{model:task}}
+    <li id="{{id}}">{{taskName}}
       <input type="checkbox" {{complete?checked:''}}></input>
     </li>
-    {{/model:Model}}
+    {{/model:task}}
   </ul>
 `).link('app')
 
-let len = 5
+let taskName = ['run', 'jog', 'walk', 'swim', 'roll']
 
-for (let i = 0; i < len; i++) {
-  app.Model.add({
+for (let i = 0; i < taskName.length; i++) {
+  app.task.add({
     id: i,
-    me: (Math.random() * 1e17).toString(32).toUpperCase(),
+    taskName: taskName[i],
     complete: i % 2 ? true : false
   })
 }
 
+// update a task
+app.task.update('id', {
+  id: 0,
+  taskName: 'sleep',
+  complete: true
+})
 
-// setTimeout(() => {
-//   app.add({
-//     id: model.length,
-//     me: 'test!',
-//     checked: false
-//   })
-// }, 2000)
+// remove a task
+app.task.destroy('id', 4)
 
-// setTimeout(() => {
-//   app.destroy(1, 'id')
-// }, 4000)
+setTimeout(() => console.assert(getId('list').innerHTML === '<li id="0">sleep<input type="checkbox" checked=""></li><li id="1">jog<input type="checkbox" checked=""></li><li id="2">walk<input type="checkbox"></li><li id="3">swim<input type="checkbox" checked=""></li>', 'model list'))
 
-// setTimeout(() => {
-//   app.update(0, 'id', {
-//     me: 'cool',
-//     checked: true
-//   })
-// }, 6000)
+

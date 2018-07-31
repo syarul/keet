@@ -2,6 +2,7 @@ var tmplHandler = require('./tmplHandler')
 var processEvent = require('./processEvent')
 var getId = require('../utils').getId
 var testEvent = require('../utils').testEvent
+var loopChilds = require('../utils').loopChilds
 var strInterpreter = require('./strInterpreter')
 var componentParse = require('./componentParse')
 var modelParse = require('./modelParse')
@@ -10,8 +11,8 @@ var morph = require('morphdom')
 
 var updateContext = function () {
   var ele = getId(this.el)
-  var newElem = genElement.call(this, this.base)
-
+  var newElem = genElement.call(this)
+  var frag = []
   // morp as sub-component
   if(this.IS_STUB){
     morph(ele, newElem.childNodes[0])
@@ -19,6 +20,11 @@ var updateContext = function () {
   // otherwise moph as whole
     newElem.id = this.el
     morph(ele, newElem)
+    // clean up document creation from potential memory leaks
+    loopChilds(frag, newElem)
+    frag.map(function(fragment){ 
+      fragment.remove() 
+    })
   }
   // exec life-cycle componentDidUpdate
   if(this.componentDidUpdate && typeof this.componentDidUpdate === 'function'){

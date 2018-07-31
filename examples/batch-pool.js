@@ -8,7 +8,7 @@ let c = 0
 class App extends Keet {
   data = count + 1
   updateData(val) {
-  	// don't print to console
+  	// WARNING!!: don't print this to console
     this.data = val
   }
   componentDidUpdate(){

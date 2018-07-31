@@ -4,10 +4,6 @@ var getId = function (id) {
 
 exports.getId = getId
 
-exports.genId = function () {
-  return (Math.round(Math.random() * 0x1 * 1e12)).toString(32)
-}
-
 var loopChilds = function (arr, elem) {
   for (var child = elem.firstChild; child !== null; child = child.nextSibling) {
     arr.push(child)
@@ -32,7 +28,7 @@ exports.testEvent = function (tmpl) {
  * @param {function} callback - the function to execute once the node is found
  */
 exports.checkNodeAvailability = function (component, componentName, callback) {
-  var checked = false
+
   var ele = getId(component.el)
 
   if(ele) return ele
@@ -41,15 +37,13 @@ exports.checkNodeAvailability = function (component, componentName, callback) {
       ele = getId(component.el)
       if (ele) {
         clearInterval(t)
-        checked = true
         callback(component, componentName, ele)
       }
     }, 0)
+    // silently ignore finding the node after sometimes
     setTimeout(function () {
-      if (!checked) {
-        clearInterval(t)
-      }
-    }, 50)
+      clearInterval(t)
+    }, 250)
   }
 
 }
@@ -86,20 +80,92 @@ exports.html = function () {
   trim = trim.map(function(t){
     return t.trim()
   }).join('')
-  var result = ''
-  var substs = [].slice.call(arguments) || []
-  substs.forEach(function(subst, i) {
-      var lit = raw[i]
-      if (Array.isArray(subst)) {
-          subst = subst.join('')
-      }
-      if (lit.endsWith('$')) {
-          subst = htmlEscape(subst)
-          lit = lit.slice(0, -1)
-      }
-      result += lit
-      result += subst
-  });
-  result += trim // (A)
-  return result
+  return trim
+}
+
+/**
+ * @private
+ * @description
+ * Copy with modification from preact-todomvc. Model constructor
+ *
+ * {{model:<myModel>}}<myModelTemplateString>{{/model:<myModel>}}
+ *
+ */
+exports.createModel = function(){
+
+  var onChanges = []
+
+  function inform () {
+    for (var i = onChanges.length; i--;) {
+      onChanges[i](model)
+    }
+  }
+
+  var model = {}
+
+/**
+ * @private
+ * @description
+ * The array model store 
+ */
+  model.list = []
+
+/**
+ * @private
+ * @description
+ * Subscribe to the model changes (add/update/destroy)
+ *
+ * @param {Object} model - the model including all prototypes
+ *
+ */
+  model.subscribe = function(fn){
+    return onChanges.push(fn)
+  }
+
+/**
+ * @private
+ * @description
+ * Add new object to the model list
+ *
+ * @param {Object} obj - new object to add into the model list
+ *
+ */
+  model.add = function(obj) {
+    this.list = this.list.concat(obj)
+    inform()
+  }
+
+/**
+ * @private
+ * @description
+ * Update existing object in the model list
+ *
+ * @param {String} lookupId - lookup id property name of the object
+ * @param {Object} updateObj - the updated properties
+ *
+ */
+  model.update = function(lookupId, updateObj) {
+    this.list = this.list.map(function(obj){
+      return obj[lookupId] !== updateObj[lookupId] ? obj : Object.assign(obj, updateObj)
+    })
+    inform()
+  }
+
+/**
+ * @private
+ * @description
+ * Removed existing object in the model list 
+ *
+ * @param {String} lookupId - lookup id property name of the object
+ * @param {String} objId - unique identifier of the lookup id
+ *
+ */ 
+  model.destroy = function(lookupId, objId) {
+    this.list = this.list.filter(function(obj) {
+      return obj[lookupId] !== objId
+    })
+    inform()
+  }
+
+  return model
 }

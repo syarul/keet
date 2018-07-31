@@ -1,6 +1,8 @@
 const assert = require('assert')
 const { JSDOM } = require('jsdom')
 
+const { serializeDocument } = require('jsdom/lib/old-api')
+
 const { getId } = require('../utils')
 
 const fs = require('fs')
@@ -14,6 +16,7 @@ const it = global.it // standard
 const before = global.before
 
 let Event
+let XMLSerializer
 
 describe(`keet.js v-${ver} test`, function () {
   before(() => {
@@ -33,8 +36,17 @@ describe(`keet.js v-${ver} test`, function () {
     const window = dom.window
 
     global.window = window
+
+    function XMLSerializer() {}
+
+    XMLSerializer.prototype.serializeToString = function(node) {
+      return serializeDocument(node)
+    }
+
+    global.XMLSerializer = XMLSerializer
+
     Event = window.Event
-    global.log = console.log.bind(console)
+
   })
 
   var clear = function () {
@@ -54,6 +66,12 @@ describe(`keet.js v-${ver} test`, function () {
   it('hello world', function () {
     require('../examples/hello')
     assert.equal(getId('app').innerHTML, 'Hello World')
+    clear()
+  })
+
+  it('no node found', function () {
+    require('../examples/no_node_found')
+    assert.equal(getId('app').innerHTML, '')
     clear()
   })
 
@@ -97,10 +115,23 @@ describe(`keet.js v-${ver} test`, function () {
     clear()
   })
 
+  it('render sub multi component', function () {
+    require('../examples/sub-multi-component')
+    assert.equal(getId('container').innerHTML, '<div id="sub">this is a sub-component</div><div id="sub">this is a sub-component</div><div id="sub">this is a sub-component</div>')
+    clear()
+  })
+
   it('sub-component event handling', function () {
     require('../examples/sub-component_with_event')
     // batch pool has started since
     assert.equal(getId('sub-button').innerHTML, 'value: bar')
+    clear()
+  })
+
+  it('event not declared', function () {
+    require('../examples/event_not_declared')
+    // batch pool has started since
+    assert.equal(getId('counter').innerHTML, '0')
     clear()
   })
 
@@ -112,6 +143,16 @@ describe(`keet.js v-${ver} test`, function () {
       clear()
       next()
     })
+  })
+
+  it('sub-component async', function (next) {
+    require('../examples/sub-component_async')
+    // batch pool has initiated, so we have to check outside of the event loop
+    setTimeout(() => {
+      assert.equal(getId('container').innerHTML, '<div id="sub">this is a sub-component</div>')
+      clear()
+      next()
+    }, 200) 
   })
 
   it('cluster function', function () {
@@ -166,6 +207,74 @@ describe(`keet.js v-${ver} test`, function () {
     // batch pool has initiated, so we have to check outside of the event loop
     setTimeout(() => {
       assert.equal(getId('app').innerHTML, 'I say: horray horray horray horrayyy!')
+      clear()
+      next()
+    })
+  })
+
+  it('model list', function (next) {
+    require('../examples/model')
+    // batch pool has initiated, so we have to check outside of the event loop
+    setTimeout(() => {
+      assert.equal(getId('list').innerHTML, '<li id="0">sleep<input type="checkbox" checked=""></li><li id="1">jog<input type="checkbox" checked=""></li><li id="2">walk<input type="checkbox"></li><li id="3">swim<input type="checkbox" checked=""></li>')
+      clear()
+      next()
+    })
+  })
+
+  it('model not declared', function (next) {
+    require('../examples/model_not_declared')
+    // batch pool has initiated, so we have to check outside of the event loop
+    setTimeout(() => {
+      assert.equal(getId('list').innerHTML, '<li id="{{id}}">{{taskName}}<input type="checkbox"></li>')
+      clear()
+      next()
+    })
+  })
+
+  it('model not in template literals', function (next) {
+    require('../examples/model_not_in_template_literals')
+    // batch pool has initiated, so we have to check outside of the event loop
+    setTimeout(() => {
+      assert.equal(getId('list').innerHTML, '<li id="{{id}}">{{taskName}}<input type="checkbox"></li>')
+      clear()
+      next()
+    })
+  })
+
+  it('render html entities', function (next) {
+    require('../examples/html-entities')
+    // batch pool has initiated, so we have to check outside of the event loop
+    setTimeout(() => {
+      assert.equal(getId('app').innerHTML, 'Hello World')
+      clear()
+      next()
+    })
+  })
+
+  it('render html entities with NodeType 1', function (next) {
+    require('../examples/html-entities_nodeType_1')
+    // batch pool has initiated, so we have to check outside of the event loop
+    setTimeout(() => {
+      assert.equal(getId('app').innerHTML, '<div>Hello World</div>')
+      clear()
+      next()
+    })
+  })
+
+  it('failed mount unknown element', function () {
+    try {
+      require('../examples/html-entities_err_nodeType')
+    } catch (err) {
+      assert.equal(err instanceof Error, true)
+    }
+  })
+
+  it('render conditional nodes', function (next) {
+    require('../examples/conditional-nodes')
+    // batch pool has initiated, so we have to check outside of the event loop
+    setTimeout(() => {
+      assert.equal(getId('app').innerHTML, '<button>toggle</button><div id="1">one</div><div id="3">three</div>')
       clear()
       next()
     })

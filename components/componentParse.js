@@ -5,12 +5,10 @@ module.exports = function (string) {
       // register this component as a sub-component
       self[component].IS_STUB = true
       var regx = '(\\{\\{component:' + component + '\\}\\})'
-      var re = new RegExp(regx)
-      var match = string.match(re)
+      var re = new RegExp(regx, 'g')
       var tpl = self[component].render('asString')
-      // multiple root elements must be wrapped in an enclosing tag
       self.__componentStub__[component] = tpl
-      string = string.replace(match[0], tpl)
+      string = string.replace(re, tpl)
     }
   })
   return string
