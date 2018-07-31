@@ -131,7 +131,7 @@ import Keet from 'keet'
 import { html, createModel } from 'keet/utils'
 
 class App extends Keet {
-  task = createModel()
+  task = new createModel()
   componentWillMount(){
     // callBatchPoolUpdate - custom method to inform changes in the model.
     // If the component has other states that reflect the model value changes
@@ -186,6 +186,9 @@ import { html } from 'keet/utils'
 class Sub extends Keet {
   // provide the node id where this sub will rendered
   el = 'sub'
+  componentDidMount(){
+  	
+  }
 }
 
 const sub = new Sub()
