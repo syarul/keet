@@ -1,9 +1,8 @@
 import Keet from '../'
-import { getId } from '../utils'
 
 class App extends Keet {
-  componentWillMount() {
-  	this.isWillMount = true
+  componentWillMount () {
+    this.isWillMount = true
   }
 }
 

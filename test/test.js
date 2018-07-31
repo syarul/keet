@@ -37,25 +37,19 @@ describe(`keet.js v-${ver} test`, function () {
 
     global.window = window
 
-    function XMLSerializer() {}
+    function XMLSerializer () {}
 
-    XMLSerializer.prototype.serializeToString = function(node) {
+    XMLSerializer.prototype.serializeToString = function (node) {
       return serializeDocument(node)
     }
 
     global.XMLSerializer = XMLSerializer
 
     Event = window.Event
-
   })
 
   var clear = function () {
     document.getElementById('app').innerHTML = ''
-  }
-
-  var cb = function(err, done) {
-    assert.equal(err instanceof Error, true)
-    done()
   }
 
   it('has document', function () {
@@ -152,7 +146,7 @@ describe(`keet.js v-${ver} test`, function () {
       assert.equal(getId('container').innerHTML, '<div id="sub">this is a sub-component</div>')
       clear()
       next()
-    }, 200) 
+    }, 200)
   })
 
   it('cluster function', function () {
@@ -279,5 +273,4 @@ describe(`keet.js v-${ver} test`, function () {
       next()
     })
   })
-
 })

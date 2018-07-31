@@ -5,7 +5,5 @@ class App extends Keet {}
 const app = new App()
 
 app.mount({
-	nodeType: 2
+  nodeType: 2
 }).link('app')
-
-

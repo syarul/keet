@@ -38,12 +38,12 @@ Keet.prototype.mount = function (instance) {
   // to clean up back-tick string which usually has line spacing.
   if (typeof instance === 'string') {
     base = instance.trim().replace(/\s+/g, ' ')
-  // If instance is a html element (usually using template literals), 
+  // If instance is a html element (usually using template literals),
   // convert it back to string.
-  } else if(typeof instance === 'object' && instance['nodeType']) {
-    if(instance['nodeType'] === 1){
+  } else if (typeof instance === 'object' && instance['nodeType']) {
+    if (instance['nodeType'] === 1) {
       base = instance.outerHTML.toString()
-    } else if(instance['nodeType'] === 11 || instance['nodeType'] === 3) {
+    } else if (instance['nodeType'] === 11 || instance['nodeType'] === 3) {
       var serializer = new XMLSerializer()
       base = serializer.serializeToString(instance)
     } else {
@@ -51,7 +51,7 @@ Keet.prototype.mount = function (instance) {
     }
     // clean up document creation from potential memory leaks
     loopChilds(frag, instance)
-    frag.map(function(fragment){ fragment.remove() })
+    frag.map(function (fragment) { fragment.remove() })
   } else {
     assert(typeof instance === 'string' || typeof instance === 'object', 'Parameter is not a string or a html element.')
   }
@@ -73,7 +73,7 @@ Keet.prototype.link = function (id) {
   // The target DOM where the rendering will took place.
   // We could also apply life-cycle method before the
   // render happen.
-  if(!id) assert(id, 'No id is given as parameter.')
+  if (!id) assert(id, 'No id is given as parameter.')
   this.el = id
   if (this.componentWillMount && typeof this.componentWillMount === 'function') {
     this.componentWillMount()
@@ -113,7 +113,7 @@ Keet.prototype.stubRender = function (tpl, node) {
   testEvent(tpl) && processEvent.call(this, node)
 }
 
-Keet.prototype.callBatchPoolUpdate = function() {
+Keet.prototype.callBatchPoolUpdate = function () {
   // force component to update, if any state / non-state
   // value changed DOM diffing will occur
   genElement.call(this, true)

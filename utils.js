@@ -22,16 +22,15 @@ exports.testEvent = function (tmpl) {
 /**
  * @private
  * @description
- * Check a node availability in 50ms, if not found silenty skip the event
+ * Check a node availability in 250ms, if not found silenty skip the event
  *
  * @param {string} id - the node id
  * @param {function} callback - the function to execute once the node is found
  */
 exports.checkNodeAvailability = function (component, componentName, callback) {
-
   var ele = getId(component.el)
 
-  if(ele) return ele
+  if (ele) return ele
   else {
     var t = setInterval(function () {
       ele = getId(component.el)
@@ -45,7 +44,6 @@ exports.checkNodeAvailability = function (component, componentName, callback) {
       clearInterval(t)
     }, 250)
   }
-
 }
 
 /**
@@ -69,15 +67,15 @@ exports.assert = function (val, msg) {
  * no checking for wrapping in root element
  * no strict checking
  * remove spacing / indentation
- * keep all spacing within html tags 
+ * keep all spacing within html tags
  */
 exports.html = function () {
   var literalSections = [].shift.call(arguments)
   var raw = literalSections.raw
   // remove spacing, indentation
-  var trim = raw[raw.length-1]
+  var trim = raw[raw.length - 1]
   trim = trim.split(/\n+/)
-  trim = trim.map(function(t){
+  trim = trim.map(function (t) {
     return t.trim()
   }).join('')
   return trim
@@ -91,8 +89,7 @@ exports.html = function () {
  * {{model:<myModel>}}<myModelTemplateString>{{/model:<myModel>}}
  *
  */
-exports.createModel = function(){
-
+exports.createModel = function () {
   var onChanges = []
 
   function inform () {
@@ -106,7 +103,7 @@ exports.createModel = function(){
 /**
  * @private
  * @description
- * The array model store 
+ * The array model store
  */
   model.list = []
 
@@ -118,7 +115,7 @@ exports.createModel = function(){
  * @param {Object} model - the model including all prototypes
  *
  */
-  model.subscribe = function(fn){
+  model.subscribe = function (fn) {
     return onChanges.push(fn)
   }
 
@@ -130,7 +127,7 @@ exports.createModel = function(){
  * @param {Object} obj - new object to add into the model list
  *
  */
-  model.add = function(obj) {
+  model.add = function (obj) {
     this.list = this.list.concat(obj)
     inform()
   }
@@ -144,8 +141,8 @@ exports.createModel = function(){
  * @param {Object} updateObj - the updated properties
  *
  */
-  model.update = function(lookupId, updateObj) {
-    this.list = this.list.map(function(obj){
+  model.update = function (lookupId, updateObj) {
+    this.list = this.list.map(function (obj) {
       return obj[lookupId] !== updateObj[lookupId] ? obj : Object.assign(obj, updateObj)
     })
     inform()
@@ -154,14 +151,14 @@ exports.createModel = function(){
 /**
  * @private
  * @description
- * Removed existing object in the model list 
+ * Removed existing object in the model list
  *
  * @param {String} lookupId - lookup id property name of the object
  * @param {String} objId - unique identifier of the lookup id
  *
- */ 
-  model.destroy = function(lookupId, objId) {
-    this.list = this.list.filter(function(obj) {
+ */
+  model.destroy = function (lookupId, objId) {
+    this.list = this.list.filter(function (obj) {
       return obj[lookupId] !== objId
     })
     inform()

@@ -8,8 +8,7 @@ var modelParse = require('./modelParse')
 var nodesVisibility = require('./nodesVisibility')
 var checkNodeAvailability = require('../utils').checkNodeAvailability
 
-
-var renderSub = function(c, cName, node) {
+var renderSub = function (c, cName, node) {
   c.stubRender(this.__componentStub__[cName], node)
 }
 
@@ -23,7 +22,7 @@ module.exports = function (stub) {
     this.__componentList__ = this.__componentList__ || []
     this.__componentStub__ = this.__componentStub__ || {}
     tpl = tmplHandler.call(this, function (state) {
-      if(!~self.__stateList__.indexOf(state)) self.__stateList__ = self.__stateList__.concat(state)
+      if (!~self.__stateList__.indexOf(state)) self.__stateList__ = self.__stateList__.concat(state)
     })
     tpl = componentParse.call(this, tpl)
     tpl = modelParse.call(this, tpl)
@@ -39,7 +38,7 @@ module.exports = function (stub) {
           if (component) {
             // do initial checking of the node availability
             var node = checkNodeAvailability(component, componentName, renderSub.bind(self))
-            if(node) renderSub.call(self, component, componentName, node)
+            if (node) renderSub.call(self, component, componentName, node)
           }
         })
         setState.call(this)

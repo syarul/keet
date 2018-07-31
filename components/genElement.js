@@ -14,7 +14,7 @@ var updateContext = function () {
   var newElem = genElement.call(this)
   var frag = []
   // morp as sub-component
-  if(this.IS_STUB){
+  if (this.IS_STUB) {
     morph(ele, newElem.childNodes[0])
   } else {
   // otherwise moph as whole
@@ -22,12 +22,12 @@ var updateContext = function () {
     morph(ele, newElem)
     // clean up document creation from potential memory leaks
     loopChilds(frag, newElem)
-    frag.map(function(fragment){ 
-      fragment.remove() 
+    frag.map(function (fragment) {
+      fragment.remove()
     })
   }
   // exec life-cycle componentDidUpdate
-  if(this.componentDidUpdate && typeof this.componentDidUpdate === 'function'){
+  if (this.componentDidUpdate && typeof this.componentDidUpdate === 'function') {
     this.componentDidUpdate()
   }
   batchPool.status = 'ready'
@@ -39,19 +39,19 @@ var batchPool = {
   status: 'ready'
 }
 
-// The idea behind this is to reduce morphing the DOM when multiple updates 
-// hit the deck. If possible we want to pool them before initiating DOM 
-// morphing, but in the event the update is not fast enough we want to return 
+// The idea behind this is to reduce morphing the DOM when multiple updates
+// hit the deck. If possible we want to pool them before initiating DOM
+// morphing, but in the event the update is not fast enough we want to return
 // to normal synchronous update.
 var batchPoolExec = function () {
   var self = this
   if (batchPool.status === 'pooling') {
-    return
+
   } else {
     batchPool.status = 'pooling'
     // if batchpool is not yet executed or it was idle (after 100ms)
     // direct morph the DOM
-    if(!batchPool.ttl) {
+    if (!batchPool.ttl) {
       updateContext.call(this)
     } else {
     // we wait until pooling is ready before initiating DOM morphing
@@ -114,7 +114,7 @@ var setState = function (args) {
 }
 
 var updateStateList = function (state) {
-  if(!~this.__stateList__.indexOf(state)) this.__stateList__ = this.__stateList__.concat(state)
+  if (!~this.__stateList__.indexOf(state)) this.__stateList__ = this.__stateList__.concat(state)
 }
 
 var genElement = function (force) {
@@ -127,7 +127,7 @@ var genElement = function (force) {
 
   setState.call(this)
   testEvent(tpl) && processEvent.call(this, tempDiv)
-  if(force) batchPoolExec.call(this)
+  if (force) batchPoolExec.call(this)
   return tempDiv
 }
 
