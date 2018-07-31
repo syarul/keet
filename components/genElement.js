@@ -44,10 +44,10 @@ var batchPool = {
 // morphing, but in the event the update is not fast enough we want to return
 // to normal synchronous update.
 var batchPoolExec = function () {
-  var self = this
   if (batchPool.status === 'pooling') {
-
+    //
   } else {
+    var self = this
     batchPool.status = 'pooling'
     // if batchpool is not yet executed or it was idle (after 100ms)
     // direct morph the DOM
