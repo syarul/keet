@@ -111,6 +111,10 @@ Keet.prototype.stubRender = function (tpl, node) {
   // sub-component rendering
   setState.call(this)
   testEvent(tpl) && processEvent.call(this, node)
+  // since component already rendered, trigger its life-cycle method
+  if (this.componentDidMount && typeof this.componentDidMount === 'function') {
+    this.componentDidMount()
+  }
 }
 
 Keet.prototype.callBatchPoolUpdate = function () {

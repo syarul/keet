@@ -4,6 +4,9 @@ import { html, getId } from '../utils'
 class Sub extends Keet {
   // provide the node id where this sub will rendered
   el = 'sub'
+  componentDidMount(){
+  	
+  }
 }
 
 const sub = new Sub()

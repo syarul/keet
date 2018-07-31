@@ -90,22 +90,21 @@ exports.html = function () {
  *
  */
 exports.createModel = function () {
+
   var onChanges = []
 
-  function inform () {
+  this.inform = function() {
     for (var i = onChanges.length; i--;) {
-      onChanges[i](model)
+      onChanges[i](this.list)
     }
   }
-
-  var model = {}
 
 /**
  * @private
  * @description
  * The array model store
  */
-  model.list = []
+  this.list = []
 
 /**
  * @private
@@ -115,8 +114,8 @@ exports.createModel = function () {
  * @param {Object} model - the model including all prototypes
  *
  */
-  model.subscribe = function (fn) {
-    return onChanges.push(fn)
+  this.subscribe = function (fn) {
+    onChanges.push(fn)
   }
 
 /**
@@ -127,9 +126,9 @@ exports.createModel = function () {
  * @param {Object} obj - new object to add into the model list
  *
  */
-  model.add = function (obj) {
+  this.add = function (obj) {
     this.list = this.list.concat(obj)
-    inform()
+    this.inform()
   }
 
 /**
@@ -141,11 +140,11 @@ exports.createModel = function () {
  * @param {Object} updateObj - the updated properties
  *
  */
-  model.update = function (lookupId, updateObj) {
+  this.update = function (lookupId, updateObj) {
     this.list = this.list.map(function (obj) {
       return obj[lookupId] !== updateObj[lookupId] ? obj : Object.assign(obj, updateObj)
     })
-    inform()
+    this.inform()
   }
 
 /**
@@ -157,12 +156,10 @@ exports.createModel = function () {
  * @param {String} objId - unique identifier of the lookup id
  *
  */
-  model.destroy = function (lookupId, objId) {
+  this.destroy = function (lookupId, objId) {
     this.list = this.list.filter(function (obj) {
       return obj[lookupId] !== objId
     })
-    inform()
+    this.inform()
   }
-
-  return model
 }

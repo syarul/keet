@@ -2,7 +2,7 @@ import Keet from '../'
 import { html, createModel, getId } from '../utils'
 
 class App extends Keet {
-  task = createModel()
+  task = new createModel()
 }
 const app = new App()
 

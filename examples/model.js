@@ -2,7 +2,7 @@ import Keet from '../'
 import { html, createModel, getId } from '../utils'
 
 class App extends Keet {
-  task = createModel()
+  task = new createModel()
   componentWillMount(){
     // callBatchPoolUpdate - custom method to inform changes in the model.
     // If the component has other states that reflect the model value changes
