@@ -1,6 +1,5 @@
 import Keet from '../'
-import { html } from '../utils'
-import { getId } from '../utils' //rem
+import { html, getId } from '../utils'
 
 class App extends Keet {
   show = false

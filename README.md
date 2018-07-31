@@ -50,7 +50,7 @@ NOTE: You also can use ternary as your state i.e: ```{{<ternaryState>?show:hide}
 
 <!-- AUTO-GENERATED-CONTENT:START (HELLO) -->
 ```js
-import Keet from '../'
+import Keet from 'keet'
 
 class App extends Keet {
    state = 'World'
@@ -69,7 +69,7 @@ Basic idea how we can create a simple counter
 
 <!-- AUTO-GENERATED-CONTENT:START (COUNTER) -->
 ```js
-import Keet from '../'
+import Keet from 'keet'
 
 class App extends Keet {
   count = 0
@@ -92,8 +92,8 @@ value to the state
 
 <!-- AUTO-GENERATED-CONTENT:START (CONDITIONAL_NODES) -->
 ```js
-import Keet from '../'
-import { html } from '../utils'
+import Keet from 'keet'
+import { html } from 'keet/utils'
 
 class App extends Keet {
   show = false
@@ -122,8 +122,8 @@ To work with list checkout this sample case
 
 <!-- AUTO-GENERATED-CONTENT:START (MODEL) -->
 ```js
-import Keet from '../'
-import { html, createModel } from '../utils'
+import Keet from 'keet'
+import { html, createModel } from 'keet/utils'
 
 class App extends Keet {
   task = createModel()
@@ -175,8 +175,8 @@ How can you have multiple components together
 
 <!-- AUTO-GENERATED-CONTENT:START (SUB_COMPONENT) -->
 ```js
-import Keet from '../'
-import { html } from '../utils'
+import Keet from 'keet'
+import { html } from 'keet/utils'
 
 class Sub extends Keet {
   // provide the node id where this sub will rendered

@@ -1,6 +1,5 @@
 import Keet from '../'
-import { html, createModel } from '../utils'
-import { getId } from '../utils' //rem
+import { html, createModel, getId } from '../utils'
 
 class App extends Keet {
   task = createModel()

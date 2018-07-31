@@ -76,8 +76,15 @@ function next(i, files){
 
     rd.on('line', function (line) {
       if(!line.match('//rem')){
+        if(line.match(/\.\.\/\'/g)){
+          line = line.replace(/\.\.\/\'/, 'keet\'')
+        } else if(line.match(/\.\.\/utils/g)){
+          line = line.replace(/\.\.\/utils/, 'keet\/utils')
+          if(line.match(', getId '))
+            line = line.replace(', getId ', ' ')
+        }
         parse[file] += line + '\n'
-      }
+      } 
     })
     rd.on('close', function(){
       i++

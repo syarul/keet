@@ -1,6 +1,5 @@
 import Keet from '../'
-import { html } from '../utils'
-import { getId } from '../utils' //rem
+import { html, getId } from '../utils'
 
 class Sub extends Keet {
   // provide the node id where this sub will rendered
