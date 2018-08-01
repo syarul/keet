@@ -45,9 +45,6 @@ Or from npm:-
 Start by constructing a class expression as child of ```Keet```. Supply a string argument
 to the component method ```mount```. Within the string, you can assign a state within handlebars i.e: ```{{<myState>}}```.
 
-NOTE: You also may use ternary expression as your state i.e: ```{{<ternaryState>?show:hide}}``` where
-```<ternaryState>``` is a ```boolean``` value
-
 <!-- AUTO-GENERATED-CONTENT:START (HELLO) -->
 ```js
 import Keet from 'keet'
@@ -62,6 +59,9 @@ app.mount('Hello {{state}}').link('app')
 
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
+
+NOTE: You also may use ternary expression as your state i.e: ```{{<ternaryState>?show:hide}}``` where
+```<ternaryState>``` is a ```boolean``` value
 
 ### Counter
 
@@ -92,8 +92,8 @@ app.mount(html`
 
 ## Dynamic Nodes
 
-To work with dynamic nodes you can wrap your html string with ```{{?<state>}}<myDynamicNode>{{/<state>}}``` and assign boolean
-value to the state 
+The traditional way, is you assign ```display:none``` to style attributes or use css, which still use resources. With dynamic nodes it complete remove your node from the DOM and free up your resources. To use it wrap your html string with ```{{?<state>}}<myDynamicNode>{{/<state>}}``` and assign boolean
+value to the state.
 
 <!-- AUTO-GENERATED-CONTENT:START (CONDITIONAL_NODES) -->
 ```js
@@ -121,9 +121,12 @@ app.mount(html`
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
 
-## Model
+## List Rendering
 
-To work with list checkout this sample case
+To map an array to elements use the ```{{model:}}{{/model:}}```. It has basic methods add/update/remove. To go beyond that requirement you could ```extend``` the ```class``` method of ```createModel```
+
+
+NOTE: Only mutation methods has attached listener, so usage of ```map``` ```filter``` ```reduce``` ```concat``` or directly reassigned new value to the ```list``` is encouraged and does not affect the ```dom-diffing``` efficiency. 
 
 <!-- AUTO-GENERATED-CONTENT:START (MODEL) -->
 ```js
@@ -136,9 +139,12 @@ class App extends Keet {
     // callBatchPoolUpdate - custom method to inform changes in the model.
     // If the component has other states that reflect the model value changes
     // we can safely ignore calling this method.
-    this.task.subscribe(model => this.callBatchPoolUpdate())
+    this.task.subscribe(model => {
+      this.callBatchPoolUpdate()
+    })
   }
 }
+
 const app = new App()
 
 app.mount(html`
@@ -176,7 +182,7 @@ app.task.destroy('id', 4)
 
 ## Sub Component
 
-How can you have multiple components together
+Writing everything in a single file is not advisable, where you should split multiple components. To have multiple components together, use the sub-component feature with ```{{component:<mySubComponent>}}```.
 
 <!-- AUTO-GENERATED-CONTENT:START (SUB_COMPONENT) -->
 ```js
@@ -186,9 +192,6 @@ import { html } from 'keet/utils'
 class Sub extends Keet {
   // provide the node id where this sub will rendered
   el = 'sub'
-  componentDidMount(){
-  	
-  }
 }
 
 const sub = new Sub()

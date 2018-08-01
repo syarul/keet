@@ -75,6 +75,7 @@ Keet.prototype.link = function (id) {
   // render happen.
   if (!id) assert(id, 'No id is given as parameter.')
   this.el = id
+  // life-cycle method before rendering the component
   if (this.componentWillMount && typeof this.componentWillMount === 'function') {
     this.componentWillMount()
   }
@@ -98,7 +99,7 @@ Keet.prototype.render = function (stub) {
 
 Keet.prototype.cluster = function () {
   // Chain method to run external function(s), this basically serve
-  // as an initializer for all child components within the instance tree
+  // as an initializer for all non attached child components within the instance tree
   var args = [].slice.call(arguments)
   if (args.length > 0) {
     args.map(function (f) {

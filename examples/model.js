@@ -7,12 +7,18 @@ class App extends Keet {
     // callBatchPoolUpdate - custom method to inform changes in the model.
     // If the component has other states that reflect the model value changes
     // we can safely ignore calling this method.
-    this.task.subscribe(model => this.callBatchPoolUpdate())
+    this.task.subscribe(model => {
+      this.callBatchPoolUpdate()
+    })
   }
 }
+
 const app = new App()
 
+let name = 'myModel' //rem
+//rem
 app.mount(html`
+  <h1>${name}</h1><!-- //rem -->
   <ul id="list">
     {{model:task}}
     <li id="{{id}}">{{taskName}}

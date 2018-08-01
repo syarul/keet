@@ -68,49 +68,66 @@ exports.assert = function (val, msg) {
  * no strict checking
  * remove spacing / indentation
  * keep all spacing within html tags
+ * include handling ${} in the literals
  */
-exports.html = function () {
-  var literalSections = [].shift.call(arguments)
-  var raw = literalSections.raw
-  // remove spacing, indentation
-  var trim = raw[raw.length - 1]
-  trim = trim.split(/\n+/)
-  trim = trim.map(function (t) {
+exports.html = function html() {
+  var literals = [].shift.call(arguments)
+  var substs = [].slice.call(arguments)
+
+  var result = literals.raw.reduce(function (acc, lit, i) {
+    return acc + substs[i - 1] + lit
+  })
+  // remove spacing, indentation from every line
+  result = result.split(/\n+/)
+  result = result.map(function (t) {
     return t.trim()
   }).join('')
-  return trim
+  return result
 }
 
 /**
  * @private
  * @description
- * Copy with modification from preact-todomvc. Model constructor
+ * Copy with modification from preact-todomvc. Model constructor with
+ * registering callback listener in Object.defineProperty. Any modification 
+ * to ```this.list``` instance will subsequently inform all registered listener.
  *
  * {{model:<myModel>}}<myModelTemplateString>{{/model:<myModel>}}
  *
  */
 exports.createModel = function () {
 
+  var model = []
   var onChanges = []
 
-  this.inform = function() {
+  var inform = function() {
     for (var i = onChanges.length; i--;) {
-      onChanges[i](this.list)
+      onChanges[i](model)
     }
   }
 
 /**
  * @private
  * @description
- * The array model store
+ * Register callback listener of any changes
  */
-  this.list = []
+  Object.defineProperty(this, 'list', {
+    enumerable: false,
+    configurable: true,
+    get: function () {
+      return model
+    },
+    set: function (val) {
+      model = val
+      inform()
+    }
+  })
 
 /**
  * @private
  * @description
  * Subscribe to the model changes (add/update/destroy)
- *
+ * 
  * @param {Object} model - the model including all prototypes
  *
  */
@@ -128,7 +145,6 @@ exports.createModel = function () {
  */
   this.add = function (obj) {
     this.list = this.list.concat(obj)
-    this.inform()
   }
 
 /**
@@ -144,7 +160,6 @@ exports.createModel = function () {
     this.list = this.list.map(function (obj) {
       return obj[lookupId] !== updateObj[lookupId] ? obj : Object.assign(obj, updateObj)
     })
-    this.inform()
   }
 
 /**
@@ -160,6 +175,5 @@ exports.createModel = function () {
     this.list = this.list.filter(function (obj) {
       return obj[lookupId] !== objId
     })
-    this.inform()
   }
 }
