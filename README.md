@@ -176,7 +176,7 @@ app.task.update('id', {
 })
 
 // remove a task
-app.task.destroy('id', 4)
+app.task.destroy('taskName', 'roll')
 
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
