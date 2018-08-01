@@ -70,7 +70,7 @@ exports.assert = function (val, msg) {
  * keep all spacing within html tags
  * include handling ${} in the literals
  */
-exports.html = function html() {
+exports.html = function html () {
   var literals = [].shift.call(arguments)
   var substs = [].slice.call(arguments)
 
@@ -89,18 +89,17 @@ exports.html = function html() {
  * @private
  * @description
  * Copy with modification from preact-todomvc. Model constructor with
- * registering callback listener in Object.defineProperty. Any modification 
+ * registering callback listener in Object.defineProperty. Any modification
  * to ```this.list``` instance will subsequently inform all registered listener.
  *
  * {{model:<myModel>}}<myModelTemplateString>{{/model:<myModel>}}
  *
  */
 exports.createModel = function () {
-
   var model = []
   var onChanges = []
 
-  var inform = function() {
+  var inform = function () {
     for (var i = onChanges.length; i--;) {
       onChanges[i](model)
     }
@@ -127,7 +126,7 @@ exports.createModel = function () {
  * @private
  * @description
  * Subscribe to the model changes (add/update/destroy)
- * 
+ *
  * @param {Object} model - the model including all prototypes
  *
  */
