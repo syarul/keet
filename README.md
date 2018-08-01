@@ -123,7 +123,7 @@ app.mount(html`
 
 ## List Rendering
 
-To map an array to elements use the ```{{model:}}{{/model:}}```. It has basic methods add/update/remove. To go beyond that requirement you could ```extend``` the ```class``` method of ```createModel```
+To map an array to elements use the ```{{model:<myModelName>}}<myModelTemplate>{{/model:<myModelName>}}```. It has basic methods add/update/remove. To go beyond that requirement you could ```extend``` the ```class``` method of ```createModel```
 
 
 NOTE: Only mutation methods has attached listener, so usage of ```map``` ```filter``` ```reduce``` ```concat``` or directly reassigned new value to the ```list``` is encouraged and does not affect the ```dom-diffing``` efficiency. 
