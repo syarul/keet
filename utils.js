@@ -27,21 +27,23 @@ exports.testEvent = function (tmpl) {
  * @param {string} id - the node id
  * @param {function} callback - the function to execute once the node is found
  */
-exports.checkNodeAvailability = function (component, componentName, callback) {
+exports.checkNodeAvailability = function (component, componentName, callback, notFound) {
   var ele = getId(component.el)
-
+  var found = false
   if (ele) return ele
   else {
     var t = setInterval(function () {
       ele = getId(component.el)
       if (ele) {
         clearInterval(t)
+        found = true
         callback(component, componentName, ele)
       }
     }, 0)
     // silently ignore finding the node after sometimes
     setTimeout(function () {
       clearInterval(t)
+      if(!found && notFound && typeof notFound === 'function') notFound()
     }, 250)
   }
 }
@@ -95,11 +97,12 @@ exports.html = function html () {
  * {{model:<myModel>}}<myModelTemplateString>{{/model:<myModel>}}
  *
  */
-exports.createModel = function () {
+function createModel() {
   var model = []
   var onChanges = []
 
   var inform = function () {
+    // console.trace(onChanges)
     for (var i = onChanges.length; i--;) {
       onChanges[i](model)
     }
@@ -176,3 +179,5 @@ exports.createModel = function () {
     })
   }
 }
+
+exports.createModel = createModel

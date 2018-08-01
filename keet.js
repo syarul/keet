@@ -85,14 +85,15 @@ Keet.prototype.link = function (id) {
 
 Keet.prototype.render = function (stub) {
   if (stub) {
+    // life-cycle method before rendering the component
+    if (!this.WILL_MOUNT && this.componentWillMount && typeof this.componentWillMount === 'function') {
+      this.WILL_MOUNT = true
+      this.componentWillMount()
+    }
     return parseStr.call(this, stub)
   } else {
     // Render this component to the target DOM
     parseStr.call(this)
-    // since component already rendered, trigger its life-cycle method
-    if (this.componentDidMount && typeof this.componentDidMount === 'function') {
-      this.componentDidMount()
-    }
     return this
   }
 }
@@ -113,7 +114,8 @@ Keet.prototype.stubRender = function (tpl, node) {
   setState.call(this)
   testEvent(tpl) && processEvent.call(this, node)
   // since component already rendered, trigger its life-cycle method
-  if (this.componentDidMount && typeof this.componentDidMount === 'function') {
+  if (!this.DID_MOUNT && this.componentDidMount && typeof this.componentDidMount === 'function') {
+    this.DID_MOUNT = true
     this.componentDidMount()
   }
 }

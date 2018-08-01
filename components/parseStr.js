@@ -43,6 +43,11 @@ module.exports = function (stub) {
         })
         setState.call(this)
         testEvent(tpl) && processEvent.call(this, el)
+
+        // since component already rendered, trigger its life-cycle method
+        if (this.componentDidMount && typeof this.componentDidMount === 'function') {
+          this.componentDidMount()
+        }
       }
     }
   }

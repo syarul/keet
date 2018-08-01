@@ -3,6 +3,7 @@ var processEvent = require('./processEvent')
 var getId = require('../utils').getId
 var testEvent = require('../utils').testEvent
 var loopChilds = require('../utils').loopChilds
+var checkNodeAvailability = require('../utils').checkNodeAvailability
 var strInterpreter = require('./strInterpreter')
 var componentParse = require('./componentParse')
 var modelParse = require('./modelParse')
@@ -10,6 +11,7 @@ var nodesVisibility = require('./nodesVisibility')
 var morph = require('morphdom')
 
 var updateContext = function () {
+  var self = this
   var ele = getId(this.el)
   var newElem = genElement.call(this)
   var frag = []
@@ -25,11 +27,30 @@ var updateContext = function () {
     frag.map(function (fragment) {
       fragment.remove()
     })
+    // sub-component life-cycle
+    this.__componentList__.map(function (component) {
+      if(self[component]){
+        var c = self[component]
+        checkNodeAvailability(c, null, function(){
+          if (!c.DID_MOUNT && c.componentDidMount && typeof c.componentDidMount === 'function') {
+            c.DID_MOUNT = true
+            c.componentDidMount()
+          }
+        }, function(){
+          if (c.DID_MOUNT && c.componentDidUnMount && typeof c.componentDidUnMount === 'function') {
+            c.DID_MOUNT = false
+            c.componentDidUnMount()
+          }
+        })
+      }
+    })
   }
   // exec life-cycle componentDidUpdate
   if (this.componentDidUpdate && typeof this.componentDidUpdate === 'function') {
     this.componentDidUpdate()
   }
+
+  // reset batch pooling
   batchPool.status = 'ready'
 }
 
