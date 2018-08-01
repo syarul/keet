@@ -46,6 +46,6 @@ app.task.update('id', {
 })
 
 // remove a task
-app.task.destroy('id', 4)
+app.task.destroy('taskName', 'roll')
 
 setTimeout(() => console.assert(getId('list').innerHTML === '<li id="0">sleep<input type="checkbox" checked=""></li><li id="1">jog<input type="checkbox" checked=""></li><li id="2">walk<input type="checkbox"></li><li id="3">swim<input type="checkbox" checked=""></li>', 'model list')) //rem

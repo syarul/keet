@@ -185,7 +185,7 @@ app.task.destroy('id', 4)
 
 Writing everything in a single file is not advisable, where you should split multiple components. To have multiple components together, use the sub-component feature with ```{{component:<mySubComponent>}}```.
 
-> NOTE: Always has a root-element with id on sub-components html template literal, so the main component able to lookup for insertion
+> NOTE: Always has a root-element with id on sub-components html template literal, so the main component able to lookup for insertion.
 
 <!-- AUTO-GENERATED-CONTENT:START (SUB_COMPONENT) -->
 ```js
