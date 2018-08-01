@@ -94,7 +94,7 @@ app.mount(html`
 
 The traditional way, is you assign ```display:none``` to style attributes or use css, which still use resources. To use it wrap your html string with ```{{?<state>}}<myDynamicNode>{{/<state>}}``` and assign boolean value to the state.
 
-> NOTE: With dynamic nodes it complete remove your node from the DOM and free up your resources which very good on mobile devices.
+> NOTE: With dynamic nodes it complete remove your node from the DOM and free up your resources which is good on mobile devices.
 
 <!-- AUTO-GENERATED-CONTENT:START (CONDITIONAL_NODES) -->
 ```js
@@ -184,6 +184,8 @@ app.task.destroy('id', 4)
 ## Sub Component
 
 Writing everything in a single file is not advisable, where you should split multiple components. To have multiple components together, use the sub-component feature with ```{{component:<mySubComponent>}}```.
+
+> NOTE: Always has a root-element with id on sub-components html template literal, so the main component able to lookup for insertion
 
 <!-- AUTO-GENERATED-CONTENT:START (SUB_COMPONENT) -->
 ```js
