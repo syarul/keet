@@ -22,9 +22,6 @@ var updateContext = function () {
   } else {
   // otherwise moph as whole
     newElem.id = this.el
-    if(ele.hasAttribute('evt-node')){
-      newElem.setAttribute('evt-node', '')
-    }
     newElem.appendChild(this.base)
     morph(ele, newElem)
     // clean up document creation from potential memory leaks

@@ -14,8 +14,11 @@ var re = /{{([^{}]+)}}/g
 var model = /^model:/g
 var modelEnd = /\/model:/g
 
-module.exports = function (ctx, updateStateList) {
-  
+var toSkipStore = []
+var skipNode = []
+
+var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject) {
+
   var currentNode
   var str
   var val 
@@ -23,8 +26,8 @@ module.exports = function (ctx, updateStateList) {
   var ln 
   var props 
   var rep
-  var fragment = ctx.base
-  var instance = fragment.firstChild
+  var fragment
+  var instance
   var nodeAttributes
   var i = 0
   var a
@@ -39,31 +42,51 @@ module.exports = function (ctx, updateStateList) {
   var modelRep
   var fn 
   var el
+  var isModelConstruct = false
+
+  if(modelObject){
+    instance = modelInstance
+    isModelConstruct = true
+  } else {
+    fragment = ctx.base
+    instance = fragment.firstChild
+  }
+
+  var ins = modelObject || ctx
+
+  function updateState(state){
+    if(typeof updateStateList === 'function'){
+      updateStateList(state)
+    }
+  }
 
   function replaceHandleBars(value, node) {
     props = value.match(re)
     ln = props.length
-
     while (ln) {
       ln--
       rep = props[ln].replace(re, '$1')
-      tnr = ternaryOps.call(ctx, rep)
+      tnr = ternaryOps.call(ins, rep)
+      console.log(rep, modelObject)
       if(tnr){
-        updateStateList(tnr.state)
+        updateState(tnr.state)
         value = tnr.value
       } else {
         if(rep.match(model)){
           modelRep = rep.replace('model:', '')
           value = value.replace('{{'+rep+'}}', '')
 
-          // list generate model
-          genModelList.call(ctx, node, modelRep)
+          // generate list model
+          // ensure not to stay inside the loop forever
+          if(!isModelConstruct){
+            genModelList.call(ctx, node, modelRep, tmplhandler)
+          }
         } else if(rep.match(modelEnd)){
           value = value.replace('{{'+rep+'}}', '')
         } else {
-          updateStateList(rep)
-          if(ctx[rep] !== undefined){
-            value = value.replace('{{'+rep+'}}', ctx[rep])
+          updateState(rep)
+          if(ins[rep] !== undefined){
+            value = value.replace('{{'+rep+'}}', ins[rep])
           }
         }
       }
@@ -73,7 +96,6 @@ module.exports = function (ctx, updateStateList) {
   }
 
   function inspect(node){
-    // console.log(node)
     type = node.nodeType
     val = node.nodeValue
     if(val.match(re)){
@@ -91,33 +113,50 @@ module.exports = function (ctx, updateStateList) {
       if (re.test(name)) {
         node.removeAttribute(name)
         name = replaceHandleBars(name)
-        node.setAttribute(name, ns)
+        console.log(name, ns)
+        // node.setAttribute(name, ns)
       } else if(re.test(ns)){
         ns = replaceHandleBars(ns)
         node.setAttribute(name, ns)
       }
     }
   }
+  
+  var idx
+
+  function lookUpEvtNode(node){
+    if(node.hasAttribute('id')){
+      idx = skipNode.indexOf(node.id)
+      if(~idx){
+        return true
+      } else {
+        return false
+      }
+    }
+  }
+
+  function addToSkipNode(store, nodeId){
+    idx = store.indexOf(nodeId)
+    if(!~idx){
+      store.push(nodeId)
+    }
+  }
 
   function addEvent(node){
     nodeAttributes = node.attributes
-    if(node.parentNode.nodeType === DOCUMENT_FRAGMENT_TYPE){
-      el = getId(ctx.el)
-    } else {
-      el = node.parentNode.id && getId(node.parentNode.id)
-    }
+    // if(node.parentNode.nodeType === DOCUMENT_FRAGMENT_TYPE){
+    //   el = getId(ctx.el)
+    // } else {
+    //   el = node.parentNode.id && getId(node.parentNode.id)
+    // }
 
-    if(el && el.hasAttribute('evt-node')) {
-      // console.log('has evt')
-      for (i = nodeAttributes.length; i--;) {
-        a = nodeAttributes[i]
-        name = a.localName
-        if (/^k-/.test(name)) {
-          node.removeAttribute(name)
-        }
-      }
-    } else if(el && !el.hasAttribute('evt-node')) {
-      // console.log('adding evt')
+    if(node && lookUpEvtNode(node)) {
+      // skip addding event for node that already has event
+      // to allow skipping adding event the node must include `id`/
+      console.log('has evt')
+    } else {
+      // only add event when node does not has one
+      console.log('adding evt')
       for (i = nodeAttributes.length; i--;) {
         a = nodeAttributes[i]
         name = a.localName
@@ -129,16 +168,24 @@ module.exports = function (ctx, updateStateList) {
           if(c){
             h = ns.match(/\(([^{}]+)\)/)
             handlerArgs = h ? h[1] : ''
-            argv = handlerArgs.split(',')
+            argv = handlerArgs.split(',').filter(function(f){
+              return f !== ''
+            })
+
             fn = function(e){
               if (e.target !== e.currentTarget) {
                 c.apply(ctx, argv.concat(e))
               }
               e.stopPropagation()
             }
-            el.addEventListener(evtName, fn, false)
-            el.setAttribute('evt-node', '')
-            node.removeAttribute(name)
+
+            node.addEventListener(evtName, c.bind.apply(c.bind(ctx), [node].concat(argv)), false)
+            // el.addEventListener(evtName, fn, false)
+            // el.setAttribute('evt-node', '')
+            // node.removeAttribute(name)
+            if(node.hasAttribute('id')){
+              addToSkipNode(toSkipStore, node.id)
+            }
           }
         }
       }
@@ -149,9 +196,26 @@ module.exports = function (ctx, updateStateList) {
   var start = Date.now()
 
   function end(time){
+
     if(t) clearTimeout(t)
+
     t = setTimeout(function(){
+
+      toSkipStore.map(function(skip){
+        addToSkipNode(skipNode, skip)
+        var node = ctx.__pristineFragment__.getElementById(skip)
+        nodeAttributes = node.attributes
+        for (i = nodeAttributes.length; i--;) {
+          a = nodeAttributes[i]
+          name = a.localName
+          if (/^k-/.test(name)) {
+            node.removeAttribute(name)
+          }
+        }
+      })
+
       console.log('end', time)
+
     }, 100)
   }
 
@@ -160,18 +224,24 @@ module.exports = function (ctx, updateStateList) {
       currentNode = node
       if(currentNode.nodeType === DOCUMENT_ELEMENT_TYPE){
         if(currentNode.hasAttributes()){
-          addEvent(currentNode)
+          // addEvent(currentNode)
           inspectAttributes(currentNode)
         }
         check(currentNode.firstChild)
       } else {
         inspect(currentNode)
       }
-      node = node.nextSibling || end(Date.now() - start)
+      if(isModelConstruct){
+        node = null
+      } else {
+        node = node.nextSibling || end(Date.now() - start)
+      }
     } 
   }
 
   check(instance)
+
+  // console.log(instance)
 
   // return
   // var arrProps = str.match(/{{([^{}]+)}}/g)
@@ -210,3 +280,5 @@ module.exports = function (ctx, updateStateList) {
   // }
   // return str
 }
+
+module.exports = tmplhandler

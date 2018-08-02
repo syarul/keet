@@ -1,12 +1,13 @@
 var ternaryOps = require('./ternaryOps')
 var createModel = require('../utils').createModel
 
-module.exports = function (node, model) {
+module.exports = function (node, model, tmplHandler) {
   var modelList
   var mLength
   var i
-  var list = node.nextSibling.cloneNode(true)
+  var listClone
 
+  var list = node.nextSibling.cloneNode(true)
   // remove the first prototype node 
   node.nextSibling.remove()
 
@@ -15,13 +16,15 @@ module.exports = function (node, model) {
     mLength = modelList.length
     i = 0
     while(i < mLength){
-      console.log(modelList[i])
+      listClone = list.cloneNode(true)
+      tmplHandler(this, null, listClone, modelList[i])
+      node.parentNode.insertBefore(listClone, null)
       i++
     } 
-    // console.log(modelList)
   }
 
-  node.parentNode.insertBefore(list, null)
+  // 
+  // node.parentNode.insertBefore(list, null)
 
 
   // var arrProps = string.match(/{{([^{}]+)}}/g)

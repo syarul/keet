@@ -9,7 +9,7 @@ for (let i = 0; i < taskName.length; i++) {
   task.add({
     id: i,
     taskName: taskName[i],
-    complete: i % 2 ? true : false
+    complete: false
   })
 }
 
@@ -23,6 +23,9 @@ class App extends Keet {
       this.callBatchPoolUpdate()
     })
   }
+  test(evt){
+    console.log(evt)
+  }
 }
 
 const app = new App()
@@ -33,14 +36,13 @@ app.mount(html`
   <h1>${name}</h1><!-- //rem -->
   <ul id="list">
     {{model:task}}
-    <li id="{{id}}">{{taskName}}
-      <input type="checkbox" {{complete?checked:null}}>
+    <li id="{{id}}">
+      {{taskName}}
+      <input type="checkbox" {{complete}}>
     </li>
     {{/model:task}}
   </ul>
 `).link('app')
-
-
 
 // update a task
 // app.task.update('id', {
@@ -49,7 +51,7 @@ app.mount(html`
 //   complete: true
 // })
 
-// // remove a task
+// remove a task
 // app.task.destroy('taskName', 'roll')
 
 // setTimeout(() => console.assert(getId('list').innerHTML === '<li id="0">sleep<input type="checkbox" checked=""></li><li id="1">jog<input type="checkbox" checked=""></li><li id="2">walk<input type="checkbox"></li><li id="3">swim<input type="checkbox" checked=""></li>', 'model list')) //rem
