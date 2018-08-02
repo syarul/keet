@@ -11,7 +11,7 @@ class App extends Keet {
 const app = new App()
 
 app.mount(html`
-  <button id="counter" k-click="add()">
+  <button id="counter" k-click="add(f)">
     {{count}}
   </button>
 `).link('app')

@@ -6,44 +6,50 @@ var loopChilds = require('../utils').loopChilds
 var checkNodeAvailability = require('../utils').checkNodeAvailability
 var strInterpreter = require('./strInterpreter')
 var componentParse = require('./componentParse')
-var modelParse = require('./modelParse')
+// var modelParse = require('./modelParse')
 var nodesVisibility = require('./nodesVisibility')
 var morph = require('morphdom')
 
 var updateContext = function () {
   var self = this
-  var ele = getId(this.el)
-  var newElem = genElement.call(this)
   var frag = []
+  var ele = getId(this.el)
+  genElement.call(this, ele)
+  var newElem = document.createElement('div')
   // morp as sub-component
   if (this.IS_STUB) {
     morph(ele, newElem.childNodes[0])
   } else {
   // otherwise moph as whole
     newElem.id = this.el
+    if(ele.hasAttribute('evt-node')){
+      newElem.setAttribute('evt-node', '')
+    }
+    newElem.appendChild(this.base)
     morph(ele, newElem)
     // clean up document creation from potential memory leaks
     loopChilds(frag, newElem)
     frag.map(function (fragment) {
       fragment.remove()
     })
+    
     // sub-component life-cycle
-    this.__componentList__.map(function (component) {
-      if(self[component]){
-        var c = self[component]
-        checkNodeAvailability(c, null, function(){
-          if (!c.DID_MOUNT && c.componentDidMount && typeof c.componentDidMount === 'function') {
-            c.DID_MOUNT = true
-            c.componentDidMount()
-          }
-        }, function(){
-          if (c.DID_MOUNT && c.componentDidUnMount && typeof c.componentDidUnMount === 'function') {
-            c.DID_MOUNT = false
-            c.componentDidUnMount()
-          }
-        })
-      }
-    })
+    // this.__componentList__.map(function (component) {
+    //   if(self[component]){
+    //     var c = self[component]
+    //     checkNodeAvailability(c, null, function(){
+    //       if (!c.DID_MOUNT && c.componentDidMount && typeof c.componentDidMount === 'function') {
+    //         c.DID_MOUNT = true
+    //         c.componentDidMount()
+    //       }
+    //     }, function(){
+    //       if (c.DID_MOUNT && c.componentDidUnMount && typeof c.componentDidUnMount === 'function') {
+    //         c.DID_MOUNT = false
+    //         c.componentDidUnMount()
+    //       }
+    //     })
+    //   }
+    // })
   }
   // exec life-cycle componentDidUpdate
   if (this.componentDidUpdate && typeof this.componentDidUpdate === 'function') {
@@ -91,9 +97,13 @@ var batchPoolExec = function () {
 
 var nextState = function (i) {
   var self = this
-  if (i < this.__stateList__.length) {
-    var state = this.__stateList__[i]
-    var value = this[state]
+  var state
+  var value
+  while(i < stateList.length) {
+
+    state = stateList[i]
+    value = this[state]
+
     // if value is undefined, likely has object notation we convert it to array
     if (value === undefined) value = strInterpreter(state)
 
@@ -130,28 +140,33 @@ var nextState = function (i) {
   }
 }
 
-var setState = function (args) {
+var setState = function () {
   nextState.call(this, 0)
 }
 
-var updateStateList = function (state) {
-  if (!~this.__stateList__.indexOf(state)) this.__stateList__ = this.__stateList__.concat(state)
+var stateList = []
+
+var addState = function(state){
+  if(stateList.indexOf(state) === -1) stateList = stateList.concat(state)
 }
 
-var genElement = function (force) {
-  var tempDiv = document.createElement('div')
-  var tpl = tmplHandler.call(this, updateStateList.bind(this))
-  tpl = componentParse.call(this, tpl)
-  tpl = modelParse.call(this, tpl)
-  tpl = nodesVisibility.call(this, tpl)
-  tempDiv.innerHTML = tpl
+var genElement = function (oldElem, force) {
 
-  setState.call(this)
-  testEvent(tpl) && processEvent.call(this, tempDiv)
-  if (force) batchPoolExec.call(this)
-  return tempDiv
+  this.base = this.__pristineFragment__.cloneNode(true)
+  tmplHandler(this, addState)
+  // return
+  // var tempDiv = document.createElement('div')
+  // tpl = componentParse.call(this, tpl)
+  // tpl = modelParse.call(this, tpl)
+  // tpl = nodesVisibility.call(this, tpl)
+  // tempDiv.innerHTML = tpl
+
+  // setState.call(this)
+  // testEvent(tpl) && processEvent.call(this, tempDiv)
+  // if (force) batchPoolExec.call(this)
+  // return tempDiv
 }
 
 exports.genElement = genElement
+exports.addState = addState
 exports.setState = setState
-exports.updateStateList = updateStateList
