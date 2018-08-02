@@ -10,6 +10,8 @@ var modelParse = require('./modelParse')
 var nodesVisibility = require('./nodesVisibility')
 var morph = require('morphdom')
 
+var has = 0
+
 var updateContext = function () {
   var self = this
   var ele = getId(this.el)
@@ -18,10 +20,15 @@ var updateContext = function () {
   // morp as sub-component
   if (this.IS_STUB) {
     morph(ele, newElem.childNodes[0])
+    // processEvent.call(this, ele)
   } else {
   // otherwise moph as whole
     newElem.id = this.el
     morph(ele, newElem)
+    has++
+    if(has === 2){
+      processEvent.call(this, ele)
+    }
     // clean up document creation from potential memory leaks
     loopChilds(frag, newElem)
     frag.map(function (fragment) {
@@ -147,7 +154,6 @@ var genElement = function (force) {
   tempDiv.innerHTML = tpl
 
   setState.call(this)
-  testEvent(tpl) && processEvent.call(this, tempDiv)
   if (force) batchPoolExec.call(this)
   return tempDiv
 }

@@ -10,7 +10,7 @@ var next = function (i, c, rem) {
   var v
   var h
   var atts = c.attributes
-
+  var self = this
   if (i < atts.length) {
     hask = /^k-/.test(atts[i].nodeName)
     if (hask) {
@@ -24,7 +24,18 @@ var next = function (i, c, rem) {
         argv = []
         v = handlerArgs.split(',').filter(function (f) { return f !== '' })
         if (v.length) v.map(function (v) { argv.push(v) })
-        c.addEventListener(evtName, isHandler.bind.apply(isHandler.bind(this), [c].concat(argv)), false)
+
+        var fn = function(e){
+          e.stopPropagation()
+          if (e.target !== e.currentTarget) {
+            isHandler.apply(self, argv.concat(e))
+          }
+        }
+        if(c.hasAttribute('evt-node')){
+          c.addEventListener(evtName, fn, false)
+        } else{
+          c.addEventListener(evtName, isHandler.bind.apply(isHandler.bind(this), [c].concat(argv)), false)
+        }
       }
     }
     i++
