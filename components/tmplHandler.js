@@ -13,6 +13,7 @@ var re = /{{([^{}]+)}}/g
 
 var model = /^model:/g
 var modelEnd = /\/model:/g
+var modelRaw = /^\{\{model:([^{}]+)\}\}/g
 
 var toSkipStore = []
 var skipNode = []
@@ -67,14 +68,13 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject) {
       ln--
       rep = props[ln].replace(re, '$1')
       tnr = ternaryOps.call(ins, rep)
-      console.log(rep, modelObject)
       if(tnr){
         updateState(tnr.state)
-        value = tnr.value
+        value = value.replace('{{'+rep+'}}', tnr.value)
       } else {
         if(rep.match(model)){
           modelRep = rep.replace('model:', '')
-          value = value.replace('{{'+rep+'}}', '')
+          value = value.replace('{{'+rep+'}}', '_ms_')
 
           // generate list model
           // ensure not to stay inside the loop forever
@@ -82,10 +82,10 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject) {
             genModelList.call(ctx, node, modelRep, tmplhandler)
           }
         } else if(rep.match(modelEnd)){
-          value = value.replace('{{'+rep+'}}', '')
+          value = value.replace('{{'+rep+'}}', '_me_')
         } else {
-          updateState(rep)
           if(ins[rep] !== undefined){
+            updateState(rep)
             value = value.replace('{{'+rep+'}}', ins[rep])
           }
         }
@@ -101,7 +101,7 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject) {
     if(val.match(re)){
       val = replaceHandleBars(val, node)
       node.nodeValue = val
-    } 
+    }
   }
 
   function inspectAttributes(node){
@@ -112,12 +112,20 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject) {
       ns = a.nodeValue
       if (re.test(name)) {
         node.removeAttribute(name)
+        var temp = name
         name = replaceHandleBars(name)
-        console.log(name, ns)
-        // node.setAttribute(name, ns)
+        node.setAttribute(name, ns)
       } else if(re.test(ns)){
         ns = replaceHandleBars(ns)
-        node.setAttribute(name, ns)
+        if(ns === ''){
+          node.removeAttribute(name)
+        } else {
+          if(name === 'checked'){
+            node.setAttribute(name, '')
+          } else {
+            node.setAttribute(name, ns)
+          }
+        }
       }
     }
   }
@@ -144,19 +152,13 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject) {
 
   function addEvent(node){
     nodeAttributes = node.attributes
-    // if(node.parentNode.nodeType === DOCUMENT_FRAGMENT_TYPE){
-    //   el = getId(ctx.el)
-    // } else {
-    //   el = node.parentNode.id && getId(node.parentNode.id)
-    // }
-
     if(node && lookUpEvtNode(node)) {
       // skip addding event for node that already has event
       // to allow skipping adding event the node must include `id`/
-      console.log('has evt')
+      // console.log('has evt')
     } else {
       // only add event when node does not has one
-      console.log('adding evt')
+      // console.log(node, 'adding evt')
       for (i = nodeAttributes.length; i--;) {
         a = nodeAttributes[i]
         name = a.localName
@@ -178,11 +180,12 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject) {
               }
               e.stopPropagation()
             }
-
-            node.addEventListener(evtName, c.bind.apply(c.bind(ctx), [node].concat(argv)), false)
-            // el.addEventListener(evtName, fn, false)
-            // el.setAttribute('evt-node', '')
-            // node.removeAttribute(name)
+            // if node is root elemment for model we wrap the eventListenr
+            if(node.hasChildNodes() && node.firstChild.nodeType === DOCUMENT_TEXT_TYPE && node.firstChild.nodeValue.match(modelRaw)){
+              node.addEventListener(evtName, fn, false)
+            } else {
+              node.addEventListener(evtName, c.bind.apply(c.bind(ctx), [node].concat(argv)), false)
+            }
             if(node.hasAttribute('id')){
               addToSkipNode(toSkipStore, node.id)
             }
@@ -224,24 +227,18 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject) {
       currentNode = node
       if(currentNode.nodeType === DOCUMENT_ELEMENT_TYPE){
         if(currentNode.hasAttributes()){
-          // addEvent(currentNode)
+          addEvent(currentNode)
           inspectAttributes(currentNode)
         }
         check(currentNode.firstChild)
       } else {
         inspect(currentNode)
       }
-      if(isModelConstruct){
-        node = null
-      } else {
-        node = node.nextSibling || end(Date.now() - start)
-      }
+      node = node.nextSibling || end(Date.now() - start)
     } 
   }
 
   check(instance)
-
-  // console.log(instance)
 
   // return
   // var arrProps = str.match(/{{([^{}]+)}}/g)

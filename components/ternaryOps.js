@@ -1,7 +1,7 @@
 // function to resolve ternary operation
 
 function test (str) {
-  if (str === '\'\'' || str === '""') { return '' }
+  if (str === '\'\'' || str === '""' || str === 'null') { return '' }
   return str
 }
 

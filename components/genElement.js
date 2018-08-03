@@ -10,11 +10,11 @@ var componentParse = require('./componentParse')
 var nodesVisibility = require('./nodesVisibility')
 var morph = require('morphdom')
 
-var updateContext = function () {
+var updateContext = function (force) {
   var self = this
   var frag = []
   var ele = getId(this.el)
-  genElement.call(this, ele)
+  !force && genElement.call(this)
   var newElem = document.createElement('div')
   // morp as sub-component
   if (this.IS_STUB) {
@@ -23,6 +23,7 @@ var updateContext = function () {
   // otherwise moph as whole
     newElem.id = this.el
     newElem.appendChild(this.base)
+    // console.log(this.__pristineFragment__)
     morph(ele, newElem)
     // clean up document creation from potential memory leaks
     loopChilds(frag, newElem)
@@ -52,7 +53,7 @@ var updateContext = function () {
   if (this.componentDidUpdate && typeof this.componentDidUpdate === 'function') {
     this.componentDidUpdate()
   }
-
+  // console.log(this)
   // reset batch pooling
   batchPool.status = 'ready'
 }
@@ -67,7 +68,7 @@ var batchPool = {
 // hit the deck. If possible we want to pool them before initiating DOM
 // morphing, but in the event the update is not fast enough we want to return
 // to normal synchronous update.
-var batchPoolExec = function () {
+var batchPoolExec = function (force) {
   if (batchPool.status === 'pooling') {
     //
   } else {
@@ -76,12 +77,12 @@ var batchPoolExec = function () {
     // if batchpool is not yet executed or it was idle (after 100ms)
     // direct morph the DOM
     if (!batchPool.ttl) {
-      updateContext.call(this)
+      updateContext.call(this, force)
     } else {
     // we wait until pooling is ready before initiating DOM morphing
       clearTimeout(batchPool.ttl)
       batchPool.ttl = setTimeout(function () {
-        updateContext.call(self)
+        updateContext.call(self, force)
       }, 0)
     }
     // we clear the batch pool if it more then 100ms from
@@ -96,7 +97,7 @@ var nextState = function (i) {
   var self = this
   var state
   var value
-  while(i < stateList.length) {
+  if(i < stateList.length) {
 
     state = stateList[i]
     value = this[state]
@@ -147,7 +148,7 @@ var addState = function(state){
   if(stateList.indexOf(state) === -1) stateList = stateList.concat(state)
 }
 
-var genElement = function (oldElem, force) {
+var genElement = function (force) {
 
   this.base = this.__pristineFragment__.cloneNode(true)
   tmplHandler(this, addState)
@@ -160,8 +161,9 @@ var genElement = function (oldElem, force) {
 
   // setState.call(this)
   // testEvent(tpl) && processEvent.call(this, tempDiv)
-  // if (force) batchPoolExec.call(this)
-  // return tempDiv
+  if (force) {
+    batchPoolExec.call(this, force)
+  }
 }
 
 exports.genElement = genElement

@@ -12,22 +12,22 @@ class App extends Keet {
     })
   }
   test(evt){
-    console.log(evt)
-    if(evt && evt.target)
-      console.log(evt.target)
+    console.log(arguments)
+    // if(evt && evt.target)
+      // console.log(evt.target)
   }
 }
 
 const app = new App()
 
-let name = 'myModel' //rem
+let name = 'model events' //rem
 //rem
 app.mount(html`
   <h1>${name}</h1><!-- //rem -->
-  <ul id="list">
+  <ul id="list" k-click="test()">
     {{model:task}}
     <li id="{{id}}">
-      <button k-click="test()"> {{taskName}} </button>
+      <button class="edit"> {{taskName}} </button>
     </li>
     {{/model:task}}
   </ul>
@@ -35,12 +35,12 @@ app.mount(html`
 
 let taskName = ['run', 'jog', 'walk', 'swim', 'roll']
 
-let count = 50
+let count = 10
 
 for (let i = 0; i < count; i++) {
   app.task.add({
     id: i,
-    taskName: Math.random().toString(32)
+    taskName: `CLICK ME ${i}!`
   })
 }
 

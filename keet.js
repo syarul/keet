@@ -131,10 +131,18 @@ Keet.prototype.stubRender = function (tpl, node) {
   }
 }
 
+var BATCH_CALL_REQUEST = null
+
 Keet.prototype.callBatchPoolUpdate = function () {
   // force component to update, if any state / non-state
   // value changed DOM diffing will occur
-  genElement.call(this, true)
+  var self = this
+  if(BATCH_CALL_REQUEST){
+    clearTimeout(BATCH_CALL_REQUEST)
+  } 
+  BATCH_CALL_REQUEST = setTimeout(function(){
+    genElement.call(self, true)
+  })
 }
 
 module.exports = Keet
