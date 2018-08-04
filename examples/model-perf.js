@@ -17,7 +17,7 @@ class App extends Keet {
     // console.log(id)
   }
   componentDidUpdate(){
-    if(!this.update){ // we do this so we wont stay inside infinite loop
+    if(!this.update){ // this so we wont stay inside an infinite loop
       this.update = true
       this.sAdd = `${new Date() -time}ms`
       this.callBatchPoolUpdate()
@@ -40,7 +40,7 @@ app.mount(html`
     {{model:task}}
     <li id="{{id}}"><span style="text-decoration: {{complete?line-through:none}};">{{taskName}}</span>
       <input type="checkbox" checked="{{complete?checked:''}}">
-      <span class="destroy" style="cursor: pointer;"> ( x ) </span>
+      <span class="destroy" style="cursor: pointer;"> [ X ] </span>
     </li>
     {{/model:task}}
   </ul>

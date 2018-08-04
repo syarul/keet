@@ -4,16 +4,16 @@ var getId = function (id) {
 
 exports.getId = getId
 
-var loopChilds = function (arr, elem) {
-  for (var child = elem.firstChild; child !== null; child = child.nextSibling) {
-    arr.push(child)
-    if (child.hasChildNodes()) {
-      loopChilds(arr, child)
-    }
-  }
-}
+// var loopChilds = function (arr, elem) {
+//   for (var child = elem.firstChild; child !== null; child = child.nextSibling) {
+//     arr.push(child)
+//     if (child.hasChildNodes()) {
+//       loopChilds(arr, child)
+//     }
+//   }
+// }
 
-exports.loopChilds = loopChilds
+// exports.loopChilds = loopChilds
 
 exports.testEvent = function (tmpl) {
   return / k-/.test(tmpl)

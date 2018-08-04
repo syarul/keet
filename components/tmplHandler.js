@@ -15,6 +15,8 @@ var model = /^model:/g
 var modelEnd = /\/model:/g
 var modelRaw = /^\{\{model:([^{}]+)\}\}/g
 
+var conditionalNodes = /^\?/g
+
 var toSkipStore = []
 var skipNode = []
 
@@ -41,9 +43,11 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject) {
   var handler
   var tnr 
   var modelRep
+  var conditionalRep
   var fn 
   var el
   var isModelConstruct = false
+  var idx
 
   if(modelObject){
     instance = modelInstance
@@ -58,6 +62,30 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject) {
   function updateState(state){
     if(typeof updateStateList === 'function'){
       updateStateList(state)
+    }
+  }
+
+  function processConditionalNodes(node, bool, rep){
+    var currentNode
+    while(node){
+      currentNode = node
+      node = node.nextSibling
+      if(!bool){
+        // if(currentNode.nodeValue)
+          // console.log(currentNode.nodeValue.match('{{/'+rep+'}}'))
+        
+      }
+
+      if(currentNode.nodeType === DOCUMENT_TEXT_TYPE){
+        console.log(currentNode.nodeValue, '{{?'+rep+'}}', currentNode.nodeValue.match('{{?'+rep+'}}'))
+        if(currentNode.nodeValue.match('{{/'+rep+'}}')){
+          currentNode.remove()
+          node = null
+        } else if(currentNode.nodeValue.match('{{?'+rep+'}}')){
+          console.log(currentNode)
+          currentNode.remove()
+        }
+      }
     }
   }
 
@@ -83,6 +111,12 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject) {
           }
         } else if(rep.match(modelEnd)){
           value = value.replace('{{'+rep+'}}', '_me_')
+        } else if(rep.match(conditionalNodes)){
+          conditionalRep = rep.replace('?', '')
+          // console.log(node, ins, rep,  ins[conditionalRep])
+          if(ins[conditionalRep] !== undefined){
+            processConditionalNodes(node, ins[conditionalRep], conditionalRep)
+          }
         } else {
           if(ins[rep] !== undefined){
             updateState(rep)
@@ -129,8 +163,6 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject) {
       }
     }
   }
-  
-  var idx
 
   function lookUpEvtNode(node){
     if(node.hasAttribute('id')){
@@ -150,12 +182,28 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject) {
     }
   }
 
+  function lookupParentNode(rootNode, node, argv){
+    while(node){
+      if(node.className){
+        argv.push(node.className)
+      }
+      if(node.id){
+        argv.push(node.id)
+      }
+      node = node.parentNode
+      if(node.isEqualNode(rootNode)){
+        node = null
+      }
+    }
+    return argv
+  }
+
   function addEvent(node){
     nodeAttributes = node.attributes
     if(node && lookUpEvtNode(node)) {
       // skip addding event for node that already has event
       // to allow skipping adding event the node must include `id`/
-      // console.log('has evt')
+      // console.log(node, 'has evt')
     } else {
       // only add event when node does not has one
       // console.log(node, 'adding evt')
@@ -176,11 +224,13 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject) {
 
             fn = function(e){
               if (e.target !== e.currentTarget) {
+                argv = lookupParentNode(node, e.target, [])
                 c.apply(ctx, argv.concat(e))
               }
               e.stopPropagation()
             }
-            // if node is root elemment for model we wrap the eventListenr
+            // if node is the rootNode for model, we wrap the eventListener and
+            // rebuild the arguments by appending id/className util rootNode.
             if(node.hasChildNodes() && node.firstChild.nodeType === DOCUMENT_TEXT_TYPE && node.firstChild.nodeValue.match(modelRaw)){
               node.addEventListener(evtName, fn, false)
             } else {

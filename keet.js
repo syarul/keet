@@ -15,7 +15,6 @@ var genElement = require('./components/genElement').genElement
 var processEvent = require('./components/processEvent')
 var getId = require('./utils').getId
 var testEvent = require('./utils').testEvent
-var loopChilds = require('./utils').loopChilds
 var assert = require('./utils').assert
 
 var DOCUMENT_FRAGMENT_TYPE = 11
@@ -50,8 +49,7 @@ Keet.prototype.mount = function (instance) {
     while (tempDiv.firstChild) {
       frag.appendChild(tempDiv.firstChild)
     }
-  // If instance is a html element (usually using template literals),
-  // convert it back to string.
+  // If instance is a html element process as html entities
   } else if (typeof instance === 'object' && instance['nodeType']) {
     if (instance['nodeType'] === DOCUMENT_ELEMENT_TYPE) {
       frag.appendChild(instance)

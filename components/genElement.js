@@ -2,7 +2,6 @@ var tmplHandler = require('./tmplHandler')
 var processEvent = require('./processEvent')
 var getId = require('../utils').getId
 var testEvent = require('../utils').testEvent
-var loopChilds = require('../utils').loopChilds
 var checkNodeAvailability = require('../utils').checkNodeAvailability
 var strInterpreter = require('./strInterpreter')
 var componentParse = require('./componentParse')
@@ -14,6 +13,8 @@ var updateContext = function (force) {
   var self = this
   var frag = []
   var ele = getId(this.el)
+  var node 
+  var currentNode
   !force && genElement.call(this)
   var newElem = document.createElement('div')
   // morp as sub-component
@@ -23,13 +24,7 @@ var updateContext = function (force) {
   // otherwise moph as whole
     newElem.id = this.el
     newElem.appendChild(this.base)
-    // console.log(this.__pristineFragment__)
     morph(ele, newElem)
-    // clean up document creation from potential memory leaks
-    loopChilds(frag, newElem)
-    frag.map(function (fragment) {
-      fragment.remove()
-    })
     
     // sub-component life-cycle
     // this.__componentList__.map(function (component) {
@@ -48,6 +43,13 @@ var updateContext = function (force) {
     //     })
     //   }
     // })
+  }
+  // clean up document creation since its not a fragment
+  node = newElem.firstChild
+  while(node){
+    currentNode = node
+    node = node.nextSibling
+    currentNode.remove()
   }
   // exec life-cycle componentDidUpdate
   if (this.componentDidUpdate && typeof this.componentDidUpdate === 'function') {
