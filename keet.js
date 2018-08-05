@@ -12,6 +12,7 @@
 var parseStr = require('./components/parseStr')
 var setState = require('./components/genElement').setState
 var genElement = require('./components/genElement').genElement
+var clearState = require('./components/genElement').clearState
 var processEvent = require('./components/processEvent')
 var getId = require('./utils').getId
 var testEvent = require('./utils').testEvent
@@ -66,6 +67,10 @@ Keet.prototype.mount = function (instance) {
   // we store the pristine instance in __pristineFragment__
   this.__pristineFragment__ = frag.cloneNode(true)
   this.base = frag
+
+  // cleanup states on mount
+  clearState()
+
   return this
 }
 

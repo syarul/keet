@@ -8,6 +8,7 @@ var componentParse = require('./componentParse')
 var nodesVisibility = require('./nodesVisibility')
 var checkNodeAvailability = require('../utils').checkNodeAvailability
 var addState =  require('./genElement').addState
+var assert = require('../utils').assert
 
 var renderSub = function (c, cName, node) {
   c.stubRender(this.__componentStub__[cName], node)
@@ -32,6 +33,8 @@ module.exports = function (stub) {
     if (this.componentDidMount && typeof this.componentDidMount === 'function') {
       this.componentDidMount()
     }
+  } else {
+    assert(false, 'No element with id: "' + this.el + '" exist.')
   }
   return 
   // tpl = tmplHandler.call(this, function (state) {

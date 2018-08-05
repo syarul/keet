@@ -1,5 +1,6 @@
 var ternaryOps = require('./ternaryOps')
 var createModel = require('../utils').createModel
+var assert = require('../utils').assert
 
 module.exports = function (node, model, tmplHandler) {
   var modelList
@@ -15,7 +16,11 @@ module.exports = function (node, model, tmplHandler) {
   if(this[model] !== undefined && this[model].hasOwnProperty('list')){
     parentNode = node.parentNode
     node.remove() // remove the text for model start tag
-    parentNode.firstChild.remove() // also remove the text tag for modelEnd
+    if(parent.firstChild){
+      parentNode.firstChild.remove() // also remove the text tag for modelEnd
+    } else {
+      assert(false, 'Model "{{/model:'+model+'}}" enclosing tag does not exist.')
+    }
     modelList = this[model].list
     mLength = modelList.length
     i = 0
@@ -25,5 +30,7 @@ module.exports = function (node, model, tmplHandler) {
       parentNode.insertBefore(listClone, null)
       i++
     } 
+  } else {
+    assert(false, 'Model "'+model+'" does not exist.')
   }
 }

@@ -4,7 +4,6 @@ import { html, getId } from '../utils'
 class App extends Keet {
   count = 0
   add (evt) {
-  	// console.log(evt)
     this.count++
   }
 }
@@ -17,10 +16,10 @@ app.mount(html`
   </button>
 `).link('app')
 
-// const click = new Event('click', {'bubbles': true, 'cancelable': true }) //rem
+const click = new Event('click', {'bubbles': true, 'cancelable': true }) //rem
 //rem
-// const counter = getId('counter') //rem
+const counter = getId('counter') //rem
 //rem
-// counter.dispatchEvent(click) //rem
+counter.dispatchEvent(click) //rem
 //rem
-// setTimeout(() => console.assert(counter.innerHTML === '1', 'counter test')) //rem
+setTimeout(() => console.assert(counter.innerHTML === '1', 'counter test')) //rem

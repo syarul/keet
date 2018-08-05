@@ -109,6 +109,7 @@ var nextState = function (i) {
 
     if (value && Array.isArray(value)) {
       // using split object notation as base for state update
+      // console.log(value)
       var inVal = this[value[0]][value[1]]
       Object.defineProperty(this[value[0]], value[1], {
         enumerable: false,
@@ -146,6 +147,10 @@ var setState = function () {
 
 var stateList = []
 
+var clearState = function(){
+  stateList = []
+}
+
 var addState = function(state){
   if(stateList.indexOf(state) === -1) stateList = stateList.concat(state)
 }
@@ -171,3 +176,4 @@ var genElement = function (force) {
 exports.genElement = genElement
 exports.addState = addState
 exports.setState = setState
+exports.clearState = clearState

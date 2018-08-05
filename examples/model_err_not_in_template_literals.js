@@ -14,5 +14,3 @@ app.mount(html`
     </li>
   </ul>
 `).link('app')
-
-setTimeout(() => console.assert(getId('list').innerHTML === '<li id="{{id}}">{{taskName}}<input type="checkbox"></li>', 'model list'))
