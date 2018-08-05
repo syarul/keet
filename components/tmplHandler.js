@@ -2,6 +2,7 @@ var strInterpreter = require('./strInterpreter')
 var ternaryOps = require('./ternaryOps')
 var getId = require('../utils').getId
 var genModelList = require('./genModelList')
+var conditionalNodes = require('./conditionalNodes')
 
 var DOCUMENT_FRAGMENT_TYPE = 11
 var DOCUMENT_TEXT_TYPE = 3
@@ -12,17 +13,14 @@ var DOCUMENT_ATTRIBUTE_TYPE = 2
 var re = /{{([^{}]+)}}/g
 
 var model = /^model:/g
-var modelEnd = /\/model:/g
 var modelRaw = /^\{\{model:([^{}]+)\}\}/g
 
-var conditionalNodes = /^\?/g
-var conditionalNodesRawStart = /\{\{\?([^{}]+)\}\}/g
-var conditionalNodesRawEnd = /\{\{\/([^{}]+)\}\}/g
+var conditionalRe = /^\?/g
 
 var toSkipStore = []
 var skipNode = []
 
-var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject) {
+var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, conditional) {
 
   var currentNode
   var str
@@ -56,6 +54,8 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject) {
   if(modelObject){
     instance = modelInstance
     isModelConstruct = true
+  } else if(conditional){
+    instance = conditional.firstChild
   } else {
     fragment = ctx.base
     instance = fragment.firstChild
@@ -66,25 +66,6 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject) {
   function updateState(state){
     if(typeof updateStateList === 'function'){
       updateStateList(state)
-    }
-  }
-
-  function processConditionalNodes(node, bool, rep){
-    while(node){
-      currentNode = node
-      node = node.nextSibling
-      if(currentNode.nodeType === DOCUMENT_TEXT_TYPE){
-        if(currentNode.nodeValue.match(conditionalNodesRawStart)){
-          currentNode.remove()
-        } else if(currentNode.nodeValue.match(conditionalNodesRawEnd)){
-          currentNode.remove()
-          node = null
-        }
-      } else {
-        if(!bool){
-          currentNode.remove()
-        }
-      }
     }
   }
 
@@ -106,20 +87,19 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject) {
         } else {
           if(rep.match(model)){
             modelRep = rep.replace('model:', '')
-            value = value.replace('{{'+rep+'}}', '_ms_')
-
             // generate list model
             // ensure not to stay inside the loop forever
             if(!isModelConstruct){
               genModelList.call(ctx, node, modelRep, tmplhandler)
             }
-          } else if(rep.match(modelEnd)){
-            value = value.replace('{{'+rep+'}}', '_me_')
-          } else if(rep.match(conditionalNodes)){
+          } else if(rep.match(conditionalRe)){
             conditionalRep = rep.replace('?', '')
             if(ins[conditionalRep] !== undefined){
               updateState(conditionalRep)
-              processConditionalNodes(node, ins[conditionalRep], conditionalRep)
+              if(!conditional){
+                conditionalNodes.call(ctx, node, conditionalRep, tmplhandler)
+              }
+              // processConditionalNodes(node, ins[conditionalRep], conditionalRep)
             }
           } else {
             if(ins[rep] !== undefined){
@@ -135,6 +115,7 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject) {
   }
 
   function inspect(node){
+    // console.log(node)
     type = node.nodeType
     val = node.nodeValue
     if(val.match(re)){

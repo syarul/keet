@@ -15,12 +15,13 @@ module.exports = function (node, model, tmplHandler) {
 
   if(this[model] !== undefined && this[model].hasOwnProperty('list')){
     parentNode = node.parentNode
-    node.remove() // remove the text for model start tag
-    if(parent.firstChild){
-      parentNode.firstChild.remove() // also remove the text tag for modelEnd
+    if(node.nextSibling){
+      node.nextSibling.remove() // remove the text tag for modelEnd
     } else {
       assert(false, 'Model "{{/model:'+model+'}}" enclosing tag does not exist.')
     }
+    node.remove() // remove the text for model start tag
+    
     modelList = this[model].list
     mLength = modelList.length
     i = 0

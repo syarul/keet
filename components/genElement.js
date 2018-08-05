@@ -6,7 +6,7 @@ var checkNodeAvailability = require('../utils').checkNodeAvailability
 var strInterpreter = require('./strInterpreter')
 var componentParse = require('./componentParse')
 // var modelParse = require('./modelParse')
-var nodesVisibility = require('./nodesVisibility')
+// var nodesVisibility = require('./nodesVisibility')
 var morph = require('morphdom')
 
 var updateContext = function (force) {

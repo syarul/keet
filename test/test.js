@@ -215,7 +215,7 @@ describe(`keet.js v-${ver} test`, function () {
       assert.equal(getId('list').innerHTML, '<li id="0">sleep<input type="checkbox" checked=""></li><li id="1">jog<input type="checkbox" checked=""></li><li id="2">walk<input type="checkbox"></li><li id="3">swim<input type="checkbox" checked=""></li>')
       clear()
       next()
-    })
+    }, 100)
   })
 
   it('model not declared', function (next) {
