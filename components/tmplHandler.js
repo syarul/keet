@@ -20,7 +20,10 @@ var conditionalRe = /^\?/g
 var toSkipStore = []
 var skipNode = []
 
-var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, conditional) {
+
+var sStore = []
+
+var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, conditional, conditionalState) {
 
   var currentNode
   var str
@@ -46,16 +49,20 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
   var conditionalRep
   var fn 
   var el
-  var isModelConstruct = false
   var idx
   var rem = []
   var isObjectNotation
 
   if(modelObject){
     instance = modelInstance
-    isModelConstruct = true
   } else if(conditional){
     instance = conditional.firstChild
+    // clean up cache nodes for events
+    // console.log(conditionalState)
+    if(!conditionalState){
+      // toSkipStore = []
+      // skipNode = []
+    }
   } else {
     fragment = ctx.base
     instance = fragment.firstChild
@@ -72,6 +79,7 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
   function replaceHandleBars(value, node) {
     props = value.match(re)
     ln = props.length
+    var repStore = []
     while (ln) {
       ln--
       rep = props[ln].replace(re, '$1')
@@ -79,31 +87,30 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
       isObjectNotation = strInterpreter(rep)
       if(isObjectNotation){
         updateState(rep)
+        repStore = repStore.concat(rep)
         value = value.replace('{{' + rep + '}}', ins[isObjectNotation[0]][isObjectNotation[1]])
       } else {
         if(tnr){
           updateState(tnr.state)
+          repStore = repStore.concat(tnr.state)
           value = value.replace('{{'+rep+'}}', tnr.value)
         } else {
           if(rep.match(model)){
             modelRep = rep.replace('model:', '')
             // generate list model
-            // ensure not to stay inside the loop forever
-            if(!isModelConstruct){
-              genModelList.call(ctx, node, modelRep, tmplhandler)
-            }
+            genModelList.call(ctx, node, modelRep, tmplhandler)
           } else if(rep.match(conditionalRe)){
             conditionalRep = rep.replace('?', '')
             if(ins[conditionalRep] !== undefined){
               updateState(conditionalRep)
-              if(!conditional){
-                conditionalNodes.call(ctx, node, conditionalRep, tmplhandler)
-              }
-              // processConditionalNodes(node, ins[conditionalRep], conditionalRep)
+              repStore = repStore.concat(conditionalRep)
+              // process conditional nodes
+              conditionalNodes.call(ctx, node, conditionalRep, tmplhandler)
             }
           } else {
             if(ins[rep] !== undefined){
               updateState(rep)
+              repStore = repStore.concat(rep)
               value = value.replace('{{'+rep+'}}', ins[rep])
             }
           }
@@ -111,17 +118,40 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
       }
     }
 
-    return value
+    return {
+      value: value,
+      store: repStore
+    }
   }
 
-  function inspect(node){
-    // console.log(node)
+  function storeReferences(data){
+    var idx = sStore.map(function(s){
+      return s.id
+    }).indexOf(data.id)
+    if(~idx){
+      Object.assign(sStore[idx], data)
+    } else {
+      sStore = sStore.concat(data)
+    }
+    console.log(sStore)
+  }
+
+  function inspect(node, id){
     type = node.nodeType
     val = node.nodeValue
+    var pristineNode = node.cloneNode(true)
     if(val.match(re)){
       val = replaceHandleBars(val, node)
-      node.nodeValue = val
+      node.nodeValue = val.value
+
+      storeReferences({
+        id: id || node.parentNode.nodeType === DOCUMENT_FRAGMENT_TYPE ? ctx.el : node.parentNode.id,
+        type: 'nodeValue',
+        rep: val.store,
+        node: pristineNode
+      })
     }
+    return node
   }
 
   function inspectAttributes(node){
@@ -134,16 +164,16 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
         node.removeAttribute(name)
         var temp = name
         name = replaceHandleBars(name)
-        node.setAttribute(name, ns)
+        node.setAttribute(name.value, ns)
       } else if(re.test(ns)){
         ns = replaceHandleBars(ns)
-        if(ns === ''){
+        if(ns.value === ''){
           node.removeAttribute(name)
         } else {
           if(name === 'checked'){
             node.setAttribute(name, '')
           } else {
-            node.setAttribute(name, ns)
+            node.setAttribute(name, ns.value)
           }
         }
       }
@@ -151,14 +181,23 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
   }
 
   function lookUpEvtNode(node){
-    if(node.hasAttribute('id')){
-      idx = skipNode.indexOf(node.id)
-      if(~idx){
-        return true
-      } else {
-        return false
-      }
+    var realNode
+    if(node.id){
+      realNode = getId(node.id)
     }
+    if(realNode && realNode.hasAttribute('evt-node')){
+      return true
+    } else {
+      return false
+    }
+    // if(node.hasAttribute('id')){
+    //   idx = skipNode.indexOf(node.id)
+    //   if(~idx){
+    //     return true
+    //   } else {
+    //     return false
+    //   }
+    // }
   }
 
   function addToSkipNode(store, nodeId){
@@ -189,6 +228,7 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
     if(node && lookUpEvtNode(node)) {
       // skip addding event for node that already has event
       // to allow skipping adding event the node must include `id`/
+      // console.trace(1)
       // console.log(node, 'has evt')
     } else {
       // only add event when node does not has one
@@ -222,14 +262,21 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
             } else {
               node.addEventListener(evtName, c.bind.apply(c.bind(ctx), [node].concat(argv)), false)
             }
-            if(node.hasAttribute('id')){
-              addToSkipNode(toSkipStore, node.id)
+            node.setAttribute('evt-node', '')
+            var pristineNode = ctx.__pristineFragment__.getElementById(node.id)
+            if(pristineNode){
+              pristineNode.setAttribute('evt-node', '')
             }
+            // if(node.hasAttribute('id')){
+            //   addToSkipNode(toSkipStore, node.id)
+            console.log(node.id)
+              // console.log(node, 'adding evt')
+            // }
           }
         }
-        if(i === 0){
-          rem.map(function (f) { node.removeAttribute(f) })
-        }
+        // if(i === 0){
+        //   rem.map(function (f) { node.removeAttribute(f) })
+        // }
       }
     } 
   }
@@ -243,19 +290,19 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
 
     t = setTimeout(function(){
 
-      toSkipStore.map(function(skip){
-        addToSkipNode(skipNode, skip)
-        var node = ctx.__pristineFragment__.getElementById(skip)
-        if(!node) return
-        nodeAttributes = node.attributes
-        for (i = nodeAttributes.length; i--;) {
-          a = nodeAttributes[i]
-          name = a.localName
-          if (/^k-/.test(name)) {
-            node.removeAttribute(name)
-          }
-        }
-      })
+      // toSkipStore.map(function(skip){
+      //   addToSkipNode(skipNode, skip)
+      //   var node = ctx.__pristineFragment__.getElementById(skip)
+      //   if(!node) return
+      //   nodeAttributes = node.attributes
+      //   for (i = nodeAttributes.length; i--;) {
+      //     a = nodeAttributes[i]
+      //     name = a.localName
+      //     if (/^k-/.test(name)) {
+      //       node.removeAttribute(name)
+      //     }
+      //   }
+      // })
 
       // console.log('end', time)
 
@@ -278,7 +325,26 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
     } 
   }
 
-  check(instance)
+  if(ctx.INTERIM) {
+    // console.log(sStore)
+
+    var ii = 0
+    var len = sStore.length
+    while(ii < len) {
+      var current = sStore[ii]
+      var idx = current.rep.indexOf(ctx.INTERIM.state)
+      if(~idx){
+        console.log(ctx)
+        var newNode = inspect(current.node, )
+
+        console.log(newNode)
+      }
+      ii++
+    }
+  } else {
+    check(instance)
+  }
+
 
   // return
   // var arrProps = str.match(/{{([^{}]+)}}/g)

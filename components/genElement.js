@@ -9,22 +9,22 @@ var componentParse = require('./componentParse')
 // var nodesVisibility = require('./nodesVisibility')
 var morph = require('morphdom')
 
-var updateContext = function (force) {
+var updateContext = function (state, value) {
   var self = this
-  var frag = []
-  var ele = getId(this.el)
-  var node 
-  var currentNode
-  !force && genElement.call(this)
-  var newElem = document.createElement('div')
+  // var frag = []
+  // var ele = getId(this.el)
+  // var node 
+  // var currentNode
+  /*!force && */genElement.call(this, state, value)
+  // var newElem = document.createElement('div')
   // morp as sub-component
   if (this.IS_STUB) {
-    morph(ele, newElem.childNodes[0])
+    // morph(ele, newElem.childNodes[0])
   } else {
   // otherwise moph as whole
-    newElem.id = this.el
-    newElem.appendChild(this.base)
-    morph(ele, newElem)
+    // newElem.id = this.el
+    // newElem.appendChild(this.base)
+    // morph(ele, newElem)
     
     // sub-component life-cycle
     // this.__componentList__.map(function (component) {
@@ -45,19 +45,19 @@ var updateContext = function (force) {
     // })
   }
   // clean up document creation since its not a fragment
-  node = newElem.firstChild
-  while(node){
-    currentNode = node
-    node = node.nextSibling
-    currentNode.remove()
-  }
+  // node = newElem.firstChild
+  // while(node){
+  //   currentNode = node
+  //   node = node.nextSibling
+  //   currentNode.remove()
+  // }
   // exec life-cycle componentDidUpdate
   if (this.componentDidUpdate && typeof this.componentDidUpdate === 'function') {
     this.componentDidUpdate()
   }
   // console.log(this)
   // reset batch pooling
-  batchPool.status = 'ready'
+  // batchPool.status = 'ready'
 }
 
 // batch pool update states to DOM
@@ -70,29 +70,18 @@ var batchPool = {
 // hit the deck. If possible we want to pool them before initiating DOM
 // morphing, but in the event the update is not fast enough we want to return
 // to normal synchronous update.
-var batchPoolExec = function (force) {
-  if (batchPool.status === 'pooling') {
+var batchPoolExec = function (state, value) {
+  // if (batchPool.status === 'pooling') {
     //
-  } else {
+  // } else {
     var self = this
-    batchPool.status = 'pooling'
-    // if batchpool is not yet executed or it was idle (after 100ms)
-    // direct morph the DOM
-    if (!batchPool.ttl) {
-      updateContext.call(this, force)
-    } else {
+    // batchPool.status = 'pooling'
     // we wait until pooling is ready before initiating DOM morphing
-      clearTimeout(batchPool.ttl)
-      batchPool.ttl = setTimeout(function () {
-        updateContext.call(self, force)
-      }, 0)
-    }
-    // we clear the batch pool if it more then 100ms from
-    // last update
-    batchPool.ttl = setTimeout(function () {
-      batchPool.ttl = 0
-    }, 100)
-  }
+    // clearTimeout(batchPool.ttl)
+    // batchPool.ttl = setTimeout(function () {
+      updateContext.call(self, state)
+    // }, 0)
+  // }
 }
 
 var nextState = function (i) {
@@ -132,7 +121,7 @@ var nextState = function (i) {
         },
         set: function (val) {
           value = val
-          batchPoolExec.call(self)
+          batchPoolExec.call(self, state)
         }
       })
     }
@@ -155,9 +144,10 @@ var addState = function(state){
   if(stateList.indexOf(state) === -1) stateList = stateList.concat(state)
 }
 
-var genElement = function (force) {
+var genElement = function (state) {
 
   this.base = this.__pristineFragment__.cloneNode(true)
+  this.INTERIM = { state: state }
   tmplHandler(this, addState)
   // return
   // var tempDiv = document.createElement('div')
@@ -168,9 +158,9 @@ var genElement = function (force) {
 
   // setState.call(this)
   // testEvent(tpl) && processEvent.call(this, tempDiv)
-  if (force) {
-    batchPoolExec.call(this, force)
-  }
+  // if (force) {
+    // batchPoolExec.call(this, force)
+  // }
 }
 
 exports.genElement = genElement

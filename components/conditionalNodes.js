@@ -15,11 +15,11 @@ module.exports = function (node, conditional, tmplHandler) {
       } else if(currentNode.nodeValue.match(conditionalNodesRawEnd)){
         currentNode.remove()
         // star generating the conditional nodes range, if not yet
-        if(!isGen){
-          isGen = true
-          tmplHandler(this, null, null, null, frag)
-        }
+        // if(!isGen){
+          // isGen = true
+        // }
         if(this[conditional]){
+          tmplHandler(this, null, null, null, frag, this[conditional])
           entryNode.parentNode.insertBefore(frag, entryNode)
         }
         entryNode.remove()

@@ -28,6 +28,7 @@ module.exports = function (stub) {
     // listen to state changes
     setState.call(this)
     // mount fragment to DOM
+    this.__cloneFragment__ = this.base.cloneNode(true)
     el.appendChild(this.base)
     // since component already rendered, trigger its life-cycle method
     if (this.componentDidMount && typeof this.componentDidMount === 'function') {
