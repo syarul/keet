@@ -20,15 +20,16 @@ module.exports = function (stub) {
   // this.__modelList__ = this.__modelList__ || []
   // this.__componentList__ = this.__componentList__ || []
   // this.__componentStub__ = this.__componentStub__ || {}
-  tmplHandler(this, addState)
-
   var el = getId(this.el)
+
+  tmplHandler(this, el, addState)
+
 
   if(el){
     // listen to state changes
     setState.call(this)
     // mount fragment to DOM
-    el.appendChild(this.base)
+    // el.appendChild(this.base)
     // since component already rendered, trigger its life-cycle method
     if (this.componentDidMount && typeof this.componentDidMount === 'function') {
       this.componentDidMount()

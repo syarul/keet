@@ -20,7 +20,7 @@ var conditionalRe = /^\?/g
 var toSkipStore = []
 var skipNode = []
 
-var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, conditional) {
+var tmplhandler = function (ctx, oldParent, updateStateList, modelInstance, modelObject, conditional) {
 
   var currentNode
   var str
@@ -114,13 +114,18 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
     return value
   }
 
-  function inspect(node){
-    // console.log(node)
+  function inspect(node, oldNode, oldParent){
+    console.log(node)
     type = node.nodeType
     val = node.nodeValue
     if(val.match(re)){
       val = replaceHandleBars(val, node)
       node.nodeValue = val
+      if(oldNode){
+        oldNode.nodeValue = node.nodeValue
+      } else {
+        oldParent.insertBefore(node, null)
+      }
     }
   }
 
@@ -161,12 +166,12 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
     }
   }
 
-  function addToSkipNode(store, nodeId){
-    idx = store.indexOf(nodeId)
-    if(!~idx){
-      store.push(nodeId)
-    }
-  }
+  // function addToSkipNode(store, nodeId){
+  //   idx = store.indexOf(nodeId)
+  //   if(!~idx){
+  //     store.push(nodeId)
+  //   }
+  // }
 
   function lookupParentNode(rootNode, node, argv){
     while(node){
@@ -223,7 +228,7 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
               node.addEventListener(evtName, c.bind.apply(c.bind(ctx), [node].concat(argv)), false)
             }
             if(node.hasAttribute('id')){
-              addToSkipNode(toSkipStore, node.id)
+              // addToSkipNode(toSkipStore, node.id)
             }
           }
         }
@@ -237,48 +242,64 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
   var t
   var start = Date.now()
 
-  function end(time){
+  // function end(time){
 
-    if(t) clearTimeout(t)
+  //   if(t) clearTimeout(t)
 
-    t = setTimeout(function(){
+  //   t = setTimeout(function(){
 
-      toSkipStore.map(function(skip){
-        addToSkipNode(skipNode, skip)
-        var node = ctx.__pristineFragment__.getElementById(skip)
-        if(!node) return
-        nodeAttributes = node.attributes
-        for (i = nodeAttributes.length; i--;) {
-          a = nodeAttributes[i]
-          name = a.localName
-          if (/^k-/.test(name)) {
-            node.removeAttribute(name)
-          }
-        }
-      })
+  //     toSkipStore.map(function(skip){
+  //       addToSkipNode(skipNode, skip)
+  //       var node = ctx.__pristineFragment__.getElementById(skip)
+  //       if(!node) return
+  //       nodeAttributes = node.attributes
+  //       for (i = nodeAttributes.length; i--;) {
+  //         a = nodeAttributes[i]
+  //         name = a.localName
+  //         if (/^k-/.test(name)) {
+  //           node.removeAttribute(name)
+  //         }
+  //       }
+  //     })
 
-      // console.log('end', time)
+  //     // console.log('end', time)
 
-    })
-  }
+  //   })
+  // }
 
-  function check(node){
-    while(node){
-      currentNode = node
-      if(currentNode.nodeType === DOCUMENT_ELEMENT_TYPE){
-        if(currentNode.hasAttributes()){
-          addEvent(currentNode)
-          inspectAttributes(currentNode)
-        }
-        check(currentNode.firstChild)
+  function check(newNode, oldParent){
+    var oldNode = oldParent.firstChild
+    // console.log(oldParentNode)
+    while(newNode){
+      currentNode = newNode
+      newNode = newNode.nextSibling //|| end(Date.now() - start)
+      console.log(currentNode)
+      // if(currentNode.nodeType === DOCUMENT_ELEMENT_TYPE){
+        // console.log(currentNode)
+        // if(currentNode.hasAttributes()){
+          // addEvent(currentNode)
+          // inspectAttributes(currentNode)
+        // }
+        // check(currentNode.firstChild)
+        // if(oldNode && oldNode.nodeType === DOCUMENT_ELEMENT_TYPE){
+          // check(currentNode.firstChild, oldNode.firstChild)
+        // } else {
+          // oldParent.insertBefore(currentNode.cloneNode(true), oldNode)
+        // }
+      // } else {
+        // inspect(currentNode, oldNode, oldParent)
+      // }
+      if(oldNode){
+        currentOld = oldNode
+        oldNode = oldNode.nextSibling
+        // setNode
       } else {
-        inspect(currentNode)
+        oldParent.appendChild(currentNode)
       }
-      node = node.nextSibling || end(Date.now() - start)
     } 
   }
 
-  check(instance)
+  check(instance, oldParent)
 
   // return
   // var arrProps = str.match(/{{([^{}]+)}}/g)

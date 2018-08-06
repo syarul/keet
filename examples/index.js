@@ -1,1 +1,1 @@
-import './model'
+import './hello-after'
