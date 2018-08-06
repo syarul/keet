@@ -9,13 +9,14 @@ var componentParse = require('./componentParse')
 // var nodesVisibility = require('./nodesVisibility')
 var morph = require('morphdom')
 
-var updateContext = function (state, value) {
+var updateContext = function (state) {
+  // console.log(1)
   var self = this
   // var frag = []
   // var ele = getId(this.el)
   // var node 
   // var currentNode
-  /*!force && */genElement.call(this, state, value)
+  /*!force && */genElement.call(this, state)
   // var newElem = document.createElement('div')
   // morp as sub-component
   if (this.IS_STUB) {
@@ -70,7 +71,7 @@ var batchPool = {
 // hit the deck. If possible we want to pool them before initiating DOM
 // morphing, but in the event the update is not fast enough we want to return
 // to normal synchronous update.
-var batchPoolExec = function (state, value) {
+var batchPoolExec = function (state) {
   // if (batchPool.status === 'pooling') {
     //
   // } else {
@@ -120,8 +121,10 @@ var nextState = function (i) {
           return value
         },
         set: function (val) {
-          value = val
-          batchPoolExec.call(self, state)
+          // if(value !== val){
+            value = val
+            batchPoolExec.call(self, state)
+          // }
         }
       })
     }

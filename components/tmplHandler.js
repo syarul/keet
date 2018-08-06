@@ -133,7 +133,6 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
     } else {
       sStore = sStore.concat(data)
     }
-    console.log(sStore)
   }
 
   function inspect(node, id){
@@ -143,11 +142,11 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
     if(val.match(re)){
       val = replaceHandleBars(val, node)
       node.nodeValue = val.value
-
       storeReferences({
         id: id || node.parentNode.nodeType === DOCUMENT_FRAGMENT_TYPE ? ctx.el : node.parentNode.id,
         type: 'nodeValue',
         rep: val.store,
+        prevSibling: node.previousSibling,
         node: pristineNode
       })
     }
@@ -325,19 +324,53 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
     } 
   }
 
-  if(ctx.INTERIM) {
-    // console.log(sStore)
+  function isEqualNode (a, b) {
+    return a.isEqualNode(b)
+  }
 
+  function gen(){
+    return (Math.random() * 1 * 1e17).toString(32)
+  }
+
+  function findNodes(){
+
+  }
+
+  function insertAfter(newNode, referenceNode) {
+    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+  }
+
+  if(ctx.INTERIM) {
     var ii = 0
     var len = sStore.length
     while(ii < len) {
       var current = sStore[ii]
       var idx = current.rep.indexOf(ctx.INTERIM.state)
       if(~idx){
-        console.log(ctx)
-        var newNode = inspect(current.node, )
-
-        console.log(newNode)
+        var prevSibling = current.prevSibling
+        var newNode = inspect(current.node, current.id)
+        
+        var pNode = getId(current.id)
+        console.log(current)
+        if(!prevSibling){
+          console.log('ere')
+          // pNode.removeChild(pNode.firstChild)
+          // pNode.insertBefore(newNode, pNode.firstChild)
+          pNode.firstChild.nodeValue = newNode.nodeValue
+        } else {
+          var sib = pNode.firstChild
+          console.log(sib)
+          while(sib){
+            console.log(sib)
+            if(sib && isEqualNode(sib, prevSibling)){
+              console.log(newNode.nodeValue, sib.nextSibling.nodeValue)
+              // pNode.removeChild(sib.nextSibling)
+              // insertAfter(newNode, sib)
+              sib.nextSibling.nodeValue = newNode.nodeValue
+            }
+            sib = sib.nextSibling
+          }
+        }
       }
       ii++
     }
