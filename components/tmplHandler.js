@@ -4,6 +4,8 @@ var getId = require('../utils').getId
 var genModelList = require('./genModelList')
 var conditionalNodes = require('./conditionalNodes')
 
+var l = console.log.bind(console)
+
 var DOCUMENT_FRAGMENT_TYPE = 11
 var DOCUMENT_TEXT_TYPE = 3
 var DOCUMENT_ELEMENT_TYPE = 1
@@ -15,7 +17,8 @@ var re = /{{([^{}]+)}}/g
 var model = /^model:/g
 var modelRaw = /^\{\{model:([^{}]+)\}\}/g
 
-var conditionalRe = /^\?/g
+var conditionalRe = /^condt:/g
+var conditionalReEnd = /^\/condt:/g
 
 var toSkipStore = []
 var skipNode = []
@@ -67,9 +70,12 @@ var tmplhandler = function (ctx, oldParent, updateStateList, modelInstance, mode
     }
   }
 
-  function replaceHandleBars(value, node) {
+  var currentConditionalNode
+
+  function replaceHandleBars(value, node, protoBuild) {
     props = value.match(re)
     ln = props.length
+
     while (ln) {
       ln--
       rep = props[ln].replace(re, '$1')
@@ -77,33 +83,37 @@ var tmplhandler = function (ctx, oldParent, updateStateList, modelInstance, mode
       isObjectNotation = strInterpreter(rep)
       if(isObjectNotation){
         updateState(rep)
-        value = value.replace('{{' + rep + '}}', ins[isObjectNotation[0]][isObjectNotation[1]])
+        if(!protoBuild) value = value.replace('{{' + rep + '}}', ins[isObjectNotation[0]][isObjectNotation[1]])
       } else {
         if(tnr){
           updateState(tnr.state)
-          value = value.replace('{{'+rep+'}}', tnr.value)
+          if(!protoBuild) value = value.replace('{{'+rep+'}}', tnr.value)
         } else {
           if(rep.match(model)){
             modelRep = rep.replace('model:', '')
+            
             // generate list model
             // ensure not to stay inside the loop forever
             if(!isModelConstruct){
               genModelList.call(ctx, node, modelRep, tmplhandler)
             }
           } else if(rep.match(conditionalRe)){
-            conditionalRep = rep.replace('?', '')
+            conditionalRep = rep.replace('condt:', '')
+            var nc = document.createComment('condt:'+conditionalRep)
+            node.parentNode.replaceChild(nc, node)
             if(ins[conditionalRep] !== undefined){
               updateState(conditionalRep)
-              // if(!conditional){
-                console.log(node)
-                conditionalNodes.call(ctx, node, conditionalRep, tmplhandler)
-              // }
-              // processConditionalNodes(node, ins[conditionalRep], conditionalRep)
+              currentConditionalNode = nc
             }
+          } else if(rep.match(conditionalReEnd)){
+            conditionalRep = rep.replace('/condt:', '')
+            node.parentNode.replaceChild(document.createComment('/condt:'+conditionalRep), node)
+            // begin parsing conditional nodes range
+            conditionalNodes.call(ctx, currentConditionalNode, conditionalRep, tmplhandler, protoBuild)
           } else {
             if(ins[rep] !== undefined){
               updateState(rep)
-              value = value.replace('{{'+rep+'}}', ins[rep])
+              if(!protoBuild) value = value.replace('{{'+rep+'}}', ins[rep])
             }
           }
         }
@@ -113,20 +123,20 @@ var tmplhandler = function (ctx, oldParent, updateStateList, modelInstance, mode
     return value
   }
 
-  function inspect(node){
-    console.log(node)
+  function inspect(node, protoBuild){
     if(node.nodeType === DOCUMENT_TEXT_TYPE){
       var val = node.nodeValue
       if(val.match(re)){
-        val = replaceHandleBars(val, node)
+        val = replaceHandleBars(val, node, protoBuild)
         node.nodeValue = val
       }
     }
+    return node
   }
 
   function inspectElement(node){
-    inspectAttributes(node)
-    addEvent(node)
+    // inspectAttributes(node)
+    // addEvent(node)
     var child = node.firstChild
     while(child){
       var currentChild = child 
@@ -137,6 +147,7 @@ var tmplhandler = function (ctx, oldParent, updateStateList, modelInstance, mode
         inspect(currentChild)
       }
     }
+    return node
   }
 
   function inspectAttributes(node){
@@ -305,8 +316,7 @@ var tmplhandler = function (ctx, oldParent, updateStateList, modelInstance, mode
     if(!oldNode){
       parse(newNode)
     }
-    console.log(newParent)
-    return
+
     while(newNode){
       currentNode = newNode
       newNode = newNode.nextSibling
@@ -325,25 +335,21 @@ var tmplhandler = function (ctx, oldParent, updateStateList, modelInstance, mode
   function parse(node){
     while(node){
       currentNode = node
+      node = node.nextSibling
       if(currentNode.nodeType === DOCUMENT_ELEMENT_TYPE){
-        if(currentNode.hasAttributes()){
-          addEvent(currentNode)
-          inspectAttributes(currentNode)
-        }
         parse(currentNode.firstChild)
       } else {
-        inspect(currentNode)
+        inspect(currentNode, 'protoBuild')
       }
-      node = node.nextSibling
     }
   }
 
 
   function which(node){
     if(node.nodeType === DOCUMENT_ELEMENT_TYPE){
-        inspectElement(node)
+        return inspectElement(node)
       } else {
-        inspect(node)
+        return inspect(node)
       }
   }
 

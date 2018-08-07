@@ -2,7 +2,7 @@ import Keet from '../'
 import { html, getId } from '../utils'
 
 class App extends Keet {
-  show = false
+  show = true
   toggle () {
     this.show = !this.show
   }
@@ -13,9 +13,9 @@ const app = new App()
 app.mount(html`
   <button id="toggle" k-click="toggle()">toggle</button>
   <div id="1">one</div>
-  {{?show}}
+  {{condt:show}}
   <div id="2">two</div>
-  {{/show}}
+  {{/condt:show}}
   <div id="3">three</div>
 `).link('app')
 

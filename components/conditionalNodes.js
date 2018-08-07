@@ -1,51 +1,33 @@
-var conditionalNodesRawStart = /\{\{\?([^{}]+)\}\}/g
-var conditionalNodesRawEnd = /\{\{\/([^{}]+)\}\}/g
-var DOCUMENT_TEXT_TYPE = 3
-module.exports = function (node, conditional, tmplHandler) {
+var DOCUMENT_COMMENT_TYPE = 8
+var c = {}
+module.exports = function (node, conditional, tmplHandler, protoBuild) {
   var entryNode
   var currentNode
-  var isGen
-  var frag = document.createDocumentFragment()
+  var start = '^condt:'+conditional
+  var re = new RegExp(start)
+  var end = '^\/condt:'+conditional
+  var reEnd = new RegExp(end)
   while(node){
     currentNode = node
     node = node.nextSibling
-    if(currentNode.nodeType === DOCUMENT_TEXT_TYPE){
-      if(currentNode.nodeValue.match(conditionalNodesRawStart)){
-        entryNode = currentNode
-      } else if(currentNode.nodeValue.match(conditionalNodesRawEnd)){
-        currentNode.remove()
-        // generating the conditional nodes range
-        if(this[conditional]){
-          tmplHandler(this, null, null, null, null, frag)
-          entryNode.parentNode.insertBefore(frag, entryNode)
-        }
-        entryNode.remove()
-        node = null
+    if(currentNode.nodeType === DOCUMENT_COMMENT_TYPE && currentNode.nodeValue.match(re)){
+      entryNode = currentNode
+    } else if(currentNode.nodeType === DOCUMENT_COMMENT_TYPE && currentNode.nodeValue.match(reEnd)){
+      // stop the loop
+      node = null
+      // generate prototype conditional fragment
+      if(protoBuild) tmplHandler(this, null, null, null, null, c[conditional])
+
+      if(!protoBuild && this[conditional]){
+        entryNode.parentNode.insertBefore(c[conditional].cloneNode(true), entryNode)
       }
     } else {
-      var cNode = currentNode.cloneNode(true)
-      frag.appendChild(cNode)
-      currentNode.remove()
+      // store
+      if(!c[conditional]){
+        c[conditional] = document.createDocumentFragment()
+        c[conditional].appendChild(currentNode.cloneNode(true))
+        currentNode.remove()
+      }
     }
   }
-  
-  // var self = this
-  // this.__stateList__.map(function (state) {
-  //   if (!self[state]) {
-  //     var f = '\\{\\{\\?' + state + '\\}\\}'
-  //     var b = '\\{\\{\\/' + state + '\\}\\}'
-  //     // var regx = '(?<=' + f + ')(.*?)(?=' + b + ')'
-  //     // ** old browser does not support positive look behind **
-  //     var regx = '(' + f + ')(.*?)(?=' + b + ')'
-  //     var re = new RegExp(regx)
-  //     var isConditional = re.test(string)
-  //     var match = string.match(re)
-  //     if (isConditional && match) {
-  //       string = string.replace(match[2], '')
-  //     }
-  //   }
-  //   string = string.replace('{{?' + state + '}}', '')
-  //   string = string.replace('{{/' + state + '}}', '')
-  // })
-  // return string
 }
