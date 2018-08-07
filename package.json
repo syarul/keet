@@ -6,6 +6,13 @@
   "bugs": {
     "url": "https://github.com/syarul/keet/issues"
   },
+<<<<<<< HEAD
+=======
+  "dependencies": {
+    "morphdom": "^2.3.3",
+    "set-dom": "^7.5.2"
+  },
+>>>>>>> fix
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.6",
