@@ -29,8 +29,7 @@ var tmplhandler = function (ctx, oldParent, updateStateList, modelInstance, mode
   var ln 
   var props 
   var rep
-  var fragment
-  var instance
+  var newParent
   var nodeAttributes
   var i = 0
   var a
@@ -52,13 +51,12 @@ var tmplhandler = function (ctx, oldParent, updateStateList, modelInstance, mode
   var isObjectNotation
 
   if(modelObject){
-    instance = modelInstance
+    newParent = modelInstance
     isModelConstruct = true
   } else if(conditional){
-    instance = conditional.firstChild
+    newParent = conditional
   } else {
-    fragment = ctx.base
-    instance = fragment.firstChild
+    newParent = ctx.base
   }
 
   var ins = modelObject || ctx
@@ -96,9 +94,10 @@ var tmplhandler = function (ctx, oldParent, updateStateList, modelInstance, mode
             conditionalRep = rep.replace('?', '')
             if(ins[conditionalRep] !== undefined){
               updateState(conditionalRep)
-              if(!conditional){
+              // if(!conditional){
+                console.log(node)
                 conditionalNodes.call(ctx, node, conditionalRep, tmplhandler)
-              }
+              // }
               // processConditionalNodes(node, ins[conditionalRep], conditionalRep)
             }
           } else {
@@ -114,17 +113,28 @@ var tmplhandler = function (ctx, oldParent, updateStateList, modelInstance, mode
     return value
   }
 
-  function inspect(node, oldNode, oldParent){
+  function inspect(node){
     console.log(node)
-    type = node.nodeType
-    val = node.nodeValue
-    if(val.match(re)){
-      val = replaceHandleBars(val, node)
-      node.nodeValue = val
-      if(oldNode){
-        oldNode.nodeValue = node.nodeValue
+    if(node.nodeType === DOCUMENT_TEXT_TYPE){
+      var val = node.nodeValue
+      if(val.match(re)){
+        val = replaceHandleBars(val, node)
+        node.nodeValue = val
+      }
+    }
+  }
+
+  function inspectElement(node){
+    inspectAttributes(node)
+    addEvent(node)
+    var child = node.firstChild
+    while(child){
+      var currentChild = child 
+      child = child.nextSibling
+      if(currentChild.nodeType === DOCUMENT_ELEMENT_TYPE){
+        inspectElement(currentChild)
       } else {
-        oldParent.insertBefore(node, null)
+        inspect(currentChild)
       }
     }
   }
@@ -137,7 +147,6 @@ var tmplhandler = function (ctx, oldParent, updateStateList, modelInstance, mode
       ns = a.nodeValue
       if (re.test(name)) {
         node.removeAttribute(name)
-        var temp = name
         name = replaceHandleBars(name)
         node.setAttribute(name, ns)
       } else if(re.test(ns)){
@@ -155,188 +164,191 @@ var tmplhandler = function (ctx, oldParent, updateStateList, modelInstance, mode
     }
   }
 
-  function lookUpEvtNode(node){
-    if(node.hasAttribute('id')){
-      idx = skipNode.indexOf(node.id)
-      if(~idx){
-        return true
-      } else {
-        return false
-      }
-    }
-  }
-
-  // function addToSkipNode(store, nodeId){
-  //   idx = store.indexOf(nodeId)
-  //   if(!~idx){
-  //     store.push(nodeId)
-  //   }
-  // }
-
-  function lookupParentNode(rootNode, node, argv){
-    while(node){
-      if(node.className){
-        argv.push(node.className)
-      }
-      if(node.id){
-        argv.push(node.id)
-      }
-      node = node.parentNode
-      if(node.isEqualNode(rootNode)){
-        node = null
-      }
-    }
-    return argv
-  }
-
   function addEvent(node){
     nodeAttributes = node.attributes
-    if(node && lookUpEvtNode(node)) {
-      // skip addding event for node that already has event
-      // to allow skipping adding event the node must include `id`/
-      // console.log(node, 'has evt')
-    } else {
-      // only add event when node does not has one
-      // console.log(node, 'adding evt')
-      for (i = nodeAttributes.length; i--;) {
-        a = nodeAttributes[i]
-        name = a.localName
-        ns = a.nodeValue
-        if (/^k-/.test(name)) {
-          evtName = name.replace(/^k-/, '')
-          handler = ns.match(/[a-zA-Z]+(?![^(]*\))/)[0]
-          c = ctx[handler]
-          if(c !== undefined && typeof c === 'function'){
-            h = ns.match(/\(([^{}]+)\)/)
-            handlerArgs = h ? h[1] : ''
-            argv = handlerArgs.split(',').filter(function(f){
-              return f !== ''
-            })
-            rem.push(name)
-            fn = function(e){
-              if (e.target !== e.currentTarget) {
-                argv = lookupParentNode(node, e.target, [])
-                c.apply(ctx, argv.concat(e))
-              }
-              e.stopPropagation()
+    // only add event when node does not has one
+    // console.log(node, 'adding evt')
+    for (i = nodeAttributes.length; i--;) {
+      a = nodeAttributes[i]
+      name = a.localName
+      ns = a.nodeValue
+      if (/^k-/.test(name)) {
+        evtName = name.replace(/^k-/, '')
+        handler = ns.match(/[a-zA-Z]+(?![^(]*\))/)[0]
+        c = ctx[handler]
+        if(c !== undefined && typeof c === 'function'){
+          h = ns.match(/\(([^{}]+)\)/)
+          handlerArgs = h ? h[1] : ''
+          argv = handlerArgs.split(',').filter(function(f){
+            return f !== ''
+          })
+          rem.push(name)
+          fn = function(e){
+            if (e.target !== e.currentTarget) {
+              argv = lookupParentNode(node, e.target, [])
+              c.apply(ctx, argv.concat(e))
             }
-            // if node is the rootNode for model, we wrap the eventListener and
-            // rebuild the arguments by appending id/className util rootNode.
-            if(node.hasChildNodes() && node.firstChild.nodeType === DOCUMENT_TEXT_TYPE && node.firstChild.nodeValue.match(modelRaw)){
-              node.addEventListener(evtName, fn, false)
-            } else {
-              node.addEventListener(evtName, c.bind.apply(c.bind(ctx), [node].concat(argv)), false)
-            }
-            if(node.hasAttribute('id')){
-              // addToSkipNode(toSkipStore, node.id)
-            }
+            e.stopPropagation()
+          }
+          // if node is the rootNode for model, we wrap the eventListener and
+          // rebuild the arguments by appending id/className util rootNode.
+          if(node.hasChildNodes() && node.firstChild.nodeType === DOCUMENT_TEXT_TYPE && node.firstChild.nodeValue.match(modelRaw)){
+            node.addEventListener(evtName, fn, false)
+          } else {
+            node.addEventListener(evtName, c.bind.apply(c.bind(ctx), [node].concat(argv)), false)
           }
         }
-        if(i === 0){
-          rem.map(function (f) { node.removeAttribute(f) })
-        }
       }
-    } 
+      if(i === 0){
+        rem.map(function (f) { node.removeAttribute(f) })
+      }
+    }
   }
 
-  var t
-  var start = Date.now()
+  ///////////////
 
-  // function end(time){
+  function getCheckSum (node) {
+    return node.getAttribute('keet-data-id') || NaN
+  }
 
-  //   if(t) clearTimeout(t)
+  function isEqualNode (a, b) {
+    return (
+      // Check if both nodes have the same checksum.
+      (getCheckSum(a) === getCheckSum(b)) ||
+      // Fall back to native isEqualNode check.
+      a.isEqualNode(b)
+    )
+  }
 
-  //   t = setTimeout(function(){
+  function setAttributes (oldAttributes, newAttributes) {
+    var i, a, b, ns, name
 
-  //     toSkipStore.map(function(skip){
-  //       addToSkipNode(skipNode, skip)
-  //       var node = ctx.__pristineFragment__.getElementById(skip)
-  //       if(!node) return
-  //       nodeAttributes = node.attributes
-  //       for (i = nodeAttributes.length; i--;) {
-  //         a = nodeAttributes[i]
-  //         name = a.localName
-  //         if (/^k-/.test(name)) {
-  //           node.removeAttribute(name)
-  //         }
-  //       }
-  //     })
+    // Remove old attributes.
+    for (i = oldAttributes.length; i--;) {
+      a = oldAttributes[i]
+      ns = a.namespaceURI
+      name = a.localName
+      b = newAttributes.getNamedItemNS(ns, name)
+      if (!b) oldAttributes.removeNamedItemNS(ns, name)
+    }
 
-  //     // console.log('end', time)
+    // Set new attributes.
+    for (i = newAttributes.length; i--;) {
+      a = newAttributes[i]
+      ns = a.namespaceURI
+      name = a.localName
+      b = oldAttributes.getNamedItemNS(ns, name)
+      if (!b) {
+        // Add a new attribute.
+        newAttributes.removeNamedItemNS(ns, name)
+        oldAttributes.setNamedItemNS(a)
+      } else if (b.value !== a.value) {
+        // Update existing attribute.
+        b.value = a.value
+      }
+    }
+  }
 
-  //   })
-  // }
+  function resolve(oldNode, newNode){
 
-  function check(newNode, oldParent){
+    inspect(newNode)
+
+    if (oldNode.nodeType === newNode.nodeType) {
+      // Handle regular element node updates.
+      if (oldNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
+        // Checks if nodes are equal before diffing.
+        if (isEqualNode(oldNode, newNode)) return
+
+        // inspectElement(newNode)
+
+        // Update all children (and subchildren).
+        check(oldNode, newNode)
+
+        // Update the elements attributes / tagName.
+        if (oldNode.nodeName === newNode.nodeName) {
+          inspectAttributes(newNode)
+          addEvent(newNode)
+          // If we have the same nodename then we can directly update the attributes.
+          setAttributes(oldNode.attributes, newNode.attributes)
+        } else {
+          // Otherwise clone the new node to use as the existing node.
+          var newPrev = newNode.cloneNode()
+          // Copy over all existing children from the original node.
+          while (oldNode.firstChild) newPrev.appendChild(oldNode.firstChild)
+          // Replace the original node with the new one with the right tag.
+          oldNode.parentNode.replaceChild(newPrev, oldNode)
+        }
+      } else {
+
+        // inspect(newNode)
+
+        // Handle other types of node updates (text/comments/etc).
+        // If both are the same type of node we can update directly.
+        if (oldNode.nodeValue !== newNode.nodeValue) {
+          oldNode.nodeValue = newNode.nodeValue
+        }
+      }
+    } else {
+      // we have to replace the node.
+      oldNode.parentNode.replaceChild(newNode, oldNode)
+    }
+  }
+
+  var currentOld
+  // @setChildren
+  function check(oldParent, newParent){
+
     var oldNode = oldParent.firstChild
-    // console.log(oldParentNode)
+    var newNode = newParent.firstChild
+
+    // if oldNode is empty we parse the whole newParent.childNodes
+    if(!oldNode){
+      parse(newNode)
+    }
+    console.log(newParent)
+    return
     while(newNode){
       currentNode = newNode
-      newNode = newNode.nextSibling //|| end(Date.now() - start)
-      console.log(currentNode)
-      // if(currentNode.nodeType === DOCUMENT_ELEMENT_TYPE){
-        // console.log(currentNode)
-        // if(currentNode.hasAttributes()){
-          // addEvent(currentNode)
-          // inspectAttributes(currentNode)
-        // }
-        // check(currentNode.firstChild)
-        // if(oldNode && oldNode.nodeType === DOCUMENT_ELEMENT_TYPE){
-          // check(currentNode.firstChild, oldNode.firstChild)
-        // } else {
-          // oldParent.insertBefore(currentNode.cloneNode(true), oldNode)
-        // }
-      // } else {
-        // inspect(currentNode, oldNode, oldParent)
-      // }
+      newNode = newNode.nextSibling
+      // if oldNode exist we resolve newNode to the oldNode
       if(oldNode){
         currentOld = oldNode
         oldNode = oldNode.nextSibling
-        // setNode
+        resolve(currentOld, currentNode)
       } else {
+        // we resolve currentNode if oldNode does not exist
         oldParent.appendChild(currentNode)
       }
     } 
   }
 
-  check(instance, oldParent)
+  function parse(node){
+    while(node){
+      currentNode = node
+      if(currentNode.nodeType === DOCUMENT_ELEMENT_TYPE){
+        if(currentNode.hasAttributes()){
+          addEvent(currentNode)
+          inspectAttributes(currentNode)
+        }
+        parse(currentNode.firstChild)
+      } else {
+        inspect(currentNode)
+      }
+      node = node.nextSibling
+    }
+  }
 
-  // return
-  // var arrProps = str.match(/{{([^{}]+)}}/g)
-  // if (arrProps && arrProps.length) {
-  //   arrProps.map(function (s) {
-  //     var rep = s.replace(/{{([^{}]+)}}/g, '$1')
-  //     var isObjectNotation = strInterpreter(rep)
-  //     var isTernary = ternaryOps.call(self, rep)
-  //     if (!isObjectNotation) {
-  //       if (self[rep] !== undefined) {
-  //         updateStateList(rep)
-  //         str = str.replace('{{' + rep + '}}', self[rep])
-  //       } else if (isTernary) {
-  //         updateStateList(isTernary.state)
-  //         str = str.replace('{{' + rep + '}}', isTernary.value)
-  //       }
-  //     } else {
-  //       updateStateList(rep)
-  //       str = str.replace('{{' + rep + '}}', self[isObjectNotation[0]][isObjectNotation[1]])
-  //     }
-  //     // resolve nodeVisibility
-  //     if (rep.match(/^\?/g)) {
-  //       updateStateList(rep.replace('?', ''))
-  //     }
-  //     // resolve model
-  //     if (rep.match(/^model:/g)) {
-  //       var modelRep = rep.replace('model:', '')
-  //       if (!~self.__modelList__.indexOf(modelRep)) { self.__modelList__.push(modelRep) }
-  //     }
-  //     // resolve component
-  //     if (rep.match(/^component:/g)) {
-  //       var componentRep = rep.replace('component:', '')
-  //       if (!~self.__componentList__.indexOf(componentRep)) { self.__componentList__.push(componentRep) }
-  //     }
-  //   })
-  // }
-  // return str
+
+  function which(node){
+    if(node.nodeType === DOCUMENT_ELEMENT_TYPE){
+        inspectElement(node)
+      } else {
+        inspect(node)
+      }
+  }
+
+  oldParent ? check(oldParent, newParent) : which(newParent)
+
 }
 
 module.exports = tmplhandler

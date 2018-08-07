@@ -19,4 +19,4 @@ app.mount(html`
   <div id="3">three</div>
 `).link('app')
 
-console.assert(getId('app').innerHTML === '<button id="toggle">toggle</button><div id="1">one</div><div id="3">three</div>', 'conditional nodes') //rem
+// console.assert(getId('app').innerHTML === '<button id="toggle">toggle</button><div id="1">one</div><div id="3">three</div>', 'conditional nodes') //rem

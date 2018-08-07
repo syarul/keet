@@ -65,12 +65,12 @@ var batchPool = {
   ttl: 0,
   status: 'ready'
 }
-
+var c = 0
 // The idea behind this is to reduce morphing the DOM when multiple updates
 // hit the deck. If possible we want to pool them before initiating DOM
 // morphing, but in the event the update is not fast enough we want to return
 // to normal synchronous update.
-var batchPoolExec = function (force) {
+var batchPoolExec = function () {
   if (batchPool.status === 'pooling') {
     //
   } else {
@@ -79,23 +79,23 @@ var batchPoolExec = function (force) {
     // if batchpool is not yet executed or it was idle (after 100ms)
     // direct morph the DOM
     if (!batchPool.ttl) {
-      updateContext.call(this, force)
+      override.call(this)
     } else {
     // we wait until pooling is ready before initiating DOM morphing
       clearTimeout(batchPool.ttl)
       batchPool.ttl = setTimeout(function () {
-        updateContext.call(self, force)
+        override.call(self)
       }, 0)
     }
     // we clear the batch pool if it more then 100ms from
     // last update
     batchPool.ttl = setTimeout(function () {
-      batchPool.ttl = 0
+      batchPool.ttl = null
     }, 100)
   }
 }
 
-var nextState = function (i) {
+function nextState(i) {
   var self = this
   var state
   var value
@@ -141,24 +141,40 @@ var nextState = function (i) {
   }
 }
 
-var setState = function () {
+function setState() {
   nextState.call(this, 0)
 }
 
 var stateList = []
 
-var clearState = function(){
+function clearState(){
   stateList = []
 }
 
-var addState = function(state){
+function addState(state){
   if(stateList.indexOf(state) === -1) stateList = stateList.concat(state)
 }
 
-var genElement = function (force) {
+var t
+function override(){
+  var self = this
+  if(t) clearTimeout(t)
+  t = setTimeout(function(){
+    c++
+    genElement.call(self)
+  })
+}
 
+function genElement() {
+  console.log('element regen at '+c+' time(s)')
+  var oldParent = getId(this.el)
   this.base = this.__pristineFragment__.cloneNode(true)
-  tmplHandler(this, addState)
+  tmplHandler(this, oldParent, addState)
+
+  if (this.componentDidUpdate && typeof this.componentDidUpdate === 'function') {
+    this.componentDidUpdate()
+  }
+  batchPool.status = 'ready'
   // return
   // var tempDiv = document.createElement('div')
   // tpl = componentParse.call(this, tpl)
@@ -168,9 +184,9 @@ var genElement = function (force) {
 
   // setState.call(this)
   // testEvent(tpl) && processEvent.call(this, tempDiv)
-  if (force) {
-    batchPoolExec.call(this, force)
-  }
+  // if (force) {
+  //   batchPoolExec.call(this, force)
+  // }
 }
 
 exports.genElement = genElement
