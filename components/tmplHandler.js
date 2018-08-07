@@ -89,16 +89,16 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
             modelRep = rep.replace('model:', '')
             // generate list model
             // ensure not to stay inside the loop forever
-            if(!isModelConstruct){
+            // if(!isModelConstruct){
               genModelList.call(ctx, node, modelRep, tmplhandler)
-            }
+            // }
           } else if(rep.match(conditionalRe)){
             conditionalRep = rep.replace('?', '')
             if(ins[conditionalRep] !== undefined){
               updateState(conditionalRep)
-              if(!conditional){
+              // if(!conditional){
                 conditionalNodes.call(ctx, node, conditionalRep, tmplhandler)
-              }
+              // }
               // processConditionalNodes(node, ins[conditionalRep], conditionalRep)
             }
           } else {
@@ -151,14 +151,11 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
   }
 
   function lookUpEvtNode(node){
-    if(node.hasAttribute('id')){
-      idx = skipNode.indexOf(node.id)
-      if(~idx){
-        return true
-      } else {
-        return false
-      }
+    // check if node is visible on DOM and has attribute evt-node
+    if(node.hasAttribute('evt-node') && getId(node.id)){
+      return true
     }
+    return false
   }
 
   function addToSkipNode(store, nodeId){
@@ -186,13 +183,13 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
 
   function addEvent(node){
     nodeAttributes = node.attributes
+
     if(node && lookUpEvtNode(node)) {
       // skip addding event for node that already has event
-      // to allow skipping adding event the node must include `id`/
       // console.log(node, 'has evt')
+      // to allow skipping adding event the node must include `id`/
     } else {
       // only add event when node does not has one
-      // console.log(node, 'adding evt')
       for (i = nodeAttributes.length; i--;) {
         a = nodeAttributes[i]
         name = a.localName
@@ -222,8 +219,13 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
             } else {
               node.addEventListener(evtName, c.bind.apply(c.bind(ctx), [node].concat(argv)), false)
             }
-            if(node.hasAttribute('id')){
-              addToSkipNode(toSkipStore, node.id)
+            // console.log(node, 'adding evt')
+            if(node.id){
+              var p = ctx.__pristineFragment__.getElementById(node.id)
+              if(!p.hasAttribute('evt-node')){ 
+                // console.log(p)
+                p.setAttribute('evt-node', '')
+              }
             }
           }
         }
@@ -274,7 +276,7 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
       } else {
         inspect(currentNode)
       }
-      node = node.nextSibling || end(Date.now() - start)
+      node = node.nextSibling// || end(Date.now() - start)
     } 
   }
 

@@ -9,55 +9,62 @@ var componentParse = require('./componentParse')
 // var nodesVisibility = require('./nodesVisibility')
 var morph = require('morphdom')
 
+var overidde = null
+
 var updateContext = function (force) {
   var self = this
-  var frag = []
-  var ele = getId(this.el)
-  var node 
-  var currentNode
-  !force && genElement.call(this)
-  var newElem = document.createElement('div')
-  // morp as sub-component
-  if (this.IS_STUB) {
-    morph(ele, newElem.childNodes[0])
-  } else {
-  // otherwise moph as whole
-    newElem.id = this.el
-    newElem.appendChild(this.base)
-    morph(ele, newElem)
-    
-    // sub-component life-cycle
-    // this.__componentList__.map(function (component) {
-    //   if(self[component]){
-    //     var c = self[component]
-    //     checkNodeAvailability(c, null, function(){
-    //       if (!c.DID_MOUNT && c.componentDidMount && typeof c.componentDidMount === 'function') {
-    //         c.DID_MOUNT = true
-    //         c.componentDidMount()
-    //       }
-    //     }, function(){
-    //       if (c.DID_MOUNT && c.componentDidUnMount && typeof c.componentDidUnMount === 'function') {
-    //         c.DID_MOUNT = false
-    //         c.componentDidUnMount()
-    //       }
-    //     })
-    //   }
-    // })
-  }
-  // clean up document creation since its not a fragment
-  node = newElem.firstChild
-  while(node){
-    currentNode = node
-    node = node.nextSibling
-    currentNode.remove()
-  }
-  // exec life-cycle componentDidUpdate
-  if (this.componentDidUpdate && typeof this.componentDidUpdate === 'function') {
-    this.componentDidUpdate()
-  }
-  // console.log(this)
-  // reset batch pooling
-  batchPool.status = 'ready'
+  // enclose the update event as async ensure bath update
+  // ensure only trigger DOM diff once at a time
+  if(overidde) clearTimeout(overidde)
+  overidde = setTimeout(function(){
+    var frag = []
+    var ele = getId(self.el)
+    var node 
+    var currentNode
+    !force && genElement.call(self)
+    var newElem = document.createElement('div')
+    // morp as sub-component
+    if (self.IS_STUB) {
+      morph(ele, newElem.childNodes[0])
+    } else {
+    // otherwise moph as whole
+      newElem.id = self.el
+      newElem.appendChild(self.base)
+      morph(ele, newElem)
+      
+      // sub-component life-cycle
+      // this.__componentList__.map(function (component) {
+      //   if(self[component]){
+      //     var c = self[component]
+      //     checkNodeAvailability(c, null, function(){
+      //       if (!c.DID_MOUNT && c.componentDidMount && typeof c.componentDidMount === 'function') {
+      //         c.DID_MOUNT = true
+      //         c.componentDidMount()
+      //       }
+      //     }, function(){
+      //       if (c.DID_MOUNT && c.componentDidUnMount && typeof c.componentDidUnMount === 'function') {
+      //         c.DID_MOUNT = false
+      //         c.componentDidUnMount()
+      //       }
+      //     })
+      //   }
+      // })
+    }
+    // clean up document creation since its not a fragment
+    node = newElem.firstChild
+    while(node){
+      currentNode = node
+      node = node.nextSibling
+      currentNode.remove()
+    }
+    // exec life-cycle componentDidUpdate
+    if (self.componentDidUpdate && typeof self.componentDidUpdate === 'function') {
+      self.componentDidUpdate()
+    }
+    // console.log(this)
+    // reset batch pooling
+    batchPool.status = 'ready'
+  })
 }
 
 // batch pool update states to DOM
