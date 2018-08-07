@@ -1,5 +1,21 @@
 var loopChilds = require('../utils').loopChilds
 
+function lookupParentNode(rootNode, node, argv){
+  while(node){
+    if(node.className){
+      argv.push(node.className)
+    }
+    if(node.id){
+      argv.push(node.id)
+    }
+    node = node.parentNode
+    if(node.isEqualNode(rootNode)){
+      node = null
+    }
+  }
+  return argv
+}
+
 var next = function (i, c, rem) {
   var hask
   var evtName
@@ -26,10 +42,11 @@ var next = function (i, c, rem) {
         if (v.length) v.map(function (v) { argv.push(v) })
 
         var fn = function(e){
-          e.stopPropagation()
           if (e.target !== e.currentTarget) {
+            argv = lookupParentNode(c, e.target, [])
             isHandler.apply(self, argv.concat(e))
           }
+          e.stopPropagation()
         }
         if(c.hasAttribute('evt-node')){
           c.addEventListener(evtName, fn, false)
