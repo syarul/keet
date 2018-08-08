@@ -10,19 +10,16 @@
  */
 
 var parseStr = require('./components/parseStr')
-var setState = require('./components/genElement').setState
 var genElement = require('./components/genElement').genElement
 var clearState = require('./components/genElement').clearState
-var processEvent = require('./components/processEvent')
 var getId = require('./utils').getId
-var testEvent = require('./utils').testEvent
 var assert = require('./utils').assert
 
 var DOCUMENT_FRAGMENT_TYPE = 11
 var DOCUMENT_TEXT_TYPE = 3
 var DOCUMENT_ELEMENT_TYPE = 1
-var DOCUMENT_COMMENT_TYPE = 8
-var DOCUMENT_ATTRIBUTE_TYPE = 2
+// var DOCUMENT_COMMENT_TYPE = 8
+// var DOCUMENT_ATTRIBUTE_TYPE = 2
 
 /**
  * @description
@@ -120,17 +117,6 @@ Keet.prototype.cluster = function () {
     args.map(function (f) {
       if (typeof f === 'function') f()
     })
-  }
-}
-
-Keet.prototype.stubRender = function (tpl, node) {
-  // sub-component rendering
-  setState.call(this)
-  testEvent(tpl) && processEvent.call(this, node)
-  // since component already rendered, trigger its life-cycle method
-  if (!this.DID_MOUNT && this.componentDidMount && typeof this.componentDidMount === 'function') {
-    this.DID_MOUNT = true
-    this.componentDidMount()
   }
 }
 

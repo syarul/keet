@@ -1,67 +1,26 @@
 var tmplHandler = require('./tmplHandler')
-var processEvent = require('./processEvent')
 var getId = require('../utils').getId
-var testEvent = require('../utils').testEvent
-var checkNodeAvailability = require('../utils').checkNodeAvailability
 var strInterpreter = require('./strInterpreter')
-var componentParse = require('./componentParse')
-// var modelParse = require('./modelParse')
-// var nodesVisibility = require('./nodesVisibility')
 var morph = require('morphdom')
 
 var overidde = null
 
-var updateContext = function (force) {
+var updateContext = function () {
   var self = this
   // enclose the update event as async ensure bath update
   // ensure only trigger DOM diff once at a time
   if(overidde) clearTimeout(overidde)
   overidde = setTimeout(function(){
-    var frag = []
     var ele = getId(self.el)
-    var node 
-    var currentNode
-    !force && genElement.call(self)
+    genElement.call(self)
     var newElem = document.createElement('div')
-    // morp as sub-component
-    if (self.IS_STUB) {
-      morph(ele, newElem.childNodes[0])
-    } else {
-    // otherwise moph as whole
-      newElem.id = self.el
-      newElem.appendChild(self.base)
-      morph(ele, newElem)
-      
-      // sub-component life-cycle
-      // this.__componentList__.map(function (component) {
-      //   if(self[component]){
-      //     var c = self[component]
-      //     checkNodeAvailability(c, null, function(){
-      //       if (!c.DID_MOUNT && c.componentDidMount && typeof c.componentDidMount === 'function') {
-      //         c.DID_MOUNT = true
-      //         c.componentDidMount()
-      //       }
-      //     }, function(){
-      //       if (c.DID_MOUNT && c.componentDidUnMount && typeof c.componentDidUnMount === 'function') {
-      //         c.DID_MOUNT = false
-      //         c.componentDidUnMount()
-      //       }
-      //     })
-      //   }
-      // })
-    }
-    // clean up document creation since its not a fragment
-    node = newElem.firstChild
-    while(node){
-      currentNode = node
-      node = node.nextSibling
-      currentNode.remove()
-    }
+    newElem.id = self.el
+    newElem.appendChild(self.base)
+    morph(ele, newElem)
     // exec life-cycle componentDidUpdate
     if (self.componentDidUpdate && typeof self.componentDidUpdate === 'function') {
       self.componentDidUpdate()
     }
-    // console.log(this)
     // reset batch pooling
     batchPool.status = 'ready'
   })
@@ -77,7 +36,7 @@ var batchPool = {
 // hit the deck. If possible we want to pool them before initiating DOM
 // morphing, but in the event the update is not fast enough we want to return
 // to normal synchronous update.
-var batchPoolExec = function (force) {
+var batchPoolExec = function () {
   if (batchPool.status === 'pooling') {
     //
   } else {
@@ -86,19 +45,19 @@ var batchPoolExec = function (force) {
     // if batchpool is not yet executed or it was idle (after 100ms)
     // direct morph the DOM
     if (!batchPool.ttl) {
-      updateContext.call(this, force)
+      updateContext.call(this)
     } else {
     // we wait until pooling is ready before initiating DOM morphing
       clearTimeout(batchPool.ttl)
       batchPool.ttl = setTimeout(function () {
-        updateContext.call(self, force)
+        updateContext.call(self)
       }, 0)
     }
     // we clear the batch pool if it more then 100ms from
     // last update
     batchPool.ttl = setTimeout(function () {
       batchPool.ttl = 0
-    }, 100)
+    }, 0)
   }
 }
 
@@ -162,22 +121,9 @@ var addState = function(state){
   if(stateList.indexOf(state) === -1) stateList = stateList.concat(state)
 }
 
-var genElement = function (force) {
-
+var genElement = function () {
   this.base = this.__pristineFragment__.cloneNode(true)
   tmplHandler(this, addState)
-  // return
-  // var tempDiv = document.createElement('div')
-  // tpl = componentParse.call(this, tpl)
-  // tpl = modelParse.call(this, tpl)
-  // tpl = nodesVisibility.call(this, tpl)
-  // tempDiv.innerHTML = tpl
-
-  // setState.call(this)
-  // testEvent(tpl) && processEvent.call(this, tempDiv)
-  if (force) {
-    batchPoolExec.call(this, force)
-  }
 }
 
 exports.genElement = genElement

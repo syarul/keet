@@ -1,6 +1,7 @@
 var ternaryOps = require('./ternaryOps')
 var createModel = require('../utils').createModel
 var assert = require('../utils').assert
+var genModelTemplate = require('./genModelTemplate')
 
 module.exports = function (node, model, tmplHandler) {
   var modelList
@@ -10,9 +11,14 @@ module.exports = function (node, model, tmplHandler) {
   var parentNode
 
   var list = node.nextSibling.cloneNode(true)
+  var str = list.outerHTML
   // remove the first prototype node 
+  var range = document.createRange()
+
   node.nextSibling.remove()
 
+  // console.log(1)
+  // console.time('t')
   if(this[model] !== undefined && this[model].hasOwnProperty('list')){
     parentNode = node.parentNode
     if(node.nextSibling){
@@ -25,13 +31,17 @@ module.exports = function (node, model, tmplHandler) {
     modelList = this[model].list
     mLength = modelList.length
     i = 0
+    
     while(i < mLength){
-      listClone = list.cloneNode(true)
-      tmplHandler(this, null, listClone, modelList[i])
-      parentNode.insertBefore(listClone, null)
+      // listClone = list.cloneNode(true)
+      // tmplHandler(this, null, listClone, modelList[i])
+      var m = genModelTemplate(str, modelList[i])
+      var documentFragment = range.createContextualFragment(m)
+      parentNode.insertBefore(documentFragment, null)
       i++
-    } 
+    }
   } else {
     assert(false, 'Model "'+model+'" does not exist.')
   }
+  // console.timeEnd('t')
 }

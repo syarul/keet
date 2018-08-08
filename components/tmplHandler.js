@@ -17,9 +17,6 @@ var modelRaw = /^\{\{model:([^{}]+)\}\}/g
 
 var conditionalRe = /^\?/g
 
-var toSkipStore = []
-var skipNode = []
-
 var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, conditional) {
 
   var currentNode
@@ -46,14 +43,12 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
   var conditionalRep
   var fn 
   var el
-  var isModelConstruct = false
   var idx
   var rem = []
   var isObjectNotation
 
   if(modelObject){
     instance = modelInstance
-    isModelConstruct = true
   } else if(conditional){
     instance = conditional.firstChild
   } else {
@@ -88,18 +83,12 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
           if(rep.match(model)){
             modelRep = rep.replace('model:', '')
             // generate list model
-            // ensure not to stay inside the loop forever
-            // if(!isModelConstruct){
-              genModelList.call(ctx, node, modelRep, tmplhandler)
-            // }
+            genModelList.call(ctx, node, modelRep, tmplhandler)
           } else if(rep.match(conditionalRe)){
             conditionalRep = rep.replace('?', '')
             if(ins[conditionalRep] !== undefined){
               updateState(conditionalRep)
-              // if(!conditional){
-                conditionalNodes.call(ctx, node, conditionalRep, tmplhandler)
-              // }
-              // processConditionalNodes(node, ins[conditionalRep], conditionalRep)
+              conditionalNodes.call(ctx, node, conditionalRep, tmplhandler)
             }
           } else {
             if(ins[rep] !== undefined){
@@ -115,7 +104,6 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
   }
 
   function inspect(node){
-    // console.log(node)
     type = node.nodeType
     val = node.nodeValue
     if(val.match(re)){
@@ -158,13 +146,6 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
     return false
   }
 
-  function addToSkipNode(store, nodeId){
-    idx = store.indexOf(nodeId)
-    if(!~idx){
-      store.push(nodeId)
-    }
-  }
-
   function lookupParentNode(rootNode, node, argv){
     while(node){
       if(node.className){
@@ -186,7 +167,6 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
 
     if(node && lookUpEvtNode(node)) {
       // skip addding event for node that already has event
-      // console.log(node, 'has evt')
       // to allow skipping adding event the node must include `id`/
     } else {
       // only add event when node does not has one
@@ -219,11 +199,9 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
             } else {
               node.addEventListener(evtName, c.bind.apply(c.bind(ctx), [node].concat(argv)), false)
             }
-            // console.log(node, 'adding evt')
             if(node.id){
               var p = ctx.__pristineFragment__.getElementById(node.id)
               if(!p.hasAttribute('evt-node')){ 
-                // console.log(p)
                 p.setAttribute('evt-node', '')
               }
             }
@@ -234,34 +212,6 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
         }
       }
     } 
-  }
-
-  var t
-  var start = Date.now()
-
-  function end(time){
-
-    if(t) clearTimeout(t)
-
-    t = setTimeout(function(){
-
-      toSkipStore.map(function(skip){
-        addToSkipNode(skipNode, skip)
-        var node = ctx.__pristineFragment__.getElementById(skip)
-        if(!node) return
-        nodeAttributes = node.attributes
-        for (i = nodeAttributes.length; i--;) {
-          a = nodeAttributes[i]
-          name = a.localName
-          if (/^k-/.test(name)) {
-            node.removeAttribute(name)
-          }
-        }
-      })
-
-      // console.log('end', time)
-
-    })
   }
 
   function check(node){
@@ -276,48 +226,12 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
       } else {
         inspect(currentNode)
       }
-      node = node.nextSibling// || end(Date.now() - start)
+      node = node.nextSibling
     } 
   }
 
   check(instance)
 
-  // return
-  // var arrProps = str.match(/{{([^{}]+)}}/g)
-  // if (arrProps && arrProps.length) {
-  //   arrProps.map(function (s) {
-  //     var rep = s.replace(/{{([^{}]+)}}/g, '$1')
-  //     var isObjectNotation = strInterpreter(rep)
-  //     var isTernary = ternaryOps.call(self, rep)
-  //     if (!isObjectNotation) {
-  //       if (self[rep] !== undefined) {
-  //         updateStateList(rep)
-  //         str = str.replace('{{' + rep + '}}', self[rep])
-  //       } else if (isTernary) {
-  //         updateStateList(isTernary.state)
-  //         str = str.replace('{{' + rep + '}}', isTernary.value)
-  //       }
-  //     } else {
-  //       updateStateList(rep)
-  //       str = str.replace('{{' + rep + '}}', self[isObjectNotation[0]][isObjectNotation[1]])
-  //     }
-  //     // resolve nodeVisibility
-  //     if (rep.match(/^\?/g)) {
-  //       updateStateList(rep.replace('?', ''))
-  //     }
-  //     // resolve model
-  //     if (rep.match(/^model:/g)) {
-  //       var modelRep = rep.replace('model:', '')
-  //       if (!~self.__modelList__.indexOf(modelRep)) { self.__modelList__.push(modelRep) }
-  //     }
-  //     // resolve component
-  //     if (rep.match(/^component:/g)) {
-  //       var componentRep = rep.replace('component:', '')
-  //       if (!~self.__componentList__.indexOf(componentRep)) { self.__componentList__.push(componentRep) }
-  //     }
-  //   })
-  // }
-  // return str
 }
 
 module.exports = tmplhandler
