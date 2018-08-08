@@ -4,11 +4,11 @@ var getId = require('../utils').getId
 var addState =  require('./genElement').addState
 var assert = require('../utils').assert
 
-module.exports = function () {
+module.exports = function (stub) {
 
   tmplHandler(this, addState)
 
-  var el = getId(this.el)
+  var el = stub || getId(this.el)
 
   if(el){
     // listen to state changes

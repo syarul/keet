@@ -3,6 +3,7 @@ var ternaryOps = require('./ternaryOps')
 var getId = require('../utils').getId
 var genModelList = require('./genModelList')
 var conditionalNodes = require('./conditionalNodes')
+var componentParse = require('./componentParse')
 
 var DOCUMENT_FRAGMENT_TYPE = 11
 var DOCUMENT_TEXT_TYPE = 3
@@ -16,6 +17,8 @@ var model = /^model:/g
 var modelRaw = /^\{\{model:([^{}]+)\}\}/g
 
 var conditionalRe = /^\?/g
+
+var component = /^component:([^{}]+)/g
 
 var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, conditional) {
 
@@ -90,6 +93,8 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
               updateState(conditionalRep)
               conditionalNodes.call(ctx, node, conditionalRep, tmplhandler)
             }
+          } else if(rep.match(component)) {
+            componentParse.call(ctx, rep, node)
           } else {
             if(ins[rep] !== undefined){
               updateState(rep)

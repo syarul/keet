@@ -12,13 +12,16 @@ module.exports = function (node, model, tmplHandler) {
 
   var list = node.nextSibling.cloneNode(true)
   var str = list.outerHTML
-  // remove the first prototype node 
-  var range = document.createRange()
 
+  // check if browser support createRange
+  var range
+  if(typeof document.createRange === 'function'){
+    range = document.createRange()
+  }
+
+  // remove the first prototype node 
   node.nextSibling.remove()
 
-  // console.log(1)
-  // console.time('t')
   if(this[model] !== undefined && this[model].hasOwnProperty('list')){
     parentNode = node.parentNode
     if(node.nextSibling){
@@ -33,15 +36,18 @@ module.exports = function (node, model, tmplHandler) {
     i = 0
     
     while(i < mLength){
-      // listClone = list.cloneNode(true)
-      // tmplHandler(this, null, listClone, modelList[i])
-      var m = genModelTemplate(str, modelList[i])
-      var documentFragment = range.createContextualFragment(m)
-      parentNode.insertBefore(documentFragment, null)
+      if(range){
+        var m = genModelTemplate(str, modelList[i])
+        var documentFragment = range.createContextualFragment(m)
+        parentNode.insertBefore(documentFragment, null)
+      } else {
+        // fallback to regular node generation handler
+        listClone = list.cloneNode(true)
+        tmplHandler(this, null, listClone, modelList[i]) 
+      }
       i++
     }
   } else {
     assert(false, 'Model "'+model+'" does not exist.')
   }
-  // console.timeEnd('t')
 }

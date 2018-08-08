@@ -95,18 +95,9 @@ Keet.prototype.link = function (id) {
 }
 
 Keet.prototype.render = function (stub) {
-  if (stub) {
-    // life-cycle method before rendering the component
-    if (!this.WILL_MOUNT && this.componentWillMount && typeof this.componentWillMount === 'function') {
-      this.WILL_MOUNT = true
-      this.componentWillMount()
-    }
-    return parseStr.call(this, stub)
-  } else {
-    // Render this component to the target DOM
-    parseStr.call(this)
-    return this
-  }
+  // Render this component to the target DOM
+  parseStr.call(this, stub)
+  return this
 }
 
 Keet.prototype.cluster = function () {
