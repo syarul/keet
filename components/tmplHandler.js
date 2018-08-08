@@ -17,13 +17,13 @@ var re = /{{([^{}]+)}}/g
 var model = /^model:/g
 var modelRaw = /^\{\{model:([^{}]+)\}\}/g
 
-var conditionalRe = /^condt:/g
-var conditionalReEnd = /^\/condt:/g
+var conditionalRe = /^\?/g
+var conditionalReEnd = /^\/(?!model$).*/g
 
 var toSkipStore = []
 var skipNode = []
 
-var tmplhandler = function (ctx, oldParent, updateStateList, modelInstance, modelObject, conditional) {
+var tmplhandler = function (ctx, oldParent, updateStateList, modelInstance, modelObject, conditional, protoBuild) {
 
   var currentNode
   var str
@@ -75,7 +75,6 @@ var tmplhandler = function (ctx, oldParent, updateStateList, modelInstance, mode
   function replaceHandleBars(value, node, protoBuild) {
     props = value.match(re)
     ln = props.length
-
     while (ln) {
       ln--
       rep = props[ln].replace(re, '$1')
@@ -98,16 +97,16 @@ var tmplhandler = function (ctx, oldParent, updateStateList, modelInstance, mode
               genModelList.call(ctx, node, modelRep, tmplhandler)
             }
           } else if(rep.match(conditionalRe)){
-            conditionalRep = rep.replace('condt:', '')
-            var nc = document.createComment('condt:'+conditionalRep)
+            conditionalRep = rep.replace('?', '')
+            var nc = document.createComment(props[ln])
             node.parentNode.replaceChild(nc, node)
             if(ins[conditionalRep] !== undefined){
               updateState(conditionalRep)
               currentConditionalNode = nc
             }
           } else if(rep.match(conditionalReEnd)){
-            conditionalRep = rep.replace('/condt:', '')
-            node.parentNode.replaceChild(document.createComment('/condt:'+conditionalRep), node)
+            conditionalRep = rep.replace('/', '')
+            node.parentNode.replaceChild(document.createComment(props[ln]), node)
             // begin parsing conditional nodes range
             conditionalNodes.call(ctx, currentConditionalNode, conditionalRep, tmplhandler, protoBuild)
           } else {
@@ -130,24 +129,30 @@ var tmplhandler = function (ctx, oldParent, updateStateList, modelInstance, mode
         val = replaceHandleBars(val, node, protoBuild)
         node.nodeValue = val
       }
+    } else if(!protoBuild && node.nodeType === DOCUMENT_COMMENT_TYPE){
+      var val = node.nodeValue
+      if(val.match(re)){
+        replaceHandleBars(val, node)
+      }
     }
-    return node
   }
 
-  function inspectElement(node){
-    // inspectAttributes(node)
-    // addEvent(node)
+  function inspectElement(node, protoBuild){
+    if(protoBuild){
+      addEvent(node)
+    } else {
+      inspectAttributes(node)
+    }
     var child = node.firstChild
     while(child){
       var currentChild = child 
       child = child.nextSibling
       if(currentChild.nodeType === DOCUMENT_ELEMENT_TYPE){
-        inspectElement(currentChild)
+        inspectElement(currentChild, protoBuild)
       } else {
-        inspect(currentChild)
+        inspect(currentChild, protoBuild)
       }
     }
-    return node
   }
 
   function inspectAttributes(node){
@@ -262,23 +267,17 @@ var tmplhandler = function (ctx, oldParent, updateStateList, modelInstance, mode
 
   function resolve(oldNode, newNode){
 
-    inspect(newNode)
-
     if (oldNode.nodeType === newNode.nodeType) {
       // Handle regular element node updates.
       if (oldNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
         // Checks if nodes are equal before diffing.
         if (isEqualNode(oldNode, newNode)) return
 
-        // inspectElement(newNode)
-
         // Update all children (and subchildren).
         check(oldNode, newNode)
 
         // Update the elements attributes / tagName.
         if (oldNode.nodeName === newNode.nodeName) {
-          inspectAttributes(newNode)
-          addEvent(newNode)
           // If we have the same nodename then we can directly update the attributes.
           setAttributes(oldNode.attributes, newNode.attributes)
         } else {
@@ -290,9 +289,6 @@ var tmplhandler = function (ctx, oldParent, updateStateList, modelInstance, mode
           oldNode.parentNode.replaceChild(newPrev, oldNode)
         }
       } else {
-
-        // inspect(newNode)
-
         // Handle other types of node updates (text/comments/etc).
         // If both are the same type of node we can update directly.
         if (oldNode.nodeValue !== newNode.nodeValue) {
@@ -314,8 +310,16 @@ var tmplhandler = function (ctx, oldParent, updateStateList, modelInstance, mode
 
     // if oldNode is empty we parse the whole newParent.childNodes
     if(!oldNode){
-      parse(newNode)
+      parse(newNode, 'protoBuild')
+      ctx.__pristineFragment__ = newParent.cloneNode(true)
+      l(ctx.__pristineFragment__)
     }
+
+    l(newParent.cloneNode(true))
+
+    parse(newNode)
+
+    l(newParent)
 
     while(newNode){
       currentNode = newNode
@@ -324,23 +328,31 @@ var tmplhandler = function (ctx, oldParent, updateStateList, modelInstance, mode
       if(oldNode){
         currentOld = oldNode
         oldNode = oldNode.nextSibling
-        resolve(currentOld, currentNode)
+        // resolve(currentOld, currentNode)
       } else {
         // we resolve currentNode if oldNode does not exist
-        oldParent.appendChild(currentNode)
+        // oldParent.appendChild(currentNode)
       }
     } 
   }
 
-  function parse(node){
+  function parse(node, protoBuild){
     while(node){
       currentNode = node
       node = node.nextSibling
       if(currentNode.nodeType === DOCUMENT_ELEMENT_TYPE){
-        parse(currentNode.firstChild)
+        if(currentNode.hasAttributes()){
+          if(protoBuild){
+            addEvent(currentNode)
+          } else {
+            inspectAttributes(currentNode)
+          }
+        }
+        parse(currentNode.firstChild, protoBuild)
       } else {
-        inspect(currentNode, 'protoBuild')
+        inspect(currentNode, protoBuild)
       }
+      // l(currentNode)
     }
   }
 
