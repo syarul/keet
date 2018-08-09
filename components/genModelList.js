@@ -40,6 +40,7 @@ module.exports = function (node, model, tmplHandler) {
         var m = genModelTemplate(str, modelList[i])
         var documentFragment = range.createContextualFragment(m)
         parentNode.insertBefore(documentFragment, null)
+        console.log(parentNode)
       } else {
         // fallback to regular node generation handler
         listClone = list.cloneNode(true)

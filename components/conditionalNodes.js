@@ -1,6 +1,6 @@
 var conditionalNodesRawStart = /\{\{\?([^{}]+)\}\}/g
 var conditionalNodesRawEnd = /\{\{\/([^{}]+)\}\}/g
-var DOCUMENT_TEXT_TYPE = 3
+var DOCUMENT_ELEMENT_TYPE = 1
 module.exports = function (node, conditional, tmplHandler) {
   var entryNode
   var currentNode
@@ -9,7 +9,7 @@ module.exports = function (node, conditional, tmplHandler) {
   while(node){
     currentNode = node
     node = node.nextSibling
-    if(currentNode.nodeType === DOCUMENT_TEXT_TYPE){
+    if(currentNode.nodeType !== DOCUMENT_ELEMENT_TYPE){
       if(currentNode.nodeValue.match(conditionalNodesRawStart)){
         entryNode = currentNode
       } else if(currentNode.nodeValue.match(conditionalNodesRawEnd)){

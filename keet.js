@@ -11,6 +11,7 @@
 
 var parseStr = require('./components/parseStr')
 var genElement = require('./components/genElement').genElement
+var updateContext = require('./components/genElement').updateContext
 var clearState = require('./components/genElement').clearState
 var getId = require('./utils').getId
 var assert = require('./utils').assert
@@ -121,7 +122,7 @@ Keet.prototype.callBatchPoolUpdate = function () {
     clearTimeout(BATCH_CALL_REQUEST)
   } 
   BATCH_CALL_REQUEST = setTimeout(function(){
-    genElement.call(self, true)
+    updateContext.call(self)
   })
 }
 

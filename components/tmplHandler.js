@@ -6,7 +6,7 @@ var conditionalNodes = require('./conditionalNodes')
 var componentParse = require('./componentParse')
 
 var DOCUMENT_FRAGMENT_TYPE = 11
-var DOCUMENT_TEXT_TYPE = 3
+// var DOCUMENT_TEXT_TYPE = 3
 var DOCUMENT_ELEMENT_TYPE = 1
 var DOCUMENT_COMMENT_TYPE = 8
 var DOCUMENT_ATTRIBUTE_TYPE = 2
@@ -125,7 +125,6 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
       ns = a.nodeValue
       if (re.test(name)) {
         node.removeAttribute(name)
-        var temp = name
         name = replaceHandleBars(name)
         node.setAttribute(name, ns)
       } else if(re.test(ns)){
@@ -145,7 +144,7 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
 
   function lookUpEvtNode(node){
     // check if node is visible on DOM and has attribute evt-node
-    if(node.hasAttribute('evt-node') && getId(node.id)){
+    if(node.hasAttribute('evt-node') && node.hasAttribute('id') && getId(node.id)){
       return true
     }
     return false
@@ -199,12 +198,12 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
             }
             // if node is the rootNode for model, we wrap the eventListener and
             // rebuild the arguments by appending id/className util rootNode.
-            if(node.hasChildNodes() && node.firstChild.nodeType === DOCUMENT_TEXT_TYPE && node.firstChild.nodeValue.match(modelRaw)){
+            if(node.hasChildNodes() && node.firstChild.nodeType !== DOCUMENT_ELEMENT_TYPE && node.firstChild.nodeValue.match(modelRaw)){
               node.addEventListener(evtName, fn, false)
             } else {
               node.addEventListener(evtName, c.bind.apply(c.bind(ctx), [node].concat(argv)), false)
             }
-            if(node.id){
+            if(node.hasAttribute('id')){
               var p = ctx.__pristineFragment__.getElementById(node.id)
               if(!p.hasAttribute('evt-node')){ 
                 p.setAttribute('evt-node', '')
@@ -212,9 +211,9 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
             }
           }
         }
-        if(i === 0){
-          rem.map(function (f) { node.removeAttribute(f) })
-        }
+        // if(i === 0){
+        //   rem.map(function (f) { node.removeAttribute(f) })
+        // }
       }
     } 
   }

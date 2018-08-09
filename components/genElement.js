@@ -130,3 +130,4 @@ exports.genElement = genElement
 exports.addState = addState
 exports.setState = setState
 exports.clearState = clearState
+exports.updateContext = updateContext

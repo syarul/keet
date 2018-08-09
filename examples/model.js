@@ -25,12 +25,12 @@ let name = 'myModel' //rem
 app.mount(html`
   <h1>${name}</h1><!-- //rem -->
   <ul id="list">
-    {{model:task}}
+    <!-- {{model:task}} -->
     <li id="{{id}}">
       {{taskName}}
       <input type="checkbox" checked="{{complete?checked:null}}">
     </li>
-    {{/model:task}}
+    <!-- {{/model:task}} -->
   </ul>
 `).link('app')
 
@@ -53,3 +53,5 @@ app.task.update('id', {
 
 // remove a task
 app.task.destroy('taskName', 'roll')
+
+console.log(app)
