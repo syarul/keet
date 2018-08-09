@@ -17,7 +17,8 @@
     "url": "https://github.com/syarul/keet/issues"
   },
   "dependencies": {
-    "morphdom": "^2.3.3"
+    "morphdom": "^2.3.3",
+    "set-dom": "^7.5.2"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

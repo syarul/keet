@@ -1,16 +1,18 @@
 var setState = require('./genElement').setState
 var tmplHandler = require('./tmplHandler')
 var getId = require('../utils').getId
-var addState =  require('./genElement').addState
+var addState = require('./genElement').addState
+var setEl = require('./genElement').setEl
 var assert = require('../utils').assert
 
 module.exports = function (stub) {
-
   tmplHandler(this, addState)
 
   var el = stub || getId(this.el)
 
-  if(el){
+  if (el) {
+    setEl(el)
+    el.setAttribute('data-ignore', '')
     // listen to state changes
     setState.call(this)
     // mount fragment to DOM
@@ -22,5 +24,4 @@ module.exports = function (stub) {
   } else {
     assert(false, 'No element with id: "' + this.el + '" exist.')
   }
-  
 }

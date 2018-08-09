@@ -1,5 +1,5 @@
 var ternaryOps = require('./ternaryOps')
-var re = new RegExp(/(\schecked\=\")(.*?)(?=\")/g)
+var re = new RegExp(/(\schecked=")(.*?)(?=")/g)
 var tmpl = ''
 
 module.exports = function (string, obj) {
@@ -17,11 +17,8 @@ module.exports = function (string, obj) {
     }
 
     var match = tmpl.match(re)
-    if(match){
-      if(match[0].length === 17)
-        tmpl = tmpl.replace(' checked="checked"', ' checked')
-      else
-        tmpl = tmpl.replace(' checked=""', '')
+    if (match) {
+      if (match[0].length === 17) { tmpl = tmpl.replace(' checked="checked"', ' checked') } else { tmpl = tmpl.replace(' checked=""', '') }
     }
   }
   return tmpl

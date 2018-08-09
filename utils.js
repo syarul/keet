@@ -43,7 +43,7 @@ exports.checkNodeAvailability = function (component, componentName, callback, no
     // silently ignore finding the node after sometimes
     setTimeout(function () {
       clearInterval(t)
-      if(!found && notFound && typeof notFound === 'function') notFound()
+      if (!found && notFound && typeof notFound === 'function') notFound()
     }, 250)
   }
 }
@@ -97,7 +97,7 @@ exports.html = function html () {
  * {{model:<myModel>}}<myModelTemplateString>{{/model:<myModel>}}
  *
  */
-function createModel() {
+function createModel () {
   var model = []
   var onChanges = []
 
@@ -108,7 +108,7 @@ function createModel() {
     }
   }
 
-/**
+  /**
  * @private
  * @description
  * Register callback listener of any changes
@@ -125,7 +125,7 @@ function createModel() {
     }
   })
 
-/**
+  /**
  * @private
  * @description
  * Subscribe to the model changes (add/update/destroy)
@@ -137,7 +137,7 @@ function createModel() {
     onChanges.push(fn)
   }
 
-/**
+  /**
  * @private
  * @description
  * Add new object to the model list
@@ -149,7 +149,7 @@ function createModel() {
     this.list = this.list.concat(obj)
   }
 
-/**
+  /**
  * @private
  * @description
  * Update existing object in the model list
@@ -164,7 +164,7 @@ function createModel() {
     })
   }
 
-/**
+  /**
  * @private
  * @description
  * Removed existing object in the model list

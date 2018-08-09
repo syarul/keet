@@ -70,12 +70,12 @@ for (let i = 0; i < count; i++) {
 }
 
 // update a task
-app.task.update('taskName', {
-  taskName: 'TASK TODO 0',
-  complete: true
-})
+// app.task.update('taskName', {
+//   taskName: 'TASK TODO 0',
+//   complete: true
+// })
 
 // // remove a task
-app.task.destroy('taskName', 'TASK TODO 2')
+// app.task.destroy('taskName', 'TASK TODO 2')
 
-setTimeout(() => console.assert(getId('list').childNodes.length === 2))
+// setTimeout(() => console.assert(getId('list').childNodes.length === 2))

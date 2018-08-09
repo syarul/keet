@@ -6,20 +6,20 @@ module.exports = function (node, conditional, tmplHandler) {
   var currentNode
   var isGen
   var frag = document.createDocumentFragment()
-  while(node){
+  while (node) {
     currentNode = node
     node = node.nextSibling
-    if(currentNode.nodeType !== DOCUMENT_ELEMENT_TYPE){
-      if(currentNode.nodeValue.match(conditionalNodesRawStart)){
+    if (currentNode.nodeType !== DOCUMENT_ELEMENT_TYPE) {
+      if (currentNode.nodeValue.match(conditionalNodesRawStart)) {
         entryNode = currentNode
-      } else if(currentNode.nodeValue.match(conditionalNodesRawEnd)){
+      } else if (currentNode.nodeValue.match(conditionalNodesRawEnd)) {
         currentNode.remove()
         // star generating the conditional nodes range, if not yet
-        if(!isGen){
+        if (!isGen) {
           isGen = true
           tmplHandler(this, null, null, null, frag)
         }
-        if(this[conditional]){
+        if (this[conditional]) {
           entryNode.parentNode.insertBefore(frag, entryNode)
         }
         entryNode.remove()
@@ -31,5 +31,4 @@ module.exports = function (node, conditional, tmplHandler) {
       currentNode.remove()
     }
   }
-
 }

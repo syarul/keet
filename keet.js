@@ -10,7 +10,6 @@
  */
 
 var parseStr = require('./components/parseStr')
-var genElement = require('./components/genElement').genElement
 var updateContext = require('./components/genElement').updateContext
 var clearState = require('./components/genElement').clearState
 var getId = require('./utils').getId
@@ -19,8 +18,6 @@ var assert = require('./utils').assert
 var DOCUMENT_FRAGMENT_TYPE = 11
 var DOCUMENT_TEXT_TYPE = 3
 var DOCUMENT_ELEMENT_TYPE = 1
-// var DOCUMENT_COMMENT_TYPE = 8
-// var DOCUMENT_ATTRIBUTE_TYPE = 2
 
 /**
  * @description
@@ -117,13 +114,12 @@ var BATCH_CALL_REQUEST = null
 Keet.prototype.callBatchPoolUpdate = function () {
   // force component to update, if any state / non-state
   // value changed DOM diffing will occur
-  var self = this
-  if(BATCH_CALL_REQUEST){
+  if (BATCH_CALL_REQUEST) {
     clearTimeout(BATCH_CALL_REQUEST)
-  } 
-  BATCH_CALL_REQUEST = setTimeout(function(){
-    updateContext.call(self)
-  })
+  }
+  BATCH_CALL_REQUEST = setTimeout(function () {
+    updateContext.call(this)
+  }.bind(this))
 }
 
 module.exports = Keet

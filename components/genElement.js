@@ -1,29 +1,28 @@
 var tmplHandler = require('./tmplHandler')
-var getId = require('../utils').getId
 var strInterpreter = require('./strInterpreter')
-var morph = require('morphdom')
+var morph = require('set-dom')
 
-var overidde = null
+var override
+var el
+
+var setEl = function (node) {
+  el = node
+}
 
 var updateContext = function () {
-  var self = this
   // enclose the update event as async ensure bath update
   // ensure only trigger DOM diff once at a time
-  if(overidde) clearTimeout(overidde)
-  overidde = setTimeout(function(){
-    var ele = getId(self.el)
-    genElement.call(self)
-    var newElem = document.createElement('div')
-    newElem.id = self.el
-    newElem.appendChild(self.base)
-    morph(ele, newElem)
+  if (override) clearTimeout(override)
+  override = setTimeout(function () {
+    genElement.call(this)
+    morph(el, this.base)
     // exec life-cycle componentDidUpdate
-    if (self.componentDidUpdate && typeof self.componentDidUpdate === 'function') {
-      self.componentDidUpdate()
+    if (this.componentDidUpdate && typeof this.componentDidUpdate === 'function') {
+      this.componentDidUpdate()
     }
     // reset batch pooling
     batchPool.status = 'ready'
-  })
+  }.bind(this))
 }
 
 // batch pool update states to DOM
@@ -40,7 +39,6 @@ var batchPoolExec = function () {
   if (batchPool.status === 'pooling') {
     //
   } else {
-    var self = this
     batchPool.status = 'pooling'
     // if batchpool is not yet executed or it was idle (after 100ms)
     // direct morph the DOM
@@ -50,8 +48,8 @@ var batchPoolExec = function () {
     // we wait until pooling is ready before initiating DOM morphing
       clearTimeout(batchPool.ttl)
       batchPool.ttl = setTimeout(function () {
-        updateContext.call(self)
-      }, 0)
+        updateContext.call(this)
+      }.bind(this))
     }
     // we clear the batch pool if it more then 100ms from
     // last update
@@ -62,11 +60,9 @@ var batchPoolExec = function () {
 }
 
 var nextState = function (i) {
-  var self = this
   var state
   var value
-  if(i < stateList.length) {
-
+  if (i < stateList.length) {
     state = stateList[i]
     value = this[state]
 
@@ -85,8 +81,8 @@ var nextState = function (i) {
         },
         set: function (val) {
           inVal = val
-          batchPoolExec.call(self)
-        }
+          batchPoolExec.call(this)
+        }.bind(this)
       })
     } else {
       // handle parent state update if the state is not an object
@@ -98,8 +94,8 @@ var nextState = function (i) {
         },
         set: function (val) {
           value = val
-          batchPoolExec.call(self)
-        }
+          batchPoolExec.call(this)
+        }.bind(this)
       })
     }
     i++
@@ -113,12 +109,12 @@ var setState = function () {
 
 var stateList = []
 
-var clearState = function(){
+var clearState = function () {
   stateList = []
 }
 
-var addState = function(state){
-  if(stateList.indexOf(state) === -1) stateList = stateList.concat(state)
+var addState = function (state) {
+  if (stateList.indexOf(state) === -1) stateList = stateList.concat(state)
 }
 
 var genElement = function () {
@@ -131,3 +127,4 @@ exports.addState = addState
 exports.setState = setState
 exports.clearState = clearState
 exports.updateContext = updateContext
+exports.setEl = setEl

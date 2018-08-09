@@ -14,5 +14,5 @@ console.assert(a + b === 3, 'cluster')
 app.cluster()
 
 export {
-    a, b
+  a, b
 }

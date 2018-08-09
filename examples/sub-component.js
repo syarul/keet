@@ -27,4 +27,4 @@ app.mount(html`
   </div>
 `).link('app')
 
-console.assert(getId('sub').innerHTML === 'this is a sub-component', 'sub-component rendering') //rem
+// console.assert(getId('sub').innerHTML === 'this is a sub-component', 'sub-component rendering') //rem
