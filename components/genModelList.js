@@ -30,23 +30,35 @@ module.exports = function (node, model, tmplHandler) {
       assert(false, 'Model "{{/model:'+model+'}}" enclosing tag does not exist.')
     }
     node.remove() // remove the text for model start tag
+
+    this.__protoModel__ = this.__protoModel__ || {}
+
+    this.__protoModel__[model] = {}
+    this.__protoModel__[model].node = list
+    this.__protoModel__[model].str = str
+    this.__protoModel__[model].parentNode = parentNode
+
+    // if(this[model].list.length > 0) {
+    //   console.log('do')
+    // }
     
-    modelList = this[model].list
-    mLength = modelList.length
-    i = 0
+    // modelList = this[model].list
+    // mLength = modelList.length
+    // i = 0
     
-    while(i < mLength){
-      if(range){
-        var m = genModelTemplate(str, modelList[i])
-        var documentFragment = range.createContextualFragment(m)
-        parentNode.insertBefore(documentFragment, null)
-      } else {
-        // fallback to regular node generation handler
-        listClone = list.cloneNode(true)
-        tmplHandler(this, null, listClone, modelList[i]) 
-      }
-      i++
-    }
+    // while(i < mLength){
+    //   if(range){
+    //     var m = genModelTemplate(str, modelList[i])
+    //     var documentFragment = range.createContextualFragment(m)
+    //     parentNode.insertBefore(documentFragment, null)
+    //   } else {
+    //     // fallback to regular node generation handler
+    //     listClone = list.cloneNode(true)
+    //     tmplHandler(this, null, listClone, modelList[i])
+    //     parentNode.insertBefore(listClone, null)
+    //   }
+    //   i++
+    // }
   } else {
     assert(false, 'Model "'+model+'" does not exist.')
   }

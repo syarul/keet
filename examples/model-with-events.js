@@ -6,9 +6,9 @@ const ENTER = 13
 const genId = () => (Math.random()*1*1e17).toString(32)
 
 class App extends Keet {
-  task = new createModel()
   total = 0
   componentWillMount(){
+    this.task = new createModel(this, 'info')
     this.task.subscribe(model =>
       this.total = model.length
     )
@@ -36,6 +36,9 @@ class App extends Keet {
       complete: complete === 'yes' ? false : true
     })
   }
+  info(method){
+    console.log(method)
+  }
 }
 
 const app = new App()
@@ -59,7 +62,7 @@ app.mount(html`
   </ul>
 `).link('app')
 
-let count = 3
+let count = 1000
 
 for (let i = 0; i < count; i++) {
   app.task.add({
@@ -78,4 +81,4 @@ app.task.update('taskName', {
 // // remove a task
 app.task.destroy('taskName', 'TASK TODO 2')
 
-setTimeout(() => console.assert(getId('list').childNodes.length === 2))
+// setTimeout(() => console.assert(getId('list').childNodes.length === 2))

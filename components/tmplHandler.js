@@ -125,7 +125,6 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
       ns = a.nodeValue
       if (re.test(name)) {
         node.removeAttribute(name)
-        var temp = name
         name = replaceHandleBars(name)
         node.setAttribute(name, ns)
       } else if(re.test(ns)){

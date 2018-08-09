@@ -10,7 +10,7 @@
  */
 
 var parseStr = require('./components/parseStr')
-var genElement = require('./components/genElement').genElement
+var updateContext = require('./components/genElement').updateContext
 var clearState = require('./components/genElement').clearState
 var getId = require('./utils').getId
 var assert = require('./utils').assert
@@ -121,8 +121,48 @@ Keet.prototype.callBatchPoolUpdate = function () {
     clearTimeout(BATCH_CALL_REQUEST)
   } 
   BATCH_CALL_REQUEST = setTimeout(function(){
-    genElement.call(self, true)
+    updateContext.call(self)
   })
+}
+
+var setDOM = require('set-dom')
+var genModelTemplate = require('./components/genModelTemplate')
+var range
+  if(typeof document.createRange === 'function'){
+    range = document.createRange()
+  }
+
+Keet.prototype.typeUpdate = function (type, model, obj, updateObj) {
+  var str = this.__protoModel__[model].str
+  var parentNode = this.__protoModel__[model].parentNode
+  var m 
+  var documentFragment
+  var el
+  if(type === 'add') {
+    m = genModelTemplate(str, obj)
+    documentFragment = range.createContextualFragment(m)
+    parentNode.insertBefore(documentFragment, null)
+  } else if (type === 'update'){
+    var lookupId = obj
+    this[model].list.map(function(m){
+      if(m[lookupId] === updateObj[lookupId]){
+        el = getId(m[lookupId])
+        if(el){
+          m = genModelTemplate(str, m)
+          documentFragment = range.createContextualFragment(m)
+          setDOM(el, documentFragment)
+        }
+      }
+    })
+  } else if (type === 'destroy'){
+    el = getId(updateObj)
+    if(el){
+      el.remove()
+    }
+  }
+  // console.timeEnd('x')
+  // console.log(str)
+  // var m = genModelTemplate(str, modelList[i])
 }
 
 module.exports = Keet

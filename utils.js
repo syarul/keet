@@ -97,7 +97,7 @@ exports.html = function html () {
  * {{model:<myModel>}}<myModelTemplateString>{{/model:<myModel>}}
  *
  */
-function createModel() {
+function createModel(context) {
   var model = []
   var onChanges = []
 
@@ -105,6 +105,13 @@ function createModel() {
     // console.trace(onChanges)
     for (var i = onChanges.length; i--;) {
       onChanges[i](model)
+    }
+  }
+
+  var notifyContext = function(){
+      console.log('do')
+    if(context && typeof context['typeUpdate'] === 'function'){
+      context['typeUpdate'].apply(context, arguments)
     }
   }
 
@@ -145,8 +152,9 @@ function createModel() {
  * @param {Object} obj - new object to add into the model list
  *
  */
-  this.add = function (obj) {
+  this.add = function (model, obj) {
     this.list = this.list.concat(obj)
+    notifyContext('add', model, obj)
   }
 
 /**
@@ -158,10 +166,11 @@ function createModel() {
  * @param {Object} updateObj - the updated properties
  *
  */
-  this.update = function (lookupId, updateObj) {
+  this.update = function (model, lookupId, updateObj) {
     this.list = this.list.map(function (obj) {
       return obj[lookupId] !== updateObj[lookupId] ? obj : Object.assign(obj, updateObj)
     })
+    notifyContext('update', model, lookupId, updateObj)
   }
 
 /**
@@ -173,10 +182,11 @@ function createModel() {
  * @param {String} objId - unique identifier of the lookup id
  *
  */
-  this.destroy = function (lookupId, objId) {
+  this.destroy = function (model, lookupId, objId) {
     this.list = this.list.filter(function (obj) {
       return obj[lookupId] !== objId
     })
+    notifyContext('destroy', model, lookupId, objId)
   }
 }
 

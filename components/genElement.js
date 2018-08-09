@@ -1,7 +1,7 @@
 var tmplHandler = require('./tmplHandler')
 var getId = require('../utils').getId
 var strInterpreter = require('./strInterpreter')
-var morph = require('morphdom')
+var morph = require('set-dom')
 
 var overidde = null
 
@@ -11,12 +11,19 @@ var updateContext = function () {
   // ensure only trigger DOM diff once at a time
   if(overidde) clearTimeout(overidde)
   overidde = setTimeout(function(){
+    console.time('gen')
     var ele = getId(self.el)
     genElement.call(self)
-    var newElem = document.createElement('div')
-    newElem.id = self.el
-    newElem.appendChild(self.base)
-    morph(ele, newElem)
+    console.timeEnd('gen')
+    // console.time('new')
+    // var newElem = document.createElement('div')
+    // newElem.id = self.el
+    // newElem.appendChild(self.base)
+    // console.timeEnd('new')
+    console.time('morph')
+    morph(ele, self.base)
+    // morph(ele, newElem, { childrenOnly : true })
+    console.timeEnd('morph')
     // exec life-cycle componentDidUpdate
     if (self.componentDidUpdate && typeof self.componentDidUpdate === 'function') {
       self.componentDidUpdate()
@@ -130,3 +137,4 @@ exports.genElement = genElement
 exports.addState = addState
 exports.setState = setState
 exports.clearState = clearState
+exports.updateContext = updateContext
