@@ -11,19 +11,19 @@ var updateContext = function () {
   // ensure only trigger DOM diff once at a time
   if(overidde) clearTimeout(overidde)
   overidde = setTimeout(function(){
-    console.time('gen')
+    // console.time('gen')
     var ele = getId(self.el)
     genElement.call(self)
-    console.timeEnd('gen')
+    // console.timeEnd('gen')
     // console.time('new')
     // var newElem = document.createElement('div')
     // newElem.id = self.el
     // newElem.appendChild(self.base)
     // console.timeEnd('new')
-    console.time('morph')
+    // console.time('morph')
     morph(ele, self.base)
     // morph(ele, newElem, { childrenOnly : true })
-    console.timeEnd('morph')
+    // console.timeEnd('morph')
     // exec life-cycle componentDidUpdate
     if (self.componentDidUpdate && typeof self.componentDidUpdate === 'function') {
       self.componentDidUpdate()

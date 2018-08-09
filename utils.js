@@ -109,7 +109,6 @@ function createModel(context) {
   }
 
   var notifyContext = function(){
-      console.log('do')
     if(context && typeof context['typeUpdate'] === 'function'){
       context['typeUpdate'].apply(context, arguments)
     }

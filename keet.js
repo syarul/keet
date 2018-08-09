@@ -141,7 +141,17 @@ Keet.prototype.typeUpdate = function (type, model, obj, updateObj) {
   if(type === 'add') {
     m = genModelTemplate(str, obj)
     documentFragment = range.createContextualFragment(m)
-    parentNode.insertBefore(documentFragment, null)
+    el = getId(parentNode.id)
+    if(!el){
+      var t = setInterval(function(){
+        el = getId(parentNode.id)
+        if(el) {
+          clearInterval(t)
+          el.insertBefore(documentFragment, null)
+        }
+      })
+    }
+    el.insertBefore(documentFragment, null)
   } else if (type === 'update'){
     var lookupId = obj
     this[model].list.map(function(m){
