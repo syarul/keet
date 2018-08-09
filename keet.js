@@ -19,6 +19,9 @@ var DOCUMENT_FRAGMENT_TYPE = 11
 var DOCUMENT_TEXT_TYPE = 3
 var DOCUMENT_ELEMENT_TYPE = 1
 
+// in some fashion this the suitable time dilation for speedy update
+var BATCH_POOL_TIME_DILATION = 15
+
 /**
  * @description
  * The main constructor of Keet
@@ -119,7 +122,8 @@ Keet.prototype.callBatchPoolUpdate = function () {
   }
   BATCH_CALL_REQUEST = setTimeout(function () {
     updateContext.call(this)
-  }.bind(this))
+    BATCH_POOL_TIME_DILATION = 15
+  }.bind(this), BATCH_POOL_TIME_DILATION)
 }
 
 module.exports = Keet

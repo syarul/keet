@@ -65,7 +65,7 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
 
   function valAssign (node, value, replace, withTo) {
     value = value.replace(replace, withTo)
-    node.nodeValue = value
+    if(node) node.nodeValue = value
   }
 
   function replaceHandleBars (value, node) {

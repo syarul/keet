@@ -14,6 +14,8 @@ var updateContext = function () {
   // ensure only trigger DOM diff once at a time
   if (override) clearTimeout(override)
   override = setTimeout(function () {
+    console.log(1)
+    // console.log('at genElement ', new Date() - window.ttt)
     genElement.call(this)
     morph(el, this.base)
     // exec life-cycle componentDidUpdate

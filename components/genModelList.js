@@ -21,6 +21,7 @@ function diff (fst, sec) {
 var oldModel
 
 module.exports = function (node, model, tmplHandler) {
+   // console.log(123, new Date() - window.ttt)
   var modelList
   var mLength
   var i
@@ -94,28 +95,34 @@ module.exports = function (node, model, tmplHandler) {
       if (parentNode.hasAttribute('id')) {
         pNode = getId(parentNode.id)
 
-        // check if both models are equally length
-        equalLength = oldModel.length === modelList.length
+        if(pNode){
 
-        // doUpdate
-        if (equalLength) {
-          updateOfNew.map(function (obj) {
-            child = pNode.querySelector('[id="' + obj[ref] + '"]')
-            m = genModelTemplate(str, obj)
-            documentFragment = range.createContextualFragment(m)
-            pNode.replaceChild(documentFragment, child)
-          })
-        } else if (updateOfNew.length > 0 && diffOfOld.length === 0) {
-          updateOfNew.map(function (obj) {
-            m = genModelTemplate(str, obj)
-            documentFragment = range.createContextualFragment(m)
-            pNode.insertBefore(documentFragment, null)
-          })
-        } else if (updateOfNew.length === 0 && diffOfOld.length > 0) {
-          diffOfOld.map(function (obj) {
-            child = pNode.querySelector('[id="' + obj[ref] + '"]')
-            pNode.removeChild(child)
-          })
+          // check if both models are equally length
+          equalLength = oldModel.length === modelList.length
+
+          // doUpdate
+          if (equalLength) {
+            updateOfNew.map(function (obj) {
+              child = pNode.querySelector('[id="' + obj[ref] + '"]')
+              m = genModelTemplate(str, obj)
+              documentFragment = range.createContextualFragment(m)
+              pNode.replaceChild(documentFragment, child)
+            })
+          } else if (updateOfNew.length > 0 && diffOfOld.length === 0) {
+            updateOfNew.map(function (obj) {
+              m = genModelTemplate(str, obj)
+              documentFragment = range.createContextualFragment(m)
+              pNode.insertBefore(documentFragment, null)
+            })
+          } else if (updateOfNew.length === 0 && diffOfOld.length > 0) {
+           
+            diffOfOld.map(function (obj) {
+              child = pNode.querySelector('[id="' + obj[ref] + '"]')
+              pNode.removeChild(child)
+            })
+            // console.log(222, new Date() - window.ttt)
+          }
+
         }
       }
       oldModel = JSON.parse(JSON.stringify(modelList))
