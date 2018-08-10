@@ -1,9 +1,11 @@
 var assert = require('../utils').assert
 var getId = require('../utils').getId
+var checkNodeAvailability = require('../utils').checkNodeAvailability
 var genModelTemplate = require('./genModelTemplate')
 
 var re = /{{([^{}]+)}}/g
 
+// diffing two array of objects, including object properties differences
 function diff (fst, sec) {
   return fst.filter(function (obj) {
     return !sec.some(function (inr) {
@@ -18,10 +20,14 @@ function diff (fst, sec) {
   })
 }
 
-var oldModel
+
+// check if browser support createRange
+var range
+if (typeof document.createRange === 'function') {
+  range = document.createRange()
+}
 
 module.exports = function (node, model, tmplHandler) {
-   // console.log(123, new Date() - window.ttt)
   var modelList
   var mLength
   var i
@@ -29,23 +35,18 @@ module.exports = function (node, model, tmplHandler) {
   var parentNode
   var m
   var documentFragment
-  var list = node.nextSibling.cloneNode(true)
-  var str = list.outerHTML
   var updateOfNew
   var diffOfOld
   var pNode
   var ref
   var equalLength
   var child
+  var list = node.nextSibling.cloneNode(true)
+  var str = list.outerHTML
+  var oldModel
 
   if (list.hasAttribute('id') && list.id.match(re)) {
     ref = list.id.replace(re, '$1')
-  }
-
-  // check if browser support createRange
-  var range
-  if (typeof document.createRange === 'function') {
-    range = document.createRange()
   }
 
   // remove the first prototype node
@@ -67,12 +68,18 @@ module.exports = function (node, model, tmplHandler) {
 
     modelList = this[model].list
 
+    this['__'+model+'__'] = this['__'+model+'__'] || []
+
+    oldModel = this['__'+model+'__']
+
     // check difference old currentModel and the oldModel
     // skip if it a new model
-    if (!oldModel) {
+    // check also if current browser doesn't support createRange()
+    if (!oldModel || !range) {
       oldModel = JSON.parse(JSON.stringify(modelList))
 
       mLength = modelList.length
+
       i = 0
 
       while (i < mLength) {
@@ -88,44 +95,60 @@ module.exports = function (node, model, tmplHandler) {
         i++
       }
     } else {
+
       updateOfNew = diff(modelList, oldModel)
       diffOfOld = diff(oldModel, modelList)
 
-      // check existing parentNode in DOM
+      function diffModel(c, cx, pNode) {
+        // pNode =[].pop.call(arguments)
+        // check if both models are equally in length
+        equalLength = oldModel.length === modelList.length
+
+        // do properties update
+        if (equalLength) {
+          // console.log(new Date() - window.time)
+          console.time('up')
+          updateOfNew.map(function (obj) {
+            child = pNode.querySelector('[id="' + obj[ref] + '"]')
+            m = genModelTemplate(str, obj)
+            documentFragment = range.createContextualFragment(m)
+            pNode.replaceChild(documentFragment, child)
+          })
+          console.timeEnd('up')
+        // add new objects
+        } else if (updateOfNew.length > 0 && diffOfOld.length === 0) {
+          console.time('add')
+          updateOfNew.map(function (obj) {
+            m = genModelTemplate(str, obj)
+            documentFragment = range.createContextualFragment(m)
+            pNode.insertBefore(documentFragment, null)
+          })
+          console.timeEnd('add')
+        // destroy selected objects
+        } else if (updateOfNew.length === 0 && diffOfOld.length > 0) {
+          console.time('des')
+          diffOfOld.map(function (obj) {
+            child = pNode.querySelector('[id="' + obj[ref] + '"]')
+            pNode.removeChild(child)
+          })
+          console.timeEnd('des')
+        }
+
+        // replace oldModel after diffing
+        this['__'+model+'__'] = JSON.parse(JSON.stringify(modelList))
+      }
+
+      // check existing parentNode in the DOM
       if (parentNode.hasAttribute('id')) {
         pNode = getId(parentNode.id)
 
         if(pNode){
-
-          // check if both models are equally length
-          equalLength = oldModel.length === modelList.length
-
-          // doUpdate
-          if (equalLength) {
-            updateOfNew.map(function (obj) {
-              child = pNode.querySelector('[id="' + obj[ref] + '"]')
-              m = genModelTemplate(str, obj)
-              documentFragment = range.createContextualFragment(m)
-              pNode.replaceChild(documentFragment, child)
-            })
-          } else if (updateOfNew.length > 0 && diffOfOld.length === 0) {
-            updateOfNew.map(function (obj) {
-              m = genModelTemplate(str, obj)
-              documentFragment = range.createContextualFragment(m)
-              pNode.insertBefore(documentFragment, null)
-            })
-          } else if (updateOfNew.length === 0 && diffOfOld.length > 0) {
-           
-            diffOfOld.map(function (obj) {
-              child = pNode.querySelector('[id="' + obj[ref] + '"]')
-              pNode.removeChild(child)
-            })
-            // console.log(222, new Date() - window.ttt)
-          }
-
+          diffModel.call(this, null, null, pNode)
+        } else {
+          checkNodeAvailability({ el: parentNode.id }, model, diffModel.bind(this))
         }
       }
-      oldModel = JSON.parse(JSON.stringify(modelList))
+      
     }
   } else {
     assert(false, 'Model "' + model + '" does not exist.')

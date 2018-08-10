@@ -21,6 +21,7 @@ var conditionalRe = /^\?/g
 var component = /^component:([^{}]+)/g
 
 var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, conditional) {
+  window.time = new Date()
   var currentNode
   var ln
   var props
@@ -180,11 +181,11 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
             })
             rem.push(name)
             fn = function (e) {
-              if (e.target !== e.currentTarget) {
-                argv = lookupParentNode(node, e.target, [])
-                c.apply(ctx, argv.concat(e))
-              }
               e.stopPropagation()
+              if (e.target !== e.currentTarget) {
+                // argv = lookupParentNode(node, e.target, [])
+                c.apply(ctx, [e.target, e])
+              }
             }
             // if node is the rootNode for model, we wrap the eventListener and
             // rebuild the arguments by appending id/className util rootNode.

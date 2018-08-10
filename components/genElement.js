@@ -4,27 +4,27 @@ var morph = require('set-dom')
 
 var override
 var el
+// in some fashion this the suitable time dilation for speedy update
+var BATCH_POOL_TIME_DILATION = 7
 
 var setEl = function (node) {
   el = node
+}
+
+var morpher = function () {
+  genElement.call(this)
+  morph(el, this.base)
+  // exec life-cycle componentDidUpdate
+  if (this.componentDidUpdate && typeof this.componentDidUpdate === 'function') {
+    this.componentDidUpdate()
+  }
 }
 
 var updateContext = function () {
   // enclose the update event as async ensure bath update
   // ensure only trigger DOM diff once at a time
   if (override) clearTimeout(override)
-  override = setTimeout(function () {
-    console.log(1)
-    // console.log('at genElement ', new Date() - window.ttt)
-    genElement.call(this)
-    morph(el, this.base)
-    // exec life-cycle componentDidUpdate
-    if (this.componentDidUpdate && typeof this.componentDidUpdate === 'function') {
-      this.componentDidUpdate()
-    }
-    // reset batch pooling
-    batchPool.status = 'ready'
-  }.bind(this))
+  override = setTimeout(morpher.bind(this), BATCH_POOL_TIME_DILATION)
 }
 
 // batch pool update states to DOM
@@ -38,27 +38,27 @@ var batchPool = {
 // morphing, but in the event the update is not fast enough we want to return
 // to normal synchronous update.
 var batchPoolExec = function () {
-  if (batchPool.status === 'pooling') {
-    //
-  } else {
-    batchPool.status = 'pooling'
-    // if batchpool is not yet executed or it was idle (after 100ms)
-    // direct morph the DOM
-    if (!batchPool.ttl) {
-      updateContext.call(this)
-    } else {
+  // if (batchPool.status === 'pooling') {
+  //   //
+  // } else {
+  //   batchPool.status = 'pooling'
+  //   // if batchpool is not yet executed or it was idle (after 100ms)
+  //   // direct morph the DOM
+  //   if (!batchPool.ttl) {
+  //     updateContext.call(this)
+  //   } else {
     // we wait until pooling is ready before initiating DOM morphing
       clearTimeout(batchPool.ttl)
       batchPool.ttl = setTimeout(function () {
         updateContext.call(this)
-      }.bind(this))
-    }
+      }.bind(this), BATCH_POOL_TIME_DILATION)
+    // }
     // we clear the batch pool if it more then 100ms from
     // last update
-    batchPool.ttl = setTimeout(function () {
-      batchPool.ttl = 0
-    }, 0)
-  }
+    // batchPool.ttl = setTimeout(function () {
+    //   batchPool.ttl = 0
+    // }, BATCH_POOL_TIME_DILATION)
+  // }
 }
 
 var nextState = function (i) {

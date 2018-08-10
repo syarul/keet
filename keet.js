@@ -19,9 +19,6 @@ var DOCUMENT_FRAGMENT_TYPE = 11
 var DOCUMENT_TEXT_TYPE = 3
 var DOCUMENT_ELEMENT_TYPE = 1
 
-// in some fashion this the suitable time dilation for speedy update
-var BATCH_POOL_TIME_DILATION = 15
-
 /**
  * @description
  * The main constructor of Keet
@@ -96,6 +93,9 @@ Keet.prototype.link = function (id) {
 }
 
 Keet.prototype.render = function (stub) {
+  if(stub){
+    console.log(this)
+  }
   // Render this component to the target DOM
   parseStr.call(this, stub)
   return this
@@ -112,18 +112,10 @@ Keet.prototype.cluster = function () {
   }
 }
 
-var BATCH_CALL_REQUEST = null
-
 Keet.prototype.callBatchPoolUpdate = function () {
   // force component to update, if any state / non-state
   // value changed DOM diffing will occur
-  if (BATCH_CALL_REQUEST) {
-    clearTimeout(BATCH_CALL_REQUEST)
-  }
-  BATCH_CALL_REQUEST = setTimeout(function () {
-    updateContext.call(this)
-    BATCH_POOL_TIME_DILATION = 15
-  }.bind(this), BATCH_POOL_TIME_DILATION)
+  updateContext.call(this)
 }
 
 module.exports = Keet

@@ -5,6 +5,8 @@ var addState = require('./genElement').addState
 var setEl = require('./genElement').setEl
 var assert = require('../utils').assert
 
+var DOCUMENT_ELEMENT_TYPE = 1
+
 module.exports = function (stub) {
   tmplHandler(this, addState)
 
@@ -12,7 +14,12 @@ module.exports = function (stub) {
 
   if (el) {
     setEl(el)
-    el.setAttribute('data-ignore', '')
+
+    if(el.nodeType === DOCUMENT_ELEMENT_TYPE)
+      el.setAttribute('data-ignore', '')
+    else if(el.hasChildNodes() && el.firstChild.nodeType === DOCUMENT_ELEMENT_TYPE){
+      el.firstChildsetAttribute('data-ignore', '')
+    }
     // listen to state changes
     setState.call(this)
     // mount fragment to DOM
