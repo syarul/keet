@@ -26,7 +26,8 @@ const app = new App()
 
 app.mount(html`
   <div id="container">
-	{{component:subc}}	
+    <p>test</p>
+	   <!-- {{component:subc}}	 -->
   </div>
 `).link('app')
 
@@ -36,7 +37,8 @@ const button = getId('sub-button')
 
 button.dispatchEvent(change)
 
-console.assert(getId('sub-button').innerHTML === 'value: bar', 'sub-component event')
+setTimeout(() => console.assert(getId('sub-button').innerHTML === 'value: bar', 'sub-component event'), 100)
+
 
 
 

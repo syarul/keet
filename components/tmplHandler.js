@@ -14,7 +14,7 @@ var DOCUMENT_ELEMENT_TYPE = 1
 var re = /{{([^{}]+)}}/g
 
 var model = /^model:/g
-var modelRaw = /^\{\{model:([^{}]+)\}\}/g
+var modelRaw = /\{\{model:([^{}]+)\}\}/g
 
 var conditionalRe = /^\?/g
 
@@ -141,22 +141,6 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
     return false
   }
 
-  function lookupParentNode (rootNode, node, argv) {
-    while (node) {
-      if (node.className) {
-        argv.push(node.className)
-      }
-      if (node.id) {
-        argv.push(node.id)
-      }
-      node = node.parentNode
-      if (node.isEqualNode(rootNode)) {
-        break
-      }
-    }
-    return argv
-  }
-
   function addEvent (node) {
     nodeAttributes = node.attributes
 
@@ -183,7 +167,6 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
             fn = function (e) {
               e.stopPropagation()
               if (e.target !== e.currentTarget) {
-                // argv = lookupParentNode(node, e.target, [])
                 c.apply(ctx, [e.target, e])
               }
             }

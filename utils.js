@@ -4,17 +4,6 @@ var getId = function (id) {
 
 exports.getId = getId
 
-// var loopChilds = function (arr, elem) {
-//   for (var child = elem.firstChild; child !== null; child = child.nextSibling) {
-//     arr.push(child)
-//     if (child.hasChildNodes()) {
-//       loopChilds(arr, child)
-//     }
-//   }
-// }
-
-// exports.loopChilds = loopChilds
-
 exports.testEvent = function (tmpl) {
   return / k-/.test(tmpl)
 }
@@ -90,6 +79,28 @@ exports.html = function html () {
 /**
  * @private
  * @description
+ * trottle function calls
+ *
+ * @param {Function} fn - function to trottle
+ * @param {Number} delay - time delay before function get executed
+ */
+
+function trottle(fn, delay) {
+  var timer = null;
+  return function () {
+    var context = this, args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      fn.apply(context, args);
+    }, delay);
+  };
+};
+
+exports.trottle = trottle
+
+/**
+ * @private
+ * @description
  * Copy with modification from preact-todomvc. Model constructor with
  * registering callback listener in Object.defineProperty. Any modification
  * to ```this.list``` instance will subsequently inform all registered listener.
@@ -102,13 +113,13 @@ function createModel () {
   var onChanges = []
 
   var inform = function () {
-    // console.trace(onChanges)
+    // console.log(onChanges)
     for (var i = onChanges.length; i--;) {
       onChanges[i](model)
     }
   }
 
-  /**
+/**
  * @private
  * @description
  * Register callback listener of any changes
@@ -125,7 +136,7 @@ function createModel () {
     }
   })
 
-  /**
+/**
  * @private
  * @description
  * Subscribe to the model changes (add/update/destroy)
@@ -137,7 +148,7 @@ function createModel () {
     onChanges.push(fn)
   }
 
-  /**
+/**
  * @private
  * @description
  * Add new object to the model list
@@ -149,7 +160,7 @@ function createModel () {
     this.list = this.list.concat(obj)
   }
 
-  /**
+/**
  * @private
  * @description
  * Update existing object in the model list
@@ -164,7 +175,7 @@ function createModel () {
     })
   }
 
-  /**
+/**
  * @private
  * @description
  * Removed existing object in the model list

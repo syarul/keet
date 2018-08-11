@@ -2,6 +2,7 @@ var assert = require('../utils').assert
 var getId = require('../utils').getId
 var checkNodeAvailability = require('../utils').checkNodeAvailability
 var genModelTemplate = require('./genModelTemplate')
+// var morph = require('set-dom')
 
 var re = /{{([^{}]+)}}/g
 
@@ -20,14 +21,17 @@ function diff (fst, sec) {
   })
 }
 
-
 // check if browser support createRange
 var range
 if (typeof document.createRange === 'function') {
   range = document.createRange()
 }
 
+// storage for model state
+var cache = {}
+
 module.exports = function (node, model, tmplHandler) {
+  
   var modelList
   var mLength
   var i
@@ -41,101 +45,91 @@ module.exports = function (node, model, tmplHandler) {
   var ref
   var equalLength
   var child
-  var list = node.nextSibling.cloneNode(true)
-  var str = list.outerHTML
+  var list
+  var str
   var oldModel
+  var p
 
-  if (list.hasAttribute('id') && list.id.match(re)) {
-    ref = list.id.replace(re, '$1')
+  cache[model] = cache[model] || {}
+
+  if(!cache[model].list){
+    cache[model].list = node.nextSibling.cloneNode(true)
   }
+  list = cache[model].list
 
-  // remove the first prototype node
-  node.nextSibling.remove()
+  if(!cache[model].str){
+    cache[model].str = node.nextSibling.cloneNode(true).outerHTML
+  }
+  str = cache[model].str
 
+  if(!cache[model].ref){
+    if (list.hasAttribute('id') && list.id.match(re)) {
+      cache[model].ref = list.id.replace(re, '$1')
+      // remove the first prototype node
+      node.nextSibling.remove()
+      // also remove from pristine node
+      p = this.__pristineFragment__.getElementById(list.id)
+      if(p) p.remove()
+    }
+  }
+  ref = cache[model].ref
+  
   if (this[model] !== undefined && this[model].hasOwnProperty('list')) {
+
     parentNode = node.parentNode
 
-    if (!parentNode.hasAttribute('data-ignore')) {
+    if (range && !parentNode.hasAttribute('data-ignore')) {
       parentNode.setAttribute('data-ignore', '')
     }
 
-    if (node.nextSibling) {
-      node.nextSibling.remove() // remove the text tag for modelEnd
-    } else {
-      assert(false, 'Model "{{/model:' + model + '}}" enclosing tag does not exist.')
-    }
-    node.remove() // remove the text for model start tag
-
     modelList = this[model].list
 
-    this['__'+model+'__'] = this['__'+model+'__'] || []
+    oldModel = cache[model].oldModel || []
 
-    oldModel = this['__'+model+'__']
-
-    // check difference old currentModel and the oldModel
-    // skip if it a new model
-    // check also if current browser doesn't support createRange()
-    if (!oldModel || !range) {
-      oldModel = JSON.parse(JSON.stringify(modelList))
-
-      mLength = modelList.length
-
+    // check if current browser doesn't support createRange()
+    if (!range) {
       i = 0
-
       while (i < mLength) {
-        if (range) {
-          m = genModelTemplate(str, modelList[i])
-          documentFragment = range.createContextualFragment(m)
-          parentNode.insertBefore(documentFragment, null)
-        } else {
-          // fallback to regular node generation handler
-          listClone = list.cloneNode(true)
-          tmplHandler(this, null, listClone, modelList[i])
-        }
+        // fallback to regular node generation handler
+        listClone = list.cloneNode(true)
+        tmplHandler(this, null, listClone, modelList[i])
         i++
       }
     } else {
-
       updateOfNew = diff(modelList, oldModel)
       diffOfOld = diff(oldModel, modelList)
 
-      function diffModel(c, cx, pNode) {
-        // pNode =[].pop.call(arguments)
+      function diffModel() {
+        pNode =[].pop.call(arguments)
         // check if both models are equally in length
         equalLength = oldModel.length === modelList.length
 
         // do properties update
         if (equalLength) {
-          // console.log(new Date() - window.time)
-          console.time('up')
           updateOfNew.map(function (obj) {
             child = pNode.querySelector('[id="' + obj[ref] + '"]')
             m = genModelTemplate(str, obj)
             documentFragment = range.createContextualFragment(m)
+            // morph(child, documentFragment.firstChild)
             pNode.replaceChild(documentFragment, child)
           })
-          console.timeEnd('up')
         // add new objects
         } else if (updateOfNew.length > 0 && diffOfOld.length === 0) {
-          console.time('add')
           updateOfNew.map(function (obj) {
             m = genModelTemplate(str, obj)
             documentFragment = range.createContextualFragment(m)
-            pNode.insertBefore(documentFragment, null)
+            pNode.insertBefore(documentFragment, pNode.lastChild)
           })
-          console.timeEnd('add')
         // destroy selected objects
         } else if (updateOfNew.length === 0 && diffOfOld.length > 0) {
-          console.time('des')
           diffOfOld.map(function (obj) {
             child = pNode.querySelector('[id="' + obj[ref] + '"]')
             pNode.removeChild(child)
           })
-          console.timeEnd('des')
         }
 
         // replace oldModel after diffing
-        this['__'+model+'__'] = JSON.parse(JSON.stringify(modelList))
+        cache[model].oldModel = JSON.parse(JSON.stringify(modelList))
       }
 
       // check existing parentNode in the DOM

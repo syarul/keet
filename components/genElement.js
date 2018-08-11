@@ -1,65 +1,27 @@
 var tmplHandler = require('./tmplHandler')
 var strInterpreter = require('./strInterpreter')
 var morph = require('set-dom')
+var getId = require('../utils').getId
+var trottle = require('../utils').trottle
 
 var override
 var el
-// in some fashion this the suitable time dilation for speedy update
-var BATCH_POOL_TIME_DILATION = 7
-
-var setEl = function (node) {
-  el = node
-}
 
 var morpher = function () {
+  // console.time('r')
+  el = getId(this.el)
   genElement.call(this)
-  morph(el, this.base)
+  if(el) {
+    this.IS_STUB ? morph(el, this.base.firstChild) : morph(el, this.base)
+  }
   // exec life-cycle componentDidUpdate
   if (this.componentDidUpdate && typeof this.componentDidUpdate === 'function') {
     this.componentDidUpdate()
   }
+  // console.timeEnd('r')
 }
 
-var updateContext = function () {
-  // enclose the update event as async ensure bath update
-  // ensure only trigger DOM diff once at a time
-  if (override) clearTimeout(override)
-  override = setTimeout(morpher.bind(this), BATCH_POOL_TIME_DILATION)
-}
-
-// batch pool update states to DOM
-var batchPool = {
-  ttl: 0,
-  status: 'ready'
-}
-
-// The idea behind this is to reduce morphing the DOM when multiple updates
-// hit the deck. If possible we want to pool them before initiating DOM
-// morphing, but in the event the update is not fast enough we want to return
-// to normal synchronous update.
-var batchPoolExec = function () {
-  // if (batchPool.status === 'pooling') {
-  //   //
-  // } else {
-  //   batchPool.status = 'pooling'
-  //   // if batchpool is not yet executed or it was idle (after 100ms)
-  //   // direct morph the DOM
-  //   if (!batchPool.ttl) {
-  //     updateContext.call(this)
-  //   } else {
-    // we wait until pooling is ready before initiating DOM morphing
-      clearTimeout(batchPool.ttl)
-      batchPool.ttl = setTimeout(function () {
-        updateContext.call(this)
-      }.bind(this), BATCH_POOL_TIME_DILATION)
-    // }
-    // we clear the batch pool if it more then 100ms from
-    // last update
-    // batchPool.ttl = setTimeout(function () {
-    //   batchPool.ttl = 0
-    // }, BATCH_POOL_TIME_DILATION)
-  // }
-}
+var updateContext = trottle(morpher, 1)
 
 var nextState = function (i) {
   var state
@@ -83,7 +45,7 @@ var nextState = function (i) {
         },
         set: function (val) {
           inVal = val
-          batchPoolExec.call(this)
+          updateContext.call(this)
         }.bind(this)
       })
     } else {
@@ -96,7 +58,7 @@ var nextState = function (i) {
         },
         set: function (val) {
           value = val
-          batchPoolExec.call(this)
+          updateContext.call(this)
         }.bind(this)
       })
     }
@@ -129,4 +91,3 @@ exports.addState = addState
 exports.setState = setState
 exports.clearState = clearState
 exports.updateContext = updateContext
-exports.setEl = setEl

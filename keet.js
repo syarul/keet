@@ -80,23 +80,22 @@ Keet.prototype.flush = function (instance) {
 
 Keet.prototype.link = function (id) {
   // The target DOM where the rendering will took place.
-  // We could also apply life-cycle method before the
-  // render happen.
   if (!id) assert(id, 'No id is given as parameter.')
   this.el = id
-  // life-cycle method before rendering the component
-  if (this.componentWillMount && typeof this.componentWillMount === 'function') {
-    this.componentWillMount()
-  }
   this.render()
   return this
 }
 
 Keet.prototype.render = function (stub) {
-  if(stub){
-    console.log(this)
+  // life-cycle method before rendering the component
+  if (this.componentWillMount && typeof this.componentWillMount === 'function') {
+    this.componentWillMount()
   }
+
   // Render this component to the target DOM
+  if(stub){
+    this.IS_STUB = true
+  }
   parseStr.call(this, stub)
   return this
 }

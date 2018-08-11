@@ -2,23 +2,19 @@ var setState = require('./genElement').setState
 var tmplHandler = require('./tmplHandler')
 var getId = require('../utils').getId
 var addState = require('./genElement').addState
-var setEl = require('./genElement').setEl
 var assert = require('../utils').assert
 
 var DOCUMENT_ELEMENT_TYPE = 1
 
 module.exports = function (stub) {
   tmplHandler(this, addState)
-
   var el = stub || getId(this.el)
-
   if (el) {
-    setEl(el)
-
     if(el.nodeType === DOCUMENT_ELEMENT_TYPE)
       el.setAttribute('data-ignore', '')
     else if(el.hasChildNodes() && el.firstChild.nodeType === DOCUMENT_ELEMENT_TYPE){
       el.firstChildsetAttribute('data-ignore', '')
+      assert(el.childNodes.length !== 1, 'Sub-component should only has a single rootNode.')
     }
     // listen to state changes
     setState.call(this)

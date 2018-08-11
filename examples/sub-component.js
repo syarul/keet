@@ -23,6 +23,7 @@ const app = new App()
 
 app.mount(html`
   <div id="container">
+    <div>parent</div>
     {{component:subc}}
   </div>
 `).link('app')
