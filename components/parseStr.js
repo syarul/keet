@@ -12,14 +12,18 @@ module.exports = function (stub) {
   if (el) {
     if(el.nodeType === DOCUMENT_ELEMENT_TYPE)
       el.setAttribute('data-ignore', '')
-    else if(el.hasChildNodes() && el.firstChild.nodeType === DOCUMENT_ELEMENT_TYPE){
-      el.firstChildsetAttribute('data-ignore', '')
-      assert(el.childNodes.length !== 1, 'Sub-component should only has a single rootNode.')
+    else {
+      // console.log(this.base.childNodes.length)
+      assert(this.base.childNodes.length === 1, 'Sub-component should only has a single rootNode.')
+      // this.base.firstChild.setAttribute('data-ignore', '')
     }
     // listen to state changes
     setState.call(this)
+
+    if(!stub){
+      el.appendChild(this.base)
+    }
     // mount fragment to DOM
-    el.appendChild(this.base)
     // since component already rendered, trigger its life-cycle method
     if (this.componentDidMount && typeof this.componentDidMount === 'function') {
       this.componentDidMount()

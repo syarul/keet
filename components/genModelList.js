@@ -50,6 +50,8 @@ module.exports = function (node, model, tmplHandler) {
   var oldModel
   var p
 
+  // console.trace(1)
+
   cache[model] = cache[model] || {}
 
   if(!cache[model].list){
@@ -98,7 +100,7 @@ module.exports = function (node, model, tmplHandler) {
     } else {
       updateOfNew = diff(modelList, oldModel)
       diffOfOld = diff(oldModel, modelList)
-      console.trace(1)
+      // console.log(updateOfNew)
       function diffModel() {
         pNode =[].pop.call(arguments)
         // check if both models are equally in length
@@ -135,7 +137,7 @@ module.exports = function (node, model, tmplHandler) {
       // check existing parentNode in the DOM
       if (parentNode.hasAttribute('id')) {
         pNode = getId(parentNode.id)
-
+        // console.log(pNode)
         if(pNode){
           diffModel.call(this, null, null, pNode)
         } else {

@@ -31,7 +31,9 @@ var DOCUMENT_ELEMENT_TYPE = 1
  *    app.mount('hello world').link('app')
  *
  */
-function Keet () {}
+function Keet () {
+  this.onChanges = []
+}
 
 Keet.prototype.mount = function (instance) {
   var base
@@ -98,7 +100,6 @@ Keet.prototype.render = function (stub) {
     this.IS_STUB = true
   }
   parseStr.call(this, stub)
-  return this
 }
 
 Keet.prototype.cluster = function () {
@@ -116,6 +117,16 @@ Keet.prototype.callBatchPoolUpdate = function () {
   // force component to update, if any state / non-state
   // value changed DOM diffing will occur
   updateContext.call(this, morpher, 1)
+}
+
+Keet.prototype.subscribe = function(fn) {
+  this.onChanges.push(fn)
+}
+
+Keet.prototype.inform = function (model) {
+  for (var i = this.onChanges.length; i--;) {
+    this.onChanges[i](model)
+  }
 }
 
 module.exports = Keet

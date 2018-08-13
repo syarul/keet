@@ -46,6 +46,7 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
   var isObjectNotation
   var name
   var p
+  var value
 
   if (modelObject) {
     instance = modelInstance
@@ -90,7 +91,7 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
             // generate list model
             genModelList.call(ctx, node, modelRep, tmplhandler)
           } else if (rep.match(conditionalRe)) {
-            console.log(node)
+            // console.log(node)
             conditionalRep = rep.replace('?', '')
             if (ins[conditionalRep] !== undefined) {
               updateState(conditionalRep)
@@ -136,7 +137,7 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
 
   function lookUpEvtNode (node) {
     // check if node is visible on DOM and has attribute evt-node
-    if (node.hasAttribute('evt-node') && node.hasAttribute('id') && getId(node.id)) {
+    if (node.hasAttribute('id') && getId(node.id) && node.hasAttribute('evt-node')) {
       return true
     }
     return false
@@ -145,7 +146,8 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
   function addEvent (node) {
     nodeAttributes = node.attributes
 
-    if (node && lookUpEvtNode(node)) {
+    if (lookUpEvtNode(node)) {
+      // console.log(node)
       // skip addding event for node that already has event
       // to allow skipping adding event the node must include `id`/
     } else {
@@ -185,17 +187,15 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
                 p.setAttribute('evt-node', '')
               }
             }
+            // console.log(node)
           }
         }
-        // if(i === 0){
-        //   rem.map(function (f) { node.removeAttribute(f) })
-        // }
       }
     }
   }
 
   function check (node) {
-    while (node) {
+    parse: while (node) {
       currentNode = node
       if (currentNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
         if (currentNode.hasAttributes()) {
@@ -204,7 +204,47 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
         }
         check(currentNode.firstChild)
       } else if (currentNode.nodeValue.match(re)) {
-        replaceHandleBars(currentNode.nodeValue, currentNode)
+        value = currentNode.nodeValue
+        props = value.match(re)
+        ln = props.length
+        while (ln) {
+          ln--
+          rep = props[ln].replace(re, '$1')
+          tnr = ternaryOps.call(ins, rep)
+          isObjectNotation = strInterpreter(rep)
+          if (isObjectNotation) {
+            updateState(rep)
+            valAssign(node, value, '{{' + rep + '}}', ins[isObjectNotation[0]][isObjectNotation[1]])
+          } else {
+            if (tnr) {
+              updateState(tnr.state)
+              valAssign(node, value, '{{' + rep + '}}', tnr.value)
+            } else {
+              if (rep.match(model)) {
+                modelRep = rep.replace('model:', '')
+                // generate list model
+                genModelList.call(ctx, node, modelRep, tmplhandler)
+                // node = node.nextSibling.nextSibling 
+                // console.log(currentNode.nextSibling)
+                // continue parse
+              } else if (rep.match(conditionalRe)) {
+                // console.log(node)
+                conditionalRep = rep.replace('?', '')
+                if (ins[conditionalRep] !== undefined) {
+                  updateState(conditionalRep)
+                  conditionalNodes.call(ctx, node, conditionalRep, tmplhandler)
+                }
+              } else if (rep.match(component)) {
+                componentParse.call(ctx, rep, node)
+              } else {
+                if (ins[rep] !== undefined) {
+                  updateState(rep)
+                  valAssign(node, value, '{{' + rep + '}}', ins[rep])
+                }
+              }
+            }
+          }
+        }
       }
       node = node.nextSibling
     }

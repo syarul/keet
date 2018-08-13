@@ -20,7 +20,7 @@ var trottle = function(fn, delay) {
 };
 
 var morpher = function () {
-  console.log(this.el)
+  // console.log(this.el)
   // console.time('r')
   el = getId(this.el)
   genElement.call(this)
@@ -32,6 +32,7 @@ var morpher = function () {
     this.componentDidUpdate()
   }
   // console.timeEnd('r')
+  // console.log('up')
 }
 
 // var updateContext = trottle(morpher, 1)
@@ -45,7 +46,7 @@ var updateContext = function(fn, delay) {
   timer[this.el] = setTimeout(function () {
     fn.call(context)
   }, delay)
-  console.log(timer)
+  // console.log(timer)
 }
 
 var nextState = function (i) {

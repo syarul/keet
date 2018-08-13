@@ -6,7 +6,7 @@ module.exports = function (node, conditional, tmplHandler) {
   var currentNode
   var isGen
   var frag = document.createDocumentFragment()
-  console.log(node)
+  // console.log(node)
   while (node) {
     currentNode = node
     node = node.nextSibling
