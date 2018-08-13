@@ -1,13 +1,16 @@
-var ternaryOps = require('./ternaryOps')
-var re = new RegExp(/(\schecked=")(.*?)(?=")/g)
-var tmpl = ''
+import ternaryOps from './ternaryOps'
+const re = new RegExp(/(\schecked=")(.*?)(?=")/g)
+let tmpl = ''
 
-module.exports = function (string, obj) {
-  var arrProps = string.match(/{{([^{}]+)}}/g)
-  var rep
-  var isTernary
+export default (string, obj) => {
+  const arrProps = string.match(/{{([^{}]+)}}/g)
+  let rep
+  let isTernary
+  let i
+  let len
+  let match
   tmpl = string
-  for (var i = 0, len = arrProps.length; i < len; i++) {
+  for (i = 0, len = arrProps.length; i < len; i++) {
     rep = arrProps[i].replace(/{{([^{}]+)}}/g, '$1')
     isTernary = ternaryOps.call(obj, rep)
     if (isTernary) {
@@ -16,7 +19,7 @@ module.exports = function (string, obj) {
       tmpl = tmpl.replace('{{' + rep + '}}', obj[rep])
     }
 
-    var match = tmpl.match(re)
+    match = tmpl.match(re)
     if (match) {
       if (match[0].length === 17) { tmpl = tmpl.replace(' checked="checked"', ' checked') } else { tmpl = tmpl.replace(' checked=""', '') }
     }

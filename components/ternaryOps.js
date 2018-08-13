@@ -1,16 +1,13 @@
 // function to resolve ternary operation
 
-function test (str) {
-  if (str === '\'\'' || str === '""' || str === 'null') { return '' }
-  return str
-}
+const test = str => str === '\'\'' || str === '""' || str === 'null' ? '' : str
 
-module.exports = function (input) {
+export default function (input) {
   if (input.match(/([^?]*)\?([^:]*):([^;]*)|(\s*=\s*)[^;]*/g)) {
-    var t = input.split('?')
-    var condition = t[0]
-    var leftHand = t[1].split(':')[0]
-    var rightHand = t[1].split(':')[1]
+    let t = input.split('?')
+    let condition = t[0]
+    let leftHand = t[1].split(':')[0]
+    let rightHand = t[1].split(':')[1]
 
     // check the condition fulfillment
 

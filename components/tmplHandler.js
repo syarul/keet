@@ -1,52 +1,41 @@
-var strInterpreter = require('./strInterpreter')
-var ternaryOps = require('./ternaryOps')
-var getId = require('../utils').getId
-var genModelList = require('./genModelList')
-var conditionalNodes = require('./conditionalNodes')
-var componentParse = require('./componentParse')
+import strInterpreter from './strInterpreter'
+import ternaryOps from './ternaryOps'
+import { getId } from '../utils'
+import genModelList from './genModelList'
+import conditionalNodes from './conditionalNodes'
+import componentParse from './componentParse'
 
-// var DOCUMENT_FRAGMENT_TYPE = 11
-// var DOCUMENT_TEXT_TYPE = 3
-var DOCUMENT_ELEMENT_TYPE = 1
-// var DOCUMENT_COMMENT_TYPE = 8
-// var DOCUMENT_ATTRIBUTE_TYPE = 2
+const DOCUMENT_ELEMENT_TYPE = 1
+const re = /{{([^{}]+)}}/g
+const model = /^model:/g
+const modelRaw = /\{\{model:([^{}]+)\}\}/g
+const conditionalRe = /^\?/g
+const component = /^component:([^{}]+)/g
 
-var re = /{{([^{}]+)}}/g
-
-var model = /^model:/g
-var modelRaw = /\{\{model:([^{}]+)\}\}/g
-
-var conditionalRe = /^\?/g
-
-var component = /^component:([^{}]+)/g
-
-var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, conditional) {
-  window.time = new Date()
-  var currentNode
-  var ln
-  var props
-  var rep
-  var fragment
-  var instance
-  var nodeAttributes
-  var i = 0
-  var a
-  var ns
-  var evtName
-  var c
-  var h
-  var handlerArgs
-  var argv
-  var handler
-  var tnr
-  var modelRep
-  var conditionalRep
-  var fn
-  var rem = []
-  var isObjectNotation
-  var name
-  var p
-  var value
+const tmplhandler = (ctx, updateStateList, modelInstance, modelObject, conditional) => {
+  let currentNode
+  let ln
+  let props
+  let rep
+  let fragment
+  let instance
+  let nodeAttributes
+  let i = 0
+  let a
+  let ns
+  let evtName
+  let c
+  let h
+  let handlerArgs
+  let argv
+  let handler
+  let tnr
+  let modelRep
+  let conditionalRep
+  let fn
+  let isObjectNotation
+  let name
+  let p
 
   if (modelObject) {
     instance = modelInstance
@@ -57,20 +46,20 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
     instance = fragment.firstChild
   }
 
-  var ins = modelObject || ctx
+  let ins = modelObject || ctx
 
-  function updateState (state) {
+  const updateState = state => {
     if (typeof updateStateList === 'function') {
       updateStateList(state)
     }
   }
 
-  function valAssign (node, value, replace, withTo) {
+  const valAssign = (node, value, replace, withTo) => {
     value = value.replace(replace, withTo)
-    if(node) node.nodeValue = value
+    if (node) node.nodeValue = value
   }
 
-  function replaceHandleBars (value, node) {
+  const replaceHandleBars = (value, node) => {
     props = value.match(re)
     ln = props.length
     while (ln) {
@@ -108,7 +97,7 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
     }
   }
 
-  function inspectAttributes (node) {
+  const inspectAttributes = node => {
     nodeAttributes = node.attributes
     for (i = nodeAttributes.length; i--;) {
       a = nodeAttributes[i]
@@ -133,15 +122,11 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
     }
   }
 
-  function lookUpEvtNode (node) {
-    // check if node is visible on DOM and has attribute evt-node
-    if (node.hasAttribute('id') && getId(node.id) && node.hasAttribute('evt-node')) {
-      return true
-    }
-    return false
-  }
+  // check if node is visible on DOM and has attribute evt-node
+  const lookUpEvtNode = node =>
+    !!(node.hasAttribute('id') && getId(node.id) && node.hasAttribute('evt-node'))
 
-  function addEvent (node) {
+  const addEvent = node => {
     nodeAttributes = node.attributes
 
     if (lookUpEvtNode(node)) {
@@ -163,8 +148,7 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
             argv = handlerArgs.split(',').filter(function (f) {
               return f !== ''
             })
-            rem.push(name)
-            fn = function (e) {
+            fn = e => {
               e.stopPropagation()
               if (e.target !== e.currentTarget) {
                 c.apply(ctx, [e.target, e])
@@ -178,7 +162,7 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
             } else {
               node.addEventListener(evtName, c.bind.apply(c.bind(ctx), [node].concat(argv)), false)
             }
-            if(!node.hasAttribute('evt-node')){
+            if (!node.hasAttribute('evt-node')) {
               node.setAttribute('evt-node', '')
               if (node.hasAttribute('id')) {
                 p = ctx.__pristineFragment__.getElementById(node.id)
@@ -191,7 +175,7 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
     }
   }
 
-  function check (node) {
+  const check = node => {
     while (node) {
       currentNode = node
       if (currentNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
@@ -210,4 +194,4 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
   check(instance)
 }
 
-module.exports = tmplhandler
+export default tmplhandler

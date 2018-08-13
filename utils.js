@@ -1,19 +1,9 @@
-exports.genId = function(){
-  function gen(){
-    return (Math.random()*1*1e17).toString(36).toUpperCase()
-  }
+const genId = () => {
+  const gen = () => (Math.random() * 1 * 1e17).toString(36).toUpperCase()
   return 'KDATA-' + gen() + '-' + gen()
 }
 
-var getId = function (id) {
-  return document.getElementById(id)
-}
-
-exports.getId = getId
-
-exports.testEvent = function (tmpl) {
-  return / k-/.test(tmpl)
-}
+const getId = id => document.getElementById(id)
 
 /**
  * @private
@@ -25,24 +15,27 @@ exports.testEvent = function (tmpl) {
  * @param {function} callback - the function to execute on success
  * @param {function} notFound - the function to execute on failed
  */
-exports.checkNodeAvailability = function (component, componentName, callback, notFound) {
-  var ele = getId(component.el)
-  var found = false
+const checkNodeAvailability = (component, componentName, callback, notFound) => {
+  let ele = getId(component.el)
+  let found = false
+  let t
+  const find = () => {
+    ele = getId(component.el)
+    if (ele) {
+      clearInterval(t)
+      found = true
+      callback(component, componentName, ele)
+    }
+  }
+  const fail = () => {
+    clearInterval(t)
+    if (!found && notFound && typeof notFound === 'function') notFound()
+  }
   if (ele) return ele
   else {
-    var t = setInterval(function () {
-      ele = getId(component.el)
-      if (ele) {
-        clearInterval(t)
-        found = true
-        callback(component, componentName, ele)
-      }
-    }, 0)
-    // silently ignore finding the node after sometimes
-    setTimeout(function () {
-      clearInterval(t)
-      if (!found && notFound && typeof notFound === 'function') notFound()
-    }, 100)
+    t = setInterval(find, 0)
+    // ignore finding the node after sometimes
+    setTimeout(fail, 100)
   }
 }
 
@@ -55,7 +48,7 @@ exports.checkNodeAvailability = function (component, componentName, callback, no
  * @param {string} msg - the error message on failure.
  * @throws {Error}
  */
-exports.assert = function (val, msg) {
+const assert = (val, msg) => {
   if (!val) throw new Error('(keet) ' + msg)
 }
 
@@ -70,18 +63,14 @@ exports.assert = function (val, msg) {
  * keep all spacing within html tags
  * include handling ${} in the literals
  */
-exports.html = function html () {
-  var literals = [].shift.call(arguments)
-  var substs = [].slice.call(arguments)
+const html = (...args) => {
+  const literals = args.shift()
+  const substs = args.slice()
 
-  var result = literals.raw.reduce(function (acc, lit, i) {
-    return acc + substs[i - 1] + lit
-  })
+  let result = literals.raw.reduce((acc, lit, i) => acc + substs[i - 1] + lit)
   // remove spacing, indentation from every line
   result = result.split(/\n+/)
-  result = result.map(function (t) {
-    return t.trim()
-  }).join('')
+  result = result.map(t => t.trim()).join('')
   return result
 }
 
@@ -95,32 +84,34 @@ exports.html = function html () {
  * {{model:<myModel>}}<myModelTemplateString>{{/model:<myModel>}}
  *
  */
-function createModel () {
-  var model = []
-  var exec = null
+class createModel {
+  constructor () {
+    this.model = []
+    this.exec = null
 
-  var inform = function () {
-    exec && exec(model)
+    /**
+     * @private
+     * @description
+     * Register callback listener of any changes
+     */
+    Object.defineProperty(this, 'list', {
+      enumerable: false,
+      configurable: true,
+      get: function () {
+        return this.model
+      },
+      set: function (val) {
+        this.model = val
+        this.inform()
+      }
+    })
   }
 
-/**
- * @private
- * @description
- * Register callback listener of any changes
- */
-  Object.defineProperty(this, 'list', {
-    enumerable: false,
-    configurable: true,
-    get: function () {
-      return model
-    },
-    set: function (val) {
-      model = val
-      inform()
-    }
-  })
+  inform () {
+    this.exec && this.exec(this.model)
+  }
 
-/**
+  /**
  * @private
  * @description
  * Subscribe to the model changes (add/update/destroy)
@@ -128,11 +119,11 @@ function createModel () {
  * @param {Object} model - the model including all prototypes
  *
  */
-  this.subscribe = function (fn) {
-    exec = fn
+  subscribe (fn) {
+    this.exec = fn
   }
 
-/**
+  /**
  * @private
  * @description
  * Add new object to the model list
@@ -140,11 +131,11 @@ function createModel () {
  * @param {Object} obj - new object to add into the model list
  *
  */
-  this.add = function (obj) {
+  add (obj) {
     this.list = this.list.concat(obj)
   }
 
-/**
+  /**
  * @private
  * @description
  * Update existing object in the model list
@@ -153,13 +144,13 @@ function createModel () {
  * @param {Object} updateObj - the updated properties
  *
  */
-  this.update = function (lookupId, updateObj) {
-    this.list = this.list.map(function (obj) {
-      return obj[lookupId] !== updateObj[lookupId] ? obj : Object.assign(obj, updateObj)
-    })
+  update (lookupId, updateObj) {
+    this.list = this.list.map(obj =>
+      obj[lookupId] !== updateObj[lookupId] ? obj : Object.assign(obj, updateObj)
+    )
   }
 
-/**
+  /**
  * @private
  * @description
  * Removed existing object in the model list
@@ -168,11 +159,18 @@ function createModel () {
  * @param {String} objId - unique identifier of the lookup id
  *
  */
-  this.destroy = function (lookupId, objId) {
-    this.list = this.list.filter(function (obj) {
-      return obj[lookupId] !== objId
-    })
+  destroy (lookupId, objId) {
+    this.list = this.list.filter(obj =>
+      obj[lookupId] !== objId
+    )
   }
 }
 
-exports.createModel = createModel
+export {
+  createModel,
+  html,
+  assert,
+  checkNodeAvailability,
+  genId,
+  getId
+}

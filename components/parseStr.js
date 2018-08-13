@@ -1,16 +1,14 @@
-var setState = require('./genElement').setState
-var tmplHandler = require('./tmplHandler')
-var getId = require('../utils').getId
-var addState = require('./genElement').addState
-var assert = require('../utils').assert
+import tmplHandler from './tmplHandler'
+import { setState, addState } from './genElement'
+import { getId, assert } from '../utils'
 
-var DOCUMENT_ELEMENT_TYPE = 1
+const DOCUMENT_ELEMENT_TYPE = 1
 
-module.exports = function (stub) {
+export default function (stub) {
   tmplHandler(this, addState)
-  var el = stub || getId(this.el)
+  const el = stub || getId(this.el)
   if (el) {
-    if(el.nodeType === DOCUMENT_ELEMENT_TYPE){
+    if (el.nodeType === DOCUMENT_ELEMENT_TYPE) {
       el.setAttribute('data-ignore', '')
     } else {
       assert(this.base.childNodes.length === 1, 'Sub-component should only has a single rootNode.')
@@ -20,10 +18,10 @@ module.exports = function (stub) {
     setState.call(this)
 
     // mount fragment to DOM
-    if(!stub){
+    if (!stub) {
       el.appendChild(this.base)
     }
-    
+
     // since component already rendered, trigger its life-cycle method
     if (this.componentDidMount && typeof this.componentDidMount === 'function') {
       this.componentDidMount()

@@ -9,21 +9,13 @@
  * Released under the MIT License.
  */
 
-window.l =  window.l || console.log.bind(console)
-window.s = window.s || console.time.bind(console)
-window.e = window.e || console.timeEnd.bind(console)
+import parseStr from './components/parseStr'
+import { updateContext, morpher, clearState } from './components/genElement'
+import { getId, genId, assert } from './utils'
 
-var parseStr = require('./components/parseStr')
-var updateContext = require('./components/genElement').updateContext
-var morpher = require('./components/genElement').morpher
-var clearState = require('./components/genElement').clearState
-var getId = require('./utils').getId
-var genId = require('./utils').genId
-var assert = require('./utils').assert
-
-var DOCUMENT_FRAGMENT_TYPE = 11
-var DOCUMENT_TEXT_TYPE = 3
-var DOCUMENT_ELEMENT_TYPE = 1
+let DOCUMENT_FRAGMENT_TYPE = 11
+let DOCUMENT_TEXT_TYPE = 3
+let DOCUMENT_ELEMENT_TYPE = 1
 
 /**
  * @description
@@ -41,9 +33,9 @@ function Keet () {
 }
 
 Keet.prototype.mount = function (instance) {
-  var base
-  var tempDiv
-  var frag = document.createDocumentFragment()
+  let base
+  let tempDiv
+  let frag = document.createDocumentFragment()
   // Before we begin to parse an instance, do a run-down checks
   // to clean up back-tick string which usually has line spacing.
   if (typeof instance === 'string') {
@@ -80,8 +72,8 @@ Keet.prototype.mount = function (instance) {
 Keet.prototype.flush = function (instance) {
   // Custom method to clean up the component DOM tree
   // useful if we need to do clean up rerender.
-  var el = instance || this.el
-  var ele = getId(el)
+  let el = instance || this.el
+  let ele = getId(el)
   if (ele) ele.innerHTML = ''
   return this
 }
@@ -101,20 +93,17 @@ Keet.prototype.render = function (stub) {
   }
 
   // Render this component to the target DOM
-  if(stub){
+  if (stub) {
     this.IS_STUB = true
   }
   parseStr.call(this, stub)
 }
 
-Keet.prototype.cluster = function () {
+Keet.prototype.cluster = function (...args) {
   // Chain method to run external function(s), this basically serve
   // as an initializer for all non attached child components within the instance tree
-  var args = [].slice.call(arguments)
   if (args.length > 0) {
-    args.map(function (f) {
-      if (typeof f === 'function') f()
-    })
+    args.map(f => typeof f === 'function' && f())
   }
 }
 
@@ -124,7 +113,7 @@ Keet.prototype.callBatchPoolUpdate = function () {
   updateContext.call(this, morpher, 1)
 }
 
-Keet.prototype.subscribe = function(fn) {
+Keet.prototype.subscribe = function (fn) {
   this.exec = fn
 }
 
@@ -132,4 +121,4 @@ Keet.prototype.inform = function (model) {
   this.exec && this.exec(model)
 }
 
-module.exports = Keet
+export default Keet

@@ -1,12 +1,12 @@
-var conditionalNodesRawStart = /\{\{\?([^{}]+)\}\}/g
-var conditionalNodesRawEnd = /\{\{\/([^{}]+)\}\}/g
-var DOCUMENT_ELEMENT_TYPE = 1
-module.exports = function (node, conditional, tmplHandler) {
-  var entryNode
-  var currentNode
-  var isGen
-  var frag = document.createDocumentFragment()
-  // console.log(node)
+const conditionalNodesRawStart = /\{\{\?([^{}]+)\}\}/g
+const conditionalNodesRawEnd = /\{\{\/([^{}]+)\}\}/g
+const DOCUMENT_ELEMENT_TYPE = 1
+export default function (node, conditional, tmplHandler) {
+  const frag = document.createDocumentFragment()
+  let entryNode
+  let currentNode
+  let isGen
+  let cNode
   while (node) {
     currentNode = node
     node = node.nextSibling
@@ -27,7 +27,7 @@ module.exports = function (node, conditional, tmplHandler) {
         node = null
       }
     } else {
-      var cNode = currentNode.cloneNode(true)
+      cNode = currentNode.cloneNode(true)
       frag.appendChild(cNode)
       currentNode.remove()
     }

@@ -1,16 +1,18 @@
-var tmplHandler = require('./tmplHandler')
-var strInterpreter = require('./strInterpreter')
-var morph = require('set-dom')
-var getId = require('../utils').getId
+import tmplHandler from './tmplHandler'
+import strInterpreter from './strInterpreter'
+// import * as setDOM from 'set-dom'
+import morph from 'set-dom'
+import { getId } from '../utils'
 
-var override
-var el
-var DELAY = 1
+// const morph = setDOM.default
 
-var morpher = function () {
+const DELAY = 1
+let el
+
+const morpher = function () {
   el = getId(this.el)
   genElement.call(this)
-  if(el) {
+  if (el) {
     this.IS_STUB ? morph(el, this.base.firstChild) : morph(el, this.base)
   }
   // exec life-cycle componentDidUpdate
@@ -19,20 +21,16 @@ var morpher = function () {
   }
 }
 
-var timer = {}
-var updateContext = function(fn, delay) {
-
-  var context = this
+let timer = {}
+const updateContext = function (fn, delay) {
   timer[this.ID] = timer[this.ID] || null
   clearTimeout(timer[this.ID])
-  timer[this.ID] = setTimeout(function () {
-    fn.call(context)
-  }, delay)
+  timer[this.ID] = setTimeout(() => fn.call(this), delay)
 }
 
-var nextState = function (i) {
-  var state
-  var value
+const nextState = function (i) {
+  let state
+  let value
   if (i < stateList.length) {
     state = stateList[i]
     value = this[state]
@@ -43,7 +41,7 @@ var nextState = function (i) {
     if (value && Array.isArray(value)) {
       // using split object notation as base for state update
       // console.log(value)
-      var inVal = this[value[0]][value[1]]
+      let inVal = this[value[0]][value[1]]
       Object.defineProperty(this[value[0]], value[1], {
         enumerable: false,
         configurable: true,
@@ -53,7 +51,7 @@ var nextState = function (i) {
         set: function (val) {
           inVal = val
           updateContext.call(this, morpher, DELAY)
-        }.bind(this)
+        }
       })
     } else {
       // handle parent state update if the state is not an object
@@ -66,7 +64,7 @@ var nextState = function (i) {
         set: function (val) {
           value = val
           updateContext.call(this, morpher, DELAY)
-        }.bind(this)
+        }
       })
     }
     i++
@@ -74,28 +72,30 @@ var nextState = function (i) {
   }
 }
 
-var setState = function () {
+const setState = function () {
   nextState.call(this, 0)
 }
 
-var stateList = []
+let stateList = []
 
-var clearState = function () {
+const clearState = () => {
   stateList = []
 }
 
-var addState = function (state) {
-  if (stateList.indexOf(state) === -1) stateList = stateList.concat(state)
+const addState = state => {
+  if (stateList.indexOf(state) === -1) { stateList = stateList.concat(state) }
 }
 
-var genElement = function () {
+const genElement = function () {
   this.base = this.__pristineFragment__.cloneNode(true)
   tmplHandler(this, addState)
 }
 
-exports.genElement = genElement
-exports.addState = addState
-exports.setState = setState
-exports.clearState = clearState
-exports.updateContext = updateContext
-exports.morpher = morpher
+export {
+  genElement,
+  addState,
+  setState,
+  clearState,
+  updateContext,
+  morpher
+}
