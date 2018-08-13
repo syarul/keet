@@ -9,11 +9,16 @@
  * Released under the MIT License.
  */
 
+window.l =  window.l || console.log.bind(console)
+window.s = window.s || console.time.bind(console)
+window.e = window.e || console.timeEnd.bind(console)
+
 var parseStr = require('./components/parseStr')
 var updateContext = require('./components/genElement').updateContext
 var morpher = require('./components/genElement').morpher
 var clearState = require('./components/genElement').clearState
 var getId = require('./utils').getId
+var genId = require('./utils').genId
 var assert = require('./utils').assert
 
 var DOCUMENT_FRAGMENT_TYPE = 11
@@ -32,7 +37,7 @@ var DOCUMENT_ELEMENT_TYPE = 1
  *
  */
 function Keet () {
-  this.onChanges = []
+  this.ID = genId()
 }
 
 Keet.prototype.mount = function (instance) {
@@ -120,13 +125,11 @@ Keet.prototype.callBatchPoolUpdate = function () {
 }
 
 Keet.prototype.subscribe = function(fn) {
-  this.onChanges.push(fn)
+  this.exec = fn
 }
 
 Keet.prototype.inform = function (model) {
-  for (var i = this.onChanges.length; i--;) {
-    this.onChanges[i](model)
-  }
+  this.exec && this.exec(model)
 }
 
 module.exports = Keet

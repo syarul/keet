@@ -1,6 +1,7 @@
 var assert = require('../utils').assert
 var getId = require('../utils').getId
 var checkNodeAvailability = require('../utils').checkNodeAvailability
+var tmplHandler = require('./tmplHandler')
 var cacheInit = {}
 module.exports = function (componentStr, node) {
   var component = componentStr.replace('component:', '')
@@ -9,20 +10,23 @@ module.exports = function (componentStr, node) {
   var frag
 
   if (c !== undefined) {
-    // check if sub-component node exist in the DOM
-
     // this is for initial component runner
-    if(!cacheInit[component]){
-      // frag = document.createDocumentFragment()
-      // c.base = c.__pristineFragment__.cloneNode(true)
+    if(!cacheInit[c.ID]){
       c.render.call(c, true)
-      console.log(c.base)
-      cacheInit[component] = c.base.cloneNode(true)
+      cacheInit[c.ID] = c.base.cloneNode(true)
       node.parentNode.replaceChild(c.base, node)
     } else {
-      node.parentNode.replaceChild(cacheInit[component].cloneNode(true), node) 
-      c.callBatchPoolUpdate()
+      // we need to reattach event listeners if the node is not available on DOM
+      if(!getId(this[component].el)){
+        c.base = c.__pristineFragment__.cloneNode(true)
+        c.render.call(c, true)
+        node.parentNode.replaceChild(c.base, node)
+      } else {
+        node.parentNode.replaceChild(cacheInit[c.ID].cloneNode(true), node) 
+      }
     }
+    // inform sub-component to update
+    c.callBatchPoolUpdate()
   } else {
     assert(false, 'Component ' + component + ' does not exist.')
   }

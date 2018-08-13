@@ -2,26 +2,12 @@ var tmplHandler = require('./tmplHandler')
 var strInterpreter = require('./strInterpreter')
 var morph = require('set-dom')
 var getId = require('../utils').getId
-// var trottle = require('../utils').trottle
 
 var override
 var el
 var DELAY = 1
 
-var trottle = function(fn, delay) {
-  var timer = null;
-  return function () {
-    var context = this, args = arguments;
-    clearTimeout(timer);
-    timer = setTimeout(function () {
-      fn.apply(context, args);
-    }, delay);
-  };
-};
-
 var morpher = function () {
-  // console.log(this.el)
-  // console.time('r')
   el = getId(this.el)
   genElement.call(this)
   if(el) {
@@ -31,22 +17,17 @@ var morpher = function () {
   if (this.componentDidUpdate && typeof this.componentDidUpdate === 'function') {
     this.componentDidUpdate()
   }
-  // console.timeEnd('r')
-  // console.log('up')
 }
 
-// var updateContext = trottle(morpher, 1)
-// var int
 var timer = {}
 var updateContext = function(fn, delay) {
 
   var context = this
-  timer[this.el] = timer[this.el] || null
-  clearTimeout(timer[this.el])
-  timer[this.el] = setTimeout(function () {
+  timer[this.ID] = timer[this.ID] || null
+  clearTimeout(timer[this.ID])
+  timer[this.ID] = setTimeout(function () {
     fn.call(context)
   }, delay)
-  // console.log(timer)
 }
 
 var nextState = function (i) {

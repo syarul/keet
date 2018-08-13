@@ -50,8 +50,6 @@ module.exports = function (node, model, tmplHandler) {
   var oldModel
   var p
 
-  // console.trace(1)
-
   cache[model] = cache[model] || {}
 
   if(!cache[model].list){
@@ -100,7 +98,7 @@ module.exports = function (node, model, tmplHandler) {
     } else {
       updateOfNew = diff(modelList, oldModel)
       diffOfOld = diff(oldModel, modelList)
-      // console.log(updateOfNew)
+
       function diffModel() {
         pNode =[].pop.call(arguments)
         // check if both models are equally in length
@@ -108,6 +106,7 @@ module.exports = function (node, model, tmplHandler) {
 
         // do properties update
         if (equalLength) {
+          // s('update')
           updateOfNew.map(function (obj) {
             child = pNode.querySelector('[id="' + obj[ref] + '"]')
             m = genModelTemplate(str, obj)
@@ -115,33 +114,41 @@ module.exports = function (node, model, tmplHandler) {
             // morph(child, documentFragment.firstChild)
             pNode.replaceChild(documentFragment, child)
           })
+          // e('update')
         // add new objects
         } else if (updateOfNew.length > 0 && diffOfOld.length === 0) {
+          // s('add')
           updateOfNew.map(function (obj) {
             m = genModelTemplate(str, obj)
             documentFragment = range.createContextualFragment(m)
             pNode.insertBefore(documentFragment, pNode.lastChild)
           })
+          // e('add')
         // destroy selected objects
         } else if (updateOfNew.length === 0 && diffOfOld.length > 0) {
+          // s('del')
           diffOfOld.map(function (obj) {
             child = pNode.querySelector('[id="' + obj[ref] + '"]')
             pNode.removeChild(child)
           })
+          // e('del')
         }
-
         // replace oldModel after diffing
         cache[model].oldModel = JSON.parse(JSON.stringify(modelList))
+
       }
 
       // check existing parentNode in the DOM
       if (parentNode.hasAttribute('id')) {
         pNode = getId(parentNode.id)
-        // console.log(pNode)
+
         if(pNode){
           diffModel.call(this, null, null, pNode)
         } else {
-          checkNodeAvailability({ el: parentNode.id }, model, diffModel.bind(this))
+          checkNodeAvailability({ el: parentNode.id }, model, diffModel.bind(this), function(){
+            // we cleanup cache on failed search
+            cache[model].oldModel = []
+          })
         }
       }
       

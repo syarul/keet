@@ -13,7 +13,7 @@ module.exports = function (input) {
     var rightHand = t[1].split(':')[1]
 
     // check the condition fulfillment
-    // console.log(this)
+
     if (this[condition]) {
       return {
         value: test(leftHand),

@@ -88,10 +88,8 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
         } else {
           if (rep.match(model)) {
             modelRep = rep.replace('model:', '')
-            // generate list model
             genModelList.call(ctx, node, modelRep, tmplhandler)
           } else if (rep.match(conditionalRe)) {
-            // console.log(node)
             conditionalRep = rep.replace('?', '')
             if (ins[conditionalRep] !== undefined) {
               updateState(conditionalRep)
@@ -147,7 +145,6 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
     nodeAttributes = node.attributes
 
     if (lookUpEvtNode(node)) {
-      // console.log(node)
       // skip addding event for node that already has event
       // to allow skipping adding event the node must include `id`/
     } else {
@@ -176,18 +173,18 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
             // if node is the rootNode for model, we wrap the eventListener and
             // rebuild the arguments by appending id/className util rootNode.
             if (node.hasChildNodes() && node.firstChild.nodeType !== DOCUMENT_ELEMENT_TYPE && node.firstChild.nodeValue.match(modelRaw)) {
+              node.setAttribute('is-model-event-set', '')
               node.addEventListener(evtName, fn, false)
             } else {
               node.addEventListener(evtName, c.bind.apply(c.bind(ctx), [node].concat(argv)), false)
             }
-            node.setAttribute('evt-node', '')
-            if (node.hasAttribute('id')) {
-              p = ctx.__pristineFragment__.getElementById(node.id)
-              if (!p.hasAttribute('evt-node')) {
+            if(!node.hasAttribute('evt-node')){
+              node.setAttribute('evt-node', '')
+              if (node.hasAttribute('id')) {
+                p = ctx.__pristineFragment__.getElementById(node.id)
                 p.setAttribute('evt-node', '')
               }
             }
-            // console.log(node)
           }
         }
       }
@@ -195,7 +192,7 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
   }
 
   function check (node) {
-    parse: while (node) {
+    while (node) {
       currentNode = node
       if (currentNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
         if (currentNode.hasAttributes()) {
@@ -204,47 +201,7 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
         }
         check(currentNode.firstChild)
       } else if (currentNode.nodeValue.match(re)) {
-        value = currentNode.nodeValue
-        props = value.match(re)
-        ln = props.length
-        while (ln) {
-          ln--
-          rep = props[ln].replace(re, '$1')
-          tnr = ternaryOps.call(ins, rep)
-          isObjectNotation = strInterpreter(rep)
-          if (isObjectNotation) {
-            updateState(rep)
-            valAssign(node, value, '{{' + rep + '}}', ins[isObjectNotation[0]][isObjectNotation[1]])
-          } else {
-            if (tnr) {
-              updateState(tnr.state)
-              valAssign(node, value, '{{' + rep + '}}', tnr.value)
-            } else {
-              if (rep.match(model)) {
-                modelRep = rep.replace('model:', '')
-                // generate list model
-                genModelList.call(ctx, node, modelRep, tmplhandler)
-                // node = node.nextSibling.nextSibling 
-                // console.log(currentNode.nextSibling)
-                // continue parse
-              } else if (rep.match(conditionalRe)) {
-                // console.log(node)
-                conditionalRep = rep.replace('?', '')
-                if (ins[conditionalRep] !== undefined) {
-                  updateState(conditionalRep)
-                  conditionalNodes.call(ctx, node, conditionalRep, tmplhandler)
-                }
-              } else if (rep.match(component)) {
-                componentParse.call(ctx, rep, node)
-              } else {
-                if (ins[rep] !== undefined) {
-                  updateState(rep)
-                  valAssign(node, value, '{{' + rep + '}}', ins[rep])
-                }
-              }
-            }
-          }
-        }
+        replaceHandleBars(currentNode.nodeValue, currentNode)
       }
       node = node.nextSibling
     }

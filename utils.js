@@ -1,3 +1,10 @@
+exports.genId = function(){
+  function gen(){
+    return (Math.random()*1*1e17).toString(36).toUpperCase()
+  }
+  return 'KDATA-' + gen() + '-' + gen()
+}
+
 var getId = function (id) {
   return document.getElementById(id)
 }
@@ -11,10 +18,12 @@ exports.testEvent = function (tmpl) {
 /**
  * @private
  * @description
- * Check a node availability in 250ms, if not found silenty skip the event
+ * Check a node availability in 100ms, if not found silenty skip the event
+ * or execute a callback
  *
  * @param {string} id - the node id
- * @param {function} callback - the function to execute once the node is found
+ * @param {function} callback - the function to execute on success
+ * @param {function} notFound - the function to execute on failed
  */
 exports.checkNodeAvailability = function (component, componentName, callback, notFound) {
   var ele = getId(component.el)
@@ -33,7 +42,7 @@ exports.checkNodeAvailability = function (component, componentName, callback, no
     setTimeout(function () {
       clearInterval(t)
       if (!found && notFound && typeof notFound === 'function') notFound()
-    }, 250)
+    }, 100)
   }
 }
 
@@ -79,28 +88,6 @@ exports.html = function html () {
 /**
  * @private
  * @description
- * trottle function calls
- *
- * @param {Function} fn - function to trottle
- * @param {Number} delay - time delay before function get executed
- */
-
-function trottle(fn, delay) {
-  var timer = null;
-  return function () {
-    var context = this, args = arguments;
-    clearTimeout(timer);
-    timer = setTimeout(function () {
-      fn.apply(context, args);
-    }, delay);
-  };
-};
-
-exports.trottle = trottle
-
-/**
- * @private
- * @description
  * Copy with modification from preact-todomvc. Model constructor with
  * registering callback listener in Object.defineProperty. Any modification
  * to ```this.list``` instance will subsequently inform all registered listener.
@@ -110,13 +97,10 @@ exports.trottle = trottle
  */
 function createModel () {
   var model = []
-  var onChanges = []
+  var exec = null
 
   var inform = function () {
-    // console.log(onChanges)
-    for (var i = onChanges.length; i--;) {
-      onChanges[i](model)
-    }
+    exec && exec(model)
   }
 
 /**
@@ -145,7 +129,7 @@ function createModel () {
  *
  */
   this.subscribe = function (fn) {
-    onChanges.push(fn)
+    exec = fn
   }
 
 /**
