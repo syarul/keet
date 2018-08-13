@@ -90,6 +90,7 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
             // generate list model
             genModelList.call(ctx, node, modelRep, tmplhandler)
           } else if (rep.match(conditionalRe)) {
+            console.log(node)
             conditionalRep = rep.replace('?', '')
             if (ins[conditionalRep] !== undefined) {
               updateState(conditionalRep)
@@ -177,6 +178,7 @@ var tmplhandler = function (ctx, updateStateList, modelInstance, modelObject, co
             } else {
               node.addEventListener(evtName, c.bind.apply(c.bind(ctx), [node].concat(argv)), false)
             }
+            node.setAttribute('evt-node', '')
             if (node.hasAttribute('id')) {
               p = ctx.__pristineFragment__.getElementById(node.id)
               if (!p.hasAttribute('evt-node')) {

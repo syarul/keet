@@ -98,7 +98,7 @@ module.exports = function (node, model, tmplHandler) {
     } else {
       updateOfNew = diff(modelList, oldModel)
       diffOfOld = diff(oldModel, modelList)
-
+      console.trace(1)
       function diffModel() {
         pNode =[].pop.call(arguments)
         // check if both models are equally in length

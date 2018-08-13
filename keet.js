@@ -11,6 +11,7 @@
 
 var parseStr = require('./components/parseStr')
 var updateContext = require('./components/genElement').updateContext
+var morpher = require('./components/genElement').morpher
 var clearState = require('./components/genElement').clearState
 var getId = require('./utils').getId
 var assert = require('./utils').assert
@@ -114,7 +115,7 @@ Keet.prototype.cluster = function () {
 Keet.prototype.callBatchPoolUpdate = function () {
   // force component to update, if any state / non-state
   // value changed DOM diffing will occur
-  updateContext.call(this)
+  updateContext.call(this, morpher, 1)
 }
 
 module.exports = Keet

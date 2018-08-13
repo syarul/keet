@@ -2,12 +2,25 @@ var tmplHandler = require('./tmplHandler')
 var strInterpreter = require('./strInterpreter')
 var morph = require('set-dom')
 var getId = require('../utils').getId
-var trottle = require('../utils').trottle
+// var trottle = require('../utils').trottle
 
 var override
 var el
+var DELAY = 1
+
+var trottle = function(fn, delay) {
+  var timer = null;
+  return function () {
+    var context = this, args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      fn.apply(context, args);
+    }, delay);
+  };
+};
 
 var morpher = function () {
+  console.log(this.el)
   // console.time('r')
   el = getId(this.el)
   genElement.call(this)
@@ -21,7 +34,19 @@ var morpher = function () {
   // console.timeEnd('r')
 }
 
-var updateContext = trottle(morpher, 1)
+// var updateContext = trottle(morpher, 1)
+// var int
+var timer = {}
+var updateContext = function(fn, delay) {
+
+  var context = this
+  timer[this.el] = timer[this.el] || null
+  clearTimeout(timer[this.el])
+  timer[this.el] = setTimeout(function () {
+    fn.call(context)
+  }, delay)
+  console.log(timer)
+}
 
 var nextState = function (i) {
   var state
@@ -45,7 +70,7 @@ var nextState = function (i) {
         },
         set: function (val) {
           inVal = val
-          updateContext.call(this)
+          updateContext.call(this, morpher, DELAY)
         }.bind(this)
       })
     } else {
@@ -58,7 +83,7 @@ var nextState = function (i) {
         },
         set: function (val) {
           value = val
-          updateContext.call(this)
+          updateContext.call(this, morpher, DELAY)
         }.bind(this)
       })
     }
@@ -91,3 +116,4 @@ exports.addState = addState
 exports.setState = setState
 exports.clearState = clearState
 exports.updateContext = updateContext
+exports.morpher = morpher
