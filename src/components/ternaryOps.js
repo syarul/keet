@@ -11,16 +11,19 @@ export default function (input) {
 
     // check the condition fulfillment
 
-    if (this[condition]) {
-      return {
-        value: test(leftHand),
-        state: condition
-      }
-    } else {
-      return {
-        value: test(rightHand),
-        state: condition
-      }
+    if(this){
+      if (this[condition]) {
+        return {
+          value: test(leftHand),
+          state: condition
+        }
+      } else {
+        return {
+          value: test(rightHand),
+          state: condition
+        }
+      }  
     }
+    return false
   } else return false
 }

@@ -1,4 +1,4 @@
-import { assert, getId, checkNodeAvailability } from '../utils'
+import { assert, getId, checkNodeAvailability } from '../../utils'
 import genModelTemplate from './genModelTemplate'
 
 const re = /{{([^{}]+)}}/g

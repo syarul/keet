@@ -1,4 +1,4 @@
-import { assert, getId } from '../utils'
+import { assert, getId } from '../../utils'
 
 let cacheInit = {}
 

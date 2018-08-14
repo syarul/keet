@@ -74,7 +74,7 @@ import { html } from 'keet/utils'
 
 class App extends Keet {
   count = 0
-  add () {
+  add (evt) {
     this.count++
   }
 }
@@ -111,11 +111,11 @@ class App extends Keet {
 const app = new App()
 
 app.mount(html`
-  <button k-click="toggle()">toggle</button>
+  <button id="toggle" k-click="toggle()">toggle</button>
   <div id="1">one</div>
-  {{?show}}
+  <!-- {{?show}} -->
   <div id="2">two</div>
-  {{/show}}
+  <!-- {{/show}} -->
   <div id="3">three</div>
 `).link('app')
 
@@ -134,15 +134,17 @@ To map an array to elements use the ```{{model:<myModelName>}}<myModelTemplate>{
 import Keet from 'keet'
 import { html, createModel } from 'keet/utils'
 
+let task = new createModel()
+
 class App extends Keet {
-  task = new createModel()
+  task = task
   componentWillMount(){
     // callBatchPoolUpdate - custom method to inform changes in the model.
     // If the component has other states that reflect the model value changes
     // we can safely ignore calling this method.
-    this.task.subscribe(model => {
+    this.task.subscribe(model =>
       this.callBatchPoolUpdate()
-    })
+    )
   }
 }
 
@@ -150,11 +152,12 @@ const app = new App()
 
 app.mount(html`
   <ul id="list">
-    {{model:task}}
-    <li id="{{id}}">{{taskName}}
-      <input type="checkbox" {{complete?checked:''}}>
+    <!-- {{model:task}} -->
+    <li id="{{id}}">
+      {{taskName}}
+      <input type="checkbox" checked="{{complete?checked:null}}">
     </li>
-    {{/model:task}}
+    <!-- {{/model:task}} -->
   </ul>
 `).link('app')
 
@@ -164,7 +167,7 @@ for (let i = 0; i < taskName.length; i++) {
   app.task.add({
     id: i,
     taskName: taskName[i],
-    complete: i % 2 ? true : false
+    complete: i % 2 === 0 ? false : true
   })
 }
 
@@ -178,6 +181,7 @@ app.task.update('id', {
 // remove a task
 app.task.destroy('taskName', 'roll')
 
+console.log(app)
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
 
@@ -213,6 +217,7 @@ const app = new App()
 
 app.mount(html`
   <div id="container">
+    <div>parent</div>
     {{component:subc}}
   </div>
 `).link('app')

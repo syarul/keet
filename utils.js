@@ -19,7 +19,7 @@ const checkNodeAvailability = (component, componentName, callback, notFound) => 
   let ele = getId(component.el)
   let found = false
   let t
-  const find = () => {
+  function find() {
     ele = getId(component.el)
     if (ele) {
       clearInterval(t)
@@ -27,7 +27,7 @@ const checkNodeAvailability = (component, componentName, callback, notFound) => 
       callback(component, componentName, ele)
     }
   }
-  const fail = () => {
+  function fail() {
     clearInterval(t)
     if (!found && notFound && typeof notFound === 'function') notFound()
   }
@@ -87,7 +87,6 @@ const html = (...args) => {
 class createModel {
   constructor () {
     this.model = []
-    this.exec = null
 
     /**
      * @private
@@ -102,13 +101,13 @@ class createModel {
       },
       set: function (val) {
         this.model = val
-        this.inform()
+        this.inform(this.model)
       }
     })
   }
 
-  inform () {
-    this.exec && this.exec(this.model)
+  inform (model) {
+    this.exec && typeof this.exec === 'function' && this.exec(model)
   }
 
   /**
