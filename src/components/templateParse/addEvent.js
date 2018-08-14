@@ -22,20 +22,26 @@ function lookupParentNode(rootNode, node){
   }
 }
 
+let nodeAttributes
+let i = 0
+let a
+let ns
+let evtName
+let c
+let h
+let handlerArgs
+let argv
+let handler
+let fn
+let name
+let p
+let model
+let rep
+let t
+
+const getIndex = id => model.list.map(m => m['kdata-id']).indexOf(id)
+
 export default function (node) {
-  let nodeAttributes
-  let i = 0
-  let a
-  let ns
-  let evtName
-  let c
-  let h
-  let handlerArgs
-  let argv
-  let handler
-  let fn
-  let name
-  let p
 
   nodeAttributes = node.attributes
   if (lookUpEvtNode(node)) {
@@ -61,16 +67,14 @@ export default function (node) {
           // if node is the rootNode for model, we wrap the eventListener and
           // rebuild the arguments by appending id/className util rootNode.
           if (node.hasChildNodes() && node.firstChild.nodeType !== DOCUMENT_ELEMENT_TYPE && node.firstChild.nodeValue.match(modelRaw)) {
-            let rep = node.firstChild.nodeValue.replace(re, '$1').trim()
+            rep = node.firstChild.nodeValue.replace(re, '$1').trim()
             rep = rep.replace('model:', '')
-            let model = this[rep]
+            model = this[rep]
 
-            const getIndex = id => model.indices.indexOf(id)
-            
             function fn(e) {
               e.stopPropagation()
               if (e.target !== e.currentTarget) {
-                let t = lookupParentNode(node, e.target)
+                t = lookupParentNode(node, e.target)
                 c.apply(this, [model.list[getIndex(t)], e.target, e])
               }
             }

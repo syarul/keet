@@ -93,7 +93,7 @@ const notEqual = function(a, b){
 class createModel {
   constructor () {
     this.model = []
-    this.indices = []
+    // this.indices = []
 
     /**
      * @private
@@ -108,7 +108,7 @@ class createModel {
       },
       set: function (val) {
         this.model = val
-        this.indices = this.model.map(m => m['kdata-id'])
+        // this.indices = this.model.map(m => m['kdata-id'])
         this.inform(this.model)
       }
     })
