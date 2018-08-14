@@ -1,7 +1,9 @@
 const genId = () => {
-  const gen = () => (Math.random() * 1 * 1e17).toString(36).toUpperCase()
-  return 'KDATA-' + gen() + '-' + gen()
+  const rd = () => (Math.random()* 1*1e17).toString(36)
+  return `KDATA-${rd()}-${rd()}`
 }
+
+const minId = () => (Math.random()* 1*1e17).toString(36)
 
 const getId = id => document.getElementById(id)
 
@@ -35,7 +37,7 @@ const checkNodeAvailability = (component, componentName, callback, notFound) => 
   else {
     t = setInterval(find, 0)
     // ignore finding the node after sometimes
-    setTimeout(fail, 100)
+    setTimeout(fail, 5)
   }
 }
 
@@ -74,6 +76,10 @@ const html = (...args) => {
   return result
 }
 
+const notEqual = function(a, b){
+  return a['kdata-id'] !== b['kdata-id']
+}
+
 /**
  * @private
  * @description
@@ -87,6 +93,7 @@ const html = (...args) => {
 class createModel {
   constructor () {
     this.model = []
+    this.indices = []
 
     /**
      * @private
@@ -101,6 +108,7 @@ class createModel {
       },
       set: function (val) {
         this.model = val
+        this.indices = this.model.map(m => m['kdata-id'])
         this.inform(this.model)
       }
     })
@@ -131,7 +139,7 @@ class createModel {
  *
  */
   add (obj) {
-    this.list = this.list.concat(obj)
+    this.list = this.list.concat({ ...obj, 'kdata-id': minId() })
   }
 
   /**
@@ -143,12 +151,20 @@ class createModel {
  * @param {Object} updateObj - the updated properties
  *
  */
-  update (lookupId, updateObj) {
+  // update (lookupId, updateObj) {
+  //   this.list = this.list.map(obj =>
+  //     obj[lookupId] !== updateObj[lookupId] ? obj : Object.assign(obj, updateObj)
+  //   )
+  // }
+  update (updateObj) {
     this.list = this.list.map(obj =>
-      obj[lookupId] !== updateObj[lookupId] ? obj : Object.assign(obj, updateObj)
+      notEqual(obj, updateObj) ? obj : updateObj
+     // ( obj !== updateObj ? obj : updateObj)
     )
   }
-
+  // this.todos = this.todos.map( todo => (
+  //     todo !== todoToToggle ? todo : ({ ...todo, completed: !todo.completed })
+  //   ) );
   /**
  * @private
  * @description
@@ -158,11 +174,16 @@ class createModel {
  * @param {String} objId - unique identifier of the lookup id
  *
  */
-  destroy (lookupId, objId) {
+  destroy (destroyObj) {
     this.list = this.list.filter(obj =>
-      obj[lookupId] !== objId
+      notEqual(obj, destroyObj)
     )
   }
+  // destroy (lookupId, objId) {
+  //   this.list = this.list.filter(obj =>
+  //     obj[lookupId] !== objId
+  //   )
+  // }
 }
 
 export {

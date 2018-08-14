@@ -2,10 +2,25 @@ import { getId } from '../../../utils'
 
 const DOCUMENT_ELEMENT_TYPE = 1
 
+const re = /{{([^{}]+)}}/g
 const modelRaw = /\{\{model:([^{}]+)\}\}/g
 
 const lookUpEvtNode = node =>
     !!(node.hasAttribute('id') && getId(node.id) && node.hasAttribute('evt-node'))
+
+function lookupParentNode(rootNode, node){
+  let cNode
+  while(node){
+    cNode = node
+    node = node.parentNode
+    if(cNode.nodeType === DOCUMENT_ELEMENT_TYPE && cNode.hasAttribute('kdata-id')){
+      return cNode.getAttribute('kdata-id')
+    }
+    if(cNode.isEqualNode(rootNode)){
+      node = null
+    }
+  }
+}
 
 export default function (node) {
   let nodeAttributes
@@ -42,17 +57,24 @@ export default function (node) {
           argv = handlerArgs.split(',').filter(function (f) {
             return f !== ''
           })
-          fn = e => {
-            e.stopPropagation()
-            if (e.target !== e.currentTarget) {
-              c.apply(this, [e.target, e])
-            }
-          }
+        
           // if node is the rootNode for model, we wrap the eventListener and
           // rebuild the arguments by appending id/className util rootNode.
           if (node.hasChildNodes() && node.firstChild.nodeType !== DOCUMENT_ELEMENT_TYPE && node.firstChild.nodeValue.match(modelRaw)) {
-            node.setAttribute('is-model-event-set', '')
-            node.addEventListener(evtName, fn, false)
+            let rep = node.firstChild.nodeValue.replace(re, '$1').trim()
+            rep = rep.replace('model:', '')
+            let model = this[rep]
+
+            const getIndex = id => model.indices.indexOf(id)
+            
+            function fn(e) {
+              e.stopPropagation()
+              if (e.target !== e.currentTarget) {
+                let t = lookupParentNode(node, e.target)
+                c.apply(this, [model.list[getIndex(t)], e.target, e])
+              }
+            }
+            node.addEventListener(evtName, fn.bind(this), false)
           } else {
             node.addEventListener(evtName, c.bind.apply(c.bind(this), [node].concat(argv)), false)
           }

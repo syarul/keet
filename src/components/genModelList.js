@@ -1,6 +1,6 @@
 import { assert, getId, checkNodeAvailability } from '../../utils'
 import genModelTemplate from './genModelTemplate'
-
+const DOCUMENT_ELEMENT_TYPE = 1
 const re = /{{([^{}]+)}}/g
 
 // diffing two array of objects, including object properties differences
@@ -26,14 +26,21 @@ if (typeof document.createRange === 'function') {
 // storage for model state
 let cache = {}
 
+let m
+let documentFragment
+function render(str, obj){
+  m = genModelTemplate(str, obj)
+  documentFragment = range.createContextualFragment(m)
+  documentFragment.firstChild.setAttribute('kdata-id', obj['kdata-id'])
+}
+
 export default function (node, model, tmplHandler) {
+  // console.time('uu')
   let modelList
   let mLength
   let i
   let listClone
   let parentNode
-  let m
-  let documentFragment
   let updateOfNew
   let diffOfOld
   let pNode
@@ -54,20 +61,14 @@ export default function (node, model, tmplHandler) {
 
   if (!cache[model].str) {
     cache[model].str = node.nextSibling.cloneNode(true).outerHTML
+    // remove the first prototype node
+    node.nextSibling.remove()
+     // also remove from pristine node
+    p = this.__pristineFragment__.getElementById(node.parentNode.id)
+    if(p) p.childNodes[1].remove()
+
   }
   str = cache[model].str
-
-  if (!cache[model].ref) {
-    if (list.hasAttribute('id') && list.id.match(re)) {
-      cache[model].ref = list.id.replace(re, '$1')
-      // remove the first prototype node
-      node.nextSibling.remove()
-      // also remove from pristine node
-      p = this.__pristineFragment__.getElementById(list.id)
-      if (p) p.remove()
-    }
-  }
-  ref = cache[model].ref
 
   if (this[model] !== undefined && this[model].hasOwnProperty('list')) {
     parentNode = node.parentNode
@@ -83,10 +84,12 @@ export default function (node, model, tmplHandler) {
     // check if current browser doesn't support createRange()
     if (!range) {
       i = 0
-      while (i < mLength) {
+      while (i < modelList.length) {
         // fallback to regular node generation handler
         listClone = list.cloneNode(true)
         tmplHandler(this, null, listClone, modelList[i])
+        listClone.setAttribute('kdata-id', modelList[i]['kdata-id'])
+        parentNode.insertBefore(listClone, null)
         i++
       }
     } else {
@@ -100,25 +103,32 @@ export default function (node, model, tmplHandler) {
 
         // do properties update
         if (equalLength) {
-          updateOfNew.map(obj => {
-            child = pNode.querySelector(`[id="${obj[ref]}"]`)
-            m = genModelTemplate(str, obj)
-            documentFragment = range.createContextualFragment(m)
+          // console.log( new Date() - window.t)
+          // console.time('u')
+          i = 0
+          while(i < updateOfNew.length){
+            child = pNode.querySelector(`[kdata-id="${updateOfNew[i]['kdata-id']}"]`)
+            render(str, updateOfNew[i])
             pNode.replaceChild(documentFragment, child)
-          })
+            i++
+          }
+          // console.timeEnd('u')
         // add new objects
         } else if (updateOfNew.length > 0 && diffOfOld.length === 0) {
-          updateOfNew.map((obj) => {
-            m = genModelTemplate(str, obj)
-            documentFragment = range.createContextualFragment(m)
+          i = 0
+          while(i < updateOfNew.length){
+            render(str, updateOfNew[i])
             pNode.insertBefore(documentFragment, pNode.lastChild)
-          })
+            i++
+          }
         // destroy selected objects
         } else if (updateOfNew.length === 0 && diffOfOld.length > 0) {
-          diffOfOld.map(obj => {
-            child = pNode.querySelector(`[id="${obj[ref]}"]`)
+          i = 0
+          while(i < diffOfOld.length){
+            child = pNode.querySelector(`[kdata-id="${diffOfOld[i]['kdata-id']}"]`)
             pNode.removeChild(child)
-          })
+            i++
+          }
         }
         // replace oldModel after diffing
         cache[model].oldModel = JSON.parse(JSON.stringify(modelList))
@@ -141,4 +151,5 @@ export default function (node, model, tmplHandler) {
   } else {
     assert(false, 'Model "' + model + '" does not exist.')
   }
+  // console.timeEnd('uu')
 }

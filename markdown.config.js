@@ -114,25 +114,19 @@ function ReadLine2 (file) {
 
   console.log('\nparsing ' + file + '...')
 
-  var info = '\n'
+  var info = ''
 
   rd.on('line', function (line) {
     c++
-    if (c > 1 && c < 11) {
+    if (c > 0 && c < 11) {
       info += line + '\n'
       if (c === 10) {
-        // fs.appendFile('./keet-min.js', info, function (err) {
-        //   if (err) {
-        //     return console.log(err)
-        //   }
-        // })
-        var data = fs.readFileSync(file); //read existing contents into data
-        var fd = fs.openSync(file, 'w+');
+        var data = fs.readFileSync('./keet-min.js'); //read existing contents into data
+        var fd = fs.openSync('./keet-min.js', 'w+');
         var buffer = new Buffer(info);
 
         fs.writeSync(fd, buffer, 0, buffer.length, 0); //write new data
-        // fs.writeSync(fd, data, 0, data.length, buffer.length); //append old data
-        fs.appendFile(fd, data);
+        fs.writeSync(fd, data, 0, data.length, buffer.length); //append old data
         fs.close(fd);
       }
     }

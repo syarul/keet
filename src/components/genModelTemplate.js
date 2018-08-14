@@ -1,14 +1,16 @@
 import ternaryOps from './ternaryOps'
+
 const re = new RegExp(/(\schecked=")(.*?)(?=")/g)
+
 let tmpl = ''
+let rep
+let isTernary
+let i
+let len
+let match
 
 export default (string, obj) => {
   const arrProps = string.match(/{{([^{}]+)}}/g)
-  let rep
-  let isTernary
-  let i
-  let len
-  let match
   tmpl = string
   for (i = 0, len = arrProps.length; i < len; i++) {
     rep = arrProps[i].replace(/{{([^{}]+)}}/g, '$1')

@@ -1,27 +1,6 @@
-
 /**
  * Keetjs v4.0.0 Alpha release: https://github.com/keetjs/keet.js
- * Minimalist view layer for the web
- *
- * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keetjs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
- *
- * Copyright 2018, Shahrul Nizam Selamat
- * Released under the MIT License.
- */
-
-/**
- * Keetjs v4.0.0 Alpha release: https://github.com/keetjs/keet.js
- * Minimalist view layer for the web
- *
- * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keetjs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
- *
- * Copyright 2018, Shahrul Nizam Selamat
- * Released under the MIT License.
- */
-'use strict'
-/**
- * Keetjs v4.0.0 Alpha release: https://github.com/keetjs/keet.js
- * Minimalist view layer for the web
+ * Minimali4.0.0ew layer for the web
  *
  * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keetjs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
  *
