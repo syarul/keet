@@ -191,5 +191,6 @@ export {
   assert,
   checkNodeAvailability,
   genId,
-  getId
+  getId,
+  minId
 }

@@ -86,7 +86,7 @@ export default function (node) {
             node.setAttribute('evt-node', '')
             if (node.hasAttribute('id')) {
               p = this.__pristineFragment__.getElementById(node.id)
-              p.setAttribute('evt-node', '')
+              if(p) p.setAttribute('evt-node', '')
             }
           }
         }

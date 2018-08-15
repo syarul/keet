@@ -1,35 +1,75 @@
+import { minId } from '../../utils'
+
 const conditionalNodesRawStart = /\{\{\?([^{}]+)\}\}/g
 const conditionalNodesRawEnd = /\{\{\/([^{}]+)\}\}/g
 const DOCUMENT_ELEMENT_TYPE = 1
+const DOCUMENT_COMMENT_TYPE = 8
+let frag = document.createDocumentFragment()
+let cache = {}
+let count = 0
 export default function (node, conditional, tmplHandler) {
-  const frag = document.createDocumentFragment()
-  let entryNode
+  count++
   let currentNode
-  let isGen
   let cNode
-  while (node) {
-    currentNode = node
-    node = node.nextSibling
-    if (currentNode.nodeType !== DOCUMENT_ELEMENT_TYPE) {
-      if (currentNode.nodeValue.match(conditionalNodesRawStart)) {
-        entryNode = currentNode
-      } else if (currentNode.nodeValue.match(conditionalNodesRawEnd)) {
-        // currentNode.remove()
-        // star generating the conditional nodes range, if not yet
-        if (!isGen) {
-          isGen = true
-          tmplHandler(this, null, null, null, frag)
+  if(!cache[conditional]){
+    l(Object.keys(cache).length < count)
+    l('init')
+    while (node) {
+      currentNode = node
+      node = node.nextSibling
+      if (currentNode.nodeType !== DOCUMENT_ELEMENT_TYPE && currentNode.nodeValue.match(conditionalNodesRawEnd)) {
+        
+        cache[conditional] = cache[conditional] || {}
+
+        // rebuild the pristineNode
+        let start = frag.firstChild
+        function catchNode(node){
+          while(node){
+            let cNode = node
+            node = node.nextSibling 
+            if(cNode && cNode.nodeType === DOCUMENT_ELEMENT_TYPE){
+              if(cNode.isEqualNode(start)){
+                cNode.remove()
+                start = start.nextSibling
+              } else {
+                catchNode(cNode.firstChild)
+              }
+            } else if(cNode.isEqualNode(start)){
+              cNode.remove()
+              start = start.nextSibling
+            }
+          }
         }
-        if (this[conditional]) {
-          entryNode.parentNode.insertBefore(frag, entryNode)
-        }
-        // entryNode.remove()
+        catchNode(this.__pristineFragment__.firstChild)
+        cache[conditional].frag = frag
+        cache[conditional].currentNode = currentNode
         node = null
+      } else if (currentNode.nodeType !== DOCUMENT_COMMENT_TYPE) {
+        frag.appendChild(currentNode)
       }
-    } else {
-      cNode = currentNode.cloneNode(true)
-      frag.appendChild(cNode)
-      currentNode.remove()
     }
+
+    // parse fragment for resolving conditional statement in child as well
+    tmplHandler(this, null, null, null, cache[conditional].frag.cloneNode(true))
+  }
+  // let childExist = cache[conditional].nodeList[0]
+  // let fetchFrag
+  // let el = document.querySelector(`[kdata-id="childExist"]`)
+  // if(el){
+  //   // only do shallow copy
+  //   fetchFrag = cache[conditional].frag.cloneNode()
+  //   // if found child we skip rendering
+  //   return
+  // }
+  let fetchFrag = cache[conditional].frag.cloneNode(true)
+  let fetchNode = node && node.nextSibling || cache[conditional].currentNode
+
+  if (this[conditional]) {
+    tmplHandler(this, null, null, null, fetchFrag)
+    // setTimeout(() => 
+
+    fetchNode.parentNode.insertBefore(fetchFrag, fetchNode)
+    // )
+    // l(fetchNode.parentNode)
   }
 }
