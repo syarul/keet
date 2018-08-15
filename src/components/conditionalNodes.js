@@ -14,7 +14,7 @@ export default function (node, conditional, tmplHandler) {
       if (currentNode.nodeValue.match(conditionalNodesRawStart)) {
         entryNode = currentNode
       } else if (currentNode.nodeValue.match(conditionalNodesRawEnd)) {
-        currentNode.remove()
+        // currentNode.remove()
         // star generating the conditional nodes range, if not yet
         if (!isGen) {
           isGen = true
@@ -23,7 +23,7 @@ export default function (node, conditional, tmplHandler) {
         if (this[conditional]) {
           entryNode.parentNode.insertBefore(frag, entryNode)
         }
-        entryNode.remove()
+        // entryNode.remove()
         node = null
       }
     } else {

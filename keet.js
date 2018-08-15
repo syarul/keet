@@ -13,6 +13,8 @@ import { updateContext, morpher } from './src/components/genElement'
 import { getId, genId, assert } from './utils'
 import mount from './src/base/mount'
 
+window.l= console.log.bind(console)
+
 /**
  * @description
  * The main constructor of Keet

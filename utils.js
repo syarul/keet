@@ -80,6 +80,10 @@ const notEqual = function(a, b){
   return a['kdata-id'] !== b['kdata-id']
 }
 
+const inform = function(model){
+  this.exec && typeof this.exec === 'function' && this.exec(model)
+}
+
 /**
  * @private
  * @description
@@ -93,7 +97,7 @@ const notEqual = function(a, b){
 class createModel {
   constructor () {
     this.model = []
-    // this.indices = []
+    this.exec = null
 
     /**
      * @private
@@ -108,14 +112,9 @@ class createModel {
       },
       set: function (val) {
         this.model = val
-        // this.indices = this.model.map(m => m['kdata-id'])
-        this.inform(this.model)
+        inform.call(this, this.model)
       }
     })
-  }
-
-  inform (model) {
-    this.exec && typeof this.exec === 'function' && this.exec(model)
   }
 
   /**
