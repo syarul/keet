@@ -39,6 +39,8 @@ button.dispatchEvent(change)
 
 setTimeout(() => console.assert(getId('sub-button').innerHTML === 'value: bar', 'sub-component event'), 100)
 
+console.log(app)
+
 
 
 

@@ -18,6 +18,7 @@ const morpher = function () {
     // console.log('after render', new Date() - window.t)
   }
   if (el) {
+    // l(this.base.cloneNode(true))
     this.IS_STUB ? morph(el, this.base.firstChild) : morph(el, this.base)
   }
   // exec life-cycle componentDidUpdate

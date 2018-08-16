@@ -6,7 +6,7 @@ const DOCUMENT_ELEMENT_TYPE = 1
 const DOCUMENT_COMMENT_TYPE = 8
 const re = /{{([^{}]+)}}/g
 
-function templateParse (ctx, updateStateList, modelInstance, modelObject, conditional) {
+function templateParse (ctx, updateStateList, modelInstance, modelObject, conditional, conditionalState) {
   
   let currentNode
   let fragment
@@ -64,7 +64,7 @@ function templateParse (ctx, updateStateList, modelInstance, modelObject, condit
         check(currentNode.firstChild)
       } else if (currentNode.nodeValue.match(re)) {
         if (currentNode.nodeType === DOCUMENT_COMMENT_TYPE) {
-          replaceCommentBlock.call(ctx, currentNode.nodeValue, currentNode, ins, updateStateList, templateParse)
+          replaceCommentBlock.call(ctx, currentNode.nodeValue, currentNode, ins, updateStateList, templateParse, conditionalState)
         } else {
           replaceHandleBars.call(ctx, currentNode.nodeValue, currentNode, ins, updateStateList, templateParse)
         }
@@ -72,7 +72,6 @@ function templateParse (ctx, updateStateList, modelInstance, modelObject, condit
       node = node.nextSibling
     }
   }
-
   check(instance)
 }
 

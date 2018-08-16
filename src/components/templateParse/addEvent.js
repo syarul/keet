@@ -82,13 +82,13 @@ export default function (node) {
           } else {
             node.addEventListener(evtName, c.bind.apply(c.bind(this), [node].concat(argv)), false)
           }
-          if (!node.hasAttribute('evt-node')) {
-            node.setAttribute('evt-node', '')
-            if (node.hasAttribute('id')) {
-              p = this.__pristineFragment__.getElementById(node.id)
-              if(p) p.setAttribute('evt-node', '')
-            }
-          }
+          // if (!node.hasAttribute('evt-node')) {
+          //   node.setAttribute('evt-node', '')
+          //   if (node.hasAttribute('id')) {
+          //     p = this.__pristineFragment__.getElementById(node.id)
+          //     if(p) p.setAttribute('evt-node', '')
+          //   }
+          // }
         }
       }
     }

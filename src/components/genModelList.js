@@ -129,6 +129,7 @@ export default function (node, model, tmplHandler) {
             pNode.removeChild(child)
             i++
           }
+          // l(modelList)
         }
         // replace oldModel after diffing
         cache[model].oldModel = JSON.parse(JSON.stringify(modelList))
@@ -149,7 +150,7 @@ export default function (node, model, tmplHandler) {
       }
     }
   } else {
-    assert(false, 'Model "' + model + '" does not exist.')
+    // assert(false, 'Model "' + model + '" does not exist.')
   }
   // console.timeEnd('uu')
 }
