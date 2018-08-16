@@ -8,7 +8,7 @@ const model = /^model:/g
 const conditionalRe = /^\?/g
 const component = /^component:([^{}]+)/g
 
-export default function (value, node, ins, updateStateList, templateParse, conditionalState) {
+export default function (value, node, ins, updateStateList, templateParse, setup) {
   let conditionalRep
   let rep
   let modelRep
@@ -21,8 +21,7 @@ export default function (value, node, ins, updateStateList, templateParse, condi
       conditionalRep = rep.replace('?', '')
       if (ins[conditionalRep] !== undefined) {
         updateState(conditionalRep, updateStateList)
-        if(!conditionalState)
-          conditionalNodes.call(this, node, conditionalRep, templateParse)
+        conditionalNodes.call(this, node, conditionalRep, templateParse, setup)
       }
     } else if (rep.match(component)) {
       componentParse.call(this, rep, node)

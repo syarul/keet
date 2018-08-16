@@ -9,8 +9,9 @@ let cache = {}
 
 // rebuild the node structure
 function catchNode(node, start){
+  let cNode
   while(node){
-    let cNode = node
+    cNode = node
     node = node.nextSibling 
     if(cNode && cNode.nodeType === DOCUMENT_ELEMENT_TYPE){
       if(cNode.isEqualNode(start)){
@@ -26,13 +27,12 @@ function catchNode(node, start){
   }
 }
 
-export default function (node, conditional, tmplHandler) {
-  // console.time('x')
+export default function (node, conditional, tmplHandler, setup) {
   let currentNode
   let cNode
   let fetchFrag
   let frag = document.createDocumentFragment()
-
+  // l(setup, cache)
   if(!cache.hasOwnProperty(conditional)){
     cNode = node
     while (cNode) {
@@ -51,10 +51,10 @@ export default function (node, conditional, tmplHandler) {
 
         cache[conditional].frag = frag
         fetchFrag = cache[conditional].frag.cloneNode(true)
-        
-        // resolve recursive handlers as well
-        tmplHandler(this, null, null, null, fetchFrag)
 
+        // resolve recursive handlers as well
+        // l(cache)
+        tmplHandler(this, null, null, null, fetchFrag, 'setup')
         // update current if conditional is truthy
         if (this[conditional]) {
           currentNode.parentNode.insertBefore(fetchFrag, currentNode)
@@ -65,11 +65,12 @@ export default function (node, conditional, tmplHandler) {
       }
     }
   } else {
+    // l(setup)
+    // if(setup !== 'update') return
     fetchFrag = cache[conditional].frag.cloneNode(true)
-    tmplHandler(this, null, null, null, fetchFrag, conditional)
+    tmplHandler(this, null, null, null, fetchFrag, conditional, 'update')
     if (this[conditional]) {
       node.parentNode.insertBefore(fetchFrag, node.nextSibling)
     }
   }
-  // console.timeEnd('x')
 }

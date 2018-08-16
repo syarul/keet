@@ -14,7 +14,7 @@ import { getId, genId, assert } from './utils'
 import mount from './src/base/mount'
 
 window.l= console.log.bind(console)
-
+window.tr= console.trace.bind(console)
 /**
  * @description
  * The main constructor of Keet

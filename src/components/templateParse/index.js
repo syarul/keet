@@ -6,7 +6,7 @@ const DOCUMENT_ELEMENT_TYPE = 1
 const DOCUMENT_COMMENT_TYPE = 8
 const re = /{{([^{}]+)}}/g
 
-function templateParse (ctx, updateStateList, modelInstance, modelObject, conditional, conditionalState) {
+function templateParse (ctx, updateStateList, modelInstance, modelObject, conditional, type) {
   
   let currentNode
   let fragment
@@ -16,6 +16,8 @@ function templateParse (ctx, updateStateList, modelInstance, modelObject, condit
   let a
   let ns
   let name
+
+  type = type || null
 
   if (modelObject) {
     instance = modelInstance
@@ -56,6 +58,7 @@ function templateParse (ctx, updateStateList, modelInstance, modelObject, condit
   const check = node => {
     while (node) {
       currentNode = node
+      if(type === 'setup') node = node.nextSibling
       if (currentNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
         if (currentNode.hasAttributes()) {
           addEvent.call(ctx, currentNode)
@@ -64,14 +67,18 @@ function templateParse (ctx, updateStateList, modelInstance, modelObject, condit
         check(currentNode.firstChild)
       } else if (currentNode.nodeValue.match(re)) {
         if (currentNode.nodeType === DOCUMENT_COMMENT_TYPE) {
-          replaceCommentBlock.call(ctx, currentNode.nodeValue, currentNode, ins, updateStateList, templateParse, conditionalState)
+          // l('do', conditional, modelInstance, currentNode)
+          // l(setup, currentNode)
+          replaceCommentBlock.call(ctx, currentNode.nodeValue, currentNode, ins, updateStateList, templateParse, type)
+          // break
         } else {
           replaceHandleBars.call(ctx, currentNode.nodeValue, currentNode, ins, updateStateList, templateParse)
         }
       }
-      node = node.nextSibling
+      if(type!== 'setup') node = node.nextSibling
     }
   }
+  // l(instance, type)
   check(instance)
 }
 
