@@ -35,7 +35,7 @@ function render(str, obj){
 }
 
 export default function (node, model, tmplHandler) {
-  // console.time('uu')
+  
   let modelList
   let mLength
   let i
@@ -103,8 +103,6 @@ export default function (node, model, tmplHandler) {
 
         // do properties update
         if (equalLength) {
-          // console.log( new Date() - window.t)
-          // console.time('u')
           i = 0
           while(i < updateOfNew.length){
             child = pNode.querySelector(`[kdata-id="${updateOfNew[i]['kdata-id']}"]`)
@@ -112,7 +110,6 @@ export default function (node, model, tmplHandler) {
             pNode.replaceChild(documentFragment, child)
             i++
           }
-          // console.timeEnd('u')
         // add new objects
         } else if (updateOfNew.length > 0 && diffOfOld.length === 0) {
           i = 0
@@ -129,7 +126,6 @@ export default function (node, model, tmplHandler) {
             pNode.removeChild(child)
             i++
           }
-          // l(modelList)
         }
         // replace oldModel after diffing
         cache[model].oldModel = JSON.parse(JSON.stringify(modelList))
@@ -149,8 +145,5 @@ export default function (node, model, tmplHandler) {
         }
       }
     }
-  } else {
-    // assert(false, 'Model "' + model + '" does not exist.')
   }
-  // console.timeEnd('uu')
 }

@@ -27,7 +27,7 @@ function catchNode(node, start){
 }
 
 export default function (node, conditional, tmplHandler) {
-  // console.time('x')
+
   let currentNode
   let cNode
   let fetchFrag
@@ -71,5 +71,4 @@ export default function (node, conditional, tmplHandler) {
       node.parentNode.insertBefore(fetchFrag, node.nextSibling)
     }
   }
-  // console.timeEnd('x')
 }

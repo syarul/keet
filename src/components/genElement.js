@@ -9,16 +9,9 @@ const DELAY = 1
 let el
 
 const morpher = function () {
-  if(this.el === 'todo-list'){
-    // console.log('b4 render', new Date() - window.t)
-  }
   el = getId(this.el)
   genElement.call(this)
-  if(this.el === 'todo-list'){
-    // console.log('after render', new Date() - window.t)
-  }
   if (el) {
-    // l(this.base.cloneNode(true))
     this.IS_STUB ? morph(el, this.base.firstChild) : morph(el, this.base)
   }
   // exec life-cycle componentDidUpdate
@@ -29,9 +22,6 @@ const morpher = function () {
 
 let timer = {}
 const updateContext = function (fn, delay) {
-  // if(this.el === 'todo-list'){
-  //   window.t = new Date()
-  // }
   timer[this.ID] = timer[this.ID] || null
   clearTimeout(timer[this.ID])
   timer[this.ID] = setTimeout(() => fn.call(this), delay)
