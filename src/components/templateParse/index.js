@@ -1,26 +1,17 @@
 import replaceHandleBars from './replaceHandleBars'
 import replaceCommentBlock from './replaceCommentBlock'
-import addEvent from './addEvent'
+import { addEvent, addEventModel } from './addEvent'
+import { getId } from '../../../utils'
 
 const DOCUMENT_ELEMENT_TYPE = 1
 const DOCUMENT_COMMENT_TYPE = 8
 const re = /{{([^{}]+)}}/g
+const modelRaw = /\{\{model:([^{}]+)\}\}/g
 
 function templateParse (ctx, updateStateList, modelInstance, modelObject, conditional, type) {
-  if(type !== 'initial') {
-    // l(type, arguments)
-    // return
-  }
   let currentNode
   let fragment
   let instance
-  let nodeAttributes
-  let i = 0
-  let a
-  let ns
-  let name
-
-  type = type || null
 
   if (modelObject) {
     instance = modelInstance
@@ -34,7 +25,12 @@ function templateParse (ctx, updateStateList, modelInstance, modelObject, condit
   let ins = modelObject || ctx
 
   const inspectAttributes = node => {
-    nodeAttributes = node.attributes
+    let nodeAttributes = node.attributes
+    let i = 0
+    let a
+    let ns
+    let name
+
     for (i = nodeAttributes.length; i--;) {
       a = nodeAttributes[i]
       name = a.localName
@@ -58,86 +54,78 @@ function templateParse (ctx, updateStateList, modelInstance, modelObject, condit
     }
   }
 
-  /*const check = node => {
-    while (node) {
-      currentNode = node
-      if(type === 'setup') node = node.nextSibling
-      if (currentNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
-        if (currentNode.hasAttributes()) {
-          addEvent.call(ctx, currentNode)
-          inspectAttributes(currentNode)
-        }
-        check(currentNode.firstChild)
-      } else if (currentNode.nodeValue.match(re)) {
-        if (currentNode.nodeType === DOCUMENT_COMMENT_TYPE) {
-          // l('do', conditional, modelInstance, currentNode)
-          // l(setup, currentNode)
-          replaceCommentBlock.call(ctx, currentNode.nodeValue, currentNode, ins, updateStateList, templateParse, type)
-          // break
-        } else {
-          replaceHandleBars.call(ctx, currentNode.nodeValue, currentNode, ins, updateStateList, templateParse)
-        }
+  const testEventNode = node => {
+    let nodeAttributes = node.attributes
+    let i = 0
+    let a 
+    let name 
+    let value
+    let evtName
+    let handler
+    let evtStore = []
+    let obs
+    
+    while(i < nodeAttributes.length){
+      a = nodeAttributes[i]
+      name = a.localName
+      value = a.nodeValue
+      if (/^k-/.test(name)) {
+        evtName = name.replace(/^k-/, '')
+        handler = value.match(/[a-zA-Z]+(?![^(]*\))/)[0]
+        obs = {}
+        obs[evtName] = handler
+        obs['isModel'] = false
+        evtStore.push(obs)
       }
-      if(type!== 'setup') node = node.nextSibling
+      i++
     }
+    if (obs && node.hasChildNodes() && node.firstChild.nodeType !== DOCUMENT_ELEMENT_TYPE && node.firstChild.nodeValue.match(modelRaw)) {
+      obs['isModel'] = true
+    }
+    return evtStore
   }
-  // l(instance, type)
-  check(instance)*/
+
+  let events
 
   const addEvt = (node, type) => {
     while (node) {
       currentNode = node
       node = node.nextSibling
       if (currentNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
-        if (currentNode.hasAttributes()) {
-          // l(ctx)
-          addEvent.call(ctx, currentNode)
+        if (currentNode.hasAttributes() && !getId(currentNode.id)) {
+          events = testEventNode(currentNode)
+          if(events.length){
+            events.map(e =>
+              !e.isModel ? addEvent.call(ctx, currentNode, e) : addEventModel.call(ctx, currentNode, e)
+            )
+          }
         }
         addEvt(currentNode.firstChild, type)
       } 
     }
   }
 
-  const update = (node, type) => {
+  const check = (node, type) => {
     while (node) {
       currentNode = node
       node = node.nextSibling
       if (currentNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
-        if (currentNode.hasAttributes()) {
-          // addEvent.call(ctx, currentNode)
+        if (type === 'update' && currentNode.hasAttributes()) {
           inspectAttributes(currentNode)
         }
-        update(currentNode.firstChild, type)
+        check(currentNode.firstChild, type)
       } else if (currentNode.nodeValue.match(re)) {
         if (currentNode.nodeType === DOCUMENT_COMMENT_TYPE) {
           replaceCommentBlock.call(ctx, currentNode.nodeValue, currentNode, ins, updateStateList, templateParse, type)
-        } else {
+        } else if(type === 'update'){
           replaceHandleBars.call(ctx, currentNode.nodeValue, currentNode, ins, updateStateList, templateParse)
         }
       }
     }
   }
 
-  const check = (node, type) => {
-    while (node) {
-      currentNode = node
-      // l(currentNode)
-      node = node.nextSibling
-      if (currentNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
-        check(currentNode.firstChild, type)
-      } else if (currentNode.nodeValue.match(re)) {
-        if (currentNode.nodeType === DOCUMENT_COMMENT_TYPE) {
-          // l(type, currentNode)
-          replaceCommentBlock.call(ctx, currentNode.nodeValue, currentNode, ins, updateStateList, templateParse, type)
-        }
-      }
-    }
-  }
-
-  if(type === 'initial') {
+  if(type === 'initial' || type === 'update') {
     check(instance, type)
-  } else if (type === 'update') {
-    update(instance, type)
   } else if (type === 'event'){
     addEvt(instance, type)
   }

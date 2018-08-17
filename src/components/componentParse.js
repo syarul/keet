@@ -9,14 +9,14 @@ export default function (componentStr, node) {
   if (c !== undefined) {
     // this is for initial component runner
     if (!cacheInit[c.ID]) {
-      c.render.call(c, true)
+      c.render(true)
       cacheInit[c.ID] = c.base.cloneNode(true)
       node.parentNode.replaceChild(c.base, node)
     } else {
       // we need to reattach event listeners if the node is not available on DOM
       if (!getId(this[component].el)) {
         c.base = c.__pristineFragment__.cloneNode(true)
-        c.render.call(c, true)
+        c.render(true)
         node.parentNode.replaceChild(c.base, node)
       } else {
         node.parentNode.replaceChild(cacheInit[c.ID].cloneNode(true), node)

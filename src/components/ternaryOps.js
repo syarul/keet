@@ -11,7 +11,7 @@ export default function (input) {
 
     // check the condition fulfillment
 
-    if(this){
+    if (this) {
       if (this[condition]) {
         return {
           value: test(leftHand),
@@ -22,7 +22,7 @@ export default function (input) {
           value: test(rightHand),
           state: condition
         }
-      }  
+      }
     }
     return false
   } else return false

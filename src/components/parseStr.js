@@ -20,7 +20,6 @@ export default function (stub) {
     setState.call(this)
     // mount fragment to DOM
     if (!stub) {
-      // l(this.base.cloneNode(true))
       el.appendChild(this.base)
     }
 

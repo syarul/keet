@@ -9,17 +9,16 @@ const conditionalRe = /^\?/g
 const component = /^component:([^{}]+)/g
 
 export default function (value, node, ins, updateStateList, templateParse, setup) {
-  // l(setup)
   let conditionalRep
   let rep
   let modelRep
+  
   if (value.match(re)) {
     rep = value.replace(re, '$1').trim()
-    // l(rep, setup)
     if (rep.match(model) && setup !== 'initial') {
       modelRep = rep.replace('model:', '')
       genModelList.call(this, node, modelRep, templateParse)
-    } else if (rep.match(conditionalRe)/* && setup === 'initial'*/) {
+    } else if (rep.match(conditionalRe)) {
       conditionalRep = rep.replace('?', '')
       if (ins[conditionalRep] !== undefined) {
         updateState(conditionalRep, updateStateList)

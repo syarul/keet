@@ -21,10 +21,8 @@ const morpher = function () {
 }
 
 let timer = {}
+
 const updateContext = function (fn, delay) {
-  // if(this.el === 'todo-list'){
-  //   window.t = new Date()
-  // }
   timer[this.ID] = timer[this.ID] || null
   clearTimeout(timer[this.ID])
   timer[this.ID] = setTimeout(() => fn.call(this), delay)
@@ -33,6 +31,7 @@ const updateContext = function (fn, delay) {
 const nextState = function (i) {
   let state
   let value
+  
   if (i < stateList.length) {
     state = stateList[i]
     value = this[state]
