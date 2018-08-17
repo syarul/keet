@@ -27,18 +27,19 @@ function catchNode(node, start){
   }
 }
 
-export default function (node, conditional, tmplHandler, setup) {
+function resolveConditionalNodes (node, updateStateList, conditional, tmplHandler, setup) {
   let currentNode
   let cNode
   let fetchFrag
   let frag = document.createDocumentFragment()
   // l(setup, cache)
-  if(!cache.hasOwnProperty(conditional)){
+  if(setup === 'initial' && !cache.hasOwnProperty(conditional)){
     cNode = node
     while (cNode) {
       currentNode = cNode
       cNode = cNode.nextSibling
       if (currentNode.nodeType !== DOCUMENT_ELEMENT_TYPE && currentNode.nodeValue.match(conditionalNodesRawEnd)) {
+        // l(currentNode.nextSibling)
         
         cache[conditional] = cache[conditional] || {}
 
@@ -52,9 +53,9 @@ export default function (node, conditional, tmplHandler, setup) {
         cache[conditional].frag = frag
         fetchFrag = cache[conditional].frag.cloneNode(true)
 
-        // resolve recursive handlers as well
-        // l(cache)
-        tmplHandler(this, null, null, null, fetchFrag, 'setup')
+        // resolve recursive conditional handlers as well
+        tmplHandler(this, null, null, null, fetchFrag, 'initial')
+
         // update current if conditional is truthy
         if (this[conditional]) {
           currentNode.parentNode.insertBefore(fetchFrag, currentNode)
@@ -65,12 +66,20 @@ export default function (node, conditional, tmplHandler, setup) {
       }
     }
   } else {
-    // l(setup)
-    // if(setup !== 'update') return
-    fetchFrag = cache[conditional].frag.cloneNode(true)
-    tmplHandler(this, null, null, null, fetchFrag, conditional, 'update')
-    if (this[conditional]) {
-      node.parentNode.insertBefore(fetchFrag, node.nextSibling)
-    }
+    // l(node.nextSibling, cache[conditional].frag.firstChild)
+    if(node.nextSibling.isEqualNode(cache[conditional].frag.firstChild)) return
+    // if(setup === 'initial') {
+      // l('finish parsing conditional states, begin parsing other states')
+      // l(this.base.cloneNode(true))
+    // } else {
+      // l(node)
+      fetchFrag = cache[conditional].frag.cloneNode(true)
+      // tmplHandler(this, null, null, null, fetchFrag, 'update')
+      if (this[conditional]) {
+        node.parentNode.insertBefore(fetchFrag, node.nextSibling)
+      }
+    // }
   }
 }
+
+export default resolveConditionalNodes

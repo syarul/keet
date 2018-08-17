@@ -89,7 +89,9 @@ const addState = state => {
 
 const genElement = function () {
   this.base = this.__pristineFragment__.cloneNode(true)
+  templateParse(this, addState, null, null, null, 'initial')
   templateParse(this, addState, null, null, null, 'update')
+  templateParse(this, addState, null, null, null, 'event')
 }
 
 export {

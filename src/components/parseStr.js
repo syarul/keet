@@ -5,7 +5,9 @@ import { getId, assert } from '../../utils'
 const DOCUMENT_ELEMENT_TYPE = 1
 
 export default function (stub) {
-  templateParse(this, addState)
+  templateParse(this, addState, null, null, null, 'initial')
+  templateParse(this, addState, null, null, null, 'update')
+  templateParse(this, addState, null, null, null, 'event')
   const el = stub || getId(this.el)
   if (el) {
     if (el.nodeType === DOCUMENT_ELEMENT_TYPE) {

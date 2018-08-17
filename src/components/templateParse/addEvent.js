@@ -7,7 +7,7 @@ const modelRaw = /\{\{model:([^{}]+)\}\}/g
 
 function lookUpEvtNode (node) {
   // check if node is visible on DOM and has attribute evt-node
-  if (node.hasAttribute('id') && getId(node.id) && node.hasAttribute('evt-node')) {
+  if (node.hasAttribute('id') && getId(node.id)/* && node.hasAttribute('evt-node')*/) {
     return true
   }
   return false
@@ -53,6 +53,7 @@ export default function (node) {
     // skip addding event for node that already has event
     // to allow skipping adding event the node must include `id`
   } else {
+    // l(node)
     // only add event when node does not has one
     for (i = nodeAttributes.length; i--;) {
       a = nodeAttributes[i]
@@ -62,9 +63,10 @@ export default function (node) {
         evtName = name.replace(/^k-/, '')
         handler = ns.match(/[a-zA-Z]+(?![^(]*\))/)[0]
         let c = this[handler]
-        l(node)
+        // l(node)
         if(handler === 'clearCompleted'){
           // tr(1)
+          l(this[handler])
           // l(getId(node.id))
         }
         if (this[handler] !== undefined && typeof this[handler] === 'function') {
@@ -77,11 +79,16 @@ export default function (node) {
           // if node is the rootNode for model, we wrap the eventListener and
           // rebuild the arguments by appending id/className util rootNode.
           if (node.hasChildNodes() && node.firstChild.nodeType !== DOCUMENT_ELEMENT_TYPE && node.firstChild.nodeValue.match(modelRaw)) {
+            l(node)
             rep = node.firstChild.nodeValue.replace(re, '$1').trim()
             rep = rep.replace('model:', '')
             model = this[rep]
             function fn(e) {
               e.stopPropagation()
+              // if(!this[handler]) {
+              //   e.preventDefault()
+              //   return
+              // }
               if (e.target !== e.currentTarget) {
                 t = lookupParentNode(node, e.target)
                 // l(e.currentTarget, e.target)
@@ -96,13 +103,13 @@ export default function (node) {
             node.addEventListener(evtName, c.bind.apply(c.bind(this), [node].concat(argv)), false)
           }
 
-          if(!node.hasAttribute('evt-node')){
-            node.setAttribute('evt-node', '')
-            if (node.hasAttribute('id')) {
-              p = this.__pristineFragment__.getElementById(node.id)
-              if(p) p.setAttribute('evt-node', '')
-            }
-          }
+          // if(!node.hasAttribute('evt-node')){
+          //   node.setAttribute('evt-node', '')
+          //   if (node.hasAttribute('id')) {
+          //     p = this.__pristineFragment__.getElementById(node.id)
+          //     if(p) p.setAttribute('evt-node', '')
+          //   }
+          // }
 
         }
       }

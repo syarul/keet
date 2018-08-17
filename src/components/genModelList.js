@@ -36,6 +36,7 @@ function render(str, obj){
 
 export default function (node, model, tmplHandler) {
   // console.time('uu')
+  // l(node, model)
   let modelList
   let mLength
   let i
