@@ -74,7 +74,8 @@ function resolveConditionalNodes (node, updateStateList, conditional, tmplHandle
     // } else {
       // l(node)
       fetchFrag = cache[conditional].frag.cloneNode(true)
-      // tmplHandler(this, null, null, null, fetchFrag, 'update')
+      l('do')
+      tmplHandler(this, null, null, null, fetchFrag, 'update')
       if (this[conditional]) {
         node.parentNode.insertBefore(fetchFrag, node.nextSibling)
       }

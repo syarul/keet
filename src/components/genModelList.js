@@ -2,6 +2,7 @@ import { assert, getId, checkNodeAvailability } from '../../utils'
 import genModelTemplate from './genModelTemplate'
 const DOCUMENT_ELEMENT_TYPE = 1
 const re = /{{([^{}]+)}}/g
+const modelRaw = /\{\{model:([^{}]+)\}\}/g
 
 // diffing two array of objects, including object properties differences
 const diff = (fst, sec) =>
@@ -32,6 +33,58 @@ function render(str, obj){
   m = genModelTemplate(str, obj)
   documentFragment = range.createContextualFragment(m)
   documentFragment.firstChild.setAttribute('kdata-id', obj['kdata-id'])
+}
+
+function lookupParentNode(rootNode, node){
+  let cNode
+  while(node){
+    cNode = node
+    node = node.parentNode
+    if(cNode.nodeType === DOCUMENT_ELEMENT_TYPE && cNode.hasAttribute('kdata-id')){
+      return cNode.getAttribute('kdata-id')
+    }
+    if(cNode.isEqualNode(rootNode)){
+      node = null
+    }
+  }
+}
+
+const getIndex = (id, model) => model.list.map(m => m['kdata-id']).indexOf(id)
+
+function addEvent(node){
+  if(getId(node.id)) return
+  l(node)
+  let nodeAttributes = node.attributes
+  for (let i = nodeAttributes.length; i--;) {
+    let a = nodeAttributes[i]
+    let name = a.localName
+    let ns = a.nodeValue
+    if (/^k-/.test(name)) {
+      let evtName = name.replace(/^k-/, '')
+      let handler = ns.match(/[a-zA-Z]+(?![^(]*\))/)[0]
+      if (this[handler] !== undefined && typeof this[handler] === 'function') {
+        let h = ns.match(/\(([^{}]+)\)/)
+        let handlerArgs = h ? h[1] : ''
+        let argv = handlerArgs.split(',').filter(function (f) {
+          return f !== ''
+        })
+        if (node.hasChildNodes() && node.firstChild.nodeType !== DOCUMENT_ELEMENT_TYPE && node.firstChild.nodeValue.match(modelRaw)) {
+          let rep = node.firstChild.nodeValue.replace(re, '$1').trim()
+          rep = rep.replace('model:', '')
+          let model = this[rep]
+          function fn(e) {
+            e.stopPropagation()
+            if (e.target !== e.currentTarget) {
+              let t = lookupParentNode(node, e.target)
+              // l(this[handler])
+              this[handler].apply(this, [model.list[getIndex(t, model)], e.target, e])
+            }
+          }
+          node.addEventListener(evtName, fn.bind(this), false)
+        }
+      }
+    }
+  }
 }
 
 export default function (node, model, tmplHandler) {
@@ -72,11 +125,16 @@ export default function (node, model, tmplHandler) {
   str = cache[model].str
 
   if (this[model] !== undefined && this[model].hasOwnProperty('list')) {
+
     parentNode = node.parentNode
+
+    addEvent.call(this, parentNode)
 
     if (range && !parentNode.hasAttribute('data-ignore')) {
       parentNode.setAttribute('data-ignore', '')
     }
+
+    // l(parentNode)
 
     modelList = this[model].list
 
