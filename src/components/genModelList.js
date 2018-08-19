@@ -33,7 +33,7 @@ function render (str, obj) {
   documentFragment.firstChild.setAttribute('kdata-id', obj['kdata-id'])
 }
 
-export default function (node, model, templateParse) {
+function genModelList (node, model, templateParse) {
   let modelList
   let i
   let listClone
@@ -47,13 +47,20 @@ export default function (node, model, templateParse) {
   let str
   let oldModel
   let p
+  let listArg
+  let idx
+  let beforeNode
+  let f
 
   cache[model] = cache[model] || {}
 
-  if (!cache[model].list) {
-    cache[model].list = node.nextSibling.cloneNode(true)
+  // check if the model use filtering
+  listArg = this[model].enableFiltering ? 'listFilter' : 'list'
+
+  if (!cache[model][listArg]) {
+    cache[model][listArg] = node.nextSibling.cloneNode(true)
   }
-  list = cache[model].list
+  list = cache[model][listArg]
 
   if (!cache[model].str) {
     cache[model].str = node.nextSibling.cloneNode(true).outerHTML
@@ -65,14 +72,14 @@ export default function (node, model, templateParse) {
   }
   str = cache[model].str
 
-  if (this[model] !== undefined && this[model].hasOwnProperty('list')) {
+  if (this[model] !== undefined && this[model].hasOwnProperty(listArg)) {
     parentNode = node.parentNode
 
     if (range && !parentNode.hasAttribute('data-ignore')) {
       parentNode.setAttribute('data-ignore', '')
     }
 
-    modelList = this[model].list
+    modelList = this[model][listArg]
 
     oldModel = cache[model].oldModel || []
 
@@ -82,9 +89,9 @@ export default function (node, model, templateParse) {
       while (i < modelList.length) {
         // fallback to regular node generation handler
         listClone = list.cloneNode(true)
-        templateParse(this, null, listClone, modelList[i])
+        templateParse(this, null, listClone, modelList[i], null, 'update')
         listClone.setAttribute('kdata-id', modelList[i]['kdata-id'])
-        parentNode.insertBefore(listClone, null)
+        parentNode.insertBefore(listClone, parentNode.lastChild)
         i++
       }
     } else {
@@ -100,9 +107,17 @@ export default function (node, model, templateParse) {
         if (equalLength) {
           i = 0
           while (i < updateOfNew.length) {
-            child = pNode.querySelector(`[kdata-id="${updateOfNew[i]['kdata-id']}"]`)
-            render(str, updateOfNew[i])
-            pNode.replaceChild(documentFragment, child)
+            if (updateOfNew[i]['kdata-id'] === diffOfOld[i]['kdata-id']) {
+              // equal node element id
+              child = pNode.querySelector(`[kdata-id="${updateOfNew[i]['kdata-id']}"]`)
+            } else {
+              // replace if it doesn't share the same id
+              child = pNode.querySelector(`[kdata-id="${diffOfOld[i]['kdata-id']}"]`)
+            }
+            if (child) {
+              render(str, updateOfNew[i])
+              pNode.replaceChild(documentFragment, child)
+            }
             i++
           }
         // add new objects
@@ -110,7 +125,13 @@ export default function (node, model, templateParse) {
           i = 0
           while (i < updateOfNew.length) {
             render(str, updateOfNew[i])
-            pNode.insertBefore(documentFragment, pNode.lastChild)
+            if (updateOfNew[i]['kdata-id'] === modelList[modelList.length - 1]['kdata-id']) {
+              beforeNode = pNode.lastChild
+            } else {
+              idx = modelList.map(m => m['kdata-id']).indexOf(updateOfNew[i]['kdata-id'])
+              beforeNode = pNode.childNodes[idx].nextSibling
+            }
+            pNode.insertBefore(documentFragment, beforeNode)
             i++
           }
         // destroy selected objects
@@ -118,8 +139,28 @@ export default function (node, model, templateParse) {
           i = 0
           while (i < diffOfOld.length) {
             child = pNode.querySelector(`[kdata-id="${diffOfOld[i]['kdata-id']}"]`)
-            pNode.removeChild(child)
+            if (child) {
+              pNode.removeChild(child)
+            }
             i++
+          }
+        } else if (updateOfNew.length > 0 && diffOfOld.length > 0) {
+          // if both differences has length we remove the old children and replace it with the new ones
+          i = 0
+          while (i < diffOfOld.length) {
+            child = pNode.querySelector(`[kdata-id="${diffOfOld[i]['kdata-id']}"]`)
+            if (child) {
+              pNode.removeChild(child)
+            }
+            i++
+            if (i === diffOfOld.length) {
+              f = 0
+              while (f < updateOfNew.length) {
+                render(str, updateOfNew[f])
+                pNode.insertBefore(documentFragment, pNode.lastChild)
+                f++
+              }
+            }
           }
         }
         // replace oldModel after diffing
@@ -142,3 +183,5 @@ export default function (node, model, templateParse) {
     }
   }
 }
+
+export default genModelList

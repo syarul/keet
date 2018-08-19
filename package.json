@@ -7,8 +7,7 @@
     "url": "https://github.com/syarul/keet/issues"
   },
   "dependencies": {
-    "morphdom": "^2.3.3",
-    "set-dom": "^7.5.2"
+    "set-dom": "syarul/set-dom#master"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -22,7 +21,6 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-es2015-loose": "^8.0.0",
     "babel-preset-stage-0": "^6.24.1",
-    "browserify": "^15.2.0",
     "coveralls": "^3.0.0",
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^2.30.1",

@@ -12,7 +12,7 @@ export default function (value, node, ins, updateStateList, templateParse, setup
   let conditionalRep
   let rep
   let modelRep
-  
+
   if (value.match(re)) {
     rep = value.replace(re, '$1').trim()
     if (rep.match(model) && setup !== 'initial') {

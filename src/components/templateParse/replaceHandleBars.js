@@ -11,7 +11,7 @@ export default function (value, node, ins, updateStateList, templateParse, isAtt
   let rep
   let tnr
   let isObjectNotation
-  
+
   while (ln) {
     ln--
     rep = props[ln].replace(re, '$1')

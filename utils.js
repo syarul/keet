@@ -1,9 +1,9 @@
 const genId = () => {
-  const rd = () => (Math.random()* 1*1e17).toString(36)
+  const rd = () => (Math.random() * 1 * 1e17).toString(36)
   return `KDATA-${rd()}-${rd()}`
 }
 
-const minId = () => (Math.random()* 1*1e17).toString(36)
+const minId = () => (Math.random() * 1 * 1e17).toString(36)
 
 const getId = id => document.getElementById(id)
 
@@ -21,7 +21,7 @@ const checkNodeAvailability = (component, componentName, callback, notFound) => 
   let ele = getId(component.el)
   let found = false
   let t
-  function find() {
+  function find () {
     ele = getId(component.el)
     if (ele) {
       clearInterval(t)
@@ -29,7 +29,7 @@ const checkNodeAvailability = (component, componentName, callback, notFound) => 
       callback(component, componentName, ele)
     }
   }
-  function fail() {
+  function fail () {
     clearInterval(t)
     if (!found && notFound && typeof notFound === 'function') notFound()
   }
@@ -76,12 +76,12 @@ const html = (...args) => {
   return result
 }
 
-const notEqual = function(a, b){
+const notEqual = function (a, b) {
   return a['kdata-id'] !== b['kdata-id']
 }
 
-const inform = function(model){
-  this.exec && typeof this.exec === 'function' && this.exec(model)
+const inform = function (...args) {
+  this.exec && typeof this.exec === 'function' && this.exec.apply(null, args)
 }
 
 /**
@@ -95,15 +95,16 @@ const inform = function(model){
  *
  */
 class createModel {
-  constructor () {
-    this.model = []
+  constructor (enableFiltering) {
+    // if enableFiltering is assigned a value, model generation will
+    // use `listFilter` instead of `list`
+    this.enableFiltering = enableFiltering || null
+
     this.exec = null
 
-    /**
-     * @private
-     * @description
-     * Register callback listener of any changes
-     */
+    this.model = []
+
+    // Register callback listener of any changes
     Object.defineProperty(this, 'list', {
       enumerable: false,
       configurable: true,
@@ -112,58 +113,75 @@ class createModel {
       },
       set: function (val) {
         this.model = val
-        inform.call(this, this.model)
+        inform.call(this, this.model, this.listFilter)
+      }
+    })
+
+    // Register callback listener of any changes with filter
+    Object.defineProperty(this, 'listFilter', {
+      enumerable: false,
+      configurable: true,
+      get: function () {
+        return !this.prop ? this.model : this.model.filter(obj => obj[this.prop] === this.value)
       }
     })
   }
 
   /**
- * @private
- * @description
- * Subscribe to the model changes (add/update/destroy)
- *
- * @param {Object} model - the model including all prototypes
- *
- */
+   * @private
+   * @description
+   * Subscribe to the model changes (add/update/destroy)
+   *
+   * @param {Object} model - the model including all prototypes
+   *
+   */
   subscribe (fn) {
     this.exec = fn
   }
 
   /**
- * @private
- * @description
- * Add new object to the model list
- *
- * @param {Object} obj - new object to add into the model list
- *
- */
+   * @private
+   * @description
+   * Add new object to the model list
+   *
+   * @param {Object} obj - new object to add into the model list
+   *
+   */
   add (obj) {
     this.list = this.list.concat({ ...obj, 'kdata-id': minId() })
   }
 
   /**
- * @private
- * @description
- * Update existing object in the model list
- *
- * @param {String} lookupId - lookup id property name of the object
- * @param {Object} updateObj - the updated properties
- *
- */
-  // update (lookupId, updateObj) {
-  //   this.list = this.list.map(obj =>
-  //     obj[lookupId] !== updateObj[lookupId] ? obj : Object.assign(obj, updateObj)
-  //   )
-  // }
+   * @private
+   * @description
+   * Update existing object in the model list
+   *
+   * @param {String} lookupId - lookup id property name of the object
+   * @param {Object} updateObj - the updated properties
+   *
+   */
   update (updateObj) {
     this.list = this.list.map(obj =>
       notEqual(obj, updateObj) ? obj : updateObj
-     // ( obj !== updateObj ? obj : updateObj)
     )
   }
-  // this.todos = this.todos.map( todo => (
-  //     todo !== todoToToggle ? todo : ({ ...todo, completed: !todo.completed })
-  //   ) );
+
+  /**
+   * @private
+   * @description
+   * Filter the model data by selected properties, constructor
+   * instantiation should be apply with boolean true as argument
+   * to enable filtering
+   * @param {String} prop - property of the object
+   * @param {String|Boolean|Interger} value - property value
+   *
+   */
+  filter (prop, value) {
+    this.prop = prop
+    this.value = value
+    this.list = this.list.map(obj => obj)
+  }
+
   /**
  * @private
  * @description
@@ -178,11 +196,6 @@ class createModel {
       notEqual(obj, destroyObj)
     )
   }
-  // destroy (lookupId, objId) {
-  //   this.list = this.list.filter(obj =>
-  //     obj[lookupId] !== objId
-  //   )
-  // }
 }
 
 export {

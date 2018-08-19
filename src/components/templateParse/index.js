@@ -41,10 +41,15 @@ function templateParse (ctx, updateStateList, modelInstance, modelObject, condit
         node.setAttribute(name, ns)
       } else if (re.test(ns)) {
         ns = replaceHandleBars(ns, node, ins, null, null, true)
-        if (ns === '') {
+        if (name === 'checked') {
+          if (ns === '') {
+            node.checked = false
+          } else {
+            node.checked = true
+          }
           node.removeAttribute(name)
         } else {
-          if (name === 'checked') {
+          if (ns === '') {
             node.setAttribute(name, '')
           } else {
             node.setAttribute(name, ns)
@@ -57,15 +62,15 @@ function templateParse (ctx, updateStateList, modelInstance, modelObject, condit
   const testEventNode = node => {
     let nodeAttributes = node.attributes
     let i = 0
-    let a 
-    let name 
+    let a
+    let name
     let value
     let evtName
     let handler
     let evtStore = []
     let obs
-    
-    while(i < nodeAttributes.length){
+
+    while (i < nodeAttributes.length) {
       a = nodeAttributes[i]
       name = a.localName
       value = a.nodeValue
@@ -94,14 +99,14 @@ function templateParse (ctx, updateStateList, modelInstance, modelObject, condit
       if (currentNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
         if (currentNode.hasAttributes() && !getId(currentNode.id)) {
           events = testEventNode(currentNode)
-          if(events.length){
+          if (events.length) {
             events.map(e =>
               !e.isModel ? addEvent.call(ctx, currentNode, e) : addEventModel.call(ctx, currentNode, e)
             )
           }
         }
         addEvt(currentNode.firstChild, type)
-      } 
+      }
     }
   }
 
@@ -117,19 +122,18 @@ function templateParse (ctx, updateStateList, modelInstance, modelObject, condit
       } else if (currentNode.nodeValue.match(re)) {
         if (currentNode.nodeType === DOCUMENT_COMMENT_TYPE) {
           replaceCommentBlock.call(ctx, currentNode.nodeValue, currentNode, ins, updateStateList, templateParse, type)
-        } else if(type === 'update'){
+        } else if (type === 'update') {
           replaceHandleBars.call(ctx, currentNode.nodeValue, currentNode, ins, updateStateList, templateParse)
         }
       }
     }
   }
 
-  if(type === 'initial' || type === 'update') {
+  if (type === 'initial' || type === 'update') {
     check(instance, type)
-  } else if (type === 'event'){
+  } else if (type === 'event') {
     addEvt(instance, type)
   }
-
 }
 
 export default templateParse

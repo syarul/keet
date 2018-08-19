@@ -1,4 +1,5 @@
 import { clearState } from '../components/genElement'
+import { assert } from '../../utils'
 
 const DOCUMENT_FRAGMENT_TYPE = 11
 const DOCUMENT_TEXT_TYPE = 3
@@ -8,9 +9,9 @@ const DOCUMENT_ELEMENT_TYPE = 1
  * @description
  * Mount an instance of string or html elements
  *
- * @param {String|Object} instance - the html/string 
+ * @param {String|Object} instance - the html/string
  */
-export default function(instance) {
+export default function (instance) {
   let base
   let tempDiv
   let frag = document.createDocumentFragment()

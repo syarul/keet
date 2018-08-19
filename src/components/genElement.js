@@ -5,15 +5,18 @@ import { getId } from '../../utils'
 
 morph.KEY = 'kdata-id'
 
-const DELAY = 1
+const DELAY = 2.5
 let el
 
 const morpher = function () {
+  // let t = performance.now()
   el = getId(this.el)
   genElement.call(this)
+  // l(this.el, performance.now() - t)
   if (el) {
     this.IS_STUB ? morph(el, this.base.firstChild) : morph(el, this.base)
   }
+  // l(this.el, 'morph', performance.now() - t)
   // exec life-cycle componentDidUpdate
   if (this.componentDidUpdate && typeof this.componentDidUpdate === 'function') {
     this.componentDidUpdate()
@@ -31,7 +34,7 @@ const updateContext = function (fn, delay) {
 const nextState = function (i) {
   let state
   let value
-  
+
   if (i < stateList.length) {
     state = stateList[i]
     value = this[state]
