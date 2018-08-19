@@ -69,6 +69,7 @@ function templateParse (ctx, updateStateList, modelInstance, modelObject, condit
     let handler
     let evtStore = []
     let obs
+    let args
 
     while (i < nodeAttributes.length) {
       a = nodeAttributes[i]
@@ -77,15 +78,18 @@ function templateParse (ctx, updateStateList, modelInstance, modelObject, condit
       if (/^k-/.test(name)) {
         evtName = name.replace(/^k-/, '')
         handler = value.match(/[a-zA-Z]+(?![^(]*\))/)[0]
+        args = value.match(/\(([^{}]+)\)/)
+        args = args ? args[1] : ''
         obs = {}
         obs[evtName] = handler
+        if (args) obs[args] = true
         obs['isModel'] = false
         evtStore.push(obs)
+        if (node.hasChildNodes() && node.firstChild.nodeType !== DOCUMENT_ELEMENT_TYPE && node.firstChild.nodeValue.match(modelRaw)) {
+          obs['isModel'] = true
+        }
       }
       i++
-    }
-    if (obs && node.hasChildNodes() && node.firstChild.nodeType !== DOCUMENT_ELEMENT_TYPE && node.firstChild.nodeValue.match(modelRaw)) {
-      obs['isModel'] = true
     }
     return evtStore
   }
