@@ -13,11 +13,12 @@ class App extends Keet {
       this.total = model.length
     )
   }
-  events(target, id, evt){
+  events(obj, target, node, e){
+    l(arguments)
     if(target === 'edit'){
-      this.toggle(id, evt.target.getAttribute('complete'))
+      this.task.update({ ...obj, complete: !obj.complete })
     } else if(target === 'destroy'){
-      this.task.destroy('id', id)
+      this.task.destroy(obj)
     }
     
   }
@@ -48,14 +49,14 @@ app.mount(html`
   <p>Toggle a task state by clicking the button</p>
   <div><input id="taskInput" k-keyup="addTask()" type="text" placeholder="Add a task"></div>
   <ul id="list" k-click="events()">
-    {{model:task}}
-    <li id="{{id}}">
-      <button class="edit" style="text-decoration: {{complete?line-through:none}};" complete="{{complete?yes:no}}"> 
+    <!-- {{model:task}} -->
+    <li>
+      <button class="edit" style="text-decoration: {{complete?line-through:none}};"> 
         {{taskName}} 
       </button>
       <span class="destroy" style="cursor: pointer;"> [ X ] </span>
     </li>
-    {{/model:task}}
+    <!-- {{/model:task}} -->
   </ul>
 `).link('app')
 
@@ -63,7 +64,6 @@ let count = 3
 
 for (let i = 0; i < count; i++) {
   app.task.add({
-    id: genId(),
     taskName: `TASK TODO ${i}`,
     complete: false
   })

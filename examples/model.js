@@ -14,7 +14,7 @@ class App extends Keet {
     )
   }
   componentDidUpdate(){ //rem
-    console.assert(getId('list').innerHTML === '<li id="0">sleep<input type="checkbox" checked=""></li><li id="1">jog<input type="checkbox" checked=""></li><li id="2">walk<input type="checkbox"></li><li id="3">swim<input type="checkbox" checked=""></li>', 'model list') //rem
+    console.assert(getId('list').childNodes.length === 7) //rem
   } //rem
 }
 
@@ -53,5 +53,3 @@ app.task.update('id', {
 
 // remove a task
 app.task.destroy('taskName', 'roll')
-
-console.log(app)

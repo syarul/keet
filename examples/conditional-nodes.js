@@ -5,14 +5,14 @@ class App extends Keet {
   show = false
   toggle () {
     this.show = !this.show
-    l(this.show)
+    // l(this.show)
   }
 }
 
 const app = new App()
 
 app.mount(html`
-  <button id="toggle" k-click="toggle()">toggle</button>
+  <button id="toggle" k-click="toggle()" attr="{{show?foo:bar}}" style="color: {{show?red:blue}};" {{show?testme:test}}>toggle</button>
   <div id="1">one</div>
   <!-- {{?show}} -->
   <div id="2">two</div>

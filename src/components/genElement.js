@@ -5,13 +5,13 @@ import { getId } from '../../utils'
 
 morph.KEY = 'kdata-id'
 
-const DELAY = 2.5
+const DELAY = 1
 let el
 
 const morpher = function () {
   el = getId(this.el)
   genElement.call(this)
-  l(this.base)
+  // l(this.base)
   if (el) {
     // this.IS_STUB ? morph(el, this.base.firstChild) : morph(el, this.base)
   }
@@ -91,8 +91,11 @@ const genElement = function () {
   this.base = this.__pristineFragment__.cloneNode(true)
   templateParse(this, addState, null, null, null, 'initial')
   templateParse(this, addState, null, null, null, 'update')
+  // l(this.base.cloneNode(true))
   templateParse(this, null, null, null, null, 'event')
+  // l(this.base.cloneNode(true))
   templateParse(this, null, null, null, null, 'diff')
+  // l(this.base.cloneNode(true))
 }
 
 export {

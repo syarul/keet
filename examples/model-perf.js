@@ -37,12 +37,12 @@ app.mount(html`
   <h4 id="evt-add">${evt_add}</h4>
   <h4 id="evt-up">${evt_update}</h4>
   <ul id="list" k-click="action()">
-    {{model:task}}
+    <!-- {{model:task}} -->
     <li id="{{id}}"><span style="text-decoration: {{complete?line-through:none}};">{{taskName}}</span>
       <input type="checkbox" checked="{{complete?checked:''}}">
       <span class="destroy" style="cursor: pointer;"> [ X ] </span>
     </li>
-    {{/model:task}}
+    <!-- {{/model:task}} -->
   </ul>
 `).link('app')
 

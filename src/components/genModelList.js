@@ -1,5 +1,6 @@
 import { getId, checkNodeAvailability } from '../../utils'
 import genModelTemplate from './genModelTemplate'
+import { cache as conditionalCache } from './conditionalNodes'
 
 // diffing two array of objects, including object properties differences
 const diff = (fst, sec) =>
@@ -31,6 +32,16 @@ function render (str, obj) {
   m = genModelTemplate(str, obj)
   documentFragment = range.createContextualFragment(m)
   documentFragment.firstChild.setAttribute('kdata-id', obj['kdata-id'])
+}
+
+function removeProtoModel(node, id, after){
+  let p = node.getElementById(id)
+  if (p) p.childNodes[1].remove()
+  else if (!after) {
+    Object.keys(conditionalCache).map(cache =>
+      removeProtoModel(conditionalCache[cache].frag, id, true)
+    )
+  }
 }
 
 function genModelList (node, model, templateParse) {
@@ -66,9 +77,9 @@ function genModelList (node, model, templateParse) {
     cache[model].str = node.nextSibling.cloneNode(true).outerHTML
     // remove the first prototype node
     node.nextSibling.remove()
-    // also remove from pristine node
-    p = this.__pristineFragment__.getElementById(node.parentNode.id)
-    if (p) p.childNodes[1].remove()
+    // also remove from pristine nodes / conditional cache store
+    removeProtoModel(this.__pristineFragment__, node.parentNode.id)
+
   }
   str = cache[model].str
 
@@ -103,8 +114,7 @@ function genModelList (node, model, templateParse) {
         // check if both models are equally in length
         equalLength = oldModel.length === modelList.length
 
-        // do properties update
-        if (equalLength) {
+        if (equalLength && pNode.childNodes.length !== 2) {
           i = 0
           while (i < updateOfNew.length) {
             if (updateOfNew[i]['kdata-id'] === diffOfOld[i]['kdata-id']) {
@@ -162,6 +172,13 @@ function genModelList (node, model, templateParse) {
               }
             }
           }
+        } else {
+          i = 0
+          while (i < modelList.length) {
+            render(str, modelList[i])
+            pNode.insertBefore(documentFragment, pNode.lastChild)
+            i++
+          }
         }
         // replace oldModel after diffing
         cache[model].oldModel = JSON.parse(JSON.stringify(modelList))
@@ -170,12 +187,12 @@ function genModelList (node, model, templateParse) {
       // check existing parentNode in the DOM
       if (parentNode.hasAttribute('id')) {
         pNode = getId(parentNode.id)
-
         if (pNode) {
           diffModel.call(this, null, null, pNode)
         } else {
           checkNodeAvailability({ el: parentNode.id }, model, diffModel.bind(this), function () {
             // we cleanup cache on failed search
+            l('do')
             cache[model].oldModel = []
           })
         }

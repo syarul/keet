@@ -14,6 +14,7 @@ class App extends Keet {
   show = true
   people = model
   toggle () {
+    l(1)
     this.show = !this.show
   }
 }
@@ -23,14 +24,14 @@ const app = new App()
 app.mount(html`
   <button id="toggle" k-click="toggle()">toggle</button>
   <div id="1">one</div>
-  {{?show}}
+  <!-- {{?show}} -->
   <ul id="list">
-    {{model:people}}
+    <!-- {{model:people}} -->
     <li> {{name}} - {{age}} </li>
-    {{/model:people}}
+    <!-- {{/model:people}} -->
   </ul>
-  {{/show}}
+  <!-- {{/show}} -->
   <div id="3">three</div>
 `).link('app')
 
-console.assert(getId('app').innerHTML === '<button id="toggle">toggle</button><div id="1">one</div><ul id="list"><li> John - 21 </li><li> Sarah - 33 </li></ul><div id="3">three</div>', 'conditional nodes') //rem
+// console.assert(getId('app').innerHTML === '<button id="toggle">toggle</button><div id="1">one</div><ul id="list"><li> John - 21 </li><li> Sarah - 33 </li></ul><div id="3">three</div>', 'conditional nodes') //rem
