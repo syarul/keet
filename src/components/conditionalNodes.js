@@ -36,6 +36,7 @@ function resolveConditionalNodes (node, updateStateList, conditional, templatePa
       currentNode = cNode
       cNode = cNode.nextSibling
       if (currentNode.nodeType !== DOCUMENT_ELEMENT_TYPE && currentNode.nodeValue.match(conditionalNodesRawEnd)) {
+        cNode = null
         cache[conditional] = cache[conditional] || {}
 
         // clean up pristine node
@@ -47,7 +48,7 @@ function resolveConditionalNodes (node, updateStateList, conditional, templatePa
 
         cache[conditional].frag = frag
         fetchFrag = cache[conditional].frag.cloneNode(true)
-
+        l(fetchFrag.cloneNode(true))
         // resolve recursive conditional handlers as well
         templateParse(this, null, null, null, fetchFrag, 'initial')
 

@@ -133,10 +133,53 @@ function templateParse (ctx, updateStateList, modelInstance, modelObject, condit
     }
   }
 
+  let checkNew
+  let checkOld
+
+  function isEqual (oldNode, newNode) {
+    if (oldNode.isEqualNode(newNode)) {
+      return true
+    }
+    return false
+  }
+
+  const diff = (oldParentNode, newNode) => {
+    let count = 0
+    let newStore = []
+    while (newNode) {
+      count++
+      currentNode = newNode
+      newNode = newNode.nextSibling
+      newStore.push(currentNode)
+    }
+    let oldNode = oldParentNode.firstChild
+    let index
+    while (oldNode) {
+      count--
+      checkOld = oldNode
+      oldNode = oldNode.nextSibling
+      index = newStore.length - count - 1
+      if (newStore[index] && !isEqual(checkOld, newStore[index])) {
+        oldParentNode.replaceChild(newStore[index], checkOld)
+      } else if (checkOld && !newStore[index]) {
+        oldParentNode.removeChild(checkOld)
+      }
+      if (oldNode === null) {
+        while (count > 0) {
+          count--
+          index = newStore.length - count - 1
+          oldParentNode.appendChild(newStore[index])
+        }
+      }
+    }
+  }
+
   if (type === 'initial' || type === 'update') {
     check(instance, type)
   } else if (type === 'event') {
     addEvt(instance, type)
+  } else if (type === 'diff') {
+    diff(getId(ctx.el), instance)
   }
 }
 

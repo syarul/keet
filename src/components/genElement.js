@@ -11,8 +11,9 @@ let el
 const morpher = function () {
   el = getId(this.el)
   genElement.call(this)
+  l(this.base)
   if (el) {
-    this.IS_STUB ? morph(el, this.base.firstChild) : morph(el, this.base)
+    // this.IS_STUB ? morph(el, this.base.firstChild) : morph(el, this.base)
   }
   // exec life-cycle componentDidUpdate
   if (this.componentDidUpdate && typeof this.componentDidUpdate === 'function') {
@@ -90,7 +91,8 @@ const genElement = function () {
   this.base = this.__pristineFragment__.cloneNode(true)
   templateParse(this, addState, null, null, null, 'initial')
   templateParse(this, addState, null, null, null, 'update')
-  templateParse(this, addState, null, null, null, 'event')
+  templateParse(this, null, null, null, null, 'event')
+  templateParse(this, null, null, null, null, 'diff')
 }
 
 export {
