@@ -200,7 +200,7 @@ function templateParse (ctx, updateStateList, modelInstance, modelObject, condit
         if (oldNode.nodeName === newNode.nodeName) {
           setAttr(oldNode, newNode)
         } else {
-          oldParentNode.replaceChild(newNode, oldNode)
+          oldNode.parentNode.replaceChild(newNode, oldNode)
         }
       } else {
         if (oldNode.nodeValue !== newNode.nodeValue) {
