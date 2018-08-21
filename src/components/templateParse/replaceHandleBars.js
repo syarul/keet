@@ -5,7 +5,7 @@ import valAssign from './valAssign'
 
 const re = /{{([^{}]+)}}/g
 
-export default function (value, node, ins, updateStateList, templateParse, isAttr) {
+export default function (value, node, addState, isAttr) {
   const props = value.match(re)
   let ln = props.length
   let rep
@@ -15,30 +15,30 @@ export default function (value, node, ins, updateStateList, templateParse, isAtt
   while (ln) {
     ln--
     rep = props[ln].replace(re, '$1')
-    tnr = ternaryOps.call(ins, rep)
+    tnr = ternaryOps.call(this, rep)
     isObjectNotation = strInterpreter(rep)
     if (isObjectNotation) {
-      updateState(rep, updateStateList)
+      updateState(rep, addState)
       if (!isAttr) {
-        valAssign(node, value, '{{' + rep + '}}', ins[isObjectNotation[0]][isObjectNotation[1]])
+        valAssign(node, value, '{{' + rep + '}}', this[isObjectNotation[0]][isObjectNotation[1]])
       } else {
-        return value.replace(props, ins[isObjectNotation[0]][isObjectNotation[1]])
+        return value.replace(props, this[isObjectNotation[0]][isObjectNotation[1]])
       }
     } else {
       if (tnr) {
-        updateState(tnr.state, updateStateList)
+        updateState(tnr.state, addState)
         if (!isAttr) {
           valAssign(node, value, '{{' + rep + '}}', tnr.value)
         } else {
           return value.replace(props, tnr.value)
         }
       } else {
-        if (ins[rep] !== undefined) {
-          updateState(rep, updateStateList)
+        if (this[rep] !== undefined) {
+          updateState(rep, addState)
           if (!isAttr) {
-            valAssign(node, value, '{{' + rep + '}}', ins[rep])
+            valAssign(node, value, '{{' + rep + '}}', this[rep])
           } else {
-            return value.replace(props, ins[rep])
+            return value.replace(props, this[rep])
           }
         }
       }

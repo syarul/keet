@@ -14,8 +14,8 @@ import { updateContext, morpher } from './src/components/genElement'
 import { genId, assert, html, createModel } from './utils'
 import mount from './src/base/mount'
 
-// window.l = console.log.bind(console)
-// window.tr = console.trace.bind(console)
+window.l = console.log.bind(console)
+window.tr = console.trace.bind(console)
 
 /**
  * @description
@@ -78,10 +78,10 @@ class Keet {
   }
 }
 
-// export default Keet
+export default Keet
 
-export {
-  Keet as default,
-  html,
-  createModel
-}
+// export {
+//   Keet as default,
+//   html,
+//   createModel
+// }

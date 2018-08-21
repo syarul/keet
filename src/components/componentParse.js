@@ -5,7 +5,6 @@ let cacheInit = {}
 export default function (componentStr, node) {
   const component = componentStr.replace('component:', '')
   const c = this[component]
-
   if (c !== undefined) {
     // this is for initial component runner
     if (!cacheInit[c.ID]) {

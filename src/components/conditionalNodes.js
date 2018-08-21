@@ -24,12 +24,11 @@ function catchNode (node, start) {
   }
 }
 
-function resolveConditionalNodes (node, updateStateList, conditional, templateParse, setup) {
+function resolveConditionalNodes (node, conditional, setup, runner) {
   let currentNode
   let cNode
   let fetchFrag
   let frag = document.createDocumentFragment()
-
   if (setup === 'initial' && !cache.hasOwnProperty(conditional)) {
     cNode = node
     while (cNode) {
@@ -38,34 +37,19 @@ function resolveConditionalNodes (node, updateStateList, conditional, templatePa
       if (currentNode.nodeType !== DOCUMENT_ELEMENT_TYPE && currentNode.nodeValue.match(conditionalNodesRawEnd)) {
         cNode = null
         cache[conditional] = cache[conditional] || {}
-
         // clean up pristine node
         catchNode(this.__pristineFragment__.firstChild, frag.firstChild)
-        // also clean up cache for recursive handlers
-        Object.keys(cache).map(c =>
-          c !== conditional && catchNode(cache[c].frag.firstChild, frag.firstChild)
-        )
-
+        // since we work backward no need to check fragment recursive conditional states
         cache[conditional].frag = frag
-        fetchFrag = cache[conditional].frag.cloneNode(true)
-        // resolve recursive conditional handlers as well
-        templateParse(this, null, null, null, fetchFrag, 'initial')
-        // update current if conditional is truthy
-        if (this[conditional]) {
-          currentNode.parentNode.insertBefore(fetchFrag, currentNode)
-        }
       } else if (currentNode.nodeType !== DOCUMENT_COMMENT_TYPE) {
         frag.appendChild(currentNode)
       }
     }
-  } else {
+  } else if (setup === 'conditional-set') {
     if (node.nextSibling.isEqualNode(cache[conditional].frag.firstChild)) return
     fetchFrag = cache[conditional].frag.cloneNode(true)
-    if (this[conditional]) {
-      node.parentNode.insertBefore(fetchFrag, node.nextSibling)
-    } else {
-      // templateParse(this, null, null, null, fetchFrag, 'update')
-    }
+    runner.call(this, fetchFrag.firstChild)
+    node.parentNode.insertBefore(fetchFrag, node.nextSibling)
   }
 }
 

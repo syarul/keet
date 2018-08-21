@@ -1,4 +1,7 @@
-import templateParse from './templateParse/index'
+import conditionalSet from './templateParse/conditionalSet'
+import reconcile from './templateParse/reconcile'
+import eventBuff from './templateParse/eventBuff'
+import diffNodes from './templateParse/diffNodes'
 import strInterpreter from './strInterpreter'
 
 const DELAY = 1
@@ -23,8 +26,8 @@ const nextState = function (i) {
   let self = this
   let state
   let value
-  if (i < stateList.length) {
-    state = stateList[i]
+  if (i < stateList[this.ID].length) {
+    state = stateList[this.ID][i]
     value = this[state]
 
     // if value is undefined, likely has object notation we convert it to array
@@ -68,22 +71,23 @@ const setState = function () {
   nextState.call(this, 0)
 }
 
-let stateList = []
+let stateList = {}
 
-const clearState = () => {
-  stateList = []
+function clearState () {
+  if (stateList[this.ID]) stateList[this.ID] = []
 }
 
-const addState = state => {
-  if (stateList.indexOf(state) === -1) { stateList = stateList.concat(state) }
+function addState (state) {
+  stateList[this.ID] = stateList[this.ID] || []
+  if (stateList[this.ID].indexOf(state) === -1) { stateList[this.ID] = stateList[this.ID].concat(state) }
 }
 
 const genElement = function () {
   this.base = this.__pristineFragment__.cloneNode(true)
-  templateParse(this, addState, null, null, null, 'initial')
-  templateParse(this, addState, null, null, null, 'update')
-  templateParse(this, null, null, null, null, 'event')
-  templateParse(this, null, null, null, null, 'diff')
+  conditionalSet.call(this, this.base.firstChild)
+  reconcile.call(this, this.base.firstChild, addState.bind(this))
+  eventBuff.call(this, this.base.firstChild, true)
+  diffNodes.call(this, this.base.firstChild)
 }
 
 export {

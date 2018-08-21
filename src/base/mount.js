@@ -43,6 +43,6 @@ export default function (instance) {
   this.base = frag
 
   // cleanup states on mount
-  clearState()
+  clearState.call(this)
   return this
 }
