@@ -99,24 +99,32 @@ describe(`keet.js v-${ver} test`, function () {
     }
   })
 
-  // it('render sub-component', function () {
-  //   require('../examples/sub-component')
-  //   assert.equal(getId('sub').innerHTML, 'this is a sub-component')
-  //   clear()
-  // })
+  it('render sub-component', function () {
+    require('../examples/sub-component')
+    assert.equal(getId('sub').innerHTML, 'this is a sub-component')
+    clear()
+  })
 
-  // it('render sub multi component', function () {
-  //   require('../examples/sub-multi-component')
-  //   assert.equal(getId('container').innerHTML, '<div id="sub">this is a sub-component</div><div id="sub">this is a sub-component</div><div id="sub">this is a sub-component</div>')
-  //   clear()
-  // })
+  it('render sub multi component', function () {
+    require('../examples/sub-multi-component')
 
-  // it('sub-component event handling', function () {
-  //   require('../examples/sub-component_with_event')
-  //   // batch pool has started since
-  //   assert.equal(getId('sub-button').innerHTML, 'value: bar')
-  //   clear()
-  // })
+    let r = '<div id="sub" data-ignore="">this is a sub-component</div>'
+
+    r = `${r}${r}${r}`
+
+    assert.equal(getId('container').innerHTML, r)
+    clear()
+  })
+
+  it('sub-component event handling', function (next) {
+    require('../examples/sub-component_with_event')
+    // batch pool has started since
+    setTimeout(() => {
+      assert.equal(getId('sub-button').innerHTML, 'value: bar')
+      clear()
+      next()
+    })
+  })
 
   it('event not declared', function () {
     require('../examples/event_not_declared')
@@ -125,25 +133,25 @@ describe(`keet.js v-${ver} test`, function () {
     clear()
   })
 
-  // it('sub-component not assigned', function (next) {
-  //   require('../examples/sub-component_err_not_assigned')
-  //   // batch pool has initiated, so we have to check outside of the event loop
-  //   setTimeout(() => {
-  //     assert.equal(getId('container').innerHTML, '{{component:subc}}')
-  //     clear()
-  //     next()
-  //   })
-  // })
+  it('sub-component not assigned', function () {
+    // batch pool has initiated, so we have to check outside of the event loop
+    try {
+      require('../examples/sub-component_err_not_assigned')
+    } catch (err) {
+      assert.equal(err instanceof Error, true)
+    }
+    clear()
+  })
 
-  // it('sub-component async', function (next) {
-  //   require('../examples/sub-component_async')
-  //   // batch pool has initiated, so we have to check outside of the event loop
-  //   setTimeout(() => {
-  //     assert.equal(getId('container').innerHTML, '<div id="sub">this is a sub-component</div>')
-  //     clear()
-  //     next()
-  //   }, 200)
-  // })
+  it('sub-component async', function (next) {
+    require('../examples/sub-component_async')
+    // batch pool has initiated, so we have to check outside of the event loop
+    setTimeout(() => {
+      assert.equal(getId('container').innerHTML, '<div id="sub" data-ignore="">this is a sub-component</div>')
+      clear()
+      next()
+    }, 200)
+  })
 
   it('event click', function (next) {
     require('../examples/counter')
@@ -249,4 +257,10 @@ describe(`keet.js v-${ver} test`, function () {
       next()
     })
   })
+
+  it('model perf test', function () {
+    require('../examples/model-perf')
+    clear()
+  })
+  
 })

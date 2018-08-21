@@ -64,7 +64,7 @@
     "include": [
       "keet.js",
       "utils.js",
-      "components"
+      "src"
     ],
     "sourceMap": false,
     "instrument": false
@@ -92,6 +92,7 @@
       ]
     ],
     "plugins": [
+      "istanbul",
       "transform-class-properties",
       "transform-object-rest-spread"
     ]

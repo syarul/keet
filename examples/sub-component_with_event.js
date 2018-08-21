@@ -38,4 +38,4 @@ const button = getId('sub-button')
 
 button.dispatchEvent(change)
 
-setTimeout(() => console.assert(getId('sub-button').innerHTML === 'value: bar', 'sub-component event'), 100)
+setTimeout(() => console.assert(getId('sub-button').innerHTML === 'value: bar', 'sub-component event'))

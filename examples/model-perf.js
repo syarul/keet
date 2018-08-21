@@ -1,6 +1,6 @@
 /* global performance */
 import Keet from '../'
-import { html, CreateModel } from '../utils'
+import { html, createModel as CreateModel } from '../utils'
 
 let time
 let updateCount = 0
