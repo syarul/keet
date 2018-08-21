@@ -1,3 +1,4 @@
+
 /**
  * Keetjs v4.0.0 Alpha release: https://github.com/keetjs/keet
  * Minimalist view layer for the web
@@ -13,8 +14,8 @@ import { updateContext, morpher } from './src/components/genElement'
 import { genId, assert, html, createModel } from './utils'
 import mount from './src/base/mount'
 
-window.l = console.log.bind(console)
-window.tr = console.trace.bind(console)
+// window.l = console.log.bind(console)
+// window.tr = console.trace.bind(console)
 
 /**
  * @description

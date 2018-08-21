@@ -111,14 +111,15 @@ class App extends Keet {
 const app = new App()
 
 app.mount(html`
-  <button id="toggle" k-click="toggle()">toggle</button>
+  <button id="toggle" k-click="toggle()" attr="{{show?foo:bar}}" style="color: {{show?red:blue}};" {{show?testme:test}}>toggle</button>
   <div id="1">one</div>
   <!-- {{?show}} -->
   <div id="2">two</div>
-  <!-- {{/show}} -->
   <div id="3">three</div>
+  <div id="4">four</div>
+  <!-- {{/show}} -->
+  <div id="5">five</div>
 `).link('app')
-
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
 
@@ -132,13 +133,13 @@ To map an array to elements use the ```{{model:<myModelName>}}<myModelTemplate>{
 <!-- AUTO-GENERATED-CONTENT:START (MODEL) -->
 ```js
 import Keet from 'keet'
-import { html, createModel } from 'keet/utils'
+import { html, createModel as CreateModel } from 'keet/utils'
 
-let task = new createModel()
+let task = new CreateModel()
 
 class App extends Keet {
   task = task
-  componentWillMount(){
+  componentWillMount () {
     // callBatchPoolUpdate - custom method to inform changes in the model.
     // If the component has other states that reflect the model value changes
     // we can safely ignore calling this method.
@@ -167,7 +168,7 @@ for (let i = 0; i < taskName.length; i++) {
   app.task.add({
     id: i,
     taskName: taskName[i],
-    complete: i % 2 === 0 ? false : true
+    complete: i % 2 !== 0
   })
 }
 
@@ -178,10 +179,7 @@ app.task.update('id', {
   complete: true
 })
 
-// remove a task
 app.task.destroy('taskName', 'roll')
-
-console.log(app)
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
 
@@ -218,7 +216,7 @@ const app = new App()
 app.mount(html`
   <div id="container">
     <div>parent</div>
-    {{component:subc}}
+    <!-- {{component:subc}} -->
   </div>
 `).link('app')
 

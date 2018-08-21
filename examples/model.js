@@ -23,7 +23,7 @@ const app = new App()
 let name = 'myModel' // rem
 // rem
 app.mount(html`
-  <h1>${name}</h1><!-- //rem -->
+  <h1>${name}</h1><!-- // rem -->
   <ul id="list">
     <!-- {{model:task}} -->
     <li id="{{id}}">

@@ -81,7 +81,7 @@
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "start": "webpack-dev-server -d",
     "test": "mocha test/test.js --require babel-core/register --require jsdom-global/register --timeout 10000",
-    "test-ci": "nyc npm run test",
+    "test-ci": "nyc npm run test && npm run lint",
     "lint": "standard keet.js utils.js src/**/*.js examples/**/*.js --fix"
   },
   "git_branch": "master",

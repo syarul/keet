@@ -75,7 +75,7 @@ function next(i, files){
     parse[file] = ''
 
     rd.on('line', function (line) {
-      if(!line.match('//rem')){
+      if(!line.match('// rem')){
         if(line.match(/\.\.\/\'/g)){
           line = line.replace(/\.\.\/\'/, 'keet\'')
         } else if(line.match(/\.\.\/utils/g)){
@@ -120,7 +120,9 @@ function ReadLine2 (file) {
     c++
     if (c > 0 && c < 11) {
       info += line + '\n'
+
       if (c === 10) {
+        console.log(info)
         var data = fs.readFileSync('./keet-min.js'); //read existing contents into data
         var fd = fs.openSync('./keet-min.js', 'w+');
         var buffer = new Buffer(info);

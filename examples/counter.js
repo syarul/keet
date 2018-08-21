@@ -1,4 +1,4 @@
-/* global Event */
+/* global Event */ // rem
 import Keet from '../'
 import { html, getId } from '../utils'
 
