@@ -56,6 +56,23 @@ var config = {
 
     SUB_COMPONENT () {
       return `\`\`\`js\n${parse['sub-component']}\`\`\``
+    },
+
+    HTML () {
+      return 
+`\`\`\`html
+<html>
+  <head>
+    <script src="//cdn.rawgit.com/syarul/keet/${git_branch}/keet-min.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+  <script>
+    // your codes goes here
+  </script>
+</html>
+\`\`\``
     }
 
   }

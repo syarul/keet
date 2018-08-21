@@ -20,10 +20,11 @@ To try out Keet is to include it from a CDN or npm.
 
 Create a HTML file:-
 
+<!-- AUTO-GENERATED-CONTENT:START (HTML) -->
 ```html
 <html>
   <head>
-    <script src="//cdn.rawgit.com/syarul/keet/master/keet-min.js"></script>
+    <script src="//cdn.rawgit.com/syarul/keet/esm-4/keet-min.js"></script>
   </head>
   <body>
     <div id="app"></div>
@@ -33,6 +34,8 @@ Create a HTML file:-
   </script>
 </html>
 ```
+<!-- AUTO-GENERATED-CONTENT:END -->
+
 Or from npm:-
 
 ```npm install keet```
