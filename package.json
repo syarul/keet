@@ -84,7 +84,7 @@
     "test-ci": "nyc npm run test && npm run lint",
     "lint": "standard keet.js utils.js src/**/*.js examples/**/*.js --fix"
   },
-  "git_branch": "master",
+  "git_branch": "esm-4",
   "babel": {
     "presets": [
       [
