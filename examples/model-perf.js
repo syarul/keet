@@ -1,25 +1,47 @@
+/* global performance */
 import Keet from '../'
-import { html, createModel, getId } from '../utils'
+import { html, CreateModel } from '../utils'
+
+let time
+let updateCount = 0
+let off
+let count = 100
+let evtAdd = `model - perf test render ${count} list ({{sAdd}})`
+let evtUpdate = `model - perf test update ${count} list ({{sUpdate}})`
+let evtDelete = `model - perf test delete ${count} list ({{sDelete}})`
+let copyList
 
 class App extends Keet {
-  task = new createModel()
+  task = new CreateModel()
   sAdd = 'wait for dom to render..'
-  sUpdate = 'wait for dom to add..'
-  componentWillMount(){
+  sUpdate = 'wait for add..'
+  sDelete = 'wait for update..'
+  componentWillMount () {
     // callBatchPoolUpdate - custom method to inform changes in the model.
     // If the component has other states that reflect the model value changes
     // we can safely ignore calling this method.
-    this.task.subscribe(model => {
+    this.task.subscribe(model =>
       this.callBatchPoolUpdate()
-    })
+    )
   }
-  action(evt){
-    // console.log(id)
+  action () {
   }
-  componentDidUpdate(){
-    if(!this.update){ // this so we wont stay inside an infinite loop
-      this.update = true
-      this.sAdd = `${new Date() -time}ms`
+  componentDidUpdate () {
+    updateCount++
+
+    if (updateCount === 1) {
+      off = performance.now() - time
+      this.sAdd = `${off}ms`
+      this.callBatchPoolUpdate()
+    }
+    if (updateCount === 3) {
+      off = performance.now() - time
+      this.sUpdate = `${off}ms`
+      this.callBatchPoolUpdate()
+    }
+    if (updateCount === 5) {
+      off = performance.now() - time
+      this.sDelete = `${off}ms`
       this.callBatchPoolUpdate()
     }
   }
@@ -27,15 +49,10 @@ class App extends Keet {
 
 const app = new App()
 
-let count = 100
-
-let evt_add = `model - perf test render ${count} list ({{sAdd}})`
-
-let evt_update = `model - perf test update ${count} list ({{sUpdate}})`
-
 app.mount(html`
-  <h4 id="evt-add">${evt_add}</h4>
-  <h4 id="evt-up">${evt_update}</h4>
+  <h4 id="evt-add">${evtAdd}</h4>
+  <h4 id="evt-up">${evtUpdate}</h4>
+  <h4 id="evt-up">${evtDelete}</h4>
   <ul id="list" k-click="action()">
     <!-- {{model:task}} -->
     <li id="{{id}}"><span style="text-decoration: {{complete?line-through:none}};">{{taskName}}</span>
@@ -46,42 +63,27 @@ app.mount(html`
   </ul>
 `).link('app')
 
-let time = new Date()
-
 setTimeout(() => {
-  time = new Date()
+  time = performance.now()
   for (let i = 0; i < count; i++) {
     app.task.add({
-      id: i,
       taskName: `todo task ${i}`,
       complete: false
     })
   }
+  copyList = JSON.parse(JSON.stringify(app.task.list))
+}, 2000)
 
-  // for (let i = 0; i < count; i++) {
-  //   app.task.update( 'id', {
-  //     id: i,
-  //     taskName: 'completed',
-  //     complete: true
-  //   })
-  // }
-
+setTimeout(() => {
+  time = performance.now()
   for (let i = 0; i < count; i++) {
-    // app.task.destroy( 'id', i)
+    app.task.update({ ...copyList[i], complete: true })
   }
+}, 4000)
 
-  // setInterval(() => console.log(Date.now() - window._time))
-
-}, 1000)
-
-// update a task
-// app.task.update('id', {
-//   id: 0,
-//   taskName: 'sleep',
-//   complete: true
-// })
-
-// remove a task
-// app.task.destroy('taskName', 'roll')
-
-// setTimeout(() => console.assert(getId('list').innerHTML === '<li id="0">sleep<input type="checkbox" checked=""></li><li id="1">jog<input type="checkbox" checked=""></li><li id="2">walk<input type="checkbox"></li><li id="3">swim<input type="checkbox" checked=""></li>', 'model list')) //rem
+setTimeout(() => {
+  time = performance.now()
+  for (let i = 0; i < count; i++) {
+    app.task.destroy(copyList[i])
+  }
+}, 6000)

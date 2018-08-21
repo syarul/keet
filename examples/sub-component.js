@@ -4,7 +4,7 @@ import { html, getId } from '../utils'
 class Sub extends Keet {
   // provide the node id where this sub will rendered
   el = 'sub'
-  componentDidMount(){} //rem
+  componentDidMount () {} // rem
 }
 
 const sub = new Sub()
@@ -24,8 +24,8 @@ const app = new App()
 app.mount(html`
   <div id="container">
     <div>parent</div>
-    {{component:subc}}
+    <!-- {{component:subc}} -->
   </div>
 `).link('app')
 
-// console.assert(getId('sub').innerHTML === 'this is a sub-component', 'sub-component rendering') //rem
+console.assert(getId('sub').innerHTML === 'this is a sub-component', 'sub-component rendering') // rem

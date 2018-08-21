@@ -1,20 +1,10 @@
 import templateParse from './templateParse/index'
 import strInterpreter from './strInterpreter'
-import morph from 'set-dom'
-import { getId } from '../../utils'
-
-morph.KEY = 'kdata-id'
 
 const DELAY = 1
-let el
 
 const morpher = function () {
-  el = getId(this.el)
   genElement.call(this)
-  // l(this.base)
-  if (el) {
-    // this.IS_STUB ? morph(el, this.base.firstChild) : morph(el, this.base)
-  }
   // exec life-cycle componentDidUpdate
   if (this.componentDidUpdate && typeof this.componentDidUpdate === 'function') {
     this.componentDidUpdate()
@@ -30,9 +20,9 @@ const updateContext = function (fn, delay) {
 }
 
 const nextState = function (i) {
+  let self = this
   let state
   let value
-
   if (i < stateList.length) {
     state = stateList[i]
     value = this[state]
@@ -43,6 +33,7 @@ const nextState = function (i) {
     if (value && Array.isArray(value)) {
       // using split object notation as base for state update
       let inVal = this[value[0]][value[1]]
+
       Object.defineProperty(this[value[0]], value[1], {
         enumerable: false,
         configurable: true,
@@ -51,7 +42,7 @@ const nextState = function (i) {
         },
         set: function (val) {
           inVal = val
-          updateContext.call(this, morpher, DELAY)
+          updateContext.call(self, morpher, DELAY)
         }
       })
     } else {
@@ -64,7 +55,7 @@ const nextState = function (i) {
         },
         set: function (val) {
           value = val
-          updateContext.call(this, morpher, DELAY)
+          updateContext.call(self, morpher, DELAY)
         }
       })
     }
@@ -91,11 +82,8 @@ const genElement = function () {
   this.base = this.__pristineFragment__.cloneNode(true)
   templateParse(this, addState, null, null, null, 'initial')
   templateParse(this, addState, null, null, null, 'update')
-  // l(this.base.cloneNode(true))
   templateParse(this, null, null, null, null, 'event')
-  // l(this.base.cloneNode(true))
   templateParse(this, null, null, null, null, 'diff')
-  // l(this.base.cloneNode(true))
 }
 
 export {

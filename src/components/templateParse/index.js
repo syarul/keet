@@ -93,11 +93,10 @@ function templateParse (ctx, updateStateList, modelInstance, modelObject, condit
       }
       i++
     }
-    if(evtStore.length && !node.hasAttribute('evt-data')){
+    if (evtStore.length && !node.hasAttribute('evt-data')) {
       let rd = minId()
       node.setAttribute('evt-data', rd)
       cacheEvents[rd] = evtStore
-      // l(cacheEvents)
     }
     return evtStore
   }
@@ -143,7 +142,7 @@ function templateParse (ctx, updateStateList, modelInstance, modelObject, condit
 
   function isEqual (oldNode, newNode) {
     return (
-      (isIgnored(oldNode) && isIgnored(newNode)) || 
+      (isIgnored(oldNode) && isIgnored(newNode)) ||
       oldNode.isEqualNode(newNode)
     )
   }
@@ -152,25 +151,25 @@ function templateParse (ctx, updateStateList, modelInstance, modelObject, condit
     return node.getAttribute('data-ignore') != null
   }
 
-  function arbiter (oldNode, newNode){
-    if(oldNode.nodeName !== 'INPUT') return
-    if(oldNode.checked !== newNode.checked){
-      oldNode.checked =  newNode.checked
+  function arbiter (oldNode, newNode) {
+    if (oldNode.nodeName !== 'INPUT') return
+    if (oldNode.checked !== newNode.checked) {
+      oldNode.checked = newNode.checked
     }
   }
 
-  function setAttr(oldNode, newNode) {
+  function setAttr (oldNode, newNode) {
     let oAttr = newNode.attributes
     let output = {}
     let i = 0
-    while(i < oAttr.length){
+    while (i < oAttr.length) {
       output[oAttr[i].name] = oAttr[i].value
       i++
     }
     let iAttr = oldNode.attributes
     let input = {}
     let j = 0
-    while(j < iAttr.length){
+    while (j < iAttr.length) {
       input[iAttr[j].name] = iAttr[j].value
       j++
     }
@@ -178,22 +177,22 @@ function templateParse (ctx, updateStateList, modelInstance, modelObject, condit
       if (oldNode.attributes[attr] && oldNode.attributes[attr].name === attr && oldNode.attributes[attr].value !== output[attr]) {
         oldNode.setAttribute(attr, output[attr])
       } else {
-        if(!oldNode.hasAttribute(attr)){
+        if (!oldNode.hasAttribute(attr)) {
           oldNode.setAttribute(attr, output[attr])
         }
       }
     }
     for (let attr in input) {
       if (newNode.attributes[attr] && oldNode.attributes[attr]) {
-      } else if(attr !== 'evt-data') {
+      } else if (attr !== 'evt-data') {
         oldNode.removeAttribute(attr)
       }
     }
   }
 
-  function patch(oldNode, newNode) {
-    if(oldNode.nodeType === newNode.nodeType){
-      if(oldNode.nodeType === DOCUMENT_ELEMENT_TYPE){
+  function patch (oldNode, newNode) {
+    if (oldNode.nodeType === newNode.nodeType) {
+      if (oldNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
         arbiter(oldNode, newNode)
         if (isEqual(oldNode, newNode)) return
         diff(oldNode.firstChild, newNode.firstChild)
@@ -212,7 +211,7 @@ function templateParse (ctx, updateStateList, modelInstance, modelObject, condit
     }
   }
 
-  function getIndex(store, count){
+  function getIndex (store, count) {
     return store.length - count - 1
   }
 
@@ -235,7 +234,7 @@ function templateParse (ctx, updateStateList, modelInstance, modelObject, condit
       checkOld = oldNode
       oldNode = oldNode.nextSibling
       index = getIndex(newStore, count)
-      if(checkOld && newStore[index]){
+      if (checkOld && newStore[index]) {
         patch(checkOld, newStore[index])
       } else if (checkOld && !newStore[index]) {
         oldParentNode.removeChild(checkOld)
@@ -255,9 +254,13 @@ function templateParse (ctx, updateStateList, modelInstance, modelObject, condit
   } else if (type === 'event') {
     addEvt(instance, type)
   } else if (type === 'diff') {
-    diff(getId(ctx.el).firstChild, instance)
+    let base = getId(ctx.el)
+    if (base && !ctx.IS_STUB) {
+      diff(base.firstChild, instance)
+    } else if (base) {
+      diff(base, instance)
+    }
   }
-  // l(type)
 }
 
 export default templateParse

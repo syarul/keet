@@ -1,41 +1,30 @@
 import Keet from '../'
-import { html, createModel, getId } from '../utils'
+import { html, createModel as CreateModel, getId } from '../utils'
 
 const ENTER = 13
 
-const genId = () => (Math.random()*1*1e17).toString(32)
-
 class App extends Keet {
-  task = new createModel()
+  task = new CreateModel()
   total = 0
-  componentWillMount(){
-    this.task.subscribe(model =>
+  componentWillMount () {
+    this.task.subscribe(model => {
       this.total = model.length
-    )
+    })
   }
-  events(obj, target, node, e){
-    l(arguments)
-    if(target === 'edit'){
+  events (obj, target) {
+    if (target.className === 'edit') {
       this.task.update({ ...obj, complete: !obj.complete })
-    } else if(target === 'destroy'){
+    } else if (target.className === 'destroy') {
       this.task.destroy(obj)
     }
-    
   }
-  addTask(evt){
-    if (evt.which === ENTER && evt.target.value !== ''){
+  addTask (e) {
+    if (e.which === ENTER && e.target.value !== '') {
       this.task.add({
-        id: genId(),
-        taskName: evt.target.value,
+        taskName: e.target.value,
         complete: false
       })
     }
-  }
-  toggle(id, complete){
-    this.task.update('id', {
-      id: id,
-      complete: complete === 'yes' ? false : true
-    })
   }
 }
 
@@ -69,13 +58,4 @@ for (let i = 0; i < count; i++) {
   })
 }
 
-// update a task
-// app.task.update('taskName', {
-//   taskName: 'TASK TODO 0',
-//   complete: true
-// })
-
-// // remove a task
-// app.task.destroy('taskName', 'TASK TODO 2')
-
-// setTimeout(() => console.assert(getId('list').childNodes.length === 2))
+setTimeout(() => console.assert(getId('list').childNodes.length === 5))

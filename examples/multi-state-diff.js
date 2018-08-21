@@ -4,11 +4,11 @@ import { getId } from '../utils'
 class App extends Keet {
   state = 'no'
   what = 'horrayyy'
-  update(val){
-  	this.state = val
+  update (val) {
+    this.state = val
   }
-  another(val){
-  	this.what = val
+  another (val) {
+    this.what = val
   }
 }
 
@@ -23,5 +23,3 @@ app.update('horray')
 setTimeout(() => {
   console.assert(getId('app').innerHTML === 'I say: horray horray horray horrayyy!', 'multi state')
 })
-
-

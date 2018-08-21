@@ -34,7 +34,7 @@ function render (str, obj) {
   documentFragment.firstChild.setAttribute('kdata-id', obj['kdata-id'])
 }
 
-function removeProtoModel(node, id, after){
+function removeProtoModel (node, id, after) {
   let p = node.getElementById(id)
   if (p) p.childNodes[1].remove()
   else if (!after) {
@@ -57,7 +57,6 @@ function genModelList (node, model, templateParse) {
   let list
   let str
   let oldModel
-  let p
   let listArg
   let idx
   let beforeNode
@@ -66,7 +65,7 @@ function genModelList (node, model, templateParse) {
   cache[model] = cache[model] || {}
 
   // check if the model use filtering
-  listArg = this[model].enableFiltering ? 'listFilter' : 'list'
+  listArg = this[model] && this[model].enableFiltering ? 'listFilter' : 'list'
 
   if (!cache[model][listArg]) {
     cache[model][listArg] = node.nextSibling.cloneNode(true)
@@ -79,7 +78,6 @@ function genModelList (node, model, templateParse) {
     node.nextSibling.remove()
     // also remove from pristine nodes / conditional cache store
     removeProtoModel(this.__pristineFragment__, node.parentNode.id)
-
   }
   str = cache[model].str
 
@@ -192,7 +190,6 @@ function genModelList (node, model, templateParse) {
         } else {
           checkNodeAvailability({ el: parentNode.id }, model, diffModel.bind(this), function () {
             // we cleanup cache on failed search
-            l('do')
             cache[model].oldModel = []
           })
         }

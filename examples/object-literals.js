@@ -2,14 +2,13 @@ import Keet from '../'
 import { getId, html } from '../utils'
 
 class App extends Keet {
-
   state = {
     name: 'john',
     age: 31
   }
 
   another = 'foo'
-  
+
   change () {
     this.state.name = 'keet'
   }
@@ -29,7 +28,6 @@ app.mount(html`
   <span> age : {{state.age}}</span>
 `).link('app')
 
-
 app.change()
 // batch pool has started since
 
@@ -41,4 +39,3 @@ app.changeAge()
 setTimeout(() => {
   console.assert(getId('app').innerHTML === '<span>bar</span><span> state : keet</span><span> age : 12</span>', 'batch-pool update')
 })
-

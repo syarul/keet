@@ -48,10 +48,8 @@ function resolveConditionalNodes (node, updateStateList, conditional, templatePa
 
         cache[conditional].frag = frag
         fetchFrag = cache[conditional].frag.cloneNode(true)
-        // l(fetchFrag.cloneNode(true))
         // resolve recursive conditional handlers as well
         templateParse(this, null, null, null, fetchFrag, 'initial')
-        // l(fetchFrag.cloneNode(true))
         // update current if conditional is truthy
         if (this[conditional]) {
           currentNode.parentNode.insertBefore(fetchFrag, currentNode)

@@ -20,10 +20,10 @@ export default function (componentStr, node) {
         node.parentNode.replaceChild(c.base, node)
       } else {
         node.parentNode.replaceChild(cacheInit[c.ID].cloneNode(true), node)
+        // inform sub-component to update
+        c.callBatchPoolUpdate()
       }
     }
-    // inform sub-component to update
-    c.callBatchPoolUpdate()
   } else {
     assert(false, 'Component ' + component + ' does not exist.')
   }

@@ -6,9 +6,6 @@
   "bugs": {
     "url": "https://github.com/syarul/keet/issues"
   },
-  "dependencies": {
-    "set-dom": "syarul/set-dom#master"
-  },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.6",
@@ -85,7 +82,7 @@
     "start": "webpack-dev-server -d",
     "test": "mocha test/test.js --require babel-core/register --require jsdom-global/register --timeout 10000",
     "test-ci": "nyc npm run test",
-    "lint": "standard keet.js utils.js src/**/*.js --fix"
+    "lint": "standard keet.js utils.js src/**/*.js examples/**/*.js --fix"
   },
   "git_branch": "master",
   "babel": {

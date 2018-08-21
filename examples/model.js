@@ -1,11 +1,11 @@
 import Keet from '../'
-import { html, createModel, getId } from '../utils'
+import { html, createModel as CreateModel, getId } from '../utils'
 
-let task = new createModel()
+let task = new CreateModel()
 
 class App extends Keet {
   task = task
-  componentWillMount(){
+  componentWillMount () {
     // callBatchPoolUpdate - custom method to inform changes in the model.
     // If the component has other states that reflect the model value changes
     // we can safely ignore calling this method.
@@ -13,15 +13,15 @@ class App extends Keet {
       this.callBatchPoolUpdate()
     )
   }
-  componentDidUpdate(){ //rem
-    console.assert(getId('list').childNodes.length === 7) //rem
-  } //rem
+  componentDidUpdate () { // rem
+    console.assert(getId('list').childNodes.length === 7) // rem
+  } // rem
 }
 
 const app = new App()
 
-let name = 'myModel' //rem
-//rem
+let name = 'myModel' // rem
+// rem
 app.mount(html`
   <h1>${name}</h1><!-- //rem -->
   <ul id="list">
@@ -40,7 +40,7 @@ for (let i = 0; i < taskName.length; i++) {
   app.task.add({
     id: i,
     taskName: taskName[i],
-    complete: i % 2 === 0 ? false : true
+    complete: i % 2 !== 0
   })
 }
 

@@ -19,7 +19,7 @@ export default function (value, node, ins, updateStateList, templateParse, isAtt
     isObjectNotation = strInterpreter(rep)
     if (isObjectNotation) {
       updateState(rep, updateStateList)
-      if(!isAttr){
+      if (!isAttr) {
         valAssign(node, value, '{{' + rep + '}}', ins[isObjectNotation[0]][isObjectNotation[1]])
       } else {
         return value.replace(props, ins[isObjectNotation[0]][isObjectNotation[1]])

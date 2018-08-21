@@ -1,11 +1,11 @@
 import Keet from '../'
-import { html, createModel, getId } from '../utils'
+import { html, CreateModel } from '../utils'
 
-let model = new createModel()
+let model = new CreateModel()
 
 let people = [
-  {name: 'John', age: 21 },
-  {name: 'Sarah', age: 33 }
+  { name: 'John', age: 21 },
+  { name: 'Sarah', age: 33 }
 ]
 
 Array.from(people).map(p => model.add(p))
@@ -14,7 +14,6 @@ class App extends Keet {
   show = true
   people = model
   toggle () {
-    l(1)
     this.show = !this.show
   }
 }
@@ -33,5 +32,3 @@ app.mount(html`
   <!-- {{/show}} -->
   <div id="3">three</div>
 `).link('app')
-
-// console.assert(getId('app').innerHTML === '<button id="toggle">toggle</button><div id="1">one</div><ul id="list"><li> John - 21 </li><li> Sarah - 33 </li></ul><div id="3">three</div>', 'conditional nodes') //rem

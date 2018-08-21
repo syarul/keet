@@ -1,3 +1,4 @@
+/* global Event */
 import Keet from '../'
 import { html, getId } from '../utils'
 
@@ -16,10 +17,10 @@ app.mount(html`
   </button>
 `).link('app')
 
-const click = new Event('click', {'bubbles': true, 'cancelable': true }) //rem
-//rem
-const counter = getId('counter') //rem
-//rem
-counter.dispatchEvent(click) //rem
-//rem
-setTimeout(() => console.assert(counter.innerHTML === '1', 'counter test')) //rem
+const click = new Event('click', { 'bubbles': true, 'cancelable': true }) // rem
+// rem
+const counter = getId('counter') // rem
+// rem
+counter.dispatchEvent(click) // rem
+// rem
+setTimeout(() => console.assert(counter.innerHTML === '1', 'counter test')) // rem

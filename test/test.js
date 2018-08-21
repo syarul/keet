@@ -79,12 +79,6 @@ describe(`keet.js v-${ver} test`, function () {
     }
   })
 
-  it('flush', function () {
-    require('../examples/flush')
-    const app = getId('app')
-    assert.equal(app.innerHTML, '')
-  })
-
   it('componentWillMount', function () {
     const app = require('../examples/link').default
     assert.equal(app.isWillMount, true)
@@ -151,12 +145,6 @@ describe(`keet.js v-${ver} test`, function () {
   //   }, 200)
   // })
 
-  it('cluster function', function () {
-    const { a, b } = require('../examples/cluster')
-    assert.equal(a + b, 3)
-    clear()
-  })
-
   it('event click', function (next) {
     require('../examples/counter')
     const counter = getId('counter')
@@ -170,11 +158,17 @@ describe(`keet.js v-${ver} test`, function () {
 
   it('batch-pool 1 million updates', function (next) {
     require('../examples/batch-pool')
-    // batch pool has initiated, so we have to check outside of the event loop
-    setTimeout(() => {
-      assert.equal(getId('container').innerHTML, '1')
-      clear()
-      next()
+
+    function getCount(){
+      return getId('container').innerHTML
+    }
+
+    let t = setInterval(() => {
+      if(getCount() === '1'){
+        clearInterval(t)
+        clear()
+        next()
+      }
     })
   })
 
@@ -212,27 +206,7 @@ describe(`keet.js v-${ver} test`, function () {
     require('../examples/model')
     // batch pool has initiated, so we have to check outside of the event loop
     setTimeout(() => {
-      assert.equal(getId('list').innerHTML, '<li id="0">sleep<input type="checkbox" checked=""></li><li id="1">jog<input type="checkbox" checked=""></li><li id="2">walk<input type="checkbox"></li><li id="3">swim<input type="checkbox" checked=""></li>')
-      clear()
-      next()
-    }, 100)
-  })
-
-  it('model not declared', function (next) {
-    require('../examples/model_not_declared')
-    // batch pool has initiated, so we have to check outside of the event loop
-    setTimeout(() => {
-      assert.equal(getId('list').innerHTML, '<li id="{{id}}">{{taskName}}<input type="checkbox"></li>')
-      clear()
-      next()
-    })
-  })
-
-  it('model not in template literals', function (next) {
-    require('../examples/model_not_in_template_literals')
-    // batch pool has initiated, so we have to check outside of the event loop
-    setTimeout(() => {
-      assert.equal(getId('list').innerHTML, '<li id="{{id}}">{{taskName}}<input type="checkbox"></li>')
+      assert.equal(getId('list').childNodes.length, 7)
       clear()
       next()
     })
@@ -270,7 +244,7 @@ describe(`keet.js v-${ver} test`, function () {
     require('../examples/conditional-nodes')
     // batch pool has initiated, so we have to check outside of the event loop
     setTimeout(() => {
-      assert.equal(getId('app').innerHTML, '<button>toggle</button><div id="1">one</div><div id="3">three</div>')
+      assert.equal(getId('app').childNodes.length, 5)
       clear()
       next()
     })

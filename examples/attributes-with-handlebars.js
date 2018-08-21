@@ -12,4 +12,4 @@ app.mount(html`
   <div id={{text}} {{condition?foo:bar}}>{{text}}</div>
 `).link('app')
 
-console.assert(getId('app').innerHTML === '<div id="foo" bar="">foo</div>', 'attributes with handlebars') //rem
+console.assert(getId('app').innerHTML === '<div id="foo" bar="">foo</div>', 'attributes with handlebars') // rem
