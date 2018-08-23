@@ -5,7 +5,7 @@ const re = /{{([^{}]+)}}/g
 const model = /^model:/g
 const component = /^component:([^{}]+)/g
 
-export default function (value, node) {
+export default function (value, node, reconcile) {
   let rep
   let modelRep
 
@@ -13,7 +13,7 @@ export default function (value, node) {
     rep = value.replace(re, '$1').trim()
     if (rep.match(model)) {
       modelRep = rep.replace('model:', '')
-      genModelList.call(this, node, modelRep)
+      genModelList.call(this, node, modelRep, reconcile)
     } else if (rep.match(component)) {
       componentParse.call(this, rep, node)
     }

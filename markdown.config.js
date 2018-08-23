@@ -34,8 +34,10 @@ var config = {
       return `# Keet v${ver}`
     },
 
-    EXAMPLES () {
-      return `For more usage cases visit the [examples](https://github.com/syarul/keet/tree/${git_branch}/examples) directory`
+    RESOURCES () {
+      return `- Usage/API Examples - https://github.com/syarul/keet/tree/esm-5/examples
+- TodoMVC Implementation - https://github.com/syarul/keetjs-todomvc
+- Performance (opinionated) - https://github.com/syarul/preact-perf`
     },
 
     HELLO () {

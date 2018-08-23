@@ -53,13 +53,13 @@ let events
 let c
 let currentNode
 
-function recon (node, addState, modelObject) {
+function recon (node, addState, model) {
   while (node) {
     currentNode = node
     node = node.nextSibling
     if (currentNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
       if (currentNode.hasAttributes()) {
-        inspectAttributes.call(this, currentNode, addState, modelObject)
+        inspectAttributes.call(this, currentNode, addState, model)
 
         // to take advantage of caching always assigned id to the node
         // we only assign eventListener on first mount to DOM or when the node is not available on DOM
@@ -72,10 +72,8 @@ function recon (node, addState, modelObject) {
             })
           }
         }
-
       }
-      recon.call(this, currentNode.firstChild, addState, modelObject)
-
+      recon.call(this, currentNode.firstChild, addState, model)
     } else if (currentNode.nodeType === DOCUMENT_COMMENT_TYPE && currentNode.nodeValue.match(conditionalNodesRawStart)) {
       c = currentNode.nodeValue.trim().match(reConditional)
       c = c && c[0]
@@ -83,15 +81,15 @@ function recon (node, addState, modelObject) {
         conditionalNodes.call(this, currentNode, c, 'conditional-set', reconcile, addState)
       }
     } else if (currentNode.nodeType === DOCUMENT_COMMENT_TYPE && currentNode.nodeValue.match(re) && !currentNode.nodeValue.match(conditionalNodesRawStart)) {
-      replaceCommentBlock.call(this, currentNode.nodeValue, currentNode)
+      replaceCommentBlock.call(this, currentNode.nodeValue, currentNode, reconcile)
     } else {
-      replaceHandleBars.call(this, currentNode.nodeValue, currentNode, addState, null, modelObject)
+      replaceHandleBars.call(this, currentNode.nodeValue, currentNode, addState, null, model)
     }
   }
 }
 
-function reconcile (instance, addState, modelObject) {
-  recon.call(this, instance, addState, modelObject)
+function reconcile (instance, addState, model) {
+  recon.call(this, instance, addState, model)
 }
 
 export default reconcile

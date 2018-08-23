@@ -4,7 +4,7 @@
 <!-- AUTO-GENERATED-CONTENT:END -->
 
 <!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
-[![npm package](https://img.shields.io/badge/npm-4.0.0-blue.svg)](https://www.npmjs.com/package/keet) [![browser build](https://img.shields.io/badge/rawgit-4.0.0-ff69b4.svg)](https://cdn.rawgit.com/syarul/keet/esm-4/keet-min.js) [![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet) [![Build Status](https://travis-ci.org/syarul/keet.svg?branch=esm-4)](https://travis-ci.org/syarul/keet) [![Coverage Status](https://coveralls.io/repos/github/syarul/keet/badge.svg?branch=esm-4)](https://coveralls.io/github/syarul/keet?branch=esm-4) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![npm package](https://img.shields.io/badge/npm-4.0.0-blue.svg)](https://www.npmjs.com/package/keet) [![browser build](https://img.shields.io/badge/rawgit-4.0.0-ff69b4.svg)](https://cdn.rawgit.com/syarul/keet/esm-5/keet-min.js) [![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet) [![Build Status](https://travis-ci.org/syarul/keet.svg?branch=esm-5)](https://travis-ci.org/syarul/keet) [![Coverage Status](https://coveralls.io/repos/github/syarul/keet/badge.svg?branch=esm-5)](https://coveralls.io/github/syarul/keet?branch=esm-5) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 <!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
 <!-- AUTO-GENERATED-CONTENT:END -->
 
@@ -12,7 +12,7 @@ Minimalist view layer for the web.
 
 ## What is Keet
 
-> *Keet* specific goal is to offer less APIs, familiar/vanilla code structures and a possible remedy to [*choice paralysis*](https://the-pastry-box-project.net/addy-osmani/2014-January-19). It was never intended superior in features compare to most major web frameworks and waste no effort to become such. Generally *Keet* is more flexible, decent render performance with loose coupling, less complicated design and workflow. You might surprise with the logic and small learning curve it offers. It's also only 5kb gzip in size. Under the hood it use [morphdom](https://github.com/patrick-steele-idem/morphdom) to do ```DOM-diffing```.
+> *Keet* specific goal is to offer freedom of cumbersome frameworks, familiar/vanilla code structures and a possible remedy to [*choice paralysis*](https://the-pastry-box-project.net/addy-osmani/2014-January-19).  Generally *Keet* is more flexible, decent [render performance](https://raw.githubusercontent.com/syarul/preact-perf/master/img/2018-18-08.png), loosely coupled and has shallow learning curve. It's also only 6kb gzip in size.
 
 ## Getting Started
 
@@ -39,6 +39,14 @@ Create a HTML file:-
 Or from npm:-
 
 ```npm install keet```
+
+## Resources
+
+<!-- AUTO-GENERATED-CONTENT:START (RESOURCES) -->
+- Usage/API Examples - https://github.com/syarul/keet/tree/esm-5/examples
+- TodoMVC Implementation - https://github.com/syarul/keetjs-todomvc
+- Performance (opinionated) - https://github.com/syarul/preact-perf
+<!-- AUTO-GENERATED-CONTENT:END -->
 
 ## Sample Usage
 
@@ -224,10 +232,6 @@ app.mount(html`
 `).link('app')
 
 ```
-<!-- AUTO-GENERATED-CONTENT:END -->
-
-<!-- AUTO-GENERATED-CONTENT:START (EXAMPLES) -->
-For more usage cases visit the [examples](https://github.com/syarul/keet/tree/esm-4/examples) directory
 <!-- AUTO-GENERATED-CONTENT:END -->
 
 ## License

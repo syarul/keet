@@ -5,10 +5,9 @@ import valAssign from './valAssign'
 
 const re = /{{([^{}]+)}}/g
 
-export default function (value, node, addState, isAttr, object) {
-
+export default function (value, node, addState, isAttr, model) {
   const props = value.match(re)
-  if(!props) return
+  if (!props) return
   let ln = props.length
   let rep
   let tnr
@@ -16,7 +15,7 @@ export default function (value, node, addState, isAttr, object) {
 
   let self = this
 
-  let ref = object ? object : this
+  let ref = model || this
 
   while (ln) {
     ln--
@@ -27,7 +26,7 @@ export default function (value, node, addState, isAttr, object) {
       if (!isAttr) {
         if (isObjectNotation[0] === 'this' && self[isObjectNotation[1]] !== undefined && typeof self[isObjectNotation[1]] === 'function') {
           let result = self[isObjectNotation[1]]()
-          if (result != undefined) {
+          if (result !== undefined) {
             valAssign(node, value, '{{' + rep + '}}', result)
           }
         } else {
@@ -37,7 +36,7 @@ export default function (value, node, addState, isAttr, object) {
       } else {
         if (isObjectNotation[0] === 'this' && self[isObjectNotation[1]] !== undefined && typeof self[isObjectNotation[1]] === 'function') {
           let result = self[isObjectNotation[1]](ref)
-          return result !== undefined ? result : value 
+          return result !== undefined ? result : value
         } else {
           updateState(rep, addState)
           return value.replace(props, self[isObjectNotation[0]][isObjectNotation[1]])

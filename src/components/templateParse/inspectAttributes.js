@@ -16,7 +16,6 @@ function inspectAttributes (node, addState, model) {
     if (re.test(name)) {
       node.removeAttribute(name)
       name = replaceHandleBars.call(this, name, node, addState, true, model)
-      if(model) l(name)
       node.setAttribute(name, ns)
     } else if (re.test(ns)) {
       ns = replaceHandleBars.call(this, ns, node, addState, true, model)

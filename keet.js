@@ -71,8 +71,6 @@ class Keet {
   }
 }
 
-// export default Keet
-
 export {
   Keet as default,
   html,

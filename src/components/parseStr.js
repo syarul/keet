@@ -1,7 +1,7 @@
 import conditionalCache from './templateParse/conditionalCache'
-import conditionalSet from './templateParse/conditionalSet'
+// import conditionalSet from './templateParse/conditionalSet'
 import reconcile from './templateParse/reconcile'
-import eventBuff from './templateParse/eventBuff'
+// import eventBuff from './templateParse/eventBuff'
 import { setState, addState } from './genElement'
 import { getId, assert } from '../../utils'
 

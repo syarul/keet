@@ -2,9 +2,6 @@ import { getId, checkNodeAvailability } from '../../utils'
 import genModelTemplate from './genModelTemplate'
 import { cache as conditionalCache } from './conditionalNodes'
 import { diffModelNodes } from './templateParse/diffNodes'
-import reconcile from './templateParse/reconcile'
-
-const DOCUMENT_ELEMENT_TYPE = 1
 
 // diffing two array of objects, including object properties differences
 const diff = (fst, sec) =>
@@ -48,7 +45,7 @@ function removeProtoModel (node, id, after) {
   }
 }
 
-function genModelList (node, model) {
+function genModelList (node, model, reconcile) {
   let modelList
   let i
   let listClone
