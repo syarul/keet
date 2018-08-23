@@ -45,7 +45,19 @@ function removeProtoModel (node, id, after) {
   }
 }
 
+function getIndex (model, modelList){
+  // let curIndex
+  // modelList.some((m, index) => {
+  //   curIndex = index
+  //   return m['kdata-id'] === model['kdata-id']
+  // })
+  let curIndex = modelList.map(m => m['kdata-id']).indexOf(model['kdata-id'])
+  return curIndex + 1
+}
+
 function genModelList (node, model, reconcile) {
+  // let perf = performance.now()
+  let type
   let modelList
   let i
   let listClone
@@ -105,33 +117,60 @@ function genModelList (node, model, reconcile) {
         i++
       }
     } else {
-      updateOfNew = diff(modelList, oldModel)
-      diffOfOld = diff(oldModel, modelList)
 
+      updateOfNew = diff(modelList, oldModel)
+      
+      // ignore diffing oldModel when length is the same
+      if(modelList.length !== oldModel.length){
+        diffOfOld = diff(oldModel, modelList)
+      }
+      // l('diffing', performance.now() - perf)
       const diffModel = function (...args) {
         pNode = args.pop()
         // check if both models are equally in length
         equalLength = oldModel.length === modelList.length
 
+        // l(oldModel, modelList)
+
         if (equalLength && pNode.childNodes.length !== 2) {
+          type = 'replace equal'
           i = 0
+
+          // let ttEnd = 0
+          // let ttEnd2 = 0
           while (i < updateOfNew.length) {
-            if (updateOfNew[i]['kdata-id'] === diffOfOld[i]['kdata-id']) {
+
+            // let tt = performance.now()
+            let idx = getIndex(updateOfNew[i], modelList)
+            // ttEnd += performance.now() - tt
+            // l(idx, modelList)
+
+            // if (updateOfNew[i]['kdata-id'] === diffOfOld[i]['kdata-id']) {
               // equal node element id
-              child = pNode.querySelector(`[kdata-id="${updateOfNew[i]['kdata-id']}"]`)
-            } else {
-              // replace if it doesn't share the same id
-              child = pNode.querySelector(`[kdata-id="${diffOfOld[i]['kdata-id']}"]`)
-            }
+              // child = pNode.querySelector(`[kdata-id="${updateOfNew[i]['kdata-id']}"]`)
+            // } else {
+            //   // replace if it doesn't share the same id
+            //   child = pNode.querySelector(`[kdata-id="${diffOfOld[i]['kdata-id']}"]`)
+            // }
+            child = pNode.childNodes[idx]
+            let nextSibling = child.nextSibling
+            child.remove()
+            // l(child)
             if (child) {
+              // let tt2 = performance.now()
               render.call(this, str, updateOfNew[i])
+              pNode.insertBefore(documentFragment, nextSibling)
               // pNode.replaceChild(documentFragment, child)
-              diffModelNodes(child, documentFragment.firstChild, true)
+              // diffModelNodes(child, documentFragment.firstChild, true)
+              // ttEnd2 += performance.now() - tt2
             }
             i++
           }
+          // l('>>>>>> getIndex',ttEnd)
+          // l('>>>>>> render',ttEnd2)
         // add new objects
         } else if (updateOfNew.length > 0 && diffOfOld.length === 0) {
+          type = 'add'
           i = 0
           while (i < updateOfNew.length) {
             render.call(this, str, updateOfNew[i])
@@ -156,6 +195,7 @@ function genModelList (node, model, reconcile) {
           }
         } else if (updateOfNew.length > 0 && diffOfOld.length > 0) {
           // if both differences has length we remove the old children and replace it with the new ones
+          type = 'replace not equal'
           i = 0
           while (i < diffOfOld.length) {
             child = pNode.querySelector(`[kdata-id="${diffOfOld[i]['kdata-id']}"]`)
@@ -173,6 +213,7 @@ function genModelList (node, model, reconcile) {
             }
           }
         } else {
+          type = 'complete replace'
           i = 0
           while (i < modelList.length) {
             render.call(this, str, modelList[i])
@@ -182,6 +223,7 @@ function genModelList (node, model, reconcile) {
         }
         // replace oldModel after diffing
         cache[model].oldModel = JSON.parse(JSON.stringify(modelList))
+        // l(type, performance.now() - perf)
       }
 
       // check existing parentNode in the DOM

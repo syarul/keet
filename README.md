@@ -12,7 +12,7 @@ Minimalist view layer for the web.
 
 ## What is Keet
 
-> *Keet* specific goal is to offer freedom of cumbersome frameworks, familiar/vanilla code structures and a possible remedy to [*choice paralysis*](https://the-pastry-box-project.net/addy-osmani/2014-January-19).  Generally *Keet* is more flexible, decent [render performance](https://raw.githubusercontent.com/syarul/preact-perf/master/img/2018-18-08.png), loosely coupled and has shallow learning curve. It's also only 6kb gzip in size.
+> *Keet* specific goal is to offer freedom of [cumbersome frameworks](https://medium.com/dailyjs/the-deepest-reason-why-modern-javascript-frameworks-exist-933b86ebc445), familiar/vanilla code structures and a possible remedy to [*choice paralysis*](https://the-pastry-box-project.net/addy-osmani/2014-January-19).  Generally *Keet* is more flexible, decent [render performance](https://raw.githubusercontent.com/syarul/preact-perf/master/img/2018-18-08.png), loosely coupled and has shallow learning curve. It's also only 6kb gzip in size.
 
 ## Getting Started
 
@@ -233,6 +233,12 @@ app.mount(html`
 
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
+
+## Roadmap
+
+- Adding documentation ( sorry for the time being )
+- Arbiter custom option ( support for node diffing algorithm by checking boolean attributes added as option rather than hard coded )
+- do [js-framework-benchmark](https://github.com/krausest/js-framework-benchmark) test
 
 ## License
 

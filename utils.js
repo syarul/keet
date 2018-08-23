@@ -80,8 +80,20 @@ const notEqual = function (a, b) {
   return a['kdata-id'] !== b['kdata-id']
 }
 
+let async = {}
+
+/**
+ * @private
+ * @description
+ * We otimize component lifeCycle triggering by
+ * trottling the model batch updates
+ *
+ */
 const inform = function (...args) {
-  this.exec && typeof this.exec === 'function' && this.exec.apply(null, args)
+  if(async[this.mId]) clearTimeout(async[this.mId])
+  async[this.mId] = setTimeout(() =>
+    this.exec && typeof this.exec === 'function' && this.exec.apply(null, args)
+  )
 }
 
 /**
@@ -96,6 +108,10 @@ const inform = function (...args) {
  */
 class createModel {
   constructor (enableFiltering) {
+
+    this.mId = this.indentity
+
+    async[this.mId] = null
     // if enableFiltering is assigned a value, model generation will
     // use `listFilter` instead of `list`
     this.enableFiltering = enableFiltering || null
@@ -125,6 +141,11 @@ class createModel {
         return !this.prop ? this.model : this.model.filter(obj => obj[this.prop] === this.value)
       }
     })
+  }
+
+  // set identity for this model
+  static get indentity () {
+    return minId()
   }
 
   /**
