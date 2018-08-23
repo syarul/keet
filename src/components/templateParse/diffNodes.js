@@ -4,8 +4,8 @@ const DOCUMENT_ELEMENT_TYPE = 1
 
 function isEqual (oldNode, newNode) {
   return (
-    (isIgnored(oldNode) && isIgnored(newNode)) ||
-    oldNode.isEqualNode(newNode)
+    (isIgnored(oldNode) && isIgnored(newNode))/* ||
+    oldNode.isEqualNode(newNode)*/
   )
 }
 
@@ -58,8 +58,8 @@ function patch (oldNode, newNode) {
   if (oldNode.nodeType === newNode.nodeType) {
     if (oldNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
       arbiter(oldNode, newNode)
-      diff(oldNode.firstChild, newNode.firstChild)
       if (isEqual(oldNode, newNode)) return
+      diff(oldNode.firstChild, newNode.firstChild)
       if (oldNode.nodeName === newNode.nodeName) {
         setAttr(oldNode, newNode)
       } else {
