@@ -58,8 +58,8 @@ function patch (oldNode, newNode) {
   if (oldNode.nodeType === newNode.nodeType) {
     if (oldNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
       arbiter(oldNode, newNode)
-      if (isEqual(oldNode, newNode)) return
       diff(oldNode.firstChild, newNode.firstChild)
+      if (isEqual(oldNode, newNode)) return
       if (oldNode.nodeName === newNode.nodeName) {
         setAttr(oldNode, newNode)
       } else {
