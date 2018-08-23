@@ -90,10 +90,10 @@ let async = {}
  *
  */
 const inform = function (...args) {
-  if(async[this.mId]) clearTimeout(async[this.mId])
+  if (async[this.mId]) clearTimeout(async[this.mId])
   async[this.mId] = setTimeout(() =>
     this.exec && typeof this.exec === 'function' && this.exec.apply(null, args)
-  )
+    , 0)
 }
 
 /**
@@ -108,7 +108,6 @@ const inform = function (...args) {
  */
 class createModel {
   constructor (enableFiltering) {
-
     this.mId = this.indentity
 
     async[this.mId] = null
@@ -129,6 +128,7 @@ class createModel {
       },
       set: function (val) {
         this.model = val
+        this.dirty = true
         inform.call(this, this.model, this.listFilter)
       }
     })
@@ -200,7 +200,7 @@ class createModel {
   filter (prop, value) {
     this.prop = prop
     this.value = value
-    this.list = this.list.map(obj => obj)
+    this.list = this.list
   }
 
   /**
@@ -213,9 +213,9 @@ class createModel {
  *
  */
   destroy (destroyObj) {
-    this.list = this.list.filter(obj =>
-      notEqual(obj, destroyObj)
-    )
+    this.list = this.list.filter(obj => {
+      return notEqual(obj, destroyObj)
+    })
   }
 }
 

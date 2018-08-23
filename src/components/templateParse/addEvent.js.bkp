@@ -3,6 +3,21 @@ const re = /{{([^{}]+)}}/g
 
 function lookupParentNode (rootNode, node) {
   let cNode
+  let cStore = []
+  while (node) {
+    cNode = node
+    node = node.parentNode
+    cStore.push(cNode)
+    if (cStore.length > 2) cStore.shift()
+    if (cNode.isEqualNode(rootNode)) {
+      node = null
+      return { id: cStore[0].getAttribute('kdata-id'), node: cStore[0] }
+    }
+  }
+}
+
+function _lookupParentNode (rootNode, node) {
+  let cNode
   while (node) {
     cNode = node
     node = node.parentNode
@@ -15,10 +30,19 @@ function lookupParentNode (rootNode, node) {
   }
 }
 
-const getIndex = (id, model) => model.list.map(m => m['kdata-id']).indexOf(id)
+const getIndex = node => {
+  var k = 0
+  while (node.previousSibling) {
+    k++
+    node = node.previousSibling
+  }
+  return k - 1
+}
+
+const _getIndex = (id, model) => model.list.map(m => m['kdata-id']).indexOf(id)
 
 function addEvent (node, evtData) {
-  // delete evtData.isModel
+  delete evtData.isModel
   let evtName = Object.keys(evtData)[0]
   let handler = evtData[evtName]
   if (this[handler] !== undefined && typeof this[handler] === 'function') {
@@ -30,12 +54,21 @@ function fn (model, handler, node, e) {
   e.stopPropagation()
   if (e.target !== e.currentTarget) {
     let t = lookupParentNode(node, e.target)
+    let listArgv = model.enableFiltering ? 'listFilter' : 'list'
+    this[handler](model[listArgv][getIndex(t.node)], e.target, t.node, e)
+  }
+}
+
+function _fn (model, handler, node, e) {
+  e.stopPropagation()
+  if (e.target !== e.currentTarget) {
+    let t = lookupParentNode(node, e.target)
     this[handler](model.list[getIndex(t.id, model)], e.target, t.node, e)
   }
 }
 
 function addEventModel (node, evtData) {
-  // delete evtData.isModel
+  delete evtData.isModel
   let evtName = Object.keys(evtData)[0]
   let handler = evtData[evtName]
   if (this[handler] !== undefined && typeof this[handler] === 'function') {

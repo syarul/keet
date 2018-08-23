@@ -1,8 +1,6 @@
 import { getId } from '../../../utils'
 
 const DOCUMENT_ELEMENT_TYPE = 1
-const DOCUMENT_COMMENT_TYPE = 8
-const modelRawStart = /\{\{model:([^{}]+)\}\}/g
 
 function isEqual (oldNode, newNode) {
   return (
@@ -115,19 +113,15 @@ function diff (oldNode, newNode, ignoreNextSibling) {
   }
 }
 
-function childIsModel (node) {
-  let range
-  if (typeof document.createRange === 'function') {
-    range = document.createRange()
-  }
-  return !range ? range : node.nodeType === DOCUMENT_COMMENT_TYPE && node.nodeValue.match(modelRawStart) !== null
+function isDirty (node) {
+  return node.hasAttribute('pristine-model')
 }
 
 function diffNodes (instance) {
   let base = getId(this.el)
   if (base && !this.IS_STUB) {
     diff(base.firstChild, instance)
-  } else if (base && !childIsModel(base.firstChild)) {
+  } else if (base && !isDirty(instance)) {
     diff(base.firstChild, instance.firstChild)
   }
 }
