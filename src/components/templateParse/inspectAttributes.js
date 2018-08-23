@@ -2,7 +2,7 @@ import replaceHandleBars from './replaceHandleBars'
 
 const re = /{{([^{}]+)}}/g
 
-function inspectAttributes (node, addState) {
+function inspectAttributes (node, addState, model) {
   let nodeAttributes = node.attributes
   let i = 0
   let a
@@ -15,10 +15,11 @@ function inspectAttributes (node, addState) {
     ns = a.nodeValue
     if (re.test(name)) {
       node.removeAttribute(name)
-      name = replaceHandleBars.call(this, name, node, addState, true)
+      name = replaceHandleBars.call(this, name, node, addState, true, model)
+      if(model) l(name)
       node.setAttribute(name, ns)
     } else if (re.test(ns)) {
-      ns = replaceHandleBars.call(this, ns, node, addState, true)
+      ns = replaceHandleBars.call(this, ns, node, addState, true, model)
       if (name === 'checked') {
         if (ns === '') {
           node.checked = false

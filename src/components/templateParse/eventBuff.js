@@ -4,8 +4,6 @@ import { addEvent, addEventModel } from './addEvent'
 const DOCUMENT_ELEMENT_TYPE = 1
 const modelRaw = /\{\{model:([^{}]+)\}\}/g
 
-// let cacheEvents = []
-
 function testEventNode (node) {
   let nodeAttributes = node.attributes
   let i = 0
@@ -38,11 +36,6 @@ function testEventNode (node) {
     }
     i++
   }
-  // if (evtStore.length && !node.hasAttribute('evt-data')) {
-  //   let rd = minId()
-  //   node.setAttribute('evt-data', rd)
-  //   cacheEvents[rd] = evtStore
-  // }
   return evtStore
 }
 
@@ -54,12 +47,15 @@ function addEvt (node) {
     currentNode = node
     node = node.nextSibling
     if (currentNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
+      // to take advantage of caching always assigned id to the node
+      // we only assign eventListener on first mount to DOM or when the node is not available on DOM
       if (currentNode.hasAttributes() && !getId(currentNode.id)) {
         events = testEventNode.call(this, currentNode)
         if (events.length) {
-          events.map(e =>
+          events.map(e => {
             !e.isModel ? addEvent.call(this, currentNode, e) : addEventModel.call(this, currentNode, e)
-          )
+            currentNode.removeAttribute(`k-${Object.keys(e)[0]}`)
+          })
         }
       }
       addEvt.call(this, currentNode.firstChild)

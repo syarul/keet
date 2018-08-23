@@ -4,7 +4,7 @@ import eventBuff from './templateParse/eventBuff'
 import diffNodes from './templateParse/diffNodes'
 import strInterpreter from './strInterpreter'
 
-const DELAY = 1
+const DELAY = 0
 
 const morpher = function () {
   genElement.call(this)
@@ -26,6 +26,7 @@ const nextState = function (i) {
   let self = this
   let state
   let value
+  if (!stateList[this.ID]) return
   if (i < stateList[this.ID].length) {
     state = stateList[this.ID][i]
     value = this[state]
@@ -84,9 +85,9 @@ function addState (state) {
 
 const genElement = function () {
   this.base = this.__pristineFragment__.cloneNode(true)
-  conditionalSet.call(this, this.base.firstChild)
+  // conditionalSet.call(this, this.base.firstChild)
   reconcile.call(this, this.base.firstChild, addState.bind(this))
-  eventBuff.call(this, this.base.firstChild, true)
+  // eventBuff.call(this, this.base.firstChild)
   diffNodes.call(this, this.base.firstChild)
 }
 

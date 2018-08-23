@@ -9,9 +9,9 @@ const DOCUMENT_ELEMENT_TYPE = 1
 
 export default function (stub) {
   conditionalCache.call(this, addState.bind(this))
-  conditionalSet.call(this, this.base.firstChild)
+  // conditionalSet.call(this, this.base.firstChild)
   reconcile.call(this, this.base.firstChild, addState.bind(this))
-  eventBuff.call(this, this.base.firstChild)
+  // eventBuff.call(this, this.base.firstChild)
   const el = stub || getId(this.el)
   if (el) {
     if (el.nodeType === DOCUMENT_ELEMENT_TYPE) {

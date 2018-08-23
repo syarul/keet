@@ -1,6 +1,8 @@
 import { getId } from '../../../utils'
 
 const DOCUMENT_ELEMENT_TYPE = 1
+const DOCUMENT_COMMENT_TYPE = 8
+const modelRawStart = /\{\{model:([^{}]+)\}\}/g
 
 function isEqual (oldNode, newNode) {
   return (
@@ -39,14 +41,16 @@ function setAttr (oldNode, newNode) {
     if (oldNode.attributes[attr] && oldNode.attributes[attr].name === attr && oldNode.attributes[attr].value !== output[attr]) {
       oldNode.setAttribute(attr, output[attr])
     } else {
-      if (!oldNode.hasAttribute(attr)) {
+      // add new attributes as long is not part of k-<eventListener>
+      if (!oldNode.hasAttribute(attr) && !/^k-/.test(attr)) {
         oldNode.setAttribute(attr, output[attr])
       }
     }
   }
   for (let attr in input) {
+    // if attributes does not exist on the new node we removed it from the old node
     if (newNode.attributes[attr] && oldNode.attributes[attr]) {
-    } else if (attr !== 'evt-data') {
+    } else {
       oldNode.removeAttribute(attr)
     }
   }
@@ -80,13 +84,13 @@ function getIndex (store, count) {
 let checkNew
 let checkOld
 
-function diff (oldNode, newNode) {
+function diff (oldNode, newNode, ignoreNextSibling) {
   let count = 0
   let newStore = []
   while (newNode) {
     count++
     checkNew = newNode
-    newNode = newNode.nextSibling
+    newNode = ignoreNextSibling ? null : newNode.nextSibling
     newStore.push(checkNew)
   }
   let index
@@ -94,7 +98,7 @@ function diff (oldNode, newNode) {
   while (oldNode) {
     count--
     checkOld = oldNode
-    oldNode = oldNode.nextSibling
+    oldNode = ignoreNextSibling ? null : oldNode.nextSibling
     index = getIndex(newStore, count)
     if (checkOld && newStore[index]) {
       patch(checkOld, newStore[index])
@@ -111,13 +115,28 @@ function diff (oldNode, newNode) {
   }
 }
 
+function childIsModel (node) {
+  let range
+  if (typeof document.createRange === 'function') {
+    range = document.createRange()
+  }
+  return !range ? range : node.nodeType === DOCUMENT_COMMENT_TYPE && node.nodeValue.match(modelRawStart) !== null
+}
+
 function diffNodes (instance) {
   let base = getId(this.el)
   if (base && !this.IS_STUB) {
     diff(base.firstChild, instance)
-  } else if (base) {
-    // diff(base.firstChild, instance.firstChild)
+  } else if (base && !childIsModel(base.firstChild)) {
+    diff(base.firstChild, instance.firstChild)
   }
 }
 
-export default diffNodes
+function diffModelNodes (oldModel, newModel, ignoreNextSibling) {
+  diff(oldModel, newModel, ignoreNextSibling)
+}
+
+export {
+  diffNodes as default,
+  diffModelNodes
+}

@@ -20,13 +20,6 @@ window.tr = console.trace.bind(console)
 /**
  * @description
  * The main constructor of Keet
- *
- * Basic Usage :-
- *
- *    const App extends Keet {}
- *    const app = new App()
- *    app.mount('hello world').link('app')
- *
  */
 class Keet {
   constructor () {
@@ -78,10 +71,10 @@ class Keet {
   }
 }
 
-export default Keet
+// export default Keet
 
-// export {
-//   Keet as default,
-//   html,
-//   createModel
-// }
+export {
+  Keet as default,
+  html,
+  createModel
+}

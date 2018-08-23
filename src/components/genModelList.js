@@ -1,6 +1,10 @@
 import { getId, checkNodeAvailability } from '../../utils'
 import genModelTemplate from './genModelTemplate'
 import { cache as conditionalCache } from './conditionalNodes'
+import { diffModelNodes } from './templateParse/diffNodes'
+import reconcile from './templateParse/reconcile'
+
+const DOCUMENT_ELEMENT_TYPE = 1
 
 // diffing two array of objects, including object properties differences
 const diff = (fst, sec) =>
@@ -29,7 +33,7 @@ let m
 let documentFragment
 
 function render (str, obj) {
-  m = genModelTemplate(str, obj)
+  m = genModelTemplate.call(this, str, obj)
   documentFragment = range.createContextualFragment(m)
   documentFragment.firstChild.setAttribute('kdata-id', obj['kdata-id'])
 }
@@ -44,7 +48,7 @@ function removeProtoModel (node, id, after) {
   }
 }
 
-function genModelList (node, model, templateParse) {
+function genModelList (node, model) {
   let modelList
   let i
   let listClone
@@ -98,7 +102,7 @@ function genModelList (node, model, templateParse) {
       while (i < modelList.length) {
         // fallback to regular node generation handler
         listClone = list.cloneNode(true)
-        templateParse(this, null, listClone, modelList[i], null, 'update')
+        reconcile.call(this, listClone, null, modelList[i])
         listClone.setAttribute('kdata-id', modelList[i]['kdata-id'])
         parentNode.insertBefore(listClone, parentNode.lastChild)
         i++
@@ -123,8 +127,9 @@ function genModelList (node, model, templateParse) {
               child = pNode.querySelector(`[kdata-id="${diffOfOld[i]['kdata-id']}"]`)
             }
             if (child) {
-              render(str, updateOfNew[i])
-              pNode.replaceChild(documentFragment, child)
+              render.call(this, str, updateOfNew[i])
+              // pNode.replaceChild(documentFragment, child)
+              diffModelNodes(child, documentFragment.firstChild, true)
             }
             i++
           }
@@ -132,7 +137,7 @@ function genModelList (node, model, templateParse) {
         } else if (updateOfNew.length > 0 && diffOfOld.length === 0) {
           i = 0
           while (i < updateOfNew.length) {
-            render(str, updateOfNew[i])
+            render.call(this, str, updateOfNew[i])
             if (updateOfNew[i]['kdata-id'] === modelList[modelList.length - 1]['kdata-id']) {
               beforeNode = pNode.lastChild
             } else {
@@ -164,7 +169,7 @@ function genModelList (node, model, templateParse) {
             if (i === diffOfOld.length) {
               f = 0
               while (f < updateOfNew.length) {
-                render(str, updateOfNew[f])
+                render.call(this, str, updateOfNew[f])
                 pNode.insertBefore(documentFragment, pNode.lastChild)
                 f++
               }
@@ -173,7 +178,7 @@ function genModelList (node, model, templateParse) {
         } else {
           i = 0
           while (i < modelList.length) {
-            render(str, modelList[i])
+            render.call(this, str, modelList[i])
             pNode.insertBefore(documentFragment, pNode.lastChild)
             i++
           }

@@ -24,7 +24,7 @@ function catchNode (node, start) {
   }
 }
 
-function resolveConditionalNodes (node, conditional, setup, runner) {
+function resolveConditionalNodes (node, conditional, setup, runner, addState) {
   let currentNode
   let cNode
   let fetchFrag
@@ -48,7 +48,7 @@ function resolveConditionalNodes (node, conditional, setup, runner) {
   } else if (setup === 'conditional-set') {
     if (node.nextSibling.isEqualNode(cache[conditional].frag.firstChild)) return
     fetchFrag = cache[conditional].frag.cloneNode(true)
-    runner.call(this, fetchFrag.firstChild)
+    runner.call(this, fetchFrag.firstChild, addState)
     node.parentNode.insertBefore(fetchFrag, node.nextSibling)
   }
 }
