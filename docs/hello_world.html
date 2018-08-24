@@ -1,0 +1,69 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Hello World · Keet.js v4</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="### Basic"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Hello World · Keet.js v4"/><meta property="og:type" content="website"/><meta property="og:url" content="https://syarul.github.io/keet/index.html"/><meta property="og:description" content="### Basic"/><meta property="og:image" content="https://syarul.github.io/keet/img/keet_temp_logo.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://syarul.github.io/keet/img/keet_temp_logo.png"/><link rel="shortcut icon" href="/keet/img/favicon.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/keet/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/keet/"><img class="logo" src="/keet/img/keet.svg" alt="Keet.js v4"/><h2 class="headerTitleWithLogo">Keet.js v4</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/keet/docs/intro" target="_self">Docs</a></li><li class=""><a href="/keet/docs/api" target="_self">API</a></li><li class=""><a href="/keet/en/help" target="_self">Help</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>General Guideline</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">General Guideline</h3><ul><li class="navListItem"><a class="navItem" href="/keet/docs/intro">Introduction</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/keet/docs/hello_world">Hello World</a></li><li class="navListItem"><a class="navItem" href="/keet/docs/ternary">Ternary State</a></li><li class="navListItem"><a class="navItem" href="/keet/docs/counter">Counter (eventListener)</a></li></ul></div></div></section></div><script>
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              const headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                if (event.target.tagName === 'A') {
+                  document.body.classList.remove('tocActive');
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Hello World</h1></header><article><div><span><h3><a class="anchor" aria-hidden="true" id="basic"></a><a href="#basic" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Basic</h3>
+<p>Start by constructing a class expression as child of <code>Keet</code>. Supply a string argument
+to the component method <code>mount</code>. Within the string, you can assign a state within handlebars i.e: <code>{{&lt;myState&gt;}}</code>.</p>
+<blockquote>
+<p>NOTE: This sample use <a href="https://babeljs.io/docs/en/babel-plugin-transform-class-properties/"><code>babel-plugin-transform-class-properties</code></a></p>
+</blockquote>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> Keet <span class="hljs-keyword">from</span> <span class="hljs-string">'keet'</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">App</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Keet</span> </span>{
+  state = <span class="hljs-string">'World'</span>
+}
+
+<span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> App()
+
+app.mount(<span class="hljs-string">'Hello {{state}}'</span>).link(<span class="hljs-string">'app'</span>)
+
+<span class="hljs-comment">// --&gt; Hello World</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="updating-a-state"></a><a href="#updating-a-state" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Updating a State</h2>
+<p>To update a state we write a method in our class Expression that accept an argument.</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> Keet <span class="hljs-keyword">from</span> <span class="hljs-string">'keet'</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">App</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Keet</span> </span>{
+  state = <span class="hljs-string">'World'</span>
+  <span class="hljs-comment">// our method</span>
+  greeting(value) {
+    <span class="hljs-keyword">this</span>.state = value
+  }
+}
+
+<span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> App()
+
+app.mount(<span class="hljs-string">'Hello {{state}}'</span>).link(<span class="hljs-string">'app'</span>)
+
+<span class="hljs-comment">// --&gt; Hello World</span>
+</code></pre>
+<p>Then we can update the state by invoking the method.</p>
+<pre><code class="hljs css language-js">app.greeting(<span class="hljs-string">'Keet'</span>)
+
+<span class="hljs-comment">// --&gt; Hello Keet</span>
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/keet/docs/intro">← Introduction</a><a class="docs-next button" href="/keet/docs/ternary">Ternary State →</a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#updating-a-state">Updating a State</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/keet/" class="nav-home"><img src="/keet/img/keet.svg" alt="Keet.js v4" width="66" height="58"/></a><div><h5>Extra</h5><a href="https://github.com/syarul/keetjs-todomvc">TodoMVC</a><a href="https://github.com/syarul/preact-perf">Performance Benchmark</a></div><div><h5>Community</h5><a href="https://gitter.im/keet-dev/Lobby">Gitter Chat</a></div><div><h5>More on Github</h5><a class="github-button" href="https://github.com/syarul/keet" data-icon="octicon-star" data-show-count="true" aria-label="Star syarul/keet on GitHub">Star</a>  <a class="github-button" href="https://github.com/syarul/keet/fork" data-icon="octicon-repo-forked" aria-label="Fork syarul/keet on GitHub">Fork</a>  <a class="github-button" href="https://github.com/syarul/keet/issues" data-icon="octicon-issue-opened" aria-label="Issue syarul/keet on GitHub">Issue</a></div></section><p class="fbOpenSource info-footer">Site generated using <span><a href="https://docusaurus.io">docusaurus</a></span> part of</p><a href="https://code.facebook.com/projects/" target="_blank" rel="noreferrer noopener" class="fbOpenSource"><img src="/keet/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2018 Shahrul Nizam Selamat</section></footer></div></body></html>
