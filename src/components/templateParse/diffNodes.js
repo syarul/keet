@@ -4,8 +4,8 @@ const DOCUMENT_ELEMENT_TYPE = 1
 
 function isEqual (oldNode, newNode) {
   return (
-    (isIgnored(oldNode) && isIgnored(newNode))/* ||
-    oldNode.isEqualNode(newNode)*/
+    (isIgnored(oldNode) && isIgnored(newNode)) ||
+    oldNode.isEqualNode(newNode)
   )
 }
 

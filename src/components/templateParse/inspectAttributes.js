@@ -21,11 +21,13 @@ function inspectAttributes (node, addState, model) {
       ns = replaceHandleBars.call(this, ns, node, addState, true, model)
       if (name === 'checked') {
         if (ns === '') {
-          node.checked = false
+          node.removeAttribute(name)
+          // node.checked = false
         } else {
-          node.checked = true
+          // node.checked = true
+          node.setAttribute(name, '')
         }
-        node.removeAttribute(name)
+        // node.removeAttribute(name)
       } else {
         if (ns === '') {
           node.setAttribute(name, '')
