@@ -24,18 +24,17 @@ class Help extends React.Component {
     const supportLinks = [
       {
         content: `Learn more using the [documentation on this site.](${docUrl(
-          'doc1.html',
-          language
-        )})`,
+          'intro.html')})`,
         title: 'Browse Docs',
       },
       {
-        content: 'Ask questions about the documentation and project',
+        content: 'Ask questions about the documentation and project at [gitter](https://gitter.im/keet-dev/Lobby)',
         title: 'Join the community',
       },
       {
-        content: "Find out what's new with this project",
-        title: 'Stay up to date',
+        content: `At [GitHub repo](https://github.com/syarul/keet) Browse and submit [issues](https://github.com/syarul/keet/issues) or [pull requests](https://github.com/syarul/keet/pulls) for bugs you find or any new 
+        features you may want implemented.`,
+        title: 'Github',
       },
     ];
 
@@ -46,7 +45,7 @@ class Help extends React.Component {
             <header className="postHeader">
               <h1>Need help?</h1>
             </header>
-            <p>This project is maintained by a dedicated group of people.</p>
+            <p>If you need help with Keet.js, you can try one of the mechanisms below.</p>
             <GridBlock contents={supportLinks} layout="threeColumn" />
           </div>
         </Container>

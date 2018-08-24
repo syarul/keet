@@ -1,10 +1,8 @@
 {
   "docs": {
-    "Docusaurus": ["doc1"],
-    "First Category": ["doc2"],
-    "Second Category": ["doc3"]
+    "General Guideline": ["intro", "hello_world", "ternary", "counter"]
   },
   "docs-other": {
-    "First Category": ["doc4", "doc5"]
+    "V4": ["api"]
   }
 }
