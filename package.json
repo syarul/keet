@@ -76,7 +76,7 @@
   "scripts": {
     "build": "npm run bundle",
     "bundle": "rollup -c rollup.config.js",
-    "postbuild": "uglifyjs keet-min.js --pure-funcs classCallCheck Object.freeze invariant warning -c unsafe,collapse_vars,evaluate,screw_ie8,loops,keep_fargs=false,pure_getters,unused,dead_code -m -o keet-min.js -p relative --in-source-map keet-min.js.map --source-map keet-min.js.map && node markdown.config.js",
+    "postbuild": "uglifyjs keet-min.js --pure-funcs classCallCheck debugMode -c unsafe,collapse_vars,evaluate,screw_ie8,loops,keep_fargs=false,pure_getters,unused,dead_code -m -o keet-min.js -p relative --in-source-map keet-min.js.map --source-map keet-min.js.map && node markdown.config.js",
     "cover": "nyc --reporter=lcov --reporter=text npm run test",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "start": "webpack-dev-server -d",

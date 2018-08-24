@@ -11,19 +11,28 @@
 
 import parseStr from './src/components/parseStr'
 import { updateContext, morpher } from './src/components/genElement'
-import { genId, assert, html, createModel } from './utils'
+import { genId, assert, html } from './utils'
+import createModel from './src/base/createModel'
 import mount from './src/base/mount'
 
-window.l = console.log.bind(console)
-window.tr = console.trace.bind(console)
+// allow debugging using shorthand l and tr
+function debugMode() { 
+  window.l = console.log.bind(console)
+  window.tr = console.trace.bind(console)
+}
+
+debugMode()
 
 /**
  * @description
  * The main constructor of Keet
  */
 class Keet {
-  constructor () {
+  constructor (name) {
     this.ID = Keet.indentity
+    if(name){
+      this.storeRef(name)
+    }
   }
 
   // generate ID for the component
@@ -61,13 +70,25 @@ class Keet {
     // value changed DOM diffing will occur
     updateContext.call(this, morpher, 1)
   }
-
+  // pub-sub of the component, a component can subscribe to changes
+  // of another component, this is the subscribe method
   subscribe (fn) {
     this.exec = fn
   }
-
+  // pub-sub of the component, a component can subscribe to changes
+  // of another component, this is the publish method
   inform (model) {
     this.exec && typeof this.exec === 'function' && this.exec(model)
+  }
+
+  // store in global ref
+  storeRef (name){
+    window.__keetGlobalComponentRef__ = window.__keetGlobalComponentRef__ || {}
+    if(window.__keetGlobalComponentRef__[name]) {
+      assert(false, `The component name: ${name} already exist in the global pool.`)
+    } else {
+      window.__keetGlobalComponentRef__[name] = this
+    }
   }
 }
 

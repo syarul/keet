@@ -2,9 +2,16 @@ import { assert, getId } from '../../utils'
 
 let cacheInit = {}
 
+function getKeetGlobalComponent(component) {
+  if (window && typeof window.__keetGlobalComponentRef__ === 'object') {
+    return window.__keetGlobalComponentRef__[component]
+  }
+  return
+}
+
 export default function (componentStr, node) {
   const component = componentStr.replace('component:', '')
-  const c = this[component]
+  const c = this[component] || getKeetGlobalComponent(component)
   if (c !== undefined) {
     // this is for initial component runner
     if (!cacheInit[c.ID]) {
@@ -13,7 +20,7 @@ export default function (componentStr, node) {
       node.parentNode.replaceChild(c.base, node)
     } else {
       // we need to reattach event listeners if the node is not available on DOM
-      if (!getId(this[component].el)) {
+      if (!getId(c.el)) {
         c.base = c.__pristineFragment__.cloneNode(true)
         c.render(true)
         node.parentNode.replaceChild(c.base, node)

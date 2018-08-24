@@ -217,7 +217,7 @@ describe(`keet.js v-${ver} test`, function () {
       assert.equal(getId('list').childNodes.length, 7)
       clear()
       next()
-    })
+    }, 100)
   })
 
   it('render html entities', function (next) {

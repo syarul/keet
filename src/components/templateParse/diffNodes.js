@@ -4,7 +4,8 @@ const DOCUMENT_ELEMENT_TYPE = 1
 
 function isEqual (oldNode, newNode) {
   return (
-    (isIgnored(oldNode) && isIgnored(newNode)) ||
+    (isPristine(newNode) ||
+    isIgnored(oldNode) && isIgnored(newNode)) ||
     oldNode.isEqualNode(newNode)
   )
 }
@@ -113,7 +114,7 @@ function diff (oldNode, newNode, ignoreNextSibling) {
   }
 }
 
-function isDirty (node) {
+function isPristine (node) {
   return node.hasAttribute('pristine-model')
 }
 
@@ -121,7 +122,7 @@ function diffNodes (instance) {
   let base = getId(this.el)
   if (base && !this.IS_STUB) {
     diff(base.firstChild, instance)
-  } else if (base && !isDirty(instance)) {
+  } else if (base && !isPristine(instance)) {
     diff(base.firstChild, instance.firstChild)
   }
 }
