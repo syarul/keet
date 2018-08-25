@@ -7,6 +7,7 @@
 <url> <loc>https://syarul.github.io/keet/blog/2017/09/25/testing-rss</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
 <url> <loc>https://syarul.github.io/keet/blog/2017/04/10/blog-post-two</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
 <url> <loc>https://syarul.github.io/keet/blog/2016/03/11/blog-post</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
+<url> <loc>https://syarul.github.io/keet/docs/api_createModel</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://syarul.github.io/keet/docs/api_createModel" /> </url>
 <url> <loc>https://syarul.github.io/keet/docs/api</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://syarul.github.io/keet/docs/api" /> </url>
 <url> <loc>https://syarul.github.io/keet/docs/counter</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://syarul.github.io/keet/docs/counter" /> </url>
 <url> <loc>https://syarul.github.io/keet/docs/hello_world</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://syarul.github.io/keet/docs/hello_world" /> </url>
