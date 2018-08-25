@@ -25,3 +25,11 @@ app.mount(html`
     {{count}}
   </button>
 `).link('app')
+```
+
+// output
+
+<div id="app"></div>
+<br/>
+
+// output

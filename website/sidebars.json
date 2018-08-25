@@ -3,6 +3,6 @@
     "General Guideline": ["intro", "hello_world", "ternary", "counter"]
   },
   "docs-other": {
-    "V4": ["api"]
+    "V4 API": ["api", "api_createModel"]
   }
 }

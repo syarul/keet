@@ -1,1 +1,1 @@
-require('./keet').default
+import keet from './keet'

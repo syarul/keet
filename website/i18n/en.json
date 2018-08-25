@@ -4,7 +4,8 @@
     "next": "Next",
     "previous": "Previous",
     "tagline": "Minimalist view layer for the web",
-    "api": "Common APIs",
+    "api_createModel": "createModel",
+    "api": "Introduction",
     "counter": "Counter",
     "Counter (eventListener)": "Counter (eventListener)",
     "hello_world": "Hello World",
@@ -17,7 +18,7 @@
     "API": "API",
     "Help": "Help",
     "General Guideline": "General Guideline",
-    "V4": "V4"
+    "V4 API": "V4 API"
   },
   "pages-strings": {
     "Help Translate|recruit community translators for your project": "Help Translate",

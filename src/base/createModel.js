@@ -1,18 +1,32 @@
 import { minId } from '../../utils'
 
+/**
+ * @module keet/createModel
+ * @example
+ * import { createModel } from 'keet'
+ *
+ * class myModel extends createModel {
+ *   contructor() {
+ *     super()
+ *     // props 
+ *   }
+ *   // new extended method
+ *   myMethod(...args){
+ *     this.list = args 
+ *   }
+ * }
+ *
+ * const MyModel = new myModel()
+ */
+
+// check two objects properties attribute kdata-id and return the value equality
 const notEqual = function (a, b) {
   return a['kdata-id'] !== b['kdata-id']
 }
 
 let async = {}
 
-/**
- * @private
- * @description
- * We otimize component lifeCycle triggering by
- * trottling the model batch updates
- *
- */
+// We otimize component lifeCycle triggering by trottling the model batch updates
 const inform = function (...args) {
   if (async[this.mId]) clearTimeout(async[this.mId])
   async[this.mId] = setTimeout(() =>
@@ -21,13 +35,10 @@ const inform = function (...args) {
 }
 
 /**
- * @private
- * @description
- * Copy with modification from preact-todomvc. Model constructor with
- * registering callback listener in Object.defineProperty. Any modification
- * to ```this.list``` instance will subsequently inform all registered listener.
- *
- * {{model:<myModel>}}<myModelTemplateString>{{/model:<myModel>}}
+ * The model constructor, use with template literal having
+ * ```{{model:<myModel>}}<myModelTemplateString>{{/model:<myModel>}}```
+ * @alias module:keet/createModel
+ * @param {*} enableFiltering - any truthy value 
  *
  */
 export default class createModel {
@@ -71,37 +82,25 @@ export default class createModel {
   }
 
   /**
-   * @private
-   * @description
-   * Subscribe to the model changes (add/update/destroy)
-   *
-   * @param {Object} model - the model including all prototypes
-   *
+   * Subscribe to the model changes, the function callback first argument
+   * is the ```model.list``` and the second argument is ```model.listFilter```
+   * @param {Function} fn - the function callback for the subscribe
    */
   subscribe (fn) {
     this.exec = fn
   }
 
   /**
-   * @private
-   * @description
    * Add new object to the model list
-   *
    * @param {Object} obj - new object to add into the model list
-   *
    */
   add (obj) {
     this.list = this.list.concat({ ...obj, 'kdata-id': minId() })
   }
 
   /**
-   * @private
-   * @description
    * Update existing object in the model list
-   *
-   * @param {String} lookupId - lookup id property name of the object
    * @param {Object} updateObj - the updated properties
-   *
    */
   update (updateObj) {
     this.list = this.list.map(obj =>
@@ -110,14 +109,11 @@ export default class createModel {
   }
 
   /**
-   * @private
-   * @description
    * Filter the model data by selected properties, constructor
    * instantiation should be apply with boolean true as argument
    * to enable filtering
-   * @param {String} prop - property of the object
-   * @param {String|Boolean|Interger} value - property value
-   *
+   * @param {standard} prop - property of the object
+   * @param {standard} value - property value
    */
   filter (prop, value) {
     this.prop = prop
@@ -126,13 +122,8 @@ export default class createModel {
   }
 
   /**
- * @private
- * @description
  * Removed existing object in the model list
- *
- * @param {String} lookupId - lookup id property name of the object
- * @param {String} objId - unique identifier of the lookup id
- *
+ * @param {Object} destroyObj - the object ref to remove from the model
  */
   destroy (destroyObj) {
     this.list = this.list.filter(obj => {

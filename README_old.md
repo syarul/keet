@@ -6,12 +6,12 @@
 
   <br/>
   <!-- AUTO-GENERATED-CONTENT:START (VER) -->
-  Keet v4.0.0
-  <!-- AUTO-GENERATED-CONTENT:END -->
+# Keet v4.0.0
+<!-- AUTO-GENERATED-CONTENT:END -->
 </h1>
 
 <!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
-[![npm package](https://img.shields.io/badge/npm-4.0.0-blue.svg)](https://www.npmjs.com/package/keet) [![browser build](https://img.shields.io/badge/rawgit-4.0.0-ff69b4.svg)](https://cdn.rawgit.com/syarul/keet/esm-5/keet-min.js) [![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet) [![Build Status](https://travis-ci.org/syarul/keet.svg?branch=esm-5)](https://travis-ci.org/syarul/keet) [![Coverage Status](https://coveralls.io/repos/github/syarul/keet/badge.svg?branch=esm-5)](https://coveralls.io/github/syarul/keet?branch=esm-5) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com) [![Join the chat at https://gitter.im/keet-dev/Lobby](https://badges.gitter.im/keet-dev/Lobby.svg)](https://gitter.im/keet-dev/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![npm package](https://img.shields.io/badge/npm-4.0.0-blue.svg)](https://www.npmjs.com/package/keet) [![browser build](https://img.shields.io/badge/rawgit-4.0.0-ff69b4.svg)](https://cdn.rawgit.com/syarul/keet/esm-5/keet-min.js) [![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet) [![Build Status](https://travis-ci.org/syarul/keet.svg?branch=esm-5)](https://travis-ci.org/syarul/keet) [![Coverage Status](https://coveralls.io/repos/github/syarul/keet/badge.svg?branch=esm-5)](https://coveralls.io/github/syarul/keet?branch=esm-5) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 <!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
 <!-- AUTO-GENERATED-CONTENT:END -->
 
@@ -150,8 +150,8 @@ To map an array to elements use the ```{{model:<myModelName>}}<myModelTemplate>{
 
 <!-- AUTO-GENERATED-CONTENT:START (MODEL) -->
 ```js
-import Keet from 'keet'
-import { html, createModel as CreateModel } from 'keet/utils'
+import Keet, { createModel as CreateModel } from 'keet'
+import { html } from 'keet/utils'
 
 let task = new CreateModel()
 

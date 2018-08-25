@@ -4,12 +4,10 @@ title: Hello World
 sidebar_label: Hello World
 ---
 
-### Basic
+## Basic
 
 Start by constructing a class expression as child of ```Keet```. Supply a string argument
 to the component method ```mount```. Within the string, you can assign a state within handlebars i.e: ```{{<myState>}}```.
-
-> NOTE: This sample use [```babel-plugin-transform-class-properties```](https://babeljs.io/docs/en/babel-plugin-transform-class-properties/)
 
 ```js
 import Keet from 'keet'

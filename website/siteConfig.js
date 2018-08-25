@@ -77,11 +77,15 @@ const siteConfig = {
 
   highlight: {
     // Highlight.js theme to use for syntax highlighting in code blocks.
-    theme: 'default',
+    theme: 'monokai',
   },
 
   // Add custom scripts here that would be placed in <script> tags.
-  scripts: ['https://buttons.github.io/buttons.js'],
+  scripts: [
+    'https://buttons.github.io/buttons.js', 
+    'https://cdn.rawgit.com/syarul/keet/diff/keet-min.js',
+    'https://cdn.rawgit.com/syarul/4193c8bc5988693ee9e703792bf065db/raw/179878744cbf31d71aaf5b7a6bd44cb61159b8ca/counter.js'
+  ],
 
   // On page navigation for the current documentation page.
   onPageNav: 'separate',

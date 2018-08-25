@@ -80,7 +80,7 @@ var config = {
   }
 }
 
-var markdownPath = path.join(__dirname, 'README.md')
+var markdownPath = path.join(__dirname, 'README_old.md')
 
 function next(i, files){
   if(i < files.length){
