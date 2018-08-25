@@ -32,16 +32,14 @@ const config = {
     modules: ['node_modules'],
     extensions: ['*', '.js', '.styl'],
     alias: {
-      components: path.resolve(__dirname, './components'),
-      keet: path.resolve(__dirname, './keet'),
-      '@keet/classList': path.resolve(__dirname, './classList')
+      keet: path.resolve(__dirname, './keet')
     }
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       title: 'index.html',
-      favicon: 'favicon.ico',
+      favicon: 'website/static/img/favicon.png',
       template: path.join('view', 'layout.pug')
     }),
     new webpack.optimize.OccurrenceOrderPlugin()

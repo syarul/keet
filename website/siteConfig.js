@@ -83,8 +83,9 @@ const siteConfig = {
   // Add custom scripts here that would be placed in <script> tags.
   scripts: [
     'https://buttons.github.io/buttons.js', 
-    'https://cdn.rawgit.com/syarul/keet/diff/keet-min.js',
-    'https://cdn.rawgit.com/syarul/4193c8bc5988693ee9e703792bf065db/raw/179878744cbf31d71aaf5b7a6bd44cb61159b8ca/counter.js'
+    'https://rawgit.com/syarul/keet/diff/keet-min.js',
+    'https://rawgit.com/syarul/4193c8bc5988693ee9e703792bf065db/raw/c8066eeea4cbd4bd770e12a0c179630f50e3da12/counter.js',
+    'https://rawgit.com/syarul/82fe2719d1df5e6e78c01db912b9528b/raw/72f6fe551214c04805c92fad410c9ff6d258a687/dynamic_nodes.js'
   ],
 
   // On page navigation for the current documentation page.

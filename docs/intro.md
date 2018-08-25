@@ -31,5 +31,3 @@ Keet is flexible, you can include/intergrate into your current existing project 
 ```js
 import Keet, { CreateModel, html } from 'keet'
 ```
-
-> NOTE: This documentation use [```babel-plugin-transform-class-properties```](https://babeljs.io/docs/en/babel-plugin-transform-class-properties/)

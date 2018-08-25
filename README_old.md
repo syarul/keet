@@ -11,7 +11,7 @@
 </h1>
 
 <!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
-[![npm package](https://img.shields.io/badge/npm-4.0.0-blue.svg)](https://www.npmjs.com/package/keet) [![browser build](https://img.shields.io/badge/rawgit-4.0.0-ff69b4.svg)](https://cdn.rawgit.com/syarul/keet/esm-5/keet-min.js) [![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet) [![Build Status](https://travis-ci.org/syarul/keet.svg?branch=esm-5)](https://travis-ci.org/syarul/keet) [![Coverage Status](https://coveralls.io/repos/github/syarul/keet/badge.svg?branch=esm-5)](https://coveralls.io/github/syarul/keet?branch=esm-5) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![npm package](https://img.shields.io/badge/npm-4.0.0-blue.svg)](https://www.npmjs.com/package/keet) [![browser build](https://img.shields.io/badge/rawgit-4.0.0-ff69b4.svg)](https://cdn.rawgit.com/syarul/keet/diff/keet-min.js) [![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet) [![Build Status](https://travis-ci.org/syarul/keet.svg?branch=diff)](https://travis-ci.org/syarul/keet) [![Coverage Status](https://coveralls.io/repos/github/syarul/keet/badge.svg?branch=diff)](https://coveralls.io/github/syarul/keet?branch=diff) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 <!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
 <!-- AUTO-GENERATED-CONTENT:END -->
 
@@ -128,7 +128,7 @@ class App extends Keet {
 
 const app = new App()
 
-app.mount(html`
+app.mount(`
   <button id="toggle" k-click="toggle()" attr="{{show?foo:bar}}" style="color: {{show?red:blue}};" {{show?testme:test}}>toggle</button>
   <div id="1">one</div>
   <!-- {{?show}} -->

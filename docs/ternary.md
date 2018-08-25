@@ -6,7 +6,7 @@ sidebar_label: Ternary State
 
 ## Handling Boolean State
 
-Often times with Javascript we use boolean as variables, but usually  when parsing the result to DOM we want it in a different form. In this case we use ternary operator as our state expression.
+Often times with Javascript we use boolean as variables, but usually  when parsing the result to DOM we want it in a different form. In this case we use ternary operator as our state expression i.e ```{{<state>?<truthy>:<falsy>}}```.
 
 ```js
 import Keet from 'keet'

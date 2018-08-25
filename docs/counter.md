@@ -12,7 +12,10 @@ A simple counter application. This give you basic understanding how to work with
 import Keet, { html } from 'keet'
 
 class App extends Keet {
-  count = 0
+  constructor(){
+    super()
+    this.count = 0
+  }
   add (evt) {
     this.count++
   }
@@ -27,9 +30,5 @@ app.mount(html`
 `).link('app')
 ```
 
-// output
 
-<div id="app"></div>
-<br/>
-
-// output
+> Output: <div id="counterApp"></div><br/>

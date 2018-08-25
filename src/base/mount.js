@@ -21,8 +21,14 @@ export default function (instance) {
     base = instance.trim().replace(/\s+/g, ' ')
     tempDiv = document.createElement('div')
     tempDiv.innerHTML = base
-    while (tempDiv.firstChild) {
-      frag.appendChild(tempDiv.firstChild)
+    let n = tempDiv.firstChild
+    let f
+    while (n) {
+      f = n
+      n = n.nextSibling
+      if(f.nodeType !== DOCUMENT_TEXT_TYPE && f.nodeValue !== ' ') {
+        frag.appendChild(f.cloneNode(true))
+      }
     }
   // If instance is a html element process as html entities
   } else if (typeof instance === 'object' && instance['nodeType']) {

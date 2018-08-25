@@ -10,7 +10,7 @@ class App extends Keet {
 
 const app = new App()
 
-app.mount(html`
+app.mount(`
   <button id="toggle" k-click="toggle()" attr="{{show?foo:bar}}" style="color: {{show?red:blue}};" {{show?testme:test}}>toggle</button>
   <div id="1">one</div>
   <!-- {{?show}} -->

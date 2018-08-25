@@ -13,7 +13,10 @@ to the component method ```mount```. Within the string, you can assign a state w
 import Keet from 'keet'
 
 class App extends Keet {
-  state = 'World'
+  constructor(){
+    super()
+    this.state ='World'
+  }
 }
 
 const app = new App()
@@ -31,7 +34,10 @@ To update a state we write a method in our class Expression that accept an argum
 import Keet from 'keet'
 
 class App extends Keet {
-  state = 'World'
+  constructor(){
+    super()
+    this.state ='World'
+  }
   // our method
   greeting(value) {
     this.state = value
