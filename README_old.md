@@ -138,6 +138,9 @@ app.mount(`
   <!-- {{/show}} -->
   <div id="5">five</div>
 `).link('app')
+
+l(app)
+
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
 

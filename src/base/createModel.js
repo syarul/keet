@@ -43,7 +43,7 @@ const inform = function (...args) {
  */
 export default class createModel {
   constructor (enableFiltering) {
-    this.mId = this.indentity
+    this.mId = createModel.genIdentity
 
     async[this.mId] = null
     // if enableFiltering is assigned a value, model generation will
@@ -77,7 +77,7 @@ export default class createModel {
   }
 
   // set identity for this model
-  static get indentity () {
+  static get genIdentity () {
     return minId()
   }
 

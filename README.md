@@ -10,13 +10,13 @@
     <!-- npm version -->
     <a href="https://www.npmjs.com/package/keet" rel="nofollow"><img alt="npm package" src="https://img.shields.io/badge/npm-4.0.0-blue.svg" style="max-width:100%;"></a> 
     <!-- rawgit version -->
-    <a href="https://cdn.rawgit.com/syarul/keet/esm-5/keet-min.js" rel="nofollow"><img alt="browser build" src="https://img.shields.io/badge/rawgit-4.0.0-ff69b4.svg" style="max-width:100%;"></a>
+    <a href="https://cdn.rawgit.com/syarul/keet/master/keet-min.js" rel="nofollow"><img alt="browser build" src="https://img.shields.io/badge/rawgit-4.0.0-ff69b4.svg" style="max-width:100%;"></a>
     <!-- npm download count -->
     <a href="https://www.npmjs.com/package/keet" rel="nofollow"><img alt="npm module downloads" src="https://img.shields.io/npm/dt/keet.svg" style="max-width:100%;"></a>
     <!-- travis build status -->
-    <a href="https://travis-ci.org/syarul/keet" rel="nofollow"><img alt="Build Status" src="https://travis-ci.org/syarul/keet.svg?branch=esm-5" style="max-width:100%;"></a>
+    <a href="https://travis-ci.org/syarul/keet" rel="nofollow"><img alt="Build Status" src="https://travis-ci.org/syarul/keet.svg?branch=master" style="max-width:100%;"></a>
     <!-- coveralls coverage report -->
-    <a href="https://coveralls.io/github/syarul/keet?branch=esm-5" rel="nofollow"><img alt="Coverage Status" src="https://coveralls.io/repos/github/syarul/keet/badge.svg?branch=esm-5" style="max-width:100%;"></a>
+    <a href="https://coveralls.io/github/syarul/keet?branch=master" rel="nofollow"><img alt="Coverage Status" src="https://coveralls.io/repos/github/syarul/keet/badge.svg?branch=master" style="max-width:100%;"></a>
     <!-- standard.js badge -->
     <a href="https://standardjs.com" rel="nofollow"><img alt="JavaScript Style Guide" src="https://img.shields.io/badge/code_style-standard-brightgreen.svg" style="max-width:100%;"></a>
     <!-- gitter chat badge -->
@@ -32,7 +32,7 @@
 
 <!-- AUTO-GENERATED-CONTENT:START (RESOURCES) -->
 - Documentation - https://syarul.github.io/keet
-- Usage/API Examples - https://github.com/syarul/keet/tree/esm-5/examples
+- Usage/API Examples - https://github.com/syarul/keet/tree/master/examples
 - TodoMVC Implementation - https://github.com/syarul/keetjs-todomvc
 - Performance (opinionated) - https://github.com/syarul/preact-perf
 <!-- AUTO-GENERATED-CONTENT:END -->

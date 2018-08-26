@@ -26,6 +26,9 @@ class App extends Keet {
 const app = new App()
 
 app.mount(html`
+```
+
+```html
   <button id="toggle" k-click="toggle()" style="color: {{show?red:blue}};">toggle</button>
   <div id="1">one</div>
   <!-- {{?show}} -->
@@ -34,6 +37,9 @@ app.mount(html`
   <div id="4">four</div>
   <!-- {{/show}} -->
   <div id="5">five</div>
+```
+
+```js
 `).link('app')
 ```
 

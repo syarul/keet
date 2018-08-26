@@ -24,9 +24,15 @@ class App extends Keet {
 const app = new App()
 
 app.mount(html`
+```
+
+```handlebars
   <button id="counter" k-click="add()">
     {{count}}
   </button>
+```
+
+```js
 `).link('app')
 ```
 

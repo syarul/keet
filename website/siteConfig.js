@@ -74,18 +74,20 @@ const siteConfig = {
 
   // This copyright info is used in /core/Footer.js and blog RSS/Atom feeds.
   copyright: `Copyright © ${new Date().getFullYear()} Shahrul Nizam Selamat`,
-
+  usePrism: ['js'],
   highlight: {
     // Highlight.js theme to use for syntax highlighting in code blocks.
-    theme: 'monokai',
+    // theme: 'monokai',
   },
 
   // Add custom scripts here that would be placed in <script> tags.
   scripts: [
     'https://buttons.github.io/buttons.js', 
     'https://rawgit.com/syarul/keet/diff/keet-min.js',
-    'https://rawgit.com/syarul/4193c8bc5988693ee9e703792bf065db/raw/c8066eeea4cbd4bd770e12a0c179630f50e3da12/counter.js',
-    'https://rawgit.com/syarul/82fe2719d1df5e6e78c01db912b9528b/raw/72f6fe551214c04805c92fad410c9ff6d258a687/dynamic_nodes.js'
+    'https://rawgit.com/syarul/b8a68b55dfafc9347a080bb17398e213/raw/f7cd972c6917f742fb4aa7bca652b91de99b7959/consecutive_code_blocks_merge.js',
+    'https://rawgit.com/syarul/4193c8bc5988693ee9e703792bf065db/raw/86b8de871a044e72efda9256f7b9f068b350df10/counter.js',
+    'https://rawgit.com/syarul/82fe2719d1df5e6e78c01db912b9528b/raw/a3889c9dc5fed7310ca488fc8da24ebc7055c32a/dynamic_nodes.js',
+    'https://rawgit.com/syarul/14ce55703b7bd3a29b01adc76ece9c61/raw/549524bb87e6759443b88a242b4e1713987f9f0d/list.js'
   ],
 
   // On page navigation for the current documentation page.
