@@ -21,14 +21,22 @@ export default function (instance) {
     base = instance.trim().replace(/\s+/g, ' ')
     tempDiv = document.createElement('div')
     tempDiv.innerHTML = base
-    let n = tempDiv.firstChild
+    // clean up nodes
     let f
-    while (n) {
-      f = n
-      n = n.nextSibling
-      if(f.nodeType !== DOCUMENT_TEXT_TYPE && f.nodeValue !== ' ') {
-        frag.appendChild(f.cloneNode(true))
+    function clear(node){
+      while (node) {
+        f = node
+        node = node.nextSibling
+        if(f.nodeType === DOCUMENT_ELEMENT_TYPE) {
+          clear(f.firstChild)
+        } else if(f.nodeType === DOCUMENT_TEXT_TYPE && f.nodeValue === ' ') {
+          f.remove()
+        }
       }
+    }
+    clear(tempDiv.firstChild)
+    while (tempDiv.firstChild) {
+        frag.appendChild(tempDiv.firstChild)
     }
   // If instance is a html element process as html entities
   } else if (typeof instance === 'object' && instance['nodeType']) {

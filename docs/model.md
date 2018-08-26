@@ -19,9 +19,10 @@ class App extends Keet {
     this.task = new CreateModel()
     // subscribe to model changes
     this.task.subscribe(model =>
-      // callBatchPoolUpdate - custom method to force update component states.
-      // If the component has predefine state(s) that get reassigned within this
-      // closure we can safely ignore calling this method.
+      // callBatchPoolUpdate - custom method to force update 
+      // component states.If the component has predefine state(s) 
+      // that get reassigned within this closure we can safely 
+      // ignore calling this method.
       this.callBatchPoolUpdate()
     )
   }
