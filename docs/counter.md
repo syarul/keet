@@ -36,5 +36,6 @@ app.mount(html`
 `).link('app')
 ```
 
+## Counter - rendered
 
-> Output: <div id="counterApp"></div><br/>
+> <div id="counterApp"></div><br/>

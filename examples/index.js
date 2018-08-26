@@ -1,1 +1,1 @@
-import './model-simple'
+import './main'

@@ -1,6 +1,6 @@
 {
   "docs": {
-    "General Guideline": ["intro", "hello_world", "ternary", "counter", "dynamic_nodes", "model"]
+    "General Guideline": ["intro", "hello_world", "ternary", "function_state", "counter", "dynamic_nodes", "model", "todo", "components"]
   },
   "docs-other": {
     "V4 API": ["api", "api_createModel"]

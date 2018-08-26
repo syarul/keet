@@ -6,7 +6,11 @@ sidebar_label: List
 
 ## List Rendering
 
-To map an array to elements use the ```{{model:<myModelName>}}<myListPrototype>{{/model:<myModelName>}}```. To create model use [```createModel```](api_createModel.md) class. It has basic methods add/update/remove. You could extend the class method to have more control how the list should behave.
+To map an array to elements use
+
+```<!-- {{model:<myModelName>}} --><myListPrototype><!-- {{/model:<myModelName>}} -->```
+
+  To create model use [```createModel```](api_createModel.md) class. It has basic methods add/update/remove. You could extend the class method to have more control how the list should behave.
 
 > NOTE: To modify the list reassigned new value to the ```list```. Usage of ```map``` ```filter``` ```reduce``` ```concat``` is encouraged and does not affect the ```dom-diffing``` efficiency. 
 
@@ -34,10 +38,10 @@ app.mount(html`
 ```
 
 ```html
-  <h1>myModel</h1>
+  <h4>myModel</h4>
   <ul id="list">
     <!-- {{model:task}} -->
-    <li id="{{id}}">
+    <li>
       {{taskName}}
     </li>
     <!-- {{/model:task}} -->
@@ -52,4 +56,6 @@ Array.from(['run', 'jog', 'walk', 'swim', 'roll']).map(taskName => {
 })
 ```
 
-> Output: <div id="listApp"></div><br/>
+## List - Rendered
+
+> <div id="listApp"></div><br/>

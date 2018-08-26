@@ -41,9 +41,9 @@ const inform = function (...args) {
  * @param {*} enableFiltering - any truthy value 
  *
  */
-export default class createModel {
+export default class CreateModel {
   constructor (enableFiltering) {
-    this.mId = createModel.genIdentity
+    this.mId = CreateModel.genIdentity
 
     async[this.mId] = null
     // if enableFiltering is assigned a value, model generation will

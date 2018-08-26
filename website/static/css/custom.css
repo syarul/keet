@@ -13,7 +13,31 @@
 
 .hljs {
    /*background: #20232a !important;*/
-   /*color: #e6ebf1;*/
+   /*color: white;*/
+}
+
+.hljs-string {
+	/*color: #81ce83 !important;*/
+}
+
+.token.class-name {
+	/*color: #49b935 !important;*/
+}
+
+.token.keyword {
+	/*color: #29bdfd !important;*/
+}
+
+.token.string {
+	/*color: #ffdd61 !important;*/
+}
+
+.token.operator {
+	/*color: #9aff3e !important;*/
+}
+
+.token.boolean {
+	/*color: #ff1d9a !important;*/
 }
 
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {

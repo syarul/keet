@@ -6,7 +6,7 @@ sidebar_label: Introduction
 
 ## Getting Started
 
-To try out Keet is to include it from a CDN or npm.
+Keet is flexible, you can include/intergrate into your current existing project easily. To try out Keet is to include it from a CDN or npm.
 
 Create a HTML file:-
 
@@ -23,8 +23,6 @@ Create a HTML file:-
   </script>
 </html>
 ```
-
-Keet is flexible, you can include/intergrate into your current existing project easily
 
 ```npm install keet```
 

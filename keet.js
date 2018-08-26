@@ -1,31 +1,43 @@
 
+// 
+// Keetjs v4.0.0 Alpha release: https://github.com/keetjs/keet
+// Minimalist view layer for the web
+// 
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keetjs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// 
+// Copyright 2018, Shahrul Nizam Selamat
+// Released under the MIT License.
+// 
+
 /**
- * Keetjs v4.0.0 Alpha release: https://github.com/keetjs/keet
- * Minimalist view layer for the web
+ * @module keet
+ * @example
+ * import Keet from 'keet'
  *
- * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keetjs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ * class App extends Keet {
+ *   contructor() {
+ *     super()
+ *     // props 
+ *   }
+ *   // new extended method
+ *   myMethod(...args){
+ *     // 
+ *   }
+ * }
  *
- * Copyright 2018, Shahrul Nizam Selamat
- * Released under the MIT License.
+ * const app = new App()
  */
 
 import parseStr from './src/components/parseStr'
 import { updateContext, morpher } from './src/components/genElement'
 import { genId, assert, html } from './utils'
-import createModel from './src/base/createModel'
+import CreateModel from './src/base/createModel'
 import mount from './src/base/mount'
 
-// allow debugging using shorthand l and tr
-function debugMode() { 
-  window.l = console.log.bind(console)
-  window.tr = console.trace.bind(console)
-}
-
-debugMode()
-
 /**
- * @description
+ * 
  * The main constructor of Keet
+ * @param {string} name - ***optional*** A name to store in global ref
  */
 class Keet {
   constructor (name) {
@@ -40,10 +52,18 @@ class Keet {
     return genId()
   }
 
+  /**
+   * Mount an instance of html/string template
+   * @param {Object|String} instance - the html/string template
+   */
   mount (instance) {
     return mount.call(this, instance)
   }
 
+  /**
+   * Link to DOM node attribute ```id```
+   * @param {String} id - the id
+   */
   link (id) {
     // The target DOM where the rendering will took place.
     if (!id) assert(id, 'No id is given as parameter.')
@@ -95,5 +115,5 @@ class Keet {
 export {
   Keet as default,
   html,
-  createModel
+  CreateModel
 }

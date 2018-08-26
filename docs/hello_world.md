@@ -28,7 +28,7 @@ app.mount('Hello {{state}}').link('app')
 
 ## Updating a State
 
-To update a state we write a method in our class Expression that accept an argument.
+To update a state write a method in our class Expression that accept an argument.
 
 ```js
 import Keet from 'keet'

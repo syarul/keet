@@ -46,7 +46,7 @@ class Footer extends React.Component {
             </a>
           </div>
           <div>
-            <h5>More on Github</h5>
+            <h5>on Github</h5>
             <a className="github-button" href="https://github.com/syarul/keet" data-icon="octicon-star" data-show-count="true" aria-label="Star syarul/keet on GitHub">Star</a>
             &nbsp;&nbsp;<a className="github-button" href="https://github.com/syarul/keet/fork" data-icon="octicon-repo-forked" aria-label="Fork syarul/keet on GitHub">Fork</a>
             &nbsp;&nbsp;<a className="github-button" href="https://github.com/syarul/keet/issues" data-icon="octicon-issue-opened" aria-label="Issue syarul/keet on GitHub">Issue</a>

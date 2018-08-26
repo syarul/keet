@@ -6,7 +6,11 @@ sidebar_label: Dynamic Nodes
 
 ## Dynamic Nodes
 
-The traditional way, is you assign ```display:none``` to style attributes or use css. With Dynamic Nodes, we go a step further by adding and removing the nodes completely from the DOM. To use it wrap your html template literals with comment tags i.e ```<!-- {{?<state>}} --><node_1><node_2><node_3><!-- {{/<state>}} -->```. Add a new property state with boolean value to the class constructor
+The traditional way, is you assign ```display:none``` to style attributes or use css. With Dynamic Nodes, we go a step further by adding and removing the nodes completely from the DOM. To use it wrap your html template literals with comment tags i.e 
+
+```<!-- {{?<state>}} --><node_1><node_2><node_3><!-- {{/<state>}} -->```
+
+Add a new property state with boolean value to the class constructor
 
 > NOTE: DOM add/removal is fast and free up your resources when you do not need these nodes.
 
@@ -29,7 +33,7 @@ app.mount(html`
 ```
 
 ```html
-  <button id="toggle" k-click="toggle()" style="color: {{show?red:blue}};">toggle</button>
+  <button id="toggle" k-click="toggle()">toggle</button>
   <div id="1">one</div>
   <!-- {{?show}} -->
   <div id="2">two</div>
@@ -43,4 +47,6 @@ app.mount(html`
 `).link('app')
 ```
 
-> Output: <div id="dynamicApp"></div><br/>
+## Dynamic Nodes - rendered
+
+> <div id="dynamicApp"></div><br/>
