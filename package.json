@@ -6,13 +6,6 @@
   "bugs": {
     "url": "https://github.com/syarul/keet/issues"
   },
-<<<<<<< HEAD
-=======
-  "dependencies": {
-    "morphdom": "^2.3.3",
-    "set-dom": "^7.5.2"
-  },
->>>>>>> fix
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.6",
@@ -93,7 +86,7 @@
     "lint": "standard keet.js utils.js src/**/*.js examples/**/*.js --fix",
     "gen-apis": "jsdoc2md keet.js > docs/api_keet.md && jsdoc2md src/base/createModel.js > docs/api_createModel.md"
   },
-  "git_branch": "diff",
+  "git_branch": "master",
   "babel": {
     "presets": [
       [

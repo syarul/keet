@@ -1,11 +1,11 @@
 import { minId } from '../../utils'
 
 /**
- * @module keet/createModel
+ * @module keet/CreateModel
  * @example
- * import { createModel } from 'keet'
+ * import { CreateModel } from 'keet'
  *
- * class myModel extends createModel {
+ * class myModel extends CreateModel {
  *   contructor() {
  *     super()
  *     // props
