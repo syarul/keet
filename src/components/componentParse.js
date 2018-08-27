@@ -4,9 +4,11 @@ let cacheInit = {}
 
 function getKeetGlobalComponent(component) {
   if (window && typeof window.__keetGlobalComponentRef__ === 'object') {
-    return window.__keetGlobalComponentRef__[component]
+    let index = window.__keetGlobalComponentRef__.map(c => c.indentifier).indexOf(component)
+    if(~index){
+      return window.__keetGlobalComponentRef__[index].component
+    }
   }
-  return
 }
 
 export default function (componentStr, node) {

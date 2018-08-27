@@ -1,27 +1,9 @@
----
-id: api_createModel
-title: createModel
----
-
 <a name="module_keet/createModel"></a>
 
 ## keet/createModel
 **Example**  
 ```js
-import { createModel } from 'keet'
-
-class myModel extends createModel {
-  contructor() {
-    super()
-    // props 
-  }
-  // new extended method
-  myMethod(...args){
-    this.list = args 
-  }
-}
-
-const MyModel = new myModel()
+import { createModel } from 'keet'class myModel extends createModel {  contructor() {    super()    // props   }  // new extended method  myMethod(...args){    this.list = args   }}const MyModel = new myModel()
 ```
 
 * [keet/createModel](#module_keet/createModel)
@@ -36,8 +18,7 @@ const MyModel = new myModel()
 <a name="exp_module_keet/createModel--module.exports"></a>
 
 ### module.exports ⏏
-The model constructor, use with template literal having
-```{{model:<myModel>}}<myModelTemplateString>{{/model:<myModel>}}```
+The model constructor, use with template literal having```{{model:<myModel>}}<myModelTemplateString>{{/model:<myModel>}}```
 
 **Kind**: Exported class  
 <a name="new_module_keet/createModel--module.exports_new"></a>
@@ -51,8 +32,7 @@ The model constructor, use with template literal having
 <a name="module_keet/createModel--module.exports+subscribe"></a>
 
 #### module.exports.subscribe(fn)
-Subscribe to the model changes, the function callback first argument
-is the ```model.list``` and the second argument is ```model.listFilter```
+Subscribe to the model changes, the function callback first argumentis the ```model.list``` and the second argument is ```model.listFilter```
 
 **Kind**: instance method of [<code>module.exports</code>](#exp_module_keet/createModel--module.exports)  
 
@@ -85,9 +65,7 @@ Update existing object in the model list
 <a name="module_keet/createModel--module.exports+filter"></a>
 
 #### module.exports.filter(prop, value)
-Filter the model data by selected properties, constructor
-instantiation should be apply with boolean true as argument
-to enable filtering
+Filter the model data by selected properties, constructorinstantiation should be apply with boolean true as argumentto enable filtering
 
 **Kind**: instance method of [<code>module.exports</code>](#exp_module_keet/createModel--module.exports)  
 

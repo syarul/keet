@@ -62,16 +62,20 @@ class Keet {
 
   /**
    * Link to DOM node attribute ```id```
-   * @param {String} id - the id
+   * @param {String} id - the id of the node
    */
   link (id) {
-    // The target DOM where the rendering will took place.
     if (!id) assert(id, 'No id is given as parameter.')
     this.el = id
     this.render()
     return this
   }
 
+  /**
+   * @private
+   * Render this component to the DOM
+   * @param {Boolean} stub - set as true if this a child component
+   */
   render (stub) {
     // life-cycle method before rendering the component
     if (this.componentWillMount && typeof this.componentWillMount === 'function') {
@@ -85,29 +89,47 @@ class Keet {
     parseStr.call(this, stub)
   }
 
+  /**
+   * Recheck all states if anything changed, diffing will occurs.
+   * this method is ***asynchronous*** and ***trottled***, you can call it from a loop and
+   * only trigger diffing when the loop end
+   */
   callBatchPoolUpdate () {
-    // force component to update, if any state / non-state
-    // value changed DOM diffing will occur
     updateContext.call(this, morpher, 1)
   }
-  // pub-sub of the component, a component can subscribe to changes
-  // of another component, this is the subscribe method
+  /**
+   * Another component can subscribe to changes on this component. 
+   * This is the subscribe method
+   * @param {Function} fn - the callback function for the subscribe
+   */
   subscribe (fn) {
     this.exec = fn
   }
-  // pub-sub of the component, a component can subscribe to changes
-  // of another component, this is the publish method
-  inform (model) {
-    this.exec && typeof this.exec === 'function' && this.exec(model)
+  /**
+   * Another component can subscribe to changes on this component. 
+   * This is the publish method
+   * @param {...*} value - one or more parameters to publish to subscribers
+   */
+  inform (...args) {
+    this.exec && typeof this.exec === 'function' && this.exec.apply(null, args)
   }
 
-  // store in global ref
+  /**
+   * Store referance in the global space, with this the parent component do need
+   * to store/assign it as a property while still be able to look for the sub-component
+   * to initialize it
+   * @param {String} name - Identifier for the component, should be unique to avoid conflict
+   */
   storeRef (name){
-    window.__keetGlobalComponentRef__ = window.__keetGlobalComponentRef__ || {}
-    if(window.__keetGlobalComponentRef__[name]) {
+    window.__keetGlobalComponentRef__ = window.__keetGlobalComponentRef__ || []
+    let isExist = window.__keetGlobalComponentRef__.map(c => c.identifier).indexOf(name)
+    if(~isExist) {
       assert(false, `The component name: ${name} already exist in the global pool.`)
     } else {
-      window.__keetGlobalComponentRef__[name] = this
+      window.__keetGlobalComponentRef__ = window.__keetGlobalComponentRef__.concat({
+        identifier: name,
+        component: this
+      })
     }
   }
 }
