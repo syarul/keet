@@ -1,5 +1,4 @@
 import Keet from '../'
-import { html } from '../utils'
 
 class App extends Keet {
   show = false
@@ -20,4 +19,3 @@ app.mount(`
   <!-- {{/show}} -->
   <div id="5">five</div>
 `).link('app')
-

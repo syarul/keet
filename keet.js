@@ -1,13 +1,13 @@
 
-// 
+//
 // Keetjs v4.0.0 Alpha release: https://github.com/keetjs/keet
 // Minimalist view layer for the web
-// 
+//
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keetjs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-// 
+//
 // Copyright 2018, Shahrul Nizam Selamat
 // Released under the MIT License.
-// 
+//
 
 /**
  * @module keet
@@ -17,11 +17,11 @@
  * class App extends Keet {
  *   contructor() {
  *     super()
- *     // props 
+ *     // props
  *   }
  *   // new extended method
  *   myMethod(...args){
- *     // 
+ *     //
  *   }
  * }
  *
@@ -35,14 +35,14 @@ import CreateModel from './src/base/createModel'
 import mount from './src/base/mount'
 
 /**
- * 
+ *
  * The main constructor of Keet
  * @param {string} name - ***optional*** A name to store in global ref
  */
 class Keet {
   constructor (name) {
     this.ID = Keet.indentity
-    if(name){
+    if (name) {
       this.storeRef(name)
     }
   }
@@ -98,7 +98,7 @@ class Keet {
     updateContext.call(this, morpher, 1)
   }
   /**
-   * Another component can subscribe to changes on this component. 
+   * Another component can subscribe to changes on this component.
    * This is the subscribe method
    * @param {Function} fn - the callback function for the subscribe
    */
@@ -106,7 +106,7 @@ class Keet {
     this.exec = fn
   }
   /**
-   * Another component can subscribe to changes on this component. 
+   * Another component can subscribe to changes on this component.
    * This is the publish method
    * @param {...*} value - one or more parameters to publish to subscribers
    */
@@ -120,10 +120,10 @@ class Keet {
    * to initialize it
    * @param {String} name - Identifier for the component, should be unique to avoid conflict
    */
-  storeRef (name){
+  storeRef (name) {
     window.__keetGlobalComponentRef__ = window.__keetGlobalComponentRef__ || []
     let isExist = window.__keetGlobalComponentRef__.map(c => c.identifier).indexOf(name)
-    if(~isExist) {
+    if (~isExist) {
       assert(false, `The component name: ${name} already exist in the global pool.`)
     } else {
       window.__keetGlobalComponentRef__ = window.__keetGlobalComponentRef__.concat({

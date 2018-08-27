@@ -2,10 +2,10 @@ import { assert, getId } from '../../utils'
 
 let cacheInit = {}
 
-function getKeetGlobalComponent(component) {
+function getKeetGlobalComponent (component) {
   if (window && typeof window.__keetGlobalComponentRef__ === 'object') {
     let index = window.__keetGlobalComponentRef__.map(c => c.indentifier).indexOf(component)
-    if(~index){
+    if (~index) {
       return window.__keetGlobalComponentRef__[index].component
     }
   }

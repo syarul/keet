@@ -1,10 +1,7 @@
-import Keet, { createModel as CreateModel } from '../'
-import { html, getId } from '../utils'
-
-let task = new CreateModel()
+import Keet, { CreateModel } from '../'
 
 class App extends Keet {
-  constructor() {
+  constructor () {
     super()
     this.task = new CreateModel()
     // subscribe to model changes

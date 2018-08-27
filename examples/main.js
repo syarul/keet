@@ -4,7 +4,7 @@ import Keet from '../'
 import other from './other'
 
 class Main extends Keet {
-  constructor() {
+  constructor () {
     super()
     this.state = 'main'
     other.subscribe(state => {
@@ -15,3 +15,5 @@ class Main extends Keet {
 }
 
 const main = new Main()
+
+export default main

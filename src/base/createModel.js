@@ -8,11 +8,11 @@ import { minId } from '../../utils'
  * class myModel extends createModel {
  *   contructor() {
  *     super()
- *     // props 
+ *     // props
  *   }
  *   // new extended method
  *   myMethod(...args){
- *     this.list = args 
+ *     this.list = args
  *   }
  * }
  *
@@ -38,7 +38,7 @@ const inform = function (...args) {
  * The model constructor, use with template literal having
  * ```{{model:<myModel>}}<myModelTemplateString>{{/model:<myModel>}}```
  * @alias module:keet/createModel
- * @param {*} enableFiltering - any truthy value 
+ * @param {*} enableFiltering - any truthy value
  *
  */
 export default class CreateModel {

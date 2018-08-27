@@ -4,10 +4,14 @@ const DOCUMENT_ELEMENT_TYPE = 1
 
 function isEqual (oldNode, newNode) {
   return (
-    (isPristine(newNode) ||
-    isIgnored(oldNode) && isIgnored(newNode)) ||
+    isPristine(newNode) ||
+    compare(oldNode, newNode) ||
     oldNode.isEqualNode(newNode)
   )
+}
+
+function compare (oldNode, newNode) {
+  return isIgnored(oldNode) && isIgnored(newNode)
 }
 
 function isIgnored (node) {

@@ -4,6 +4,20 @@ import { assert } from '../../utils'
 const DOCUMENT_FRAGMENT_TYPE = 11
 const DOCUMENT_TEXT_TYPE = 3
 const DOCUMENT_ELEMENT_TYPE = 1
+
+// clean up nodes
+function clear (node) {
+  let f
+  while (node) {
+    f = node
+    node = node.nextSibling
+    if (f.nodeType === DOCUMENT_ELEMENT_TYPE) {
+      clear(f.firstChild)
+    } else if (f.nodeType === DOCUMENT_TEXT_TYPE && f.nodeValue === ' ') {
+      f.remove()
+    }
+  }
+}
 /**
  * @private
  * @description
@@ -21,22 +35,9 @@ export default function (instance) {
     base = instance.trim().replace(/\s+/g, ' ')
     tempDiv = document.createElement('div')
     tempDiv.innerHTML = base
-    // clean up nodes
-    let f
-    function clear(node){
-      while (node) {
-        f = node
-        node = node.nextSibling
-        if(f.nodeType === DOCUMENT_ELEMENT_TYPE) {
-          clear(f.firstChild)
-        } else if(f.nodeType === DOCUMENT_TEXT_TYPE && f.nodeValue === ' ') {
-          f.remove()
-        }
-      }
-    }
     clear(tempDiv.firstChild)
     while (tempDiv.firstChild) {
-        frag.appendChild(tempDiv.firstChild)
+      frag.appendChild(tempDiv.firstChild)
     }
   // If instance is a html element process as html entities
   } else if (typeof instance === 'object' && instance['nodeType']) {

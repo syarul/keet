@@ -1,9 +1,8 @@
 import Keet from '../'
-import { getId } from '../utils' // rem
 
 class App extends Keet {
   myState () {
-  	return 1 + 1
+    return 1 + 1
   }
 }
 
