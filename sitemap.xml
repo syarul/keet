@@ -8,9 +8,14 @@
 <url> <loc>https://syarul.github.io/keet/blog/2017/04/10/blog-post-two</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
 <url> <loc>https://syarul.github.io/keet/blog/2016/03/11/blog-post</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
 <url> <loc>https://syarul.github.io/keet/docs/api_createModel</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://syarul.github.io/keet/docs/api_createModel" /> </url>
-<url> <loc>https://syarul.github.io/keet/docs/api</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://syarul.github.io/keet/docs/api" /> </url>
+<url> <loc>https://syarul.github.io/keet/docs/api_keet</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://syarul.github.io/keet/docs/api_keet" /> </url>
+<url> <loc>https://syarul.github.io/keet/docs/components</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://syarul.github.io/keet/docs/components" /> </url>
 <url> <loc>https://syarul.github.io/keet/docs/counter</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://syarul.github.io/keet/docs/counter" /> </url>
+<url> <loc>https://syarul.github.io/keet/docs/dynamic_nodes</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://syarul.github.io/keet/docs/dynamic_nodes" /> </url>
+<url> <loc>https://syarul.github.io/keet/docs/function_state</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://syarul.github.io/keet/docs/function_state" /> </url>
 <url> <loc>https://syarul.github.io/keet/docs/hello_world</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://syarul.github.io/keet/docs/hello_world" /> </url>
 <url> <loc>https://syarul.github.io/keet/docs/intro</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://syarul.github.io/keet/docs/intro" /> </url>
+<url> <loc>https://syarul.github.io/keet/docs/model</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://syarul.github.io/keet/docs/model" /> </url>
 <url> <loc>https://syarul.github.io/keet/docs/ternary</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://syarul.github.io/keet/docs/ternary" /> </url>
+<url> <loc>https://syarul.github.io/keet/docs/todo</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://syarul.github.io/keet/docs/todo" /> </url>
 </urlset>

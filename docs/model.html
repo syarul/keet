@@ -1,0 +1,74 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>List · Keet.js v4</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="## List Rendering"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="List · Keet.js v4"/><meta property="og:type" content="website"/><meta property="og:url" content="https://syarul.github.io/keet/index.html"/><meta property="og:description" content="## List Rendering"/><meta property="og:image" content="https://syarul.github.io/keet/img/keet_temp_logo.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://syarul.github.io/keet/img/keet_temp_logo.png"/><link rel="shortcut icon" href="/keet/img/favicon.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://rawgit.com/syarul/keet/diff/keet-min.js"></script><script type="text/javascript" src="https://rawgit.com/syarul/b8a68b55dfafc9347a080bb17398e213/raw/f7cd972c6917f742fb4aa7bca652b91de99b7959/consecutive_code_blocks_merge.js"></script><script type="text/javascript" src="https://rawgit.com/syarul/4193c8bc5988693ee9e703792bf065db/raw/86b8de871a044e72efda9256f7b9f068b350df10/counter.js"></script><script type="text/javascript" src="https://rawgit.com/syarul/82fe2719d1df5e6e78c01db912b9528b/raw/000e40b763bdac50f395c43c85a835eff1133121/dynamic_nodes.js"></script><script type="text/javascript" src="https://rawgit.com/syarul/14ce55703b7bd3a29b01adc76ece9c61/raw/c05e0864d1083369ebf5ccbaac2038f785e817c3/list.js"></script><script type="text/javascript" src="https://rawgit.com/syarul/df6da7f14ba74e283ac644e3cff21a48/raw/7894f3f9346e5de38b97a21a6a9d4e8b0aa6bf66/todo.js"></script><script type="text/javascript" src="https://rawgit.com/syarul/16294e5202acdf33d7de76ffafb44d69/raw/03df988f46bd26e46eaa5021c00ac6893cba1164/component.js"></script><link rel="stylesheet" href="/keet/css/prism.css"/><link rel="stylesheet" href="/keet/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/keet/"><img class="logo" src="/keet/img/keet.svg" alt="Keet.js v4"/><h2 class="headerTitleWithLogo">Keet.js v4</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/keet/docs/intro" target="_self">Docs</a></li><li class=""><a href="/keet/docs/api_keet" target="_self">API</a></li><li class=""><a href="/keet/en/help" target="_self">Help</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>General Guideline</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">General Guideline</h3><ul><li class="navListItem"><a class="navItem" href="/keet/docs/intro">Introduction</a></li><li class="navListItem"><a class="navItem" href="/keet/docs/hello_world">Hello World</a></li><li class="navListItem"><a class="navItem" href="/keet/docs/ternary">Ternary State</a></li><li class="navListItem"><a class="navItem" href="/keet/docs/function_state">Function State</a></li><li class="navListItem"><a class="navItem" href="/keet/docs/counter">Counter (eventListener)</a></li><li class="navListItem"><a class="navItem" href="/keet/docs/dynamic_nodes">Dynamic Nodes</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/keet/docs/model">List</a></li><li class="navListItem"><a class="navItem" href="/keet/docs/todo">List (advance)</a></li><li class="navListItem"><a class="navItem" href="/keet/docs/components">Component</a></li></ul></div></div></section></div><script>
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              const headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                if (event.target.tagName === 'A') {
+                  document.body.classList.remove('tocActive');
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">List</h1></header><article><div><span><h2><a class="anchor" aria-hidden="true" id="list-rendering"></a><a href="#list-rendering" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>List Rendering</h2>
+<p>To map an array to elements use</p>
+<p><code>&lt;!-- {{model:&lt;myModelName&gt;}} --&gt;&lt;myListPrototype&gt;&lt;!-- {{/model:&lt;myModelName&gt;}} --&gt;</code></p>
+<p>To create model use <a href="/keet/docs/api_createModel"><code>createModel</code></a> class. It has basic methods add/update/remove. You could extend the class method to have more control how the list should behave.</p>
+<blockquote>
+<p>NOTE: To modify the list reassigned new value to the <code>list</code>. Usage of <code>map</code> <code>filter</code> <code>reduce</code> <code>concat</code> is encouraged and does not affect the <code>dom-diffing</code> efficiency.</p>
+</blockquote>
+<pre><code class="hljs css language-js"><span class="token keyword">import</span> Keet<span class="token punctuation">,</span> <span class="token punctuation">{</span> html<span class="token punctuation">,</span> CreateModel <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'keet'</span>
+
+<span class="token keyword">class</span> <span class="token class-name">App</span> <span class="token keyword">extends</span> <span class="token class-name">Keet</span> <span class="token punctuation">{</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">super</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>task <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CreateModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token comment">// subscribe to model changes</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>task<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>model <span class="token operator">=></span>
+      <span class="token comment">// callBatchPoolUpdate - custom method to force update </span>
+      <span class="token comment">// component states.If the component has predefine state(s) </span>
+      <span class="token comment">// that get reassigned within this closure we can safely </span>
+      <span class="token comment">// ignore calling this method.</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">callBatchPoolUpdate</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">const</span> app <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+app<span class="token punctuation">.</span><span class="token function">mount</span><span class="token punctuation">(</span>html`
+</code></pre>
+<pre><code class="hljs css language-html">  <span class="hljs-tag">&lt;<span class="hljs-name">h4</span>&gt;</span>myModel<span class="hljs-tag">&lt;/<span class="hljs-name">h4</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">ul</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"list"</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- {{model:task}} --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span>
+      {{taskName}}
+    <span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- {{/model:task}} --&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>
+</code></pre>
+<pre><code class="hljs css language-js">`<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">link</span><span class="token punctuation">(</span><span class="token string">'app'</span><span class="token punctuation">)</span>
+
+Array<span class="token punctuation">.</span><span class="token keyword">from</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'run'</span><span class="token punctuation">,</span> <span class="token string">'jog'</span><span class="token punctuation">,</span> <span class="token string">'walk'</span><span class="token punctuation">,</span> <span class="token string">'swim'</span><span class="token punctuation">,</span> <span class="token string">'roll'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>taskName <span class="token operator">=></span> <span class="token punctuation">{</span>
+  app<span class="token punctuation">.</span>task<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token punctuation">{</span> taskName<span class="token punctuation">:</span> taskName <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="list-rendered"></a><a href="#list-rendered" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>List - Rendered</h2>
+<blockquote>
+<div id="listApp"></div><br/></blockquote>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/keet/docs/dynamic_nodes">← Dynamic Nodes</a><a class="docs-next button" href="/keet/docs/todo">List (advance) →</a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#list-rendering">List Rendering</a></li><li><a href="#list-rendered">List - Rendered</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/keet/" class="nav-home"><img src="/keet/img/keet.svg" alt="Keet.js v4" width="66" height="58"/></a><div><h5>Extra</h5><a href="https://github.com/syarul/keetjs-todomvc">TodoMVC</a><a href="https://github.com/syarul/preact-perf">Performance Benchmark</a></div><div><h5>Community</h5><a href="https://gitter.im/keet-dev/Lobby">Gitter Chat</a></div><div><h5>on Github</h5><a class="github-button" href="https://github.com/syarul/keet" data-icon="octicon-star" data-show-count="true" aria-label="Star syarul/keet on GitHub">Star</a>  <a class="github-button" href="https://github.com/syarul/keet/fork" data-icon="octicon-repo-forked" aria-label="Fork syarul/keet on GitHub">Fork</a>  <a class="github-button" href="https://github.com/syarul/keet/issues" data-icon="octicon-issue-opened" aria-label="Issue syarul/keet on GitHub">Issue</a></div></section><p class="fbOpenSource info-footer">Site generated using <span><a href="https://docusaurus.io">docusaurus</a></span> part of</p><a href="https://code.facebook.com/projects/" target="_blank" rel="noreferrer noopener" class="fbOpenSource"><img src="/keet/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2018 Shahrul Nizam Selamat</section></footer></div></body></html>
