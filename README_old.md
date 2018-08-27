@@ -139,8 +139,6 @@ app.mount(`
   <div id="5">five</div>
 `).link('app')
 
-l(app)
-
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
 
@@ -153,7 +151,7 @@ To map an array to elements use the ```{{model:<myModelName>}}<myModelTemplate>{
 
 <!-- AUTO-GENERATED-CONTENT:START (MODEL) -->
 ```js
-import Keet, { createModel as CreateModel } from 'keet'
+import Keet, { CreateModel } from 'keet'
 import { html } from 'keet/utils'
 
 let task = new CreateModel()

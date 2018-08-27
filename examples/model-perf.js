@@ -1,5 +1,5 @@
 /* global performance */
-import Keet, { createModel as CreateModel } from '../'
+import Keet, { CreateModel } from '../'
 import { html } from '../utils'
 
 let time

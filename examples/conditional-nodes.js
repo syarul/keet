@@ -21,5 +21,3 @@ app.mount(`
   <div id="5">five</div>
 `).link('app')
 
-l(app)
-

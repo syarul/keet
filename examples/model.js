@@ -1,4 +1,4 @@
-import Keet, { createModel as CreateModel } from '../'
+import Keet, { CreateModel } from '../'
 import { html, getId } from '../utils'
 
 let task = new CreateModel()
