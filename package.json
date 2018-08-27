@@ -36,6 +36,7 @@
     "rollup-plugin-node-resolve": "^3.3.0",
     "standard": "^11.0.1",
     "uglify-js": "^2.7.5",
+    "url-parse": "^1.4.3",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.11.1"
   },
