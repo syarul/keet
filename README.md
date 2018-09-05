@@ -1,7 +1,7 @@
 <h1 align="center">
   <!-- Logo -->
   <a href="https://syarul.github.io/keet/" alt="keet.js">
-    <img src="https://cdn.rawgit.com/syarul/keet/0ce3f8d7/website/static/img/keet_temp_logo.png" width="150" alt="Keet Logo"/>
+    <img src="https://raw.githubusercontent.com/syarul/keet/0ce3f8d7/website/static/img/keet_temp_logo.png" width="150" alt="Keet Logo"/>
   </a>
 
   <h3 align="center">Keet v4.1.0</h3>
