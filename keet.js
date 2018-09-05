@@ -1,6 +1,6 @@
 
 //
-// Keetjs v4.0.0 Alpha release: https://github.com/keetjs/keet
+// Keetjs v4.1.0 Alpha release: https://github.com/keetjs/keet
 // Minimalist view layer for the web
 //
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keetjs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -54,7 +54,7 @@ class Keet {
 
   /**
    * Mount an instance of html/string template
-   * @param {Object|String} instance - the html/string template
+   * @param {Object|string} instance - the html/string template
    */
   mount (instance) {
     return mount.call(this, instance)
@@ -62,7 +62,7 @@ class Keet {
 
   /**
    * Link to DOM node attribute ```id```
-   * @param {String} id - the id of the node
+   * @param {string} id - the id of the node
    */
   link (id) {
     if (!id) assert(id, 'No id is given as parameter.')
@@ -118,7 +118,7 @@ class Keet {
    * Store referance in the global space, with this the parent component do need
    * to store/assign it as a property while still be able to look for the sub-component
    * to initialize it
-   * @param {String} name - Identifier for the component, should be unique to avoid conflict
+   * @param {string} name - Identifier for the component, should be unique to avoid conflict
    */
   storeRef (name) {
     window.__keetGlobalComponentRef__ = window.__keetGlobalComponentRef__ || []

@@ -1,1 +1,1 @@
-import './model-perf'
+import './svg'

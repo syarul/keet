@@ -1,7 +1,5 @@
 import conditionalCache from './templateParse/conditionalCache'
-// import conditionalSet from './templateParse/conditionalSet'
 import reconcile from './templateParse/reconcile'
-// import eventBuff from './templateParse/eventBuff'
 import { setState, addState } from './genElement'
 import { getId, assert } from '../../utils'
 
@@ -9,9 +7,7 @@ const DOCUMENT_ELEMENT_TYPE = 1
 
 export default function (stub) {
   conditionalCache.call(this, addState.bind(this))
-  // conditionalSet.call(this, this.base.firstChild)
   reconcile.call(this, this.base.firstChild, addState.bind(this))
-  // eventBuff.call(this, this.base.firstChild)
   const el = stub || getId(this.el)
   if (el) {
     if (el.nodeType === DOCUMENT_ELEMENT_TYPE) {

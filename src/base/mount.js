@@ -1,23 +1,13 @@
-import { clearState } from '../components/genElement'
+import { clearState, addState } from '../components/genElement'
+import genModelTemplate from '../components/genModelTemplate'
+import svgHandler from './svgHandler'
 import { assert } from '../../utils'
+import mountToFragment from './mountToFragment'
 
 const DOCUMENT_FRAGMENT_TYPE = 11
 const DOCUMENT_TEXT_TYPE = 3
 const DOCUMENT_ELEMENT_TYPE = 1
 
-// clean up nodes
-function clear (node) {
-  let f
-  while (node) {
-    f = node
-    node = node.nextSibling
-    if (f.nodeType === DOCUMENT_ELEMENT_TYPE) {
-      clear(f.firstChild)
-    } else if (f.nodeType === DOCUMENT_TEXT_TYPE && f.nodeValue === ' ') {
-      f.remove()
-    }
-  }
-}
 /**
  * @private
  * @description
@@ -27,20 +17,35 @@ function clear (node) {
  */
 export default function (instance) {
   let base
-  let tempDiv
+  let hasSVG
   let frag = document.createDocumentFragment()
+
+  // cleanup states on mount
+  clearState.call(this)
+
   // Before we begin to parse an instance, do a run-down checks
   // to clean up back-tick string which usually has line spacing.
   if (typeof instance === 'string') {
     base = instance.trim().replace(/\s+/g, ' ')
-    tempDiv = document.createElement('div')
-    tempDiv.innerHTML = base
-    clear(tempDiv.firstChild)
-    while (tempDiv.firstChild) {
-      frag.appendChild(tempDiv.firstChild)
+
+    // parse svg elements
+    hasSVG = svgHandler(base)
+
+    // if instance has SVG we parse it as string since SVG does
+    // not take attributes value beyond interger/float
+    if (hasSVG) {
+      this.IS_SVG = true
+      // store the original instance
+      this.__pristineFragment__ = base
+      base = genModelTemplate.call(this, base, null, addState.bind(this))
     }
+
+    mountToFragment(frag, base)
+
   // If instance is a html element process as html entities
   } else if (typeof instance === 'object' && instance['nodeType']) {
+    // parse svg elements
+
     if (instance['nodeType'] === DOCUMENT_ELEMENT_TYPE) {
       frag.appendChild(instance)
     } else if (instance['nodeType'] === DOCUMENT_FRAGMENT_TYPE) {
@@ -54,10 +59,10 @@ export default function (instance) {
     assert(false, 'Parameter is not a string or a html element.')
   }
   // we store the pristine instance in __pristineFragment__
-  this.__pristineFragment__ = frag.cloneNode(true)
+  if (!hasSVG) {
+    this.__pristineFragment__ = frag.cloneNode(true)
+  }
   this.base = frag
 
-  // cleanup states on mount
-  clearState.call(this)
   return this
 }

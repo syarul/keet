@@ -52,15 +52,15 @@ class Footer extends React.Component {
             &nbsp;&nbsp;<a className="github-button" href="https://github.com/syarul/keet/issues" data-icon="octicon-issue-opened" aria-label="Issue syarul/keet on GitHub">Issue</a>
           </div>
         </section>
-        <p className="fbOpenSource info-footer">Site generated using <span><a href="https://docusaurus.io">docusaurus</a></span> part of</p>
+        <p className="fbOpenSource info-footer">Generated with Docusaurus</p>
         <a
-          href="https://code.facebook.com/projects/"
+          href="https://docusaurus.io"
           target="_blank"
           rel="noreferrer noopener"
           className="fbOpenSource">
           <img
-            src={`${this.props.config.baseUrl}img/oss_logo.png`}
-            alt="Facebook Open Source"
+            src={`${this.props.config.baseUrl}img/docusaurus.svg`}
+            alt="Docusaurus"
             width="170"
             height="45"
           />

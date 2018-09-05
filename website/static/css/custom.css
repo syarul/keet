@@ -5,6 +5,8 @@
 	font-size: 0.7em;
 	margin: 1em auto;
 	width: 200px !important;
+	pointer-events: none;
+	text-align: center;
 }
 
 .copyright {

@@ -1,5 +1,6 @@
 import ternaryOps from './ternaryOps'
 import strInterpreter from './strInterpreter'
+import updateState from './templateParse/updateState'
 
 const re = new RegExp(/(\schecked=")(.*?)(?=")/g)
 
@@ -11,7 +12,8 @@ let len
 let match
 let isObjectNotation
 
-export default function (string, obj) {
+export default function (string, obj, addState) {
+  obj = obj || this
   const arrProps = string.match(/{{([^{}]+)}}/g)
   tmpl = string
   for (i = 0, len = arrProps.length; i < len; i++) {
@@ -19,6 +21,7 @@ export default function (string, obj) {
     isTernary = ternaryOps.call(obj, rep)
     isObjectNotation = strInterpreter(rep)
     if (isTernary) {
+      updateState(rep, addState)
       tmpl = tmpl.replace('{{' + rep + '}}', isTernary.value)
     } else if (isObjectNotation) {
       if (isObjectNotation[0] === 'this' && typeof this[isObjectNotation[1]] === 'function') {
@@ -28,6 +31,7 @@ export default function (string, obj) {
         }
       }
     } else {
+      updateState(rep, addState)
       tmpl = tmpl.replace('{{' + rep + '}}', obj[rep])
     }
 

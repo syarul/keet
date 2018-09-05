@@ -112,8 +112,8 @@ export default class CreateModel {
    * Filter the model data by selected properties, constructor
    * instantiation should be apply with boolean true as argument
    * to enable filtering
-   * @param {standard} prop - property of the object
-   * @param {standard} value - property value
+   * @param {string} prop - property of the object
+   * @param {Object|string|number|Boolean} value - property value
    */
   filter (prop, value) {
     this.prop = prop

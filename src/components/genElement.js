@@ -1,8 +1,9 @@
-// import conditionalSet from './templateParse/conditionalSet'
+
 import reconcile from './templateParse/reconcile'
-// import eventBuff from './templateParse/eventBuff'
 import diffNodes from './templateParse/diffNodes'
 import strInterpreter from './strInterpreter'
+import genModelTemplate from './genModelTemplate'
+import mountToFragment from '../base/mountToFragment'
 
 const DELAY = 0
 
@@ -84,10 +85,17 @@ function addState (state) {
 }
 
 const genElement = function () {
-  this.base = this.__pristineFragment__.cloneNode(true)
-  // conditionalSet.call(this, this.base.firstChild)
+  let base
+  let frag
+  if (this.IS_SVG) {
+    base = genModelTemplate.call(this, this.__pristineFragment__)
+    frag = document.createDocumentFragment()
+    mountToFragment(frag, base)
+    this.base = frag
+  } else {
+    this.base = this.__pristineFragment__.cloneNode(true)
+  }
   reconcile.call(this, this.base.firstChild, addState.bind(this))
-  // eventBuff.call(this, this.base.firstChild)
   diffNodes.call(this, this.base.firstChild)
 }
 
