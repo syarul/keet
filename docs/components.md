@@ -59,9 +59,10 @@ app.mount(html`
 `).link('app')
 ```
 
-## Sub Component - rendered
+## Codepen Sample
 
-> <div id="componentApp"></div><br/>
+<p data-height="265" data-theme-id="dark" data-slug-hash="dqzLmY" data-default-tab="js,result" data-user="syarul" data-pen-title="Keetjs - Component" class="codepen">See the Pen <a href="https://codepen.io/syarul/pen/dqzLmY/">Keetjs - Component</a> by Shahrul Nizam b. Selamat (<a href="https://codepen.io/syarul">@syarul</a>) on <a href="https://codepen.io">CodePen</a>.</p>
+<script async src="https://static.codepen.io/assets/embed/ei.js"></script>
 
 ## Notifying state changes across different components
 

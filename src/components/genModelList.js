@@ -1,4 +1,6 @@
+import { getId } from '../../utils'
 
+const DOCUMENT_FRAGMENT_TYPE = 11
 // storage for model state
 let cache = {}
 
@@ -31,7 +33,7 @@ function genModelList (node, model, reconcile) {
   list = cache[model][listArg]
 
   if (this[model] !== undefined && this[model].hasOwnProperty(listArg)) {
-    parentNode = node.parentNode
+    parentNode = node.parentNode.nodeType === DOCUMENT_FRAGMENT_TYPE ? getId(this.el) : node.parentNode
 
     modelList = this[model][listArg]
 

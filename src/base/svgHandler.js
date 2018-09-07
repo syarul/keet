@@ -1,11 +1,27 @@
-const svgRe = /(<svg)([^<]*|[^>]*)/g
+import { minId } from '../../utils'
 
-export default function (base) {
+const svgRe = /(<svg)([^<]*|[^>]*)(.*?)(?=<\/svg>)/g
+
+let svgData = {}
+
+function parseSVG (base) {
+  let svgList
+  let id
   if (typeof base === 'string') {
-    let svgList = base.match(svgRe)
+    svgList = base.match(svgRe)
     if (svgList && svgList.length) {
-      return true
+      this.IS_SVG = true
+      svgList.map(ls => {
+        id = minId()
+        svgData[id] = ls
+        base = base.replace(ls, `<!-- {{svg:${id}}} -->`)
+      })
     }
-    return false
   }
+  return base
+}
+
+export {
+  parseSVG as default,
+  svgData
 }

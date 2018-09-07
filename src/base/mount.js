@@ -1,5 +1,4 @@
-import { clearState, addState } from '../components/genElement'
-import genModelTemplate from '../components/genModelTemplate'
+import { clearState } from '../components/genElement'
 import svgHandler from './svgHandler'
 import { assert } from '../../utils'
 import mountToFragment from './mountToFragment'
@@ -17,7 +16,6 @@ const DOCUMENT_ELEMENT_TYPE = 1
  */
 export default function (instance) {
   let base
-  let hasSVG
   let frag = document.createDocumentFragment()
 
   // cleanup states on mount
@@ -26,19 +24,11 @@ export default function (instance) {
   // Before we begin to parse an instance, do a run-down checks
   // to clean up back-tick string which usually has line spacing.
   if (typeof instance === 'string') {
+    // cleanup spacing
     base = instance.trim().replace(/\s+/g, ' ')
 
     // parse svg elements
-    hasSVG = svgHandler(base)
-
-    // if instance has SVG we parse it as string since SVG does
-    // not take attributes value beyond interger/float
-    if (hasSVG) {
-      this.IS_SVG = true
-      // store the original instance
-      this.__pristineFragment__ = base
-      base = genModelTemplate.call(this, base, null, addState.bind(this))
-    }
+    base = svgHandler.call(this, base)
 
     mountToFragment(frag, base)
 
@@ -59,9 +49,7 @@ export default function (instance) {
     assert(false, 'Parameter is not a string or a html element.')
   }
   // we store the pristine instance in __pristineFragment__
-  if (!hasSVG) {
-    this.__pristineFragment__ = frag.cloneNode(true)
-  }
+  this.__pristineFragment__ = frag.cloneNode(true)
   this.base = frag
 
   return this

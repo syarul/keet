@@ -13,6 +13,9 @@ let match
 let isObjectNotation
 
 export default function (string, obj, addState) {
+  if (obj) {
+    addState = false
+  }
   obj = obj || this
   const arrProps = string.match(/{{([^{}]+)}}/g)
   tmpl = string
@@ -31,8 +34,10 @@ export default function (string, obj, addState) {
         }
       }
     } else {
-      updateState(rep, addState)
-      tmpl = tmpl.replace('{{' + rep + '}}', obj[rep])
+      if (obj[rep] !== undefined) {
+        updateState(rep, addState)
+        tmpl = tmpl.replace('{{' + rep + '}}', obj[rep])
+      }
     }
 
     match = tmpl.match(re)

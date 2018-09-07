@@ -22,9 +22,12 @@ class App extends Keet {
 const app = new App()
 
 app.mount('Hello {{state}}').link('app')
-
-// --> Hello World
 ```
+
+## Codepen Sample
+
+<p data-height="265" data-theme-id="dark" data-slug-hash="YOrmvP" data-default-tab="js,result" data-user="syarul" data-pen-title="Keetjs - Hello World" class="codepen">See the Pen <a href="https://codepen.io/syarul/pen/YOrmvP/">Keetjs - Hello World</a> by Shahrul Nizam b. Selamat (<a href="https://codepen.io/syarul">@syarul</a>) on <a href="https://codepen.io">CodePen</a>.</p>
+<script async src="https://static.codepen.io/assets/embed/ei.js"></script>
 
 ## Updating a State
 
@@ -47,14 +50,15 @@ class App extends Keet {
 const app = new App()
 
 app.mount('Hello {{state}}').link('app')
-
-// --> Hello World
 ```
 
 Then we can update the state by invoking the method.
 
 ```js
 app.greeting('Keet')
-
-// --> Hello Keet
 ```
+
+## Codepen Sample (updating state)
+
+<p data-height="265" data-theme-id="dark" data-slug-hash="KxXOBQ" data-default-tab="js,result" data-user="syarul" data-pen-title="Keetjs - Hello World ( updating state)" class="codepen">See the Pen <a href="https://codepen.io/syarul/pen/KxXOBQ/">Keetjs - Hello World ( updating state)</a> by Shahrul Nizam b. Selamat (<a href="https://codepen.io/syarul">@syarul</a>) on <a href="https://codepen.io">CodePen</a>.</p>
+<script async src="https://static.codepen.io/assets/embed/ei.js"></script>

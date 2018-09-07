@@ -1,1 +1,1 @@
-import './svg'
+import './hello'

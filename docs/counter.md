@@ -16,7 +16,7 @@ class App extends Keet {
     super()
     this.count = 0
   }
-  add (evt) {
+  add() {
     this.count++
   }
 }
@@ -36,6 +36,7 @@ app.mount(html`
 `).link('app')
 ```
 
-## Counter - rendered
+## Codepen Sample
 
-> <div id="counterApp"></div><br/>
+<p data-height="265" data-theme-id="dark" data-slug-hash="zpbGBd" data-default-tab="js,result" data-user="syarul" data-pen-title="Keetjs - Counter" class="codepen">See the Pen <a href="https://codepen.io/syarul/pen/zpbGBd/">Keetjs - Counter</a> by Shahrul Nizam b. Selamat (<a href="https://codepen.io/syarul">@syarul</a>) on <a href="https://codepen.io">CodePen</a>.</p>
+<script async src="https://static.codepen.io/assets/embed/ei.js"></script>
