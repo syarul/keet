@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0">
     <channel>
-        <title>Keet.js v4 Blog</title>
+        <title>Keet.js v4.1.1 Blog</title>
         <link>https://syarul.github.io/keet/blog</link>
-        <description>The best place to stay up-to-date with the latest Keet.js v4 news and events.</description>
+        <description>The best place to stay up-to-date with the latest Keet.js v4.1.1 news and events.</description>
         <lastBuildDate>Tue, 24 Oct 2017 06:00:00 GMT</lastBuildDate>
         <docs>http://blogs.law.harvard.edu/tech/rss</docs>
         <generator>Feed for Node.js</generator>
         <image>
-            <title>Keet.js v4 Blog</title>
+            <title>Keet.js v4.1.1 Blog</title>
             <url>https://syarul.github.io/keet/img/keet.svg</url>
             <link>https://syarul.github.io/keet/blog</link>
         </image>
