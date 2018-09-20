@@ -1,28 +1,38 @@
-import Keet from '../'
-import { html, getId } from '../utils'
+/* global performance */
+import Keet, { html } from '../'
+import { getId } from '../utils'
 
-let count = 1000000
+let t
 
 class App extends Keet {
-  data = count
+  el = 'app'
+  data = 0
+
   updateData (val) {
-    // WARNING!!: don't print this to console
     this.data = val
   }
+
+  componentDidMount () {
+    t = performance.now()
+
+    let count = 10000
+
+    while (count > 0) {
+      this.updateData(count)
+      count--
+    }
+  }
+
   componentDidUpdate () {
+    console.log(performance.now() - t)
     console.assert(getId('container').innerHTML === '1', 'batch-pool update')
+  }
+
+  render () {
+    return html`
+      <div id="container">{{data}}</div>
+    `
   }
 }
 
-const app = new App()
-
-app.mount(html`
-  <div id="container">{{data}}</div>
-`).link('app')
-
-setTimeout(() => {
-  while (count > 0) {
-    app.updateData(count)
-    count--
-  }
-})
+export default new App()

@@ -8,6 +8,8 @@ sidebar_label: List (advance)
 
 This is a sample list with states and events combine together.
 
+> NOTE: Ensure model has a root node with id
+
 ```js
 import Keet, { html, CreateModel } from 'keet'
 
@@ -22,14 +24,14 @@ class App extends Keet {
       this.total = model.length
     })
   }
-  events (obj, target) {
+  events(obj, target) {
     if (target.className === 'edit') {
       this.task.update(Object.assign(obj, { complete: !obj.complete }))
     } else if (target.className === 'destroy') {
       this.task.destroy(obj)
     }
   }
-  addTask (e) {
+  addTask(e) {
     if (e.which === ENTER && e.target.value !== '') {
       this.task.add({
         taskName: e.target.value,
@@ -50,6 +52,7 @@ app.mount(html`
   <h4>${name}</h4>
   <p>Add new task with key "Enter"</p>
   <p>Toggle a task state by clicking the button</p>
+  <p>Remove a task by clicking the [ X ]</p>
   <div><input id="taskInput" k-keyup="addTask()" type="text" placeholder="Add a task"></div>
   <ul id="list" k-click="events()">
     <!-- {{model:task}} -->
@@ -76,6 +79,16 @@ for (let i = 0; i < count; i++) {
 }
 ```
 
-## Todo List - rendered
+## Codepen Sample
 
-> <div id="todoApp"></div><br/>
+<p data-height="265" data-theme-id="dark" data-slug-hash="yxorPq" data-default-tab="js,result" data-user="syarul" data-pen-title="Keetjs - List(advance)" class="codepen">See the Pen <a href="https://codepen.io/syarul/pen/yxorPq/">Keetjs - List(advance)</a> by Shahrul Nizam b. Selamat (<a href="https://codepen.io/syarul">@syarul</a>) on <a href="https://codepen.io">CodePen</a>.</p>
+<script async src="https://static.codepen.io/assets/embed/ei.js"></script>
+
+## SVG
+
+A sample list with SVG
+
+> NOTE: Ensure SVG node is place within another node container i.e LI
+
+<p data-height="265" data-theme-id="dark" data-slug-hash="LVMdYa" data-default-tab="js,result" data-user="syarul" data-pen-title="svg hexagon loader with Keet.js" class="codepen">See the Pen <a href="https://codepen.io/syarul/pen/LVMdYa/">svg hexagon loader with Keet.js</a> by Shahrul Nizam b. Selamat (<a href="https://codepen.io/syarul">@syarul</a>) on <a href="https://codepen.io">CodePen</a>.</p>
+<script async src="https://static.codepen.io/assets/embed/ei.js"></script>

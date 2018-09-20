@@ -87,13 +87,13 @@ function getIndex (store, count) {
 let checkNew
 let checkOld
 
-function diff (oldNode, newNode, ignoreNextSibling) {
+function diff (oldNode, newNode) {
   let count = 0
   let newStore = []
   while (newNode) {
     count++
     checkNew = newNode
-    newNode = ignoreNextSibling ? null : newNode.nextSibling
+    newNode = newNode.nextSibling
     newStore.push(checkNew)
   }
   let index
@@ -101,7 +101,7 @@ function diff (oldNode, newNode, ignoreNextSibling) {
   while (oldNode) {
     count--
     checkOld = oldNode
-    oldNode = ignoreNextSibling ? null : oldNode.nextSibling
+    oldNode = oldNode.nextSibling
     index = getIndex(newStore, count)
     if (checkOld && newStore[index]) {
       patch(checkOld, newStore[index])
@@ -131,11 +131,4 @@ function diffNodes (instance) {
   }
 }
 
-function diffModelNodes (oldModel, newModel, ignoreNextSibling) {
-  diff(oldModel, newModel, ignoreNextSibling)
-}
-
-export {
-  diffNodes as default,
-  diffModelNodes
-}
+export default diffNodes

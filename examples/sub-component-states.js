@@ -1,39 +1,46 @@
-import Keet from '../'
-import { html, getId } from '../utils'
+import Keet, { html, childLike } from '../'
+import { getId } from '../utils'
 
+// add decorator to ensure Keet parsing this as child instead of root component
+@childLike()
 class Sub extends Keet {
-  // provide the node id where this sub will rendered
   el = 'sub'
   state = 'foo'
+
   change (val) {
     this.state = val
   }
+
   componentDidUpdate () {
     console.assert(getId('sub').innerHTML === 'this is a sub-component with a state:bar', 'sub-component state')
+  }
+
+  componentDidMount () {
+    this.change('bar')
+  }
+
+  render () {
+    return html`
+      <div id="sub">
+        this is a sub-component with a state:{{state}}
+      </div>
+    `
   }
 }
 
 const sub = new Sub()
 
-sub.mount(html`
-  <div id="sub">
-    this is a sub-component with a state:{{state}}
-  </div>
-`)
-
 class App extends Keet {
-  subc = sub
+  el = 'app'
+
+  render () {
+    return html`
+      <div id="container">
+        <div>parent</div>
+        <!-- {{component:sub}} -->
+      </div>
+    `
+  }
 }
 
 const app = new App()
-
-app.mount(html`
-  <div id="container">
-    <div>parent</div>
-    <!-- {{component:subc}} -->
-  </div>
-`).link('app')
-
-setTimeout(() => {
-  sub.change('bar')
-}, 100)

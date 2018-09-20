@@ -22,7 +22,7 @@ class App extends Keet {
     super()
     this.show = false
   }
-  toggle () {
+  toggle() {
     this.show = !this.show
   }
 }
@@ -47,6 +47,7 @@ app.mount(html`
 `).link('app')
 ```
 
-## Dynamic Nodes - rendered
+## Codepen Sample
 
-> <div id="dynamicApp"></div><br/>
+<p data-height="265" data-theme-id="dark" data-slug-hash="KxvYvo" data-default-tab="js,result" data-user="syarul" data-pen-title="Keetjs - Dynamic Nodes" class="codepen">See the Pen <a href="https://codepen.io/syarul/pen/KxvYvo/">Keetjs - Dynamic Nodes</a> by Shahrul Nizam b. Selamat (<a href="https://codepen.io/syarul">@syarul</a>) on <a href="https://codepen.io">CodePen</a>.</p>
+<script async src="https://static.codepen.io/assets/embed/ei.js"></script>

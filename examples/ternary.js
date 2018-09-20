@@ -2,10 +2,11 @@ import Keet from '../'
 
 class App extends Keet {
   el = 'app'
+  status = false
 
   render () {
-    return {}
+  	return 'Hello {{status?World:Keet}}'
   }
 }
 
-export default new App()
+const app = new App()

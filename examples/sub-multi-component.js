@@ -1,35 +1,41 @@
-import Keet from '../'
-import { getId, html } from '../utils'
+import Keet, { html, childLike } from '../'
+import { getId } from '../utils'
 
+@childLike()
 class Sub extends Keet {
-  // provide the node id where this sub will rendered
   el = 'sub'
+
+  render () {
+    return html`
+      <div id="sub">
+        this is a sub-component
+      </div>
+    `
+  }
 }
 
 const sub = new Sub()
 
-sub.mount(html`
-  <div id="sub">
-    this is a sub-component
-  </div>
-`)
-
 class App extends Keet {
-  subc = sub
+  el = 'app'
+
+  componentDidMount () {
+    let r = '<div id="sub" data-ignore="">this is a sub-component</div>'
+
+    r = `${r}${r}${r}`
+
+    console.assert(getId('container').innerHTML === r, 'sub-component rendering')
+  }
+
+  render () {
+    return html`
+    <div id="container">
+      <!-- {{component:sub}} -->
+      <!-- {{component:sub}} -->
+      <!-- {{component:sub}} -->
+    </div>
+  `
+  }
 }
 
 const app = new App()
-
-app.mount(html`
-  <div id="container">
-  <!-- {{component:subc}} -->
-  <!-- {{component:subc}} -->
-  <!-- {{component:subc}} -->
-  </div>
-`).link('app')
-
-let r = '<div id="sub" data-ignore="">this is a sub-component</div>'
-
-r = `${r}${r}${r}`
-
-console.assert(getId('container').innerHTML === r, 'sub-component rendering')

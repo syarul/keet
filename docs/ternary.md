@@ -18,6 +18,9 @@ class App extends Keet {
 const app = new App()
 
 app.mount('Hello {{status?World:Keet}}').link('app')
-
-// --> Hello Keet
 ```
+
+## Codepen Sample 
+
+<p data-height="265" data-theme-id="dark" data-slug-hash="eLGqPP" data-default-tab="js,result" data-user="syarul" data-pen-title="Keetjs - Ternary State" class="codepen">See the Pen <a href="https://codepen.io/syarul/pen/eLGqPP/">Keetjs - Ternary State</a> by Shahrul Nizam b. Selamat (<a href="https://codepen.io/syarul">@syarul</a>) on <a href="https://codepen.io">CodePen</a>.</p>
+<script async src="https://static.codepen.io/assets/embed/ei.js"></script>

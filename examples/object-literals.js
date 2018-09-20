@@ -2,6 +2,7 @@ import Keet from '../'
 import { getId, html } from '../utils'
 
 class App extends Keet {
+  el = 'app'
   state = {
     name: 'john',
     age: 31
@@ -18,24 +19,26 @@ class App extends Keet {
   anotherState () {
     this.another = 'bar'
   }
+
+  componentDidUpdate () {
+    console.assert(getId('app').innerHTML === '<span>bar</span><span> state : keet</span><span> age : 12</span>', 'batch-pool update')
+  }
+
+  componentDidMount () {
+    this.change()
+
+    // ensure state does not mutate
+    this.anotherState()
+    this.changeAge()
+  }
+
+  render () {
+    return html`
+      <span>{{another}}</span>
+      <span> state : {{state.name}}</span>
+      <span> age : {{state.age}}</span>
+    `
+  }
 }
 
 const app = new App()
-
-app.mount(html`
-  <span>{{another}}</span>
-  <span> state : {{state.name}}</span>
-  <span> age : {{state.age}}</span>
-`).link('app')
-
-app.change()
-// batch pool has started since
-
-// ensure state does not mutate
-app.anotherState()
-app.changeAge()
-
-// batch pool has initiated, so we have to check outside of the event loop
-setTimeout(() => {
-  console.assert(getId('app').innerHTML === '<span>bar</span><span> state : keet</span><span> age : 12</span>', 'batch-pool update')
-})

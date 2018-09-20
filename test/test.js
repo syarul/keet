@@ -1,7 +1,6 @@
+/* global it describe before */
 const assert = require('assert')
 const { JSDOM } = require('jsdom')
-
-const { serializeDocument } = require('jsdom/lib/old-api')
 
 const { getId } = require('../utils')
 
@@ -11,14 +10,12 @@ const pkg = fs.readFileSync('package.json', 'utf8')
 
 const ver = JSON.parse(pkg).version
 
-const describe = global.describe // standard
-const it = global.it // standard
-const before = global.before
-
 let Event
-let XMLSerializer
 
-describe(`keet.js v-${ver} test`, function () {
+// remove UnhandledPromiseRejectionWarning
+process.on('unhandledRejection', () => {})
+
+describe(`keet.js v-${ver} test`, () => {
   before(() => {
     const dom = new JSDOM(`
       <!DOCTYPE html>
@@ -37,60 +34,123 @@ describe(`keet.js v-${ver} test`, function () {
 
     global.window = window
 
-    function XMLSerializer () {}
-
-    XMLSerializer.prototype.serializeToString = function (node) {
-      return serializeDocument(node)
-    }
-
-    global.XMLSerializer = XMLSerializer
-
     Event = window.Event
   })
 
-  var clear = function () {
+  beforeEach(() => {
     document.getElementById('app').innerHTML = ''
-  }
+    // clear global pool
+    window.__keetGlobalComponentRef__ = []
+  })
 
-  it('has document', function () {
-    var div = document.createElement('div')
+  it('has document', () => {
+    const div = document.createElement('div')
     assert.equal(div.nodeName, 'DIV')
   })
 
-  it('hello world', function () {
-    require('../examples/hello')
-    assert.equal(getId('app').innerHTML, 'Hello World')
-    clear()
+  it('attributes with handlebars', async () => {
+    await require('../examples/attributes-with-handlebars')
+    assert.equal(getId('app').innerHTML, '<div id="foo" bar="">foo</div>')
   })
 
-  it('no node found', function () {
-    try {
-      require('../examples/no_node_found_err')
-    } catch(err){
-      assert.equal(err instanceof Error, true)
+  // batch-pool
+
+  it('componentDidMount', async () => {
+    const app = await require('../examples/componentDidMount').default
+    assert.equal(app.isMounted, true)
+  })
+
+  it('conditional nodes extra', async () => {
+    const app = await require('../examples/conditional-nodes-extra').default
+    assert.equal(getId('list').childNodes.length === 4 && getId('list').childNodes[1].innerHTML === ' John - 21 ', true)
+
+    app.componentDidUpdate = function () {
+      assert.equal(getId('app').childNodes.length, 5)
+    }
+
+    const click = new Event('click', { bubbles: true, cancelable: true })
+    const toggle = getId('toggle')
+    toggle.dispatchEvent(click)
+  })
+
+  // conditional-nodes
+
+  it('counter', async () => {
+    const app = await require('../examples/counter').default
+
+    app.componentDidUpdate = function () {
+      const counter = getId('counter')
+      assert.equal(counter.innerHTML, '1')
     }
   })
 
-  it('mount not string', function () {
+  it('err mount non string', async () => {
     try {
-      require('../examples/err_mount_non_string')
+      await require('../examples/err_mount_non_string')
     } catch (err) {
       assert.equal(err instanceof Error, true)
     }
   })
 
-  it('componentWillMount', function () {
-    const app = require('../examples/link').default
-    assert.equal(app.isWillMount, true)
-    clear()
+  // event_not_declared
+
+  it('function state', async () => {
+    await require('../examples/function-state')
+    assert.equal(getId('app').innerHTML, 'Total of: 1 + 1 = 2')
   })
 
-  it('componentDidMount', function () {
-    const app = require('../examples/componentDidMount').default
-    assert.equal(app.isMounted, true)
-    clear()
+  it('hello world', async () => {
+    await require('../examples/hello')
+    assert.equal(getId('app').innerHTML, 'Hello World')
   })
 
+  it('html entities', async () => {
+    await require('../examples/html-entities')
+    assert.equal(getId('app').innerHTML, 'Hello World')
+  })
+
+  it('html entities err nodeType', async () => {
+    try {
+      await require('../examples/html-entities_err_nodeType')
+    } catch (err) {
+      assert.equal(err instanceof Error, true)
+    }
+  })
+
+  // html-entities_nodeType_1
+
+  it('pubsub', async () => {
+    const app = await require('../examples/main').default
+
+    app.componentDidUpdate = function () {
+      assert.equal(getId('app').innerHTML, 'state other')
+    }
+  })
+
+  // model-perf
+
+  // model-simple
+
+  // model-with-events
+
+  it('model', async () => {
+    const app = await require('../examples/model').default
+    // console.log(getId('app').innerHTML)
+    app.componentDidUpdate = function () {
+      // console.log(getId('app').innerHTML)
+      assert.equal(getId('list').childNodes.length, 6)
+    }
+  })
+
+  /* it('no node found err', async () => {
+    try {
+      await require('../examples/no_node_found_err')
+    } catch (err) {
+      assert.equal(err instanceof Error, true)
+    }
+  }) */
+
+  /*
   it('failed link', function () {
     try {
       require('../examples/err_link_no_parameter')
@@ -151,17 +211,6 @@ describe(`keet.js v-${ver} test`, function () {
       clear()
       next()
     }, 200)
-  })
-
-  it('event click', function (next) {
-    require('../examples/counter')
-    const counter = getId('counter')
-    // batch pool has initiated, so we have to check outside of the event loop
-    setTimeout(() => {
-      assert.equal(counter.innerHTML, '1')
-      clear()
-      next()
-    })
   })
 
   it('batch-pool 1 million updates', function (next) {
@@ -261,6 +310,5 @@ describe(`keet.js v-${ver} test`, function () {
   it('model perf test', function () {
     require('../examples/model-perf')
     clear()
-  })
-  
+  }) */
 })

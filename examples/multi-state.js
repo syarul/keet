@@ -2,18 +2,24 @@ import Keet from '../'
 import { getId } from '../utils'
 
 class App extends Keet {
+  el = 'app'
   state = 'no'
+
   update (val) {
     this.state = val
+  }
+
+  componentDidUpdate () {
+  	console.assert(getId('app').innerHTML === 'I say: horray horray horray!', 'multi state')
+  }
+
+  componentDidMount () {
+  	this.update('horray')
+  }
+
+  render () {
+  	return 'I say: {{state}} {{state}} {{state}}!'
   }
 }
 
 const app = new App()
-
-app.mount('I say: {{state}} {{state}} {{state}}!').link('app')
-
-app.update('horray')
-
-setTimeout(() => {
-  console.assert(getId('app').innerHTML === 'I say: horray horray horray!', 'multi state')
-})

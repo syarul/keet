@@ -81,15 +81,16 @@ function recon (node, addState, model) {
         conditionalNodes.call(this, currentNode, c, 'conditional-set', reconcile, addState)
       }
     } else if (currentNode.nodeType === DOCUMENT_COMMENT_TYPE && currentNode.nodeValue.match(re) && !currentNode.nodeValue.match(conditionalNodesRawStart)) {
-      replaceCommentBlock.call(this, currentNode.nodeValue, currentNode, reconcile)
+      replaceCommentBlock.call(this, currentNode.nodeValue, currentNode, reconcile, model, addState)
     } else {
       replaceHandleBars.call(this, currentNode.nodeValue, currentNode, addState, null, model)
     }
   }
 }
 
-function reconcile (instance, addState, model) {
-  recon.call(this, instance, addState, model)
+// instance, addState, model
+function reconcile () {
+  recon.apply(this, arguments)
 }
 
 export default reconcile

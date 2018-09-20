@@ -2,18 +2,25 @@
 import Keet from '../'
 import { getId } from '../utils'
 
+let counter
+
 class App extends Keet {
+  el = 'app'
   count = 0
+
+  componentDidUpdate () {
+    console.assert(counter.innerHTML === '0', 'counter test')
+  }
+
+  componentDidMount () {
+    const click = new Event('click', { 'bubbles': true, 'cancelable': true })
+    counter = getId('counter')
+    counter.dispatchEvent(click)
+  }
+
+  render () {
+    return '<button id="counter" k-click="add()">{{count}}</button>'
+  }
 }
 
-const app = new App()
-
-app.mount('<button id="counter" k-click="add()">{{count}}</button>').link('app')
-
-const click = new Event('click', { 'bubbles': true, 'cancelable': true })
-
-const counter = getId('counter')
-
-counter.dispatchEvent(click)
-
-setTimeout(() => console.assert(counter.innerHTML === '0', 'counter test'))
+export default new App()

@@ -27,11 +27,11 @@ export default function (value, node, addState, isAttr, model) {
         if (isObjectNotation[0] === 'this' && self[isObjectNotation[1]] !== undefined && typeof self[isObjectNotation[1]] === 'function') {
           let result = self[isObjectNotation[1]]()
           if (result !== undefined) {
-            valAssign(node, value, '{{' + rep + '}}', result)
+            valAssign(node, '{{' + rep + '}}', result)
           }
         } else {
           updateState(rep, addState)
-          valAssign(node, value, '{{' + rep + '}}', self[isObjectNotation[0]][isObjectNotation[1]])
+          valAssign(node, '{{' + rep + '}}', self[isObjectNotation[0]][isObjectNotation[1]])
         }
       } else {
         if (isObjectNotation[0] === 'this' && self[isObjectNotation[1]] !== undefined && typeof self[isObjectNotation[1]] === 'function') {
@@ -46,7 +46,9 @@ export default function (value, node, addState, isAttr, model) {
       if (tnr) {
         updateState(tnr.state, addState)
         if (!isAttr) {
-          valAssign(node, value, '{{' + rep + '}}', tnr.value)
+          // escape symbol
+          rep = rep.replace('?', '\\?')
+          valAssign(node, '{{' + rep + '}}', tnr.value)
         } else {
           return value.replace(props, tnr.value)
         }
@@ -54,7 +56,7 @@ export default function (value, node, addState, isAttr, model) {
         if (ref[rep] !== undefined) {
           updateState(rep, addState)
           if (!isAttr) {
-            valAssign(node, value, '{{' + rep + '}}', ref[rep])
+            valAssign(node, '{{' + rep + '}}', ref[rep])
           } else {
             return value.replace(props, ref[rep])
           }

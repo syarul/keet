@@ -1,9 +1,13 @@
 import Keet from '../'
 
-class App extends Keet {}
+class App extends Keet {
+  el = 'app'
 
-const app = new App()
+  render () {
+    return {
+      nodeType: 2
+    }
+  }
+}
 
-app.mount({
-  nodeType: 2
-}).link('app')
+export default new App()

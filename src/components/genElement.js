@@ -2,8 +2,6 @@
 import reconcile from './templateParse/reconcile'
 import diffNodes from './templateParse/diffNodes'
 import strInterpreter from './strInterpreter'
-import genModelTemplate from './genModelTemplate'
-import mountToFragment from '../base/mountToFragment'
 
 const DELAY = 0
 
@@ -85,16 +83,7 @@ function addState (state) {
 }
 
 const genElement = function () {
-  let base
-  let frag
-  if (this.IS_SVG) {
-    base = genModelTemplate.call(this, this.__pristineFragment__)
-    frag = document.createDocumentFragment()
-    mountToFragment(frag, base)
-    this.base = frag
-  } else {
-    this.base = this.__pristineFragment__.cloneNode(true)
-  }
+  this.base = this.__pristineFragment__.cloneNode(true)
   reconcile.call(this, this.base.firstChild, addState.bind(this))
   diffNodes.call(this, this.base.firstChild)
 }
