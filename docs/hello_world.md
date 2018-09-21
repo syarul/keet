@@ -36,11 +36,8 @@ To update a state write a method in our class Expression that accept an argument
 import Keet from 'keet'
 
 class App extends Keet {
-  constructor(){
-    super()
-    this.el = 'app'
-    this.state ='World'
-  }
+  el = 'app'
+  state ='World'
   // our method
   greeting(value) {
     this.state = value
