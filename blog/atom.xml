@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://syarul.github.io/keet/blog</id>
-    <title>Keet.js v4.1.1 Blog</title>
+    <title>Keet.js v4.2.1 Blog</title>
     <updated>2017-10-24T06:00:00Z</updated>
     <generator>Feed for Node.js</generator>
     <link rel="alternate" href="https://syarul.github.io/keet/blog"/>
-    <subtitle>The best place to stay up-to-date with the latest Keet.js v4.1.1 news and events.</subtitle>
+    <subtitle>The best place to stay up-to-date with the latest Keet.js v4.2.1 news and events.</subtitle>
     <logo>https://syarul.github.io/keet/img/keet.svg</logo>
     <rights>Copyright © 2018 Shahrul Nizam Selamat</rights>
     <entry>

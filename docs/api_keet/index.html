@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>api_keet · Keet.js v4.1.1</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;a name=&quot;module_keet&quot;&gt;&lt;/a&gt;"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="api_keet · Keet.js v4.1.1"/><meta property="og:type" content="website"/><meta property="og:url" content="https://syarul.github.io/keet/index.html"/><meta property="og:description" content="&lt;a name=&quot;module_keet&quot;&gt;&lt;/a&gt;"/><meta property="og:image" content="https://syarul.github.io/keet/img/keet_temp_logo.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://syarul.github.io/keet/img/keet_temp_logo.png"/><link rel="shortcut icon" href="/keet/img/favicon.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://rawgit.com/syarul/b8a68b55dfafc9347a080bb17398e213/raw/f7cd972c6917f742fb4aa7bca652b91de99b7959/consecutive_code_blocks_merge.js"></script><link rel="stylesheet" href="/keet/css/prism.css"/><link rel="stylesheet" href="/keet/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/keet/"><img class="logo" src="/keet/img/keet.svg" alt="Keet.js v4.1.1"/><h2 class="headerTitleWithLogo">Keet.js v4.1.1</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/keet/docs/intro" target="_self">Docs</a></li><li class="siteNavGroupActive siteNavItemActive"><a href="/keet/docs/api_keet" target="_self">API</a></li><li class=""><a href="/keet/en/help" target="_self">Help</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>V4 API</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">V4 API</h3><ul><li class="navListItem navListItemActive"><a class="navItem" href="/keet/docs/api_keet">api_keet</a></li><li class="navListItem"><a class="navItem" href="/keet/docs/api_createModel">api_createModel</a></li></ul></div></div></section></div><script>
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>keet · Keet.js v4.2.1</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="## keet"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="keet · Keet.js v4.2.1"/><meta property="og:type" content="website"/><meta property="og:url" content="https://syarul.github.io/keet/index.html"/><meta property="og:description" content="## keet"/><meta property="og:image" content="https://syarul.github.io/keet/img/keet_temp_logo.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://syarul.github.io/keet/img/keet_temp_logo.png"/><link rel="shortcut icon" href="/keet/img/favicon.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://rawgit.com/syarul/b8a68b55dfafc9347a080bb17398e213/raw/f7cd972c6917f742fb4aa7bca652b91de99b7959/consecutive_code_blocks_merge.js"></script><link rel="stylesheet" href="/keet/css/prism.css"/><link rel="stylesheet" href="/keet/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/keet/"><img class="logo" src="/keet/img/keet.svg" alt="Keet.js v4.2.1"/><h2 class="headerTitleWithLogo">Keet.js v4.2.1</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/keet/docs/intro" target="_self">Docs</a></li><li class="siteNavGroupActive siteNavItemActive"><a href="/keet/docs/api_keet" target="_self">API</a></li><li class=""><a href="/keet/en/help" target="_self">Help</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>V4 API</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">V4 API</h3><ul><li class="navListItem navListItemActive"><a class="navItem" href="/keet/docs/api_keet">keet</a></li><li class="navListItem"><a class="navItem" href="/keet/docs/api_createModel">CreateModel</a></li></ul></div></div></section></div><script>
             document.addEventListener('DOMContentLoaded', function() {
               createToggler('#navToggler', '#docsNav', 'docsSliderActive');
               createToggler('#tocToggler', 'body', 'tocActive');
@@ -25,19 +25,31 @@
                 };
               }
             });
-        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">api_keet</h1></header><article><div><span><p><a name="module_keet"></a></p>
-<h2><a class="anchor" aria-hidden="true" id="keet"></a><a href="#keet" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>keet</h2>
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">keet</h1></header><article><div><span><h2><a class="anchor" aria-hidden="true" id="keet"></a><a href="#keet" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>keet</h2>
 <p><strong>Example</strong></p>
-<pre><code class="hljs css language-js"><span class="token keyword">import</span> Keet <span class="token keyword">from</span> <span class="token string">'keet'</span><span class="token keyword">class</span> <span class="token class-name">App</span> <span class="token keyword">extends</span> <span class="token class-name">Keet</span> <span class="token punctuation">{</span>  <span class="token function">contructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>    <span class="token keyword">super</span><span class="token punctuation">(</span><span class="token punctuation">)</span>    <span class="token comment">// props</span>  <span class="token punctuation">}</span>  <span class="token comment">// new extended method</span>  <span class="token function">myMethod</span><span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token punctuation">)</span><span class="token punctuation">{</span>    <span class="token comment">//</span>  <span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token keyword">const</span> app <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<pre><code class="hljs css language-js"><span class="token keyword">import</span> Keet <span class="token keyword">from</span> <span class="token string">'keet'</span>
+
+<span class="token keyword">class</span> <span class="token class-name">App</span> <span class="token keyword">extends</span> <span class="token class-name">Keet</span> <span class="token punctuation">{</span>
+  <span class="token function">contructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">super</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token comment">// props</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// new extended method</span>
+  <span class="token function">myMethod</span><span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token comment">//</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">const</span> app <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 </code></pre>
 <ul>
 <li><a href="#module_keet">keet</a>
 <ul>
 <li><a href="#module_keet..Keet">~Keet</a>
 <ul>
-<li><a href="#new_module_keet..Keet_new">new Keet(name)</a></li>
+<li><a href="#new_module_keet..Keet_new">new Keet(localize)</a></li>
 <li><a href="#module_keet..Keet+mount">.mount(instance)</a></li>
-<li><a href="#module_keet..Keet+link">.link(id)</a></li>
+<li><a href="#module_keet..Keet+cycleVirtualDomTree">.cycleVirtualDomTree(stub)</a></li>
 <li><a href="#module_keet..Keet+callBatchPoolUpdate">.callBatchPoolUpdate()</a></li>
 <li><a href="#module_keet..Keet+subscribe">.subscribe(fn)</a></li>
 <li><a href="#module_keet..Keet+inform">.inform(...value)</a></li>
@@ -46,29 +58,13 @@
 </ul></li>
 </ul>
 <p><a name="module_keet..Keet"></a></p>
-<h3><a class="anchor" aria-hidden="true" id="keet-keet"></a><a href="#keet-keet" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>keet~Keet</h3>
-<p>The main constructor of Keet</p>
-<p><strong>Kind</strong>: inner class of <a href="#module_keet"><code>keet</code></a></p>
-<ul>
-<li><a href="#module_keet..Keet">~Keet</a>
-<ul>
-<li><a href="#new_module_keet..Keet_new">new Keet(name)</a></li>
-<li><a href="#module_keet..Keet+mount">.mount(instance)</a></li>
-<li><a href="#module_keet..Keet+link">.link(id)</a></li>
-<li><a href="#module_keet..Keet+callBatchPoolUpdate">.callBatchPoolUpdate()</a></li>
-<li><a href="#module_keet..Keet+subscribe">.subscribe(fn)</a></li>
-<li><a href="#module_keet..Keet+inform">.inform(...value)</a></li>
-<li><a href="#module_keet..Keet+storeRef">.storeRef(name)</a></li>
-</ul></li>
-</ul>
-<p><a name="new_module_keet..Keet_new"></a></p>
-<h4><a class="anchor" aria-hidden="true" id="new-keetname"></a><a href="#new-keetname" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>new Keet(name)</h4>
+<h4><a class="anchor" aria-hidden="true" id="new-keetlocalize"></a><a href="#new-keetlocalize" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>new Keet(localize)</h4>
 <table>
 <thead>
 <tr><th>Param</th><th>Type</th><th>Description</th></tr>
 </thead>
 <tbody>
-<tr><td>name</td><td><code>string</code></td><td><strong><em>optional</em></strong> A name to store in global ref</td></tr>
+<tr><td>localize</td><td><code>Boolean</code></td><td>Use local inhertance for sub-components instead using global referance</td></tr>
 </tbody>
 </table>
 <p><a name="module_keet..Keet+mount"></a></p>
@@ -80,28 +76,31 @@
 <tr><th>Param</th><th>Type</th><th>Description</th></tr>
 </thead>
 <tbody>
-<tr><td>instance</td><td><code>Object</code> \</td><td><code>string</code></td><td>the html/string template</td></tr>
+<tr><td>instance</td><td><code>Object</code> <code>string</code></td><td>the html/string template</td></tr>
 </tbody>
 </table>
-<p><a name="module_keet..Keet+link"></a></p>
-<h4><a class="anchor" aria-hidden="true" id="keetlinkid"></a><a href="#keetlinkid" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>keet.link(id)</h4>
-<p>Link to DOM node attribute <code>id</code></p>
+<p><a name="module_keet..Keet+cycleVirtualDomTree"></a></p>
+<h4><a class="anchor" aria-hidden="true" id="keetcyclevirtualdomtreestub"></a><a href="#keetcyclevirtualdomtreestub" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>keet.cycleVirtualDomTree(stub)</h4>
+<p>Parse this component to the DOM</p>
 <p><strong>Kind</strong>: instance method of <a href="#module_keet..Keet"><code>Keet</code></a></p>
 <table>
 <thead>
 <tr><th>Param</th><th>Type</th><th>Description</th></tr>
 </thead>
 <tbody>
-<tr><td>id</td><td><code>string</code></td><td>the id of the node</td></tr>
+<tr><td>stub</td><td><code>Boolean</code></td><td>set as true if this a child component</td></tr>
 </tbody>
 </table>
 <p><a name="module_keet..Keet+callBatchPoolUpdate"></a></p>
 <h4><a class="anchor" aria-hidden="true" id="keetcallbatchpoolupdate"></a><a href="#keetcallbatchpoolupdate" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>keet.callBatchPoolUpdate()</h4>
-<p>Recheck all states if anything changed, diffing will occurs.this method is <strong><em>asynchronous</em></strong> and <strong><em>trottled</em></strong>, you can call it from a loop andonly trigger diffing when the loop end</p>
+<p>Recheck all states if anything changed, diffing will occurs.
+this method is <strong><em>asynchronous</em></strong> and <strong><em>trottled</em></strong>, you can call it from a loop and
+only trigger diffing when the loop end</p>
 <p><strong>Kind</strong>: instance method of <a href="#module_keet..Keet"><code>Keet</code></a>  <br>
 <a name="module_keet..Keet+subscribe"></a></p>
 <h4><a class="anchor" aria-hidden="true" id="keetsubscribefn"></a><a href="#keetsubscribefn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>keet.subscribe(fn)</h4>
-<p>Another component can subscribe to changes on this component.This is the subscribe method</p>
+<p>Another component can subscribe to changes on this component.
+This is the subscribe method</p>
 <p><strong>Kind</strong>: instance method of <a href="#module_keet..Keet"><code>Keet</code></a></p>
 <table>
 <thead>
@@ -113,7 +112,8 @@
 </table>
 <p><a name="module_keet..Keet+inform"></a></p>
 <h4><a class="anchor" aria-hidden="true" id="keetinformvalue"></a><a href="#keetinformvalue" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>keet.inform(...value)</h4>
-<p>Another component can subscribe to changes on this component.This is the publish method</p>
+<p>Another component can subscribe to changes on this component.
+This is the publish method</p>
 <p><strong>Kind</strong>: instance method of <a href="#module_keet..Keet"><code>Keet</code></a></p>
 <table>
 <thead>
@@ -125,7 +125,9 @@
 </table>
 <p><a name="module_keet..Keet+storeRef"></a></p>
 <h4><a class="anchor" aria-hidden="true" id="keetstorerefname"></a><a href="#keetstorerefname" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>keet.storeRef(name)</h4>
-<p>Store referance in the global space, with this the parent component do needto store/assign it as a property while still be able to look for the sub-componentto initialize it</p>
+<p>Store referance in the global space, with this the parent component do need
+to store/assign it as a property while still be able to look for the sub-component
+to initialize it</p>
 <p><strong>Kind</strong>: instance method of <a href="#module_keet..Keet"><code>Keet</code></a></p>
 <table>
 <thead>
@@ -135,4 +137,4 @@
 <tr><td>name</td><td><code>string</code></td><td>Identifier for the component, should be unique to avoid conflict</td></tr>
 </tbody>
 </table>
-</span></div></article></div><div class="docs-prevnext"><a class="docs-next button" href="/keet/docs/api_createModel">api_createModel →</a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#keet">keet</a><ul class="toc-headings"><li><a href="#keet-keet">keet~Keet</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/keet/" class="nav-home"><img src="/keet/img/keet.svg" alt="Keet.js v4.1.1" width="66" height="58"/></a><div><h5>Extra</h5><a href="https://github.com/syarul/keetjs-todomvc">TodoMVC</a><a href="https://github.com/syarul/preact-perf">Performance Benchmark</a></div><div><h5>Community</h5><a href="https://gitter.im/keet-dev/Lobby">Gitter Chat</a></div><div><h5>on Github</h5><a class="github-button" href="https://github.com/syarul/keet" data-icon="octicon-star" data-show-count="true" aria-label="Star syarul/keet on GitHub">Star</a>  <a class="github-button" href="https://github.com/syarul/keet/fork" data-icon="octicon-repo-forked" aria-label="Fork syarul/keet on GitHub">Fork</a>  <a class="github-button" href="https://github.com/syarul/keet/issues" data-icon="octicon-issue-opened" aria-label="Issue syarul/keet on GitHub">Issue</a></div></section><p class="fbOpenSource info-footer">Generated with Docusaurus</p><a href="https://docusaurus.io" target="_blank" rel="noreferrer noopener" class="fbOpenSource"><img src="/keet/img/docusaurus.svg" alt="Docusaurus" width="170" height="45"/></a><section class="copyright">Copyright © 2018 Shahrul Nizam Selamat</section></footer></div></body></html>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-next button" href="/keet/docs/api_createModel">CreateModel →</a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#keet">keet</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/keet/" class="nav-home"><img src="/keet/img/keet.svg" alt="Keet.js v4.2.1" width="66" height="58"/></a><div><h5>Extra</h5><a href="https://github.com/syarul/keetjs-todomvc">TodoMVC</a><a href="https://github.com/syarul/preact-perf">Performance Benchmark</a></div><div><h5>Community</h5><a href="https://gitter.im/keet-dev/Lobby">Gitter Chat</a></div><div><h5>on Github</h5><a class="github-button" href="https://github.com/syarul/keet" data-icon="octicon-star" data-show-count="true" aria-label="Star syarul/keet on GitHub">Star</a>  <a class="github-button" href="https://github.com/syarul/keet/fork" data-icon="octicon-repo-forked" aria-label="Fork syarul/keet on GitHub">Fork</a>  <a class="github-button" href="https://github.com/syarul/keet/issues" data-icon="octicon-issue-opened" aria-label="Issue syarul/keet on GitHub">Issue</a></div></section><p class="fbOpenSource info-footer">Generated with Docusaurus</p><a href="https://docusaurus.io" target="_blank" rel="noreferrer noopener" class="fbOpenSource"><img src="/keet/img/docusaurus.svg" alt="Docusaurus" width="170" height="45"/></a><section class="copyright">Copyright © 2018 Shahrul Nizam Selamat</section></footer></div></body></html>
