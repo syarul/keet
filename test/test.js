@@ -195,7 +195,7 @@ describe(`keet.js v-${ver} test`, () => {
   // other
 
   it('sub component states', async () => {
-    const app = await require('../examples/sub-component-states').default
+    await require('../examples/sub-component-states').default
     const { sub } = await require('../examples/sub-component-states')
 
     await new Promise(resolve => {
@@ -215,7 +215,7 @@ describe(`keet.js v-${ver} test`, () => {
   // svg-hex-loader
 
   it('svg model', async () => {
-    const app = await require('../examples/svg-model').default
+    await require('../examples/svg-model')
     let list = getId('list').childNodes
     assert.equal(
       list[0].nodeValue === ' {{model:svgModel}} ' &&
@@ -229,8 +229,7 @@ describe(`keet.js v-${ver} test`, () => {
   // svg
 
   it('ternary', async () => {
-    const app = await require('../examples/ternary').default
+    await require('../examples/ternary')
     assert.equal(getId('app').innerHTML, 'Hello Keet')
   })
-
 })
