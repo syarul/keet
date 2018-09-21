@@ -1,6 +1,6 @@
 
 //
-// Keetjs v4.1.1 Alpha release: https://github.com/keetjs/keet
+// Keetjs v4.2.1 Alpha release: https://github.com/keetjs/keet
 // Minimalist view layer for the web
 //
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keetjs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -30,20 +30,38 @@
 
 import parseStr from './src/components/parseStr'
 import { updateContext, morpher } from './src/components/genElement'
-import { genId, assert, html } from './utils'
+import { genId, assert, html, childLike } from './utils'
 import CreateModel from './src/base/createModel'
 import mount from './src/base/mount'
 
 /**
- *
  * The main constructor of Keet
- * @param {string} name - ***optional*** A name to store in global ref
+ * @param {Boolean} localize - Use local inhertance for sub-components
+ * instead using global referance
  */
 class Keet {
-  constructor (name) {
+  constructor (localize) {
+    if (localize) {
+      this.LOCAL = true
+    }
     this.ID = Keet.indentity
-    if (name) {
-      this.storeRef(name)
+    // mount vtree from render arguments
+    this.autoRender()
+  }
+
+  // Auto rendered on class constructor instantiation
+  async autoRender () {
+    await this.el
+    if (typeof this.render === 'function') {
+      const vtree = this.render()
+      this.mount(vtree)
+      // ensure parsing only done by root component
+      // check constructor if it decorated with childLike
+      const proto = Object.getPrototypeOf(this)
+      if (this.IS_STUB || (proto && proto.constructor.IS_STUB)) {
+        return
+      }
+      this.cycleVirtualDomTree()
     }
   }
 
@@ -57,31 +75,25 @@ class Keet {
    * @param {Object|string} instance - the html/string template
    */
   mount (instance) {
+    if (!this.LOCAL) {
+      if (this.el) {
+        this.storeRef(this.el)
+      } else {
+        assert(false, `Component has no unique identifier.`)
+      }
+    }
     return mount.call(this, instance)
   }
 
   /**
-   * Link to DOM node attribute ```id```
-   * @param {string} id - the id of the node
-   */
-  link (id) {
-    if (!id) assert(id, 'No id is given as parameter.')
-    this.el = id
-    this.render()
-    return this
-  }
-
-  /**
-   * @private
-   * Render this component to the DOM
+   * Parse this component to the DOM
    * @param {Boolean} stub - set as true if this a child component
    */
-  render (stub) {
+  cycleVirtualDomTree (stub) {
     // life-cycle method before rendering the component
     if (this.componentWillMount && typeof this.componentWillMount === 'function') {
       this.componentWillMount()
     }
-
     // Render this component to the target DOM
     if (stub) {
       this.IS_STUB = true
@@ -137,5 +149,6 @@ class Keet {
 export {
   Keet as default,
   html,
-  CreateModel
+  CreateModel,
+  childLike
 }

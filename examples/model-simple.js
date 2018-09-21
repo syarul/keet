@@ -1,6 +1,8 @@
 import Keet, { CreateModel } from '../'
 
 class App extends Keet {
+  el = 'app'
+
   constructor () {
     super()
     this.task = new CreateModel()
@@ -12,20 +14,23 @@ class App extends Keet {
       this.callBatchPoolUpdate()
     })
   }
+
+  render () {
+    Array.from(['run', 'jog', 'walk', 'swim', 'roll']).map(taskName => {
+      this.task.add({ taskName: taskName })
+    })
+
+    return `
+      <h1>myModel</h1>
+      <ul id="list">
+        <!-- {{model:task}} -->
+        <li>
+          {{taskName}}
+        </li>
+        <!-- {{/model:task}} -->
+      </ul>
+    `
+  }
 }
 
-const app = new App()
-
-app.mount(`
-  <h1>myModel</h1>
-  <ul id="list">
-    <!-- {{model:task}} -->
-    <li>
-      {{taskName}}
-    </li>
-    <!-- {{/model:task}} -->
-  </ul>`).link('app')
-
-Array.from(['run', 'jog', 'walk', 'swim', 'roll']).map(taskName => {
-  app.task.add({ taskName: taskName })
-})
+export default new App()

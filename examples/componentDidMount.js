@@ -1,15 +1,19 @@
 import Keet from '../'
 
 class App extends Keet {
+  el = 'app'
+
   componentDidMount () {
     this.isMounted = true
   }
+
+  componentDidUpdate () {
+    console.assert(this.isMounted === true, 'link, componentDidMount')
+  }
+
+  render () {
+    return 'test'
+  }
 }
 
-const app = new App()
-
-app.mount('test').link('app')
-
-console.assert(app.isMounted === true, 'link, componentDidMount')
-
-export default app
+export default new App()

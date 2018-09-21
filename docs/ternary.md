@@ -12,12 +12,14 @@ Often times with Javascript we use boolean as variables, but usually  when parsi
 import Keet from 'keet'
 
 class App extends Keet {
+  el = 'app'
   status = false
+  render(){
+    return 'Hello {{status?World:Keet}}'
+  }
 }
 
 const app = new App()
-
-app.mount('Hello {{status?World:Keet}}').link('app')
 ```
 
 ## Codepen Sample 

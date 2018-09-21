@@ -1,4 +1,4 @@
-// file main.js
+// file other.js
 import Keet from '../'
 
 class Other extends Keet {}

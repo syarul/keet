@@ -1,9 +1,26 @@
-<a name="module_keet/CreateModel"></a>
+---
+id: api_createModel
+title: CreateModel
+sidebar_label: CreateModel
+---
 
 ## keet/CreateModel
 **Example**  
 ```js
-import { CreateModel } from 'keet'class myModel extends CreateModel {  contructor() {    super()    // props  }  // new extended method  myMethod(...args){    this.list = args  }}const MyModel = new myModel()
+import { CreateModel } from 'keet'
+
+class myModel extends CreateModel {
+  contructor() {
+    super()
+    // props
+  }
+  // new extended method
+  myMethod(...args){
+    this.list = args
+  }
+}
+
+const MyModel = new myModel()
 ```
 
 * [keet/CreateModel](#module_keet/CreateModel)
@@ -16,7 +33,8 @@ import { CreateModel } from 'keet'class myModel extends CreateModel {  contru
 <a name="module_keet/CreateModel+subscribe"></a>
 
 ### keet/CreateModel.subscribe(fn)
-Subscribe to the model changes, the function callback first argumentis the ```model.list``` and the second argument is ```model.listFilter```
+Subscribe to the model changes, the function callback first argument
+is the ```model.list``` and the second argument is ```model.listFilter```
 
 **Kind**: instance method of [<code>keet/CreateModel</code>](#module_keet/CreateModel)  
 
@@ -49,14 +67,16 @@ Update existing object in the model list
 <a name="module_keet/CreateModel+filter"></a>
 
 ### keet/CreateModel.filter(prop, value)
-Filter the model data by selected properties, constructorinstantiation should be apply with boolean true as argumentto enable filtering
+Filter the model data by selected properties, constructor
+instantiation should be apply with boolean true as argument
+to enable filtering
 
 **Kind**: instance method of [<code>keet/CreateModel</code>](#module_keet/CreateModel)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | prop | <code>string</code> | property of the object |
-| value | <code>Object</code> \| <code>string</code> \| <code>number</code> \| <code>Boolean</code> | property value |
+| value | <code>Object</code> <code>string</code> <code>number</code> <code>Boolean</code> | property value |
 
 <a name="module_keet/CreateModel+destroy"></a>
 

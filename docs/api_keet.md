@@ -1,16 +1,33 @@
-<a name="module_keet"></a>
+---
+id: api_keet
+title: keet
+sidebar_label: keet
+---
 
 ## keet
 **Example**  
 ```js
-import Keet from 'keet'class App extends Keet {  contructor() {    super()    // props  }  // new extended method  myMethod(...args){    //  }}const app = new App()
+import Keet from 'keet'
+
+class App extends Keet {
+  contructor() {
+    super()
+    // props
+  }
+  // new extended method
+  myMethod(...args){
+    //
+  }
+}
+
+const app = new App()
 ```
 
 * [keet](#module_keet)
     * [~Keet](#module_keet..Keet)
-        * [new Keet(name)](#new_module_keet..Keet_new)
+        * [new Keet(localize)](#new_module_keet..Keet_new)
         * [.mount(instance)](#module_keet..Keet+mount)
-        * [.link(id)](#module_keet..Keet+link)
+        * [.cycleVirtualDomTree(stub)](#module_keet..Keet+cycleVirtualDomTree)
         * [.callBatchPoolUpdate()](#module_keet..Keet+callBatchPoolUpdate)
         * [.subscribe(fn)](#module_keet..Keet+subscribe)
         * [.inform(...value)](#module_keet..Keet+inform)
@@ -18,27 +35,11 @@ import Keet from 'keet'class App extends Keet {  contructor() {    super() 
 
 <a name="module_keet..Keet"></a>
 
-### keet~Keet
-The main constructor of Keet
-
-**Kind**: inner class of [<code>keet</code>](#module_keet)  
-
-* [~Keet](#module_keet..Keet)
-    * [new Keet(name)](#new_module_keet..Keet_new)
-    * [.mount(instance)](#module_keet..Keet+mount)
-    * [.link(id)](#module_keet..Keet+link)
-    * [.callBatchPoolUpdate()](#module_keet..Keet+callBatchPoolUpdate)
-    * [.subscribe(fn)](#module_keet..Keet+subscribe)
-    * [.inform(...value)](#module_keet..Keet+inform)
-    * [.storeRef(name)](#module_keet..Keet+storeRef)
-
-<a name="new_module_keet..Keet_new"></a>
-
-#### new Keet(name)
+#### new Keet(localize)
 
 | Param | Type | Description |
 | --- | --- | --- |
-| name | <code>string</code> | ***optional*** A name to store in global ref |
+| localize | <code>Boolean</code> | Use local inhertance for sub-components instead using global referance |
 
 <a name="module_keet..Keet+mount"></a>
 
@@ -49,29 +50,32 @@ Mount an instance of html/string template
 
 | Param | Type | Description |
 | --- | --- | --- |
-| instance | <code>Object</code> \| <code>string</code> | the html/string template |
+| instance | <code>Object</code> <code>string</code> | the html/string template |
 
-<a name="module_keet..Keet+link"></a>
+<a name="module_keet..Keet+cycleVirtualDomTree"></a>
 
-#### keet.link(id)
-Link to DOM node attribute ```id```
+#### keet.cycleVirtualDomTree(stub)
+Parse this component to the DOM
 
 **Kind**: instance method of [<code>Keet</code>](#module_keet..Keet)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| id | <code>string</code> | the id of the node |
+| stub | <code>Boolean</code> | set as true if this a child component |
 
 <a name="module_keet..Keet+callBatchPoolUpdate"></a>
 
 #### keet.callBatchPoolUpdate()
-Recheck all states if anything changed, diffing will occurs.this method is ***asynchronous*** and ***trottled***, you can call it from a loop andonly trigger diffing when the loop end
+Recheck all states if anything changed, diffing will occurs.
+this method is ***asynchronous*** and ***trottled***, you can call it from a loop and
+only trigger diffing when the loop end
 
 **Kind**: instance method of [<code>Keet</code>](#module_keet..Keet)  
 <a name="module_keet..Keet+subscribe"></a>
 
 #### keet.subscribe(fn)
-Another component can subscribe to changes on this component.This is the subscribe method
+Another component can subscribe to changes on this component.
+This is the subscribe method
 
 **Kind**: instance method of [<code>Keet</code>](#module_keet..Keet)  
 
@@ -82,7 +86,8 @@ Another component can subscribe to changes on this component.This is the subscr
 <a name="module_keet..Keet+inform"></a>
 
 #### keet.inform(...value)
-Another component can subscribe to changes on this component.This is the publish method
+Another component can subscribe to changes on this component.
+This is the publish method
 
 **Kind**: instance method of [<code>Keet</code>](#module_keet..Keet)  
 
@@ -93,7 +98,9 @@ Another component can subscribe to changes on this component.This is the publis
 <a name="module_keet..Keet+storeRef"></a>
 
 #### keet.storeRef(name)
-Store referance in the global space, with this the parent component do needto store/assign it as a property while still be able to look for the sub-componentto initialize it
+Store referance in the global space, with this the parent component do need
+to store/assign it as a property while still be able to look for the sub-component
+to initialize it
 
 **Kind**: instance method of [<code>Keet</code>](#module_keet..Keet)  
 

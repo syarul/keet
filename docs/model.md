@@ -18,10 +18,9 @@ To map an array to elements use
 import Keet, { html, CreateModel } from 'keet'
 
 class App extends Keet {
-  constructor() {
-    super()
-    this.task = new CreateModel()
-    // subscribe to model changes
+  el = 'app'
+  task = new CreateModel()
+  render() {
     this.task.subscribe(model =>
       // callBatchPoolUpdate - custom method to force update 
       // component states.If the component has predefine state(s) 
@@ -29,31 +28,29 @@ class App extends Keet {
       // ignore calling this method.
       this.callBatchPoolUpdate()
     )
+    
+    Array.from(['run', 'jog', 'walk', 'swim', 'roll']).map(taskName => {
+      this.task.add({ taskName: taskName })
+    })
+    
+    return html`
+```
+```html
+      <h4>myModel</h4>
+      <ul id="list">
+        <!-- {{model:task}} -->
+        <li>
+          {{taskName}}
+        </li>
+        <!-- {{/model:task}} -->
+      </ul>
+```
+```js
+    `
   }
 }
 
 const app = new App()
-
-app.mount(html`
-```
-
-```html
-  <h4>myModel</h4>
-  <ul id="list">
-    <!-- {{model:task}} -->
-    <li>
-      {{taskName}}
-    </li>
-    <!-- {{/model:task}} -->
-  </ul>
-```
-
-```js
-`).link('app')
-
-Array.from(['run', 'jog', 'walk', 'swim', 'roll']).map(taskName => {
-  app.task.add({ taskName: taskName })
-})
 ```
 
 ## Codepen Sample

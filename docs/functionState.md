@@ -14,14 +14,16 @@ A state also may accept return values from its class constructor methods. To use
 import Keet from 'keet'
 
 class App extends Keet {
+  el = 'app'
   myMethod() {
     return 1 + 1
+  }
+  render(){
+    return 'Total of: 1 + 1 = {{this.myMethod}}'
   }
 }
 
 const app = new App()
-
-app.mount('Total of: 1 + 1 = {{this.myMethod}}').link('app')
 ```
 
 ## Codepen Sample

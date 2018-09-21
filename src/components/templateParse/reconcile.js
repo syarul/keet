@@ -88,8 +88,9 @@ function recon (node, addState, model) {
   }
 }
 
-function reconcile (instance, addState, model) {
-  recon.call(this, instance, addState, model)
+// instance, addState, model
+function reconcile () {
+  recon.apply(this, arguments)
 }
 
 export default reconcile

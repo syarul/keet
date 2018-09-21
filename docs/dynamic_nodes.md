@@ -18,33 +18,30 @@ Add a new property state with boolean value to the class constructor
 import Keet, { html } from 'keet'
 
 class App extends Keet {
-  constructor(){
-    super()
-    this.show = false
-  }
+  el = 'app'
+  show = false
   toggle() {
     this.show = !this.show
+  }
+  render() {
+    return html`
+```
+```html
+      <button id="toggle" k-click="toggle()">toggle</button>
+      <div id="1">one</div>
+      <!-- {{?show}} -->
+      <div id="2">two</div>
+      <div id="3">three</div>
+      <div id="4">four</div>
+      <!-- {{/show}} -->
+      <div id="5">five</div>
+```
+```js
+    `
   }
 }
 
 const app = new App()
-
-app.mount(html`
-```
-
-```html
-  <button id="toggle" k-click="toggle()">toggle</button>
-  <div id="1">one</div>
-  <!-- {{?show}} -->
-  <div id="2">two</div>
-  <div id="3">three</div>
-  <div id="4">four</div>
-  <!-- {{/show}} -->
-  <div id="5">five</div>
-```
-
-```js
-`).link('app')
 ```
 
 ## Codepen Sample

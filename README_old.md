@@ -6,12 +6,12 @@
 
   <br/>
   <!-- AUTO-GENERATED-CONTENT:START (VER) -->
-# Keet v4.1.1
+# Keet v4.2.1
 <!-- AUTO-GENERATED-CONTENT:END -->
 </h1>
 
 <!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
-[![npm package](https://img.shields.io/badge/npm-4.1.1-blue.svg)](https://www.npmjs.com/package/keet) [![browser build](https://img.shields.io/badge/rawgit-4.1.1-ff69b4.svg)](https://cdn.rawgit.com/syarul/keet/master/keet-min.js) [![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet) [![Build Status](https://travis-ci.org/syarul/keet.svg?branch=master)](https://travis-ci.org/syarul/keet) [![Coverage Status](https://coveralls.io/repos/github/syarul/keet/badge.svg?branch=master)](https://coveralls.io/github/syarul/keet?branch=master) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![npm package](https://img.shields.io/badge/npm-4.2.1-blue.svg)](https://www.npmjs.com/package/keet) [![browser build](https://img.shields.io/badge/rawgit-4.2.1-ff69b4.svg)](https://cdn.rawgit.com/syarul/keet/master/keet-min.js) [![npm module downloads](https://img.shields.io/npm/dt/keet.svg)](https://www.npmjs.com/package/keet) [![Build Status](https://travis-ci.org/syarul/keet.svg?branch=master)](https://travis-ci.org/syarul/keet) [![Coverage Status](https://coveralls.io/repos/github/syarul/keet/badge.svg?branch=master)](https://coveralls.io/github/syarul/keet?branch=master) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 <!-- AUTO-GENERATED-CONTENT:START (SHEILDS) -->
 <!-- AUTO-GENERATED-CONTENT:END -->
 
@@ -69,15 +69,22 @@ to the component method ```mount```. Within the string, you can assign a state w
 <!-- AUTO-GENERATED-CONTENT:START (HELLO) -->
 ```js
 import Keet from 'keet'
+import { getId } from 'keet/utils'
 
 class App extends Keet {
+  el = 'app'
   state = 'World'
+
+  componentDidMount () {
+    console.assert(getId('app').innerHTML === 'Hello World', 'hello test')
+  }
+
+  render () {
+    return 'Hello {{state}}'
+  }
 }
 
-const app = new App()
-
-app.mount('Hello {{state}}').link('app')
-
+export default new App()
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
 
@@ -87,24 +94,40 @@ Basic idea how we can create a simple counter
 
 <!-- AUTO-GENERATED-CONTENT:START (COUNTER) -->
 ```js
-import Keet from 'keet'
-import { html } from 'keet/utils'
+/* global Event */
+import Keet, { html } from 'keet'
+import { getId } from 'keet/utils'
+
+let counter
 
 class App extends Keet {
+  el = 'app'
   count = 0
+
   add (evt) {
     this.count++
   }
+
+  componentDidMount () {
+    const click = new Event('click', { bubbles: true, cancelable: true })
+    counter = getId('counter')
+    counter.dispatchEvent(click)
+  }
+
+  componentDidUpdate () {
+    console.assert(counter.innerHTML === '1', 'counter test')
+  }
+
+  render () {
+    return html`
+      <button id="counter" k-click="add()">
+        {{count}}
+      </button>
+    `
+  }
 }
 
-const app = new App()
-
-app.mount(html`
-  <button id="counter" k-click="add()">
-    {{count}}
-  </button>
-`).link('app')
-
+export default new App()
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
 
@@ -119,24 +142,28 @@ The traditional way, is you assign ```display:none``` to style attributes or use
 import Keet from 'keet'
 
 class App extends Keet {
-  show = false
+  el = 'app'
+  show = true
+
   toggle () {
     this.show = !this.show
   }
+
+  render () {
+    return `
+      <button id="toggle" k-click="toggle()" attr="{{show?foo:bar}}" style="color: {{show?red:blue}};" {{show?testme:test}}>toggle</button>
+      <div id="1">one</div>
+      <!-- {{?show}} -->
+      <div id="2">two</div>
+      <div id="3">three</div>
+      <div id="4">four</div>
+      <!-- {{/show}} -->
+      <div id="5">five</div>
+    `
+  }
 }
 
-const app = new App()
-
-app.mount(`
-  <button id="toggle" k-click="toggle()" attr="{{show?foo:bar}}" style="color: {{show?red:blue}};" {{show?testme:test}}>toggle</button>
-  <div id="1">one</div>
-  <!-- {{?show}} -->
-  <div id="2">two</div>
-  <div id="3">three</div>
-  <div id="4">four</div>
-  <!-- {{/show}} -->
-  <div id="5">five</div>
-`).link('app')
+export default new App()
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
 
@@ -149,54 +176,57 @@ To map an array to elements use the ```{{model:<myModelName>}}<myModelTemplate>{
 
 <!-- AUTO-GENERATED-CONTENT:START (MODEL) -->
 ```js
-import Keet, { CreateModel } from 'keet'
-import { html } from 'keet/utils'
-
-let task = new CreateModel()
+import Keet, { html, CreateModel } from 'keet'
+import { getId } from 'keet/utils'
 
 class App extends Keet {
-  task = task
+  el = 'app'
+  task = new CreateModel()
+
   componentWillMount () {
-    // callBatchPoolUpdate - custom method to inform changes in the model.
-    // If the component has other states that reflect the model value changes
-    // we can safely ignore calling this method.
     this.task.subscribe(model =>
       this.callBatchPoolUpdate()
     )
   }
+
+  componentDidMount () {
+    let taskList = JSON.parse(JSON.stringify(this.task.list))
+    // update a task
+    this.task.update({ ...taskList[0], taskName: 'sleep', complete: true })
+    this.task.destroy(taskList[taskList.length - 1])
+  }
+
+  componentDidUpdate () {
+    console.assert(getId('list').childNodes.length === 6)
+  }
+
+  render () {
+    let name = 'myModel'
+
+    let taskName = ['run', 'jog', 'walk', 'swim', 'roll']
+
+    taskName.map((task, i) => {
+      this.task.add({
+        taskName: task,
+        complete: i % 2 !== 0
+      })
+    })
+
+    return html`
+      <h1>${name}</h1>
+      <ul id="list">
+        <!-- {{model:task}} -->
+        <li>
+          {{taskName}}
+          <input type="checkbox" checked="{{complete?checked:null}}">
+        </li>
+        <!-- {{/model:task}} -->
+      </ul>
+    `
+  }
 }
 
-const app = new App()
-
-app.mount(html`
-  <ul id="list">
-    <!-- {{model:task}} -->
-    <li id="{{id}}">
-      {{taskName}}
-      <input type="checkbox" checked="{{complete?checked:null}}">
-    </li>
-    <!-- {{/model:task}} -->
-  </ul>
-`).link('app')
-
-let taskName = ['run', 'jog', 'walk', 'swim', 'roll']
-
-for (let i = 0; i < taskName.length; i++) {
-  app.task.add({
-    id: i,
-    taskName: taskName[i],
-    complete: i % 2 !== 0
-  })
-}
-
-// update a task
-app.task.update('id', {
-  id: 0,
-  taskName: 'sleep',
-  complete: true
-})
-
-app.task.destroy('taskName', 'roll')
+export default new App()
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
 

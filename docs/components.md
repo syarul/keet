@@ -11,52 +11,45 @@ A html DOM node can repesent a component. To declare a component use a comment b
 ```<!-- {{component:<mySubComponent>}} -->```.
 
 ```js
-import Keet, { html } from 'keet'
+import Keet, { html, childLike } from 'keet'
 
+@childLike() // babel-plugin-transform-decorators
 class Sub extends Keet {
-  constructor() {
-    super()
-    // root-element id of the sub-components serve as
-    // insertion lookup for the main/parent component
-    this.el = 'sub'
+  el = 'sub'
+  render() {
+    return html`
+```
+```html
+      <div id="sub">
+        this is a sub-component
+      </div>
+    `
+```
+
+```js
   }
 }
 
 const sub = new Sub()
 
-sub.mount(html`
+class App extends Keet {
+  el = 'app'
+  render() {
+    return html`
 ```
 
 ```html
-  <div id="sub">
-    this is a sub-component
-  </div>`
+      <div id="container">
+        <div>parent</div>
+        <!-- {{component:sub}} -->
+      </div>
+    `
 ```
-
 ```js
-)
-
-class App extends Keet {
-  constructor() {
-    super()
-    this.subc = sub
   }
 }
 
 const app = new App()
-
-app.mount(html`
-```
-
-```html
-  <div id="container">
-    <div>parent</div>
-    <!-- {{component:subc}} -->
-  </div>
-```
-
-```js
-`).link('app')
 ```
 
 ## Codepen Sample

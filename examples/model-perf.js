@@ -12,20 +12,48 @@ let evtDelete = `model - perf test delete ${count} list ({{sDelete}})`
 let copyList
 
 class App extends Keet {
+  el = 'app'
   task = new CreateModel()
   sAdd = 'wait for dom to render..'
   sUpdate = 'wait for add..'
   sDelete = 'wait for update..'
+  length = 0
   componentWillMount () {
-    // callBatchPoolUpdate - custom method to inform changes in the model.
-    // If the component has other states that reflect the model value changes
-    // we can safely ignore calling this method.
-    this.task.subscribe(model =>
-      this.callBatchPoolUpdate()
-    )
+    this.task.subscribe(model => {
+      this.length = model.length
+    })
   }
+
   action () {
   }
+
+  componentDidMount () {
+    setTimeout(() => {
+      time = performance.now()
+      for (let i = 0; i < count; i++) {
+        this.task.add({
+          taskName: `todo task ${i}`,
+          complete: false
+        })
+      }
+      copyList = JSON.parse(JSON.stringify(this.task.list))
+    }, 2000)
+
+    setTimeout(() => {
+      time = performance.now()
+      for (let i = 0; i < count; i++) {
+        this.task.update({ ...copyList[i], complete: true })
+      }
+    }, 4000)
+
+    setTimeout(() => {
+      time = performance.now()
+      for (let i = 0; i < count; i++) {
+        this.task.destroy(copyList[i])
+      }
+    }, 6000)
+  }
+
   componentDidUpdate () {
     updateCount++
 
@@ -45,45 +73,23 @@ class App extends Keet {
       this.callBatchPoolUpdate()
     }
   }
+
+  render () {
+    return html`
+      <h4>model length: {{length}}</h4>
+      <h4 id="evt-add">${evtAdd}</h4>
+      <h4 id="evt-up">${evtUpdate}</h4>
+      <h4 id="evt-up">${evtDelete}</h4>
+      <ul id="list" k-click="action()">
+        <!-- {{model:task}} -->
+        <li id="{{id}}"><span style="text-decoration: {{complete?line-through:none}};">{{taskName}}</span>
+          <input type="checkbox" checked="{{complete?checked:''}}">
+          <span class="destroy" style="cursor: pointer;"> [ X ] </span>
+        </li>
+        <!-- {{/model:task}} -->
+      </ul>
+    `
+  }
 }
 
-const app = new App()
-
-app.mount(html`
-  <h4 id="evt-add">${evtAdd}</h4>
-  <h4 id="evt-up">${evtUpdate}</h4>
-  <h4 id="evt-up">${evtDelete}</h4>
-  <ul id="list" k-click="action()">
-    <!-- {{model:task}} -->
-    <li id="{{id}}"><span style="text-decoration: {{complete?line-through:none}};">{{taskName}}</span>
-      <input type="checkbox" checked="{{complete?checked:''}}">
-      <span class="destroy" style="cursor: pointer;"> [ X ] </span>
-    </li>
-    <!-- {{/model:task}} -->
-  </ul>
-`).link('app')
-
-setTimeout(() => {
-  time = performance.now()
-  for (let i = 0; i < count; i++) {
-    app.task.add({
-      taskName: `todo task ${i}`,
-      complete: false
-    })
-  }
-  copyList = JSON.parse(JSON.stringify(app.task.list))
-}, 2000)
-
-setTimeout(() => {
-  time = performance.now()
-  for (let i = 0; i < count; i++) {
-    app.task.update({ ...copyList[i], complete: true })
-  }
-}, 4000)
-
-setTimeout(() => {
-  time = performance.now()
-  for (let i = 0; i < count; i++) {
-    app.task.destroy(copyList[i])
-  }
-}, 6000)
+export default new App()

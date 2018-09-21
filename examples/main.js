@@ -1,19 +1,26 @@
 // file main.js
 import Keet from '../'
+import { getId } from '../utils'
 
 import other from './other'
 
 class Main extends Keet {
-  constructor () {
-    super()
-    this.state = 'main'
+  el = 'app'
+  state = 'main'
+
+  componentDidUpdate () {
+    console.assert(getId('app').innerHTML === 'state other', ' publish subscribe')
+  }
+
+  componentWillMount () {
     other.subscribe(state => {
       this.state = state
-      console.log(this)
     })
+  }
+
+  render () {
+    return 'state {{state}}'
   }
 }
 
-const main = new Main()
-
-export default main
+export default new Main()

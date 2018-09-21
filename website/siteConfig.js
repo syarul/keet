@@ -21,7 +21,7 @@ const users = [
 ];
 
 const siteConfig = {
-  title: 'Keet.js v4.1.1', // Title for your website.
+  title: 'Keet.js v4.2.1', // Title for your website.
   tagline: 'Minimalist view layer for the web',
   url: 'https://syarul.github.io', // Your website URL
   baseUrl: '/keet/', // Base URL for your project */

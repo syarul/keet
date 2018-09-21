@@ -76,11 +76,23 @@ const html = (...args) => {
   return result
 }
 
+/**
+ * @private
+ * @decorator
+ * Add checking for child component
+ */
+const childLike = function () {
+  return function (target) {
+    target.IS_STUB = true
+  }
+}
+
 export {
   html,
   assert,
   checkNodeAvailability,
   genId,
   getId,
-  minId
+  minId,
+  childLike
 }

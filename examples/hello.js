@@ -1,12 +1,17 @@
 import Keet from '../'
-import { getId } from '../utils' // rem
+import { getId } from '../utils'
 
 class App extends Keet {
+  el = 'app'
   state = 'World'
+
+  componentDidMount () {
+    console.assert(getId('app').innerHTML === 'Hello World', 'hello test')
+  }
+
+  render () {
+    return 'Hello {{state}}'
+  }
 }
 
-const app = new App()
-
-app.mount('Hello {{state}}').link('app')
-
-console.assert(getId('app').innerHTML === 'Hello World', 'hello test') // rem
+export default new App()

@@ -28,6 +28,6 @@ export default function (stub) {
       this.componentDidMount()
     }
   } else {
-    assert(false, 'No element with id: "' + this.el + '" exist.')
+    assert(false, 'No element id: "' + this.el + '" exist or is this a child component?')
   }
 }
