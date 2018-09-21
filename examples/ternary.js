@@ -5,8 +5,8 @@ class App extends Keet {
   status = false
 
   render () {
-  	return 'Hello {{status?World:Keet}}'
+    return 'Hello {{status?World:Keet}}'
   }
 }
 
-const app = new App()
+export default new App()

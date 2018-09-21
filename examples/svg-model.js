@@ -32,4 +32,4 @@ class App extends Keet {
   }
 }
 
-const app = new App()
+export default new App()

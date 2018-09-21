@@ -15,13 +15,15 @@ import Keet from 'keet'
 class App extends Keet {
   constructor(){
     super()
+    this.el = 'app'
     this.state ='World'
+  }
+  render() {
+    return 'Hello {{state}}'
   }
 }
 
 const app = new App()
-
-app.mount('Hello {{state}}').link('app')
 ```
 
 ## Codepen Sample
@@ -39,17 +41,19 @@ import Keet from 'keet'
 class App extends Keet {
   constructor(){
     super()
+    this.el = 'app'
     this.state ='World'
   }
   // our method
   greeting(value) {
     this.state = value
   }
+  render() {
+    return 'Hello {{state}}'
+  }
 }
 
 const app = new App()
-
-app.mount('Hello {{state}}').link('app')
 ```
 
 Then we can update the state by invoking the method.

@@ -1,4 +1,4 @@
-/* global it describe before */
+/* global it describe before beforeEach */
 const assert = require('assert')
 const { JSDOM } = require('jsdom')
 
@@ -62,15 +62,19 @@ describe(`keet.js v-${ver} test`, () => {
 
   it('conditional nodes extra', async () => {
     const app = await require('../examples/conditional-nodes-extra').default
-    assert.equal(getId('list').childNodes.length === 4 && getId('list').childNodes[1].innerHTML === ' John - 21 ', true)
 
-    app.componentDidUpdate = function () {
-      assert.equal(getId('app').childNodes.length, 5)
-    }
+    assert.equal(getId('list').childNodes.length === 4 && getId('list').childNodes[1].innerHTML === ' John - 21 ', true)
 
     const click = new Event('click', { bubbles: true, cancelable: true })
     const toggle = getId('toggle')
     toggle.dispatchEvent(click)
+
+    await new Promise(resolve => {
+      app.componentDidUpdate = function () {
+        assert.equal(getId('app').innerHTML, '<button id="toggle">toggle</button><div id="1">one</div><!-- {{?show}} --><!-- {{/show}} --><div id="3">three</div>')
+        resolve(true)
+      }
+    })
   })
 
   // conditional-nodes
@@ -78,10 +82,13 @@ describe(`keet.js v-${ver} test`, () => {
   it('counter', async () => {
     const app = await require('../examples/counter').default
 
-    app.componentDidUpdate = function () {
-      const counter = getId('counter')
-      assert.equal(counter.innerHTML, '1')
-    }
+    await new Promise(resolve => {
+      app.componentDidUpdate = function () {
+        const counter = getId('counter')
+        assert.equal(counter.innerHTML, '1')
+        resolve(true)
+      }
+    })
   })
 
   it('err mount non string', async () => {
@@ -122,9 +129,12 @@ describe(`keet.js v-${ver} test`, () => {
   it('pubsub', async () => {
     const app = await require('../examples/main').default
 
-    app.componentDidUpdate = function () {
-      assert.equal(getId('app').innerHTML, 'state other')
-    }
+    await new Promise(resolve => {
+      app.componentDidUpdate = function () {
+        assert.equal(getId('app').innerHTML, 'state other')
+        resolve(true)
+      }
+    })
   })
 
   // model-perf
@@ -135,180 +145,92 @@ describe(`keet.js v-${ver} test`, () => {
 
   it('model', async () => {
     const app = await require('../examples/model').default
-    // console.log(getId('app').innerHTML)
-    app.componentDidUpdate = function () {
-      // console.log(getId('app').innerHTML)
-      assert.equal(getId('list').childNodes.length, 6)
-    }
+
+    await new Promise(resolve => {
+      app.componentDidUpdate = function () {
+        let list = getId('list').childNodes
+        assert.equal(
+          list[0].nodeValue === ' {{model:task}} ' &&
+          list[1].innerHTML === 'sleep<input type="checkbox" checked="">' &&
+          list[2].innerHTML === 'jog<input type="checkbox" checked="">' &&
+          list[3].innerHTML === 'walk<input type="checkbox">' &&
+          list[4].innerHTML === 'swim<input type="checkbox" checked="">' &&
+          list[5].nodeValue === ' {{/model:task}} '
+          , true)
+        resolve(true)
+      }
+    })
   })
 
-  /* it('no node found err', async () => {
+  it('multi state', async () => {
+    const app = await require('../examples/multi-state').default
+
+    await new Promise(resolve => {
+      app.componentDidUpdate = function () {
+        assert.equal(getId('app').innerHTML, 'I say: horray horray horray!')
+        resolve(true)
+      }
+    })
+  })
+
+  it('no node found err', async () => {
     try {
       await require('../examples/no_node_found_err')
     } catch (err) {
       assert.equal(err instanceof Error, true)
     }
-  }) */
-
-  /*
-  it('failed link', function () {
-    try {
-      require('../examples/err_link_no_parameter')
-    } catch (err) {
-      assert.equal(err instanceof Error, true)
-    }
   })
 
-  it('render sub-component', function () {
-    require('../examples/sub-component')
-    assert.equal(getId('sub').innerHTML, 'this is a sub-component')
-    clear()
-  })
+  it('object literals', async () => {
+    const app = await require('../examples/object-literals').default
 
-  it('render sub multi component', function () {
-    require('../examples/sub-multi-component')
-
-    let r = '<div id="sub" data-ignore="">this is a sub-component</div>'
-
-    r = `${r}${r}${r}`
-
-    assert.equal(getId('container').innerHTML, r)
-    clear()
-  })
-
-  it('sub-component event handling', function (next) {
-    require('../examples/sub-component_with_event')
-    // batch pool has started since
-    setTimeout(() => {
-      assert.equal(getId('sub-button').innerHTML, 'value: bar')
-      clear()
-      next()
-    })
-  })
-
-  it('event not declared', function () {
-    require('../examples/event_not_declared')
-    // batch pool has started since
-    assert.equal(getId('counter').innerHTML, '0')
-    clear()
-  })
-
-  it('sub-component not assigned', function () {
-    // batch pool has initiated, so we have to check outside of the event loop
-    try {
-      require('../examples/sub-component_err_not_assigned')
-    } catch (err) {
-      assert.equal(err instanceof Error, true)
-    }
-    clear()
-  })
-
-  it('sub-component async', function (next) {
-    require('../examples/sub-component_async')
-    // batch pool has initiated, so we have to check outside of the event loop
-    setTimeout(() => {
-      assert.equal(getId('container').innerHTML, '<div id="sub" data-ignore="">this is a sub-component</div>')
-      clear()
-      next()
-    }, 200)
-  })
-
-  it('batch-pool 1 million updates', function (next) {
-    require('../examples/batch-pool')
-
-    function getCount(){
-      return getId('container').innerHTML
-    }
-
-    let t = setInterval(() => {
-      if(getCount() === '1'){
-        clearInterval(t)
-        clear()
-        next()
+    await new Promise(resolve => {
+      app.componentDidUpdate = function () {
+        assert.equal(getId('app').innerHTML, '<span>bar</span><span> state : keet</span><span> age : 12</span>')
+        resolve(true)
       }
     })
   })
 
-  it('object notation', function (next) {
-    require('../examples/object-literals')
-    // batch pool has initiated, so we have to check outside of the event loop
-    setTimeout(() => {
-      assert.equal(getId('app').innerHTML, '<span>bar</span><span> state : keet</span><span> age : 12</span>')
-      clear()
-      next()
+  // other
+
+  it('sub component states', async () => {
+    const app = await require('../examples/sub-component-states').default
+    const { sub } = await require('../examples/sub-component-states')
+
+    await new Promise(resolve => {
+      sub.componentDidUpdate = function () {
+        assert.equal(getId('sub').innerHTML, 'this is a sub-component with a state:bar')
+        resolve(true)
+      }
     })
   })
 
-  it('multi state of the same name', function (next) {
-    require('../examples/multi-state')
-    // batch pool has initiated, so we have to check outside of the event loop
-    setTimeout(() => {
-      assert.equal(getId('app').innerHTML, 'I say: horray horray horray!')
-      clear()
-      next()
-    })
+  // sub-component_err_not_assigned
+
+  // sub-component_with_event
+
+  // sub-multi-component
+
+  // svg-hex-loader
+
+  it('svg model', async () => {
+    const app = await require('../examples/svg-model').default
+    let list = getId('list').childNodes
+    assert.equal(
+      list[0].nodeValue === ' {{model:svgModel}} ' &&
+      list[1].innerHTML === '<svg width="100" height="100"><circle cx="50" cy="50" r="5" stroke="red" stroke-width="4" fill="yellow"></circle></svg>' &&
+      list[2].innerHTML === '<svg width="100" height="100"><circle cx="50" cy="50" r="15" stroke="blue" stroke-width="4" fill="yellow"></circle></svg>' &&
+      list[3].innerHTML === '<svg width="100" height="100"><circle cx="50" cy="50" r="25" stroke="green" stroke-width="4" fill="yellow"></circle></svg>' &&
+      list[4].nodeValue === ' {{/model:svgModel}} '
+      , true)
   })
 
-  it('multi state of the same name changed', function (next) {
-    require('../examples/multi-state-diff')
-    // batch pool has initiated, so we have to check outside of the event loop
-    setTimeout(() => {
-      assert.equal(getId('app').innerHTML, 'I say: horray horray horray horrayyy!')
-      clear()
-      next()
-    })
+  // svg
+
+  it('ternary', async () => {
+    const app = await require('../examples/ternary').default
+    assert.equal(getId('app').innerHTML, 'Hello Keet')
   })
 
-  it('model list', function (next) {
-    require('../examples/model')
-    // batch pool has initiated, so we have to check outside of the event loop
-    setTimeout(() => {
-      assert.equal(getId('list').childNodes.length, 7)
-      clear()
-      next()
-    }, 100)
-  })
-
-  it('render html entities', function (next) {
-    require('../examples/html-entities')
-    // batch pool has initiated, so we have to check outside of the event loop
-    setTimeout(() => {
-      assert.equal(getId('app').innerHTML, 'Hello World')
-      clear()
-      next()
-    })
-  })
-
-  it('render html entities with NodeType 1', function (next) {
-    require('../examples/html-entities_nodeType_1')
-    // batch pool has initiated, so we have to check outside of the event loop
-    setTimeout(() => {
-      assert.equal(getId('app').innerHTML, '<div>Hello World</div>')
-      clear()
-      next()
-    })
-  })
-
-  it('failed mount unknown element', function () {
-    try {
-      require('../examples/html-entities_err_nodeType')
-    } catch (err) {
-      assert.equal(err instanceof Error, true)
-    }
-  })
-
-  it('render conditional nodes', function (next) {
-    require('../examples/conditional-nodes')
-    // batch pool has initiated, so we have to check outside of the event loop
-    setTimeout(() => {
-      assert.equal(getId('app').childNodes.length, 5)
-      clear()
-      next()
-    })
-  })
-
-  it('model perf test', function () {
-    require('../examples/model-perf')
-    clear()
-  }) */
 })

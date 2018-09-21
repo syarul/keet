@@ -1,5 +1,5 @@
 ---
-id: keet
+id: api_keet
 title: keet
 sidebar_label: keet
 ---
@@ -27,27 +27,13 @@ const app = new App()
     * [~Keet](#module_keet..Keet)
         * [new Keet(localize)](#new_module_keet..Keet_new)
         * [.mount(instance)](#module_keet..Keet+mount)
+        * [.cycleVirtualDomTree(stub)](#module_keet..Keet+cycleVirtualDomTree)
         * [.callBatchPoolUpdate()](#module_keet..Keet+callBatchPoolUpdate)
         * [.subscribe(fn)](#module_keet..Keet+subscribe)
         * [.inform(...value)](#module_keet..Keet+inform)
         * [.storeRef(name)](#module_keet..Keet+storeRef)
 
 <a name="module_keet..Keet"></a>
-
-### keet~Keet
-The main constructor of Keet
-
-**Kind**: inner class of [<code>keet</code>](#module_keet)  
-
-* [~Keet](#module_keet..Keet)
-    * [new Keet(localize)](#new_module_keet..Keet_new)
-    * [.mount(instance)](#module_keet..Keet+mount)
-    * [.callBatchPoolUpdate()](#module_keet..Keet+callBatchPoolUpdate)
-    * [.subscribe(fn)](#module_keet..Keet+subscribe)
-    * [.inform(...value)](#module_keet..Keet+inform)
-    * [.storeRef(name)](#module_keet..Keet+storeRef)
-
-<a name="new_module_keet..Keet_new"></a>
 
 #### new Keet(localize)
 
@@ -65,6 +51,17 @@ Mount an instance of html/string template
 | Param | Type | Description |
 | --- | --- | --- |
 | instance | <code>Object</code> <code>string</code> | the html/string template |
+
+<a name="module_keet..Keet+cycleVirtualDomTree"></a>
+
+#### keet.cycleVirtualDomTree(stub)
+Parse this component to the DOM
+
+**Kind**: instance method of [<code>Keet</code>](#module_keet..Keet)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| stub | <code>Boolean</code> | set as true if this a child component |
 
 <a name="module_keet..Keet+callBatchPoolUpdate"></a>
 

@@ -5,12 +5,12 @@ class App extends Keet {
   state = 'World'
 
   componentDidMount () {
-  	console.assert(getId('app').innerHTML === 'Hello World', 'hello test')
+    console.assert(getId('app').innerHTML === 'Hello World', 'hello test')
   }
 
   render () {
-  	return 'Hello {{state}}'
+    return 'Hello {{state}}'
   }
 }
 
-const app = new App()
+export default new App()

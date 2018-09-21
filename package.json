@@ -79,13 +79,13 @@
   "scripts": {
     "build": "npm run bundle",
     "bundle": "rollup -c rollup.config.js",
-    "postbuild": "uglifyjs keet-min.js --pure-funcs classCallCheck debugMode -c unsafe,collapse_vars,evaluate,screw_ie8,loops,keep_fargs=false,pure_getters,unused,dead_code -m -o keet-min.js -p relative --in-source-map keet-min.js.map --source-map keet-min.js.map && node markdown.config.js",
+    "postbuild": "uglifyjs keet-min.js --pure-funcs classCallCheck debugMode -c unsafe,collapse_vars,evaluate,screw_ie8,loops,keep_fargs=false,pure_getters,unused,dead_code -m -o keet-min.js -p relative --in-source-map keet-min.js.map --source-map keet-min.js.map",
     "cover": "nyc --reporter=lcov --reporter=text npm run test",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "start": "webpack-dev-server -d",
     "test": "mocha test/test.js --require babel-core/register --require babel-polyfill --require jsdom-global/register --timeout 10000",
     "test-ci": "nyc npm run test && npm run lint",
-    "lint": "standard keet.js utils.js src/**/*.js examples/**/*.js --fix",
+    "lint": "standard keet.js utils.js src/**/*.js examples/**/*.js test/test.js --fix",
     "gen-apis": "jsdoc2md keet.js > docs/api_keet.md && jsdoc2md src/base/createModel.js > docs/api_createModel.md"
   },
   "git_branch": "master",

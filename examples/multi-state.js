@@ -10,16 +10,16 @@ class App extends Keet {
   }
 
   componentDidUpdate () {
-  	console.assert(getId('app').innerHTML === 'I say: horray horray horray!', 'multi state')
+    console.assert(getId('app').innerHTML === 'I say: horray horray horray!', 'multi state')
   }
 
   componentDidMount () {
-  	this.update('horray')
+    this.update('horray')
   }
 
   render () {
-  	return 'I say: {{state}} {{state}} {{state}}!'
+    return 'I say: {{state}} {{state}} {{state}}!'
   }
 }
 
-const app = new App()
+export default new App()

@@ -75,9 +75,9 @@ function resolveConditionalNodes (node, conditional, setup, runner, addState) {
     // if cache has model(s), mark all as dirty, since all were removed from DOM
     // on last iteration
     if (cache[conditional].models && cache[conditional].models.length) {
-      cache[conditional].models.map(model =>
+      cache[conditional].models.map(model => {
         this[model].dirty = true
-      )
+      })
     }
     runner.call(this, fetchFrag.firstChild, addState)
     node.parentNode.insertBefore(fetchFrag, node.nextSibling)

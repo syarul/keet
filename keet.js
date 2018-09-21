@@ -1,6 +1,6 @@
 
 //
-// Keetjs v4.1.1 Alpha release: https://github.com/keetjs/keet
+// Keetjs v4.2.1 Alpha release: https://github.com/keetjs/keet
 // Minimalist view layer for the web
 //
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keetjs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -49,9 +49,7 @@ class Keet {
     this.autoRender()
   }
 
-  /**
-   * Auto rendered on class constructor instantiation
-   */
+  // Auto rendered on class constructor instantiation
   async autoRender () {
     await this.el
     if (typeof this.render === 'function') {
@@ -88,7 +86,6 @@ class Keet {
   }
 
   /**
-   * @private
    * Parse this component to the DOM
    * @param {Boolean} stub - set as true if this a child component
    */

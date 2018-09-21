@@ -39,3 +39,8 @@ class App extends Keet {
 }
 
 const app = new App()
+
+export {
+  sub,
+  app as default
+}

@@ -1,5 +1,5 @@
 ---
-id: createModel
+id: api_createModel
 title: CreateModel
 sidebar_label: CreateModel
 ---

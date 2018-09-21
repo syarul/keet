@@ -24,7 +24,7 @@ class Sub extends Keet {
   }
 }
 
-const subc = new Sub()
+const sub = new Sub()
 
 class App extends Keet {
   el = 'app'
@@ -48,3 +48,8 @@ class App extends Keet {
 }
 
 const app = new App()
+
+export {
+  sub,
+  app as default
+}
