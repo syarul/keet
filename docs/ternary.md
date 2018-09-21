@@ -14,7 +14,7 @@ import Keet from 'keet'
 class App extends Keet {
   el = 'app'
   status = false
-  render() {
+  render(){
     return 'Hello {{status?World:Keet}}'
   }
 }

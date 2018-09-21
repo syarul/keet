@@ -12,28 +12,25 @@ A simple counter application. This give you basic understanding how to work with
 import Keet, { html } from 'keet'
 
 class App extends Keet {
-  constructor(){
-    super()
-    this.count = 0
-  }
+  el = 'app'
+  count = 0
   add() {
     this.count++
+  }
+  render() {
+    return html`
+```
+```html
+      <button id="counter" k-click="add()">
+        {{count}}
+      </button>
+```
+```js
+    `
   }
 }
 
 const app = new App()
-
-app.mount(html`
-```
-
-```handlebars
-  <button id="counter" k-click="add()">
-    {{count}}
-  </button>
-```
-
-```js
-`).link('app')
 ```
 
 ## Codepen Sample

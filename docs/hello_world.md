@@ -13,11 +13,8 @@ to the component method ```mount```. Within the string, you can assign a state w
 import Keet from 'keet'
 
 class App extends Keet {
-  constructor(){
-    super()
-    this.el = 'app'
-    this.state ='World'
-  }
+  el = 'app'
+  state ='World'
   render() {
     return 'Hello {{state}}'
   }
