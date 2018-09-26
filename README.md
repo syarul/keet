@@ -4,13 +4,13 @@
     <img src="https://raw.githubusercontent.com/syarul/keet/0ce3f8d7/website/static/img/keet_temp_logo.png" width="150" alt="Keet Logo"/>
   </a>
 
-  <h3 align="center">Keet v4.2.1</h3>
+  <h3 align="center">Keet v4.2.2</h3>
   <p align="center">Minimalist view layer for the web.</p>
   <p align="center">
     <!-- npm version -->
-    <a href="https://www.npmjs.com/package/keet" rel="nofollow"><img alt="npm package" src="https://img.shields.io/badge/npm-4.2.1-blue.svg" style="max-width:100%;"></a> 
+    <a href="https://www.npmjs.com/package/keet" rel="nofollow"><img alt="npm package" src="https://img.shields.io/badge/npm-4.2.2-blue.svg" style="max-width:100%;"></a> 
     <!-- rawgit version -->
-    <a href="https://cdn.rawgit.com/syarul/keet/master/keet-min.js" rel="nofollow"><img alt="browser build" src="https://img.shields.io/badge/rawgit-4.2.1-ff69b4.svg" style="max-width:100%;"></a>
+    <a href="https://cdn.rawgit.com/syarul/keet/master/keet-min.js" rel="nofollow"><img alt="browser build" src="https://img.shields.io/badge/rawgit-4.2.2-ff69b4.svg" style="max-width:100%;"></a>
     <!-- npm download count -->
     <a href="https://www.npmjs.com/package/keet" rel="nofollow"><img alt="npm module downloads" src="https://img.shields.io/npm/dt/keet.svg" style="max-width:100%;"></a>
     <!-- travis build status -->

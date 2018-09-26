@@ -1,6 +1,6 @@
 
 //
-// Keetjs v4.2.1 Alpha release: https://github.com/keetjs/keet
+// Keetjs v4.2.2 Alpha release: https://github.com/keetjs/keet
 // Minimalist view layer for the web
 //
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keetjs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -115,7 +115,8 @@ class Keet {
    * @param {Function} fn - the callback function for the subscribe
    */
   subscribe (fn) {
-    this.exec = fn
+    this.exec = this.exec || []
+    this.exec = this.exec.concat(fn)
   }
   /**
    * Another component can subscribe to changes on this component.
@@ -123,7 +124,9 @@ class Keet {
    * @param {...*} value - one or more parameters to publish to subscribers
    */
   inform (...args) {
-    this.exec && typeof this.exec === 'function' && this.exec.apply(null, args)
+    if(this.exec.length) {
+      this.exec.map(fn => fn.apply(null, args))
+    }
   }
 
   /**

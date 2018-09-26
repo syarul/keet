@@ -70,7 +70,7 @@ function resolveConditionalNodes (node, conditional, setup, runner, addState) {
       }
     }
   } else if (setup === 'conditional-set') {
-    if (node.nextSibling.isEqualNode(cache[conditional].frag.firstChild)) return
+    if (!cache[conditional] || node.nextSibling.isEqualNode(cache[conditional].frag.firstChild)) return
     fetchFrag = cache[conditional].frag.cloneNode(true)
     // if cache has model(s), mark all as dirty, since all were removed from DOM
     // on last iteration
