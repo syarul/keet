@@ -8,7 +8,7 @@ const re = /{{([^{}]+)}}/g
 export default function (value, node, addState, isAttr, model) {
   const props = value.match(re)
   if (!props) return
-  let ln = props.length
+  let propsLength = props.length
   let rep
   let tnr
   let isObjectNotation
@@ -17,8 +17,9 @@ export default function (value, node, addState, isAttr, model) {
 
   let ref = model || this
 
-  while (ln) {
-    ln--
+  let ln = 0
+
+  while (ln < propsLength) {
     rep = props[ln].replace(re, '$1')
     tnr = ternaryOps.call(ref, rep)
     isObjectNotation = strInterpreter(rep)
@@ -36,32 +37,32 @@ export default function (value, node, addState, isAttr, model) {
       } else {
         if (isObjectNotation[0] === 'this' && self[isObjectNotation[1]] !== undefined && typeof self[isObjectNotation[1]] === 'function') {
           let result = self[isObjectNotation[1]](ref)
-          return result !== undefined ? result : value
+          value = result !== undefined ? result : value
         } else {
           updateState(rep, addState)
-          return value.replace(props, self[isObjectNotation[0]][isObjectNotation[1]])
+          value = value.replace(props[ln], self[isObjectNotation[0]][isObjectNotation[1]])
         }
       }
-    } else {
-      if (tnr) {
-        updateState(tnr.state, addState)
-        if (!isAttr) {
-          // escape symbol
-          rep = rep.replace('?', '\\?')
-          valAssign(node, '{{' + rep + '}}', tnr.value)
-        } else {
-          return value.replace(props, tnr.value)
-        }
+    } else if (tnr) {
+      updateState(tnr.state, addState)
+      if (!isAttr) {
+        // escape symbol
+        rep = rep.replace('?', '\\?')
+        valAssign(node, '{{' + rep + '}}', tnr.value)
       } else {
-        if (ref[rep] !== undefined) {
-          updateState(rep, addState)
-          if (!isAttr) {
-            valAssign(node, '{{' + rep + '}}', ref[rep])
-          } else {
-            return value.replace(props, ref[rep])
-          }
+        value = value.replace(props[ln], tnr.value)
+      }
+    } else {
+      if (ref[rep] !== undefined) {
+        updateState(rep, addState)
+        if (!isAttr) {
+          valAssign(node, '{{' + rep + '}}', ref[rep])
+        } else {
+          value = value.replace(props[ln], ref[rep])
         }
       }
     }
+    ln++
   }
+  return value
 }

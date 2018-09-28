@@ -1,6 +1,6 @@
 
 //
-// Keetjs v4.2.2 Alpha release: https://github.com/keetjs/keet
+// Keetjs v4.2.3 Alpha release: https://github.com/keetjs/keet
 // Minimalist view layer for the web
 //
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keetjs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -124,7 +124,7 @@ class Keet {
    * @param {...*} value - one or more parameters to publish to subscribers
    */
   inform (...args) {
-    if(this.exec.length) {
+    if (this.exec.length) {
       this.exec.map(fn => fn.apply(null, args))
     }
   }

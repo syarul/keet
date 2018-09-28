@@ -22,12 +22,9 @@ function inspectAttributes (node, addState, model) {
       if (name === 'checked') {
         if (ns === '') {
           node.removeAttribute(name)
-          // node.checked = false
         } else {
-          // node.checked = true
           node.setAttribute(name, '')
         }
-        // node.removeAttribute(name)
       } else {
         if (ns === '') {
           node.setAttribute(name, '')

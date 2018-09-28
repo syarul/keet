@@ -1,1 +1,1 @@
-import './sub-component_with_event'
+import './model'

@@ -3,6 +3,8 @@ import { getId } from '../utils'
 
 class App extends Keet {
   el = 'app'
+  color = 'red'
+  bold = 'bold'
   task = new CreateModel()
 
   componentWillMount () {
@@ -37,7 +39,7 @@ class App extends Keet {
 
     return html`
       <h1>${name}</h1>
-      <ul id="list">
+      <ul id="list" style="color: {{color}}; font-weight: {{bold}};">
         <!-- {{model:task}} -->
         <li>
           {{taskName}}
