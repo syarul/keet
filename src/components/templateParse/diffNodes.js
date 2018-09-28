@@ -4,7 +4,7 @@ const DOCUMENT_ELEMENT_TYPE = 1
 
 function isEqual (oldNode, newNode) {
   return (
-    isPristine(newNode) ||
+    isPristine(oldNode, newNode) ||
     compare(oldNode, newNode) ||
     oldNode.isEqualNode(newNode)
   )
@@ -118,8 +118,10 @@ function diff (oldNode, newNode) {
   }
 }
 
-function isPristine (node) {
-  return node.hasAttribute('pristine-model')
+function isPristine (oldNode, newNode) {
+  // only setup attributes, but ignore all children changes
+  setAttr(oldNode, newNode)
+  return newNode.hasAttribute('pristine-model')
 }
 
 function diffNodes (instance) {

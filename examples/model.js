@@ -25,6 +25,10 @@ class App extends Keet {
     console.assert(getId('list').childNodes.length === 6)
   }
 
+  changeColor(color) {
+    this.color = color
+  }
+
   render () {
     let name = 'myModel'
 
@@ -51,4 +55,10 @@ class App extends Keet {
   }
 }
 
-export default new App()
+const app = new App()
+
+setTimeout(() => {
+  app.changeColor('blue')
+}, 1000)
+
+export default app
