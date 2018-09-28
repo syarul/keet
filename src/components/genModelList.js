@@ -36,7 +36,14 @@ function genModelList (node, model, reconcile) {
   list = cache[model][listArg]
 
   if (this[model] !== undefined && this[model].hasOwnProperty(listArg)) {
+
     parentNode = node.parentNode.nodeType === DOCUMENT_FRAGMENT_TYPE ? getId(this.el) : node.parentNode
+
+    // set model to dirty when parent node no visible
+    // NOTE: parent container need id
+    if(node.parentNode.id && !getId(node.parentNode.id)) {
+      this[model].dirty = true
+    }
 
     modelList = this[model][listArg]
 
