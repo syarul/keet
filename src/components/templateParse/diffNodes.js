@@ -120,7 +120,7 @@ function diff (oldNode, newNode) {
 
 function isPristine (oldNode, newNode) {
   // only setup attributes, but ignore all children changes
-  setAttr(oldNode, newNode)
+  if(oldNode) setAttr(oldNode, newNode)
   return newNode.hasAttribute('pristine-model')
 }
 
@@ -128,7 +128,7 @@ function diffNodes (instance) {
   let base = getId(this.el)
   if (base && !this.IS_STUB) {
     diff(base.firstChild, instance)
-  } else if (base && !isPristine(instance)) {
+  } else if (base && !isPristine(null, instance)) {
     diff(base.firstChild, instance.firstChild)
   }
 }
