@@ -1,5 +1,6 @@
 import conditionalCache from './templateParse/conditionalCache'
 import reconcile from './templateParse/reconcile'
+import commentsDumpster from './templateParse/commentsDumpster'
 import { setState, addState } from './genElement'
 import { getId, assert } from '../../utils'
 
@@ -8,6 +9,7 @@ const DOCUMENT_ELEMENT_TYPE = 1
 export default function (stub) {
   conditionalCache.call(this, addState.bind(this))
   reconcile.call(this, this.base.firstChild, addState.bind(this))
+  commentsDumpster.call(this, this.base.firstChild)
   const el = stub || getId(this.el)
   if (el) {
     if (el.nodeType === DOCUMENT_ELEMENT_TYPE) {

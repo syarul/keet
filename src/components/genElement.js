@@ -1,6 +1,7 @@
 
 import reconcile from './templateParse/reconcile'
 import diffNodes from './templateParse/diffNodes'
+import commentsDumpster from './templateParse/commentsDumpster'
 import strInterpreter from './strInterpreter'
 
 const DELAY = 0
@@ -85,6 +86,7 @@ function addState (state) {
 const genElement = function () {
   this.base = this.__pristineFragment__.cloneNode(true)
   reconcile.call(this, this.base.firstChild, addState.bind(this))
+  commentsDumpster.call(this, this.base.firstChild)
   diffNodes.call(this, this.base.firstChild)
 }
 

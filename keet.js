@@ -1,6 +1,6 @@
 
 //
-// Keetjs v4.2.3 Alpha release: https://github.com/keetjs/keet
+// Keetjs v4.2.4 Alpha release: https://github.com/keetjs/keet
 // Minimalist view layer for the web
 //
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keetjs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

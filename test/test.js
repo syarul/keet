@@ -63,7 +63,7 @@ describe(`keet.js v-${ver} test`, () => {
   it('conditional nodes extra', async () => {
     const app = await require('../examples/conditional-nodes-extra').default
 
-    assert.equal(getId('list').childNodes.length === 4 && getId('list').childNodes[1].innerHTML === ' John - 21 ', true)
+    assert.equal(getId('list').childNodes.length === 2 && getId('list').childNodes[0].innerHTML === ' John - 21 ', true)
 
     const click = new Event('click', { bubbles: true, cancelable: true })
     const toggle = getId('toggle')
@@ -71,7 +71,7 @@ describe(`keet.js v-${ver} test`, () => {
 
     await new Promise(resolve => {
       app.componentDidUpdate = function () {
-        assert.equal(getId('app').innerHTML, '<button id="toggle">toggle</button><div id="1">one</div><!-- {{?show}} --><!-- {{/show}} --><div id="3">three</div>')
+        assert.equal(getId('app').innerHTML, '<button id="toggle">toggle</button><div id="1">one</div><div id="3">three</div>')
         resolve(true)
       }
     })
@@ -150,12 +150,10 @@ describe(`keet.js v-${ver} test`, () => {
       app.componentDidUpdate = function () {
         let list = getId('list').childNodes
         assert.equal(
-          list[0].nodeValue === ' {{model:task}} ' &&
-          list[1].innerHTML === 'sleep<input type="checkbox" checked="">' &&
-          list[2].innerHTML === 'jog<input type="checkbox" checked="">' &&
-          list[3].innerHTML === 'walk<input type="checkbox">' &&
-          list[4].innerHTML === 'swim<input type="checkbox" checked="">' &&
-          list[5].nodeValue === ' {{/model:task}} '
+          list[0].innerHTML === 'sleep<input type="checkbox" checked="">' &&
+          list[1].innerHTML === 'jog<input type="checkbox" checked="">' &&
+          list[2].innerHTML === 'walk<input type="checkbox">' &&
+          list[3].innerHTML === 'swim<input type="checkbox" checked="">'
           , true)
         resolve(true)
       }
@@ -218,11 +216,9 @@ describe(`keet.js v-${ver} test`, () => {
     await require('../examples/svg-model')
     let list = getId('list').childNodes
     assert.equal(
-      list[0].nodeValue === ' {{model:svgModel}} ' &&
-      list[1].innerHTML === '<svg width="100" height="100"><circle cx="50" cy="50" r="5" stroke="red" stroke-width="4" fill="yellow"></circle></svg>' &&
-      list[2].innerHTML === '<svg width="100" height="100"><circle cx="50" cy="50" r="15" stroke="blue" stroke-width="4" fill="yellow"></circle></svg>' &&
-      list[3].innerHTML === '<svg width="100" height="100"><circle cx="50" cy="50" r="25" stroke="green" stroke-width="4" fill="yellow"></circle></svg>' &&
-      list[4].nodeValue === ' {{/model:svgModel}} '
+      list[0].innerHTML === '<svg width="100" height="100"><circle cx="50" cy="50" r="5" stroke="red" stroke-width="4" fill="yellow"></circle></svg>' &&
+      list[1].innerHTML === '<svg width="100" height="100"><circle cx="50" cy="50" r="15" stroke="blue" stroke-width="4" fill="yellow"></circle></svg>' &&
+      list[2].innerHTML === '<svg width="100" height="100"><circle cx="50" cy="50" r="25" stroke="green" stroke-width="4" fill="yellow"></circle></svg>'
       , true)
   })
 

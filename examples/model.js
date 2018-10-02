@@ -22,7 +22,7 @@ class App extends Keet {
   }
 
   componentDidUpdate () {
-    console.assert(getId('list').childNodes.length === 6)
+    console.assert(getId('list').childNodes.length === 4)
   }
 
   changeColor(color) {

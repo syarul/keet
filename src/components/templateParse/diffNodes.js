@@ -1,6 +1,7 @@
 import { getId } from '../../../utils'
 
 const DOCUMENT_ELEMENT_TYPE = 1
+const DOCUMENT_VALUE_TYPE = 3
 
 function isEqual (oldNode, newNode) {
   return (
@@ -64,9 +65,9 @@ function patch (oldNode, newNode) {
     if (oldNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
       arbiter(oldNode, newNode)
       if (isEqual(oldNode, newNode)) return
-      diff(oldNode.firstChild, newNode.firstChild)
       if (oldNode.nodeName === newNode.nodeName) {
         setAttr(oldNode, newNode)
+        diff(oldNode.firstChild, newNode.firstChild, oldNode)
       } else {
         oldNode.parentNode.replaceChild(newNode, oldNode)
       }
@@ -84,38 +85,51 @@ function getIndex (store, count) {
   return store.length - count - 1
 }
 
+function addExtra(count, oldParentNode, newStore) {
+  let index
+  while (count > 0) {
+    count--
+    index = getIndex(newStore, count)
+    oldParentNode.appendChild(newStore[index])
+  }
+}
+
 let checkNew
 let checkOld
 
-function diff (oldNode, newNode) {
+function diff (oldNode, newNode, oldParentNode) {
   let count = 0
   let newStore = []
+
   while (newNode) {
     count++
     checkNew = newNode
     newNode = newNode.nextSibling
     newStore.push(checkNew)
   }
+
   let index
-  let oldParentNode = oldNode && oldNode.parentNode
-  while (oldNode) {
-    count--
-    checkOld = oldNode
-    oldNode = oldNode.nextSibling
-    index = getIndex(newStore, count)
-    if (checkOld && newStore[index]) {
-      patch(checkOld, newStore[index])
-    } else if (checkOld && !newStore[index]) {
-      oldParentNode.removeChild(checkOld)
-    }
-    if (oldNode === null) {
-      while (count > 0) {
-        count--
-        index = getIndex(newStore, count)
-        oldParentNode.appendChild(newStore[index])
+
+  if(!oldNode) {
+    // if oldNode is null process newNode
+    addExtra(count, oldParentNode, newStore)
+  } else {
+    while (oldNode) {
+      count--
+      checkOld = oldNode
+      oldNode = oldNode.nextSibling
+      index = getIndex(newStore, count)
+      if (checkOld && newStore[index]) {
+        patch(checkOld, newStore[index])
+      } else if (checkOld && !newStore[index]) {
+        oldParentNode.removeChild(checkOld)
+      }
+      if (oldNode === null) {
+        addExtra(count, oldParentNode, newStore)
       }
     }
   }
+
 }
 
 function isPristine (oldNode, newNode) {
@@ -127,9 +141,9 @@ function isPristine (oldNode, newNode) {
 function diffNodes (instance) {
   let base = getId(this.el)
   if (base && !this.IS_STUB) {
-    diff(base.firstChild, instance)
+    diff(base.firstChild, instance, base)
   } else if (base && !isPristine(null, instance)) {
-    diff(base.firstChild, instance.firstChild)
+    diff(base.firstChild, instance.firstChild, base)
   }
 }
 
