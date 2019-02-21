@@ -7,9 +7,7 @@ import { getId, assert } from '../../utils'
 const DOCUMENT_ELEMENT_TYPE = 1
 
 export default function (stub) {
-  conditionalCache.call(this, addState.bind(this))
-  reconcile.call(this, this.base.firstChild, addState.bind(this))
-  commentsDumpster.call(this, this.base.firstChild)
+  reconcile.call(this, this.base.firstChild)
   const el = stub || getId(this.el)
   if (el) {
     if (el.nodeType === DOCUMENT_ELEMENT_TYPE) {
@@ -18,8 +16,6 @@ export default function (stub) {
       assert(this.base.childNodes.length === 1, 'Sub-component should only has a single rootNode.')
       !this.base.firstChild.hasAttribute('data-ignore') && this.base.firstChild.setAttribute('data-ignore', '')
     }
-    // listen to state changes
-    setState.call(this)
     // mount fragment to DOM
     if (!stub) {
       el.appendChild(this.base)

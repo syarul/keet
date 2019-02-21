@@ -46,15 +46,15 @@ class Keet {
     }
     this.ID = Keet.indentity
     // mount vtree from render arguments
-    this.autoRender()
+    this.autoRender() // initial rendering which register this as component
   }
 
   // Auto rendered on class constructor instantiation
-  async autoRender () {
+  async autoRender (initial) {
     await this.el
     if (typeof this.render === 'function') {
       const vtree = this.render()
-      this.mount(vtree)
+      this.mount(vtree, true)
       // ensure parsing only done by root component
       // check constructor if it decorated with childLike
       const proto = Object.getPrototypeOf(this)
@@ -71,14 +71,28 @@ class Keet {
   }
 
   /**
+   * Methods to sync data to Vtree DOM
+   * @param {Object} instance - the data for the sync
+   */
+  setData(args){
+    Object.assign(this.data, args)
+    if (typeof this.render === 'function') {
+      const vtree = this.render()
+      this.mount(vtree)
+      updateContext.call(this, morpher, 1)
+    }
+  }
+
+  /**
    * Mount an instance of html/string template
    * @param {Object|string} instance - the html/string template
+   * @param {Boolean} initial - initial or subsequent mounting
    */
-  mount (instance) {
+  mount (instance, initial) {
     if (!this.LOCAL) {
-      if (this.el) {
+      if (this.el && initial) {
         this.storeRef(this.el)
-      } else {
+      } else if(!this.el) {
         assert(false, `Component has no unique identifier.`)
       }
     }

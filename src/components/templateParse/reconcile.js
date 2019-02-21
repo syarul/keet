@@ -43,6 +43,9 @@ function testEventNode (node) {
       if (node.hasChildNodes() && node.firstChild.nodeType !== DOCUMENT_ELEMENT_TYPE && node.firstChild.nodeValue.match(modelRaw)) {
         obs['isModel'] = true
       }
+    } else if(/^onclick/.test(name)) {
+      console.log(value)
+      // a.nodeValue = (function(ev) {console.log(ev);})(event)
     }
     i++
   }
@@ -53,18 +56,17 @@ let events
 let c
 let currentNode
 
-function recon (node, addState, model) {
+function recon (node) {
   while (node) {
     currentNode = node
     node = node.nextSibling
     if (currentNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
       if (currentNode.hasAttributes()) {
-        inspectAttributes.call(this, currentNode, addState, model)
-
         // to take advantage of caching always assigned id to the node
         // we only assign eventListener on first mount to DOM or when the node is not available on DOM
         if (!getId(currentNode.id)) {
           events = testEventNode.call(this, currentNode)
+          console.log(events)
           if (events.length) {
             events.map(e => {
               !e.isModel ? addEvent.call(this, currentNode, e) : addEventModel.call(this, currentNode, e)
@@ -73,17 +75,7 @@ function recon (node, addState, model) {
           }
         }
       }
-      recon.call(this, currentNode.firstChild, addState, model)
-    } else if (currentNode.nodeType === DOCUMENT_COMMENT_TYPE && currentNode.nodeValue.match(conditionalNodesRawStart)) {
-      c = currentNode.nodeValue.trim().match(reConditional)
-      c = c && c[0]
-      if (this[c]) {
-        conditionalNodes.call(this, currentNode, c, 'conditional-set', reconcile, addState)
-      }
-    } else if (currentNode.nodeType === DOCUMENT_COMMENT_TYPE && currentNode.nodeValue.match(re) && !currentNode.nodeValue.match(conditionalNodesRawStart)) {
-      replaceCommentBlock.call(this, currentNode.nodeValue, currentNode, reconcile, model, addState)
-    } else {
-      replaceHandleBars.call(this, currentNode.nodeValue, currentNode, addState, null, model)
+      recon.call(this, currentNode.firstChild)
     }
   }
 }

@@ -66,12 +66,16 @@ const assert = (val, msg) => {
  * include handling ${} in the literals
  */
 const html = (...args) => {
+  // console.log(args)
   const literals = args.shift()
+  // console.log(literals.raw)
   const substs = args.slice()
-
+  // console.log(substs)
   let result = literals.raw.reduce((acc, lit, i) => acc + substs[i - 1] + lit)
   // remove spacing, indentation from every line
+  // console.log(result)
   result = result.split(/\n+/)
+  // console.log(result)
   result = result.map(t => t.trim()).join('')
   return result
 }
