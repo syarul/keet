@@ -7,9 +7,10 @@ function parseEvent (base) {
     eventList = base.match(eventRe)
     console.log(eventList)
     if (eventList && eventList.length) {
-      // eventList.map(ls => {
-      
-      // })
+      eventList.map(ls => {
+        base.replace(ls, 'onclick="(function(ev){console.log(ev);})(event)"')
+        console.log(base)
+      })
     }
   }
   return base
