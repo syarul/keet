@@ -1,5 +1,4 @@
 import svgHandler from './svgHandler'
-import eventHandler from './eventHandler'
 import { assert } from '../../utils'
 import mountToFragment from './mountToFragment'
 
@@ -26,10 +25,6 @@ export default function (instance) {
 
     // parse svg elements
     base = svgHandler.call(this, base)
-
-
-    // parse event handlers
-    base = eventHandler.call(this, base)
 
     mountToFragment(frag, base)
 

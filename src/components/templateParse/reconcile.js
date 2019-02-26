@@ -21,35 +21,30 @@ function testEventNode (node) {
   let name
   let value
   let evtName
-  let handler
-  let evtStore = []
-  let obs
-  let args
 
   while (i < nodeAttributes.length) {
     a = nodeAttributes[i]
     name = a.localName
     value = a.nodeValue
-    if (/^k-/.test(name)) {
-      evtName = name.replace(/^k-/, '')
-      handler = value.match(/[a-zA-Z]+(?![^(]*\))/)[0]
-      args = value.match(/\(([^{}]+)\)/)
-      args = args ? args[1] : ''
-      obs = {}
-      obs[evtName] = handler
-      if (args) obs[args] = true
-      obs['isModel'] = false
-      evtStore.push(obs)
-      if (node.hasChildNodes() && node.firstChild.nodeType !== DOCUMENT_ELEMENT_TYPE && node.firstChild.nodeValue.match(modelRaw)) {
-        obs['isModel'] = true
+    if (/^on/.test(name)) {
+      evtName = name.replace(/^on/, '')
+      node.removeAttribute(a.name)
+      let tempFn
+      // use eval to reassign function strings
+      // additionally bound the context to the component context instead of the DOM itself
+      try {
+        eval(`tempFn = ${value}`)
+      } catch(e){
+        // on failed silently skip
+        tempFn = function (){}
       }
-    } else if(/^onclick/.test(name)) {
       console.log(value)
-      // a.nodeValue = (function(ev) {console.log(ev);})(event)
+      // deal with es2015 transpiling context
+      window._this2 = this || null
+      node.addEventListener(evtName, tempFn.bind(this), false)
     }
     i++
   }
-  return evtStore
 }
 
 let events
@@ -66,13 +61,6 @@ function recon (node) {
         // we only assign eventListener on first mount to DOM or when the node is not available on DOM
         if (!getId(currentNode.id)) {
           events = testEventNode.call(this, currentNode)
-          console.log(events)
-          if (events.length) {
-            events.map(e => {
-              !e.isModel ? addEvent.call(this, currentNode, e) : addEventModel.call(this, currentNode, e)
-              currentNode.removeAttribute(`k-${Object.keys(e)[0]}`)
-            })
-          }
         }
       }
       recon.call(this, currentNode.firstChild)

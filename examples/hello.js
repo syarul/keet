@@ -1,8 +1,6 @@
 import Keet from '../'
 import { getId, html } from '../utils'
 
-let aff = 'foo'
-
 class App extends Keet {
   el = 'app'
   data = {
@@ -19,18 +17,14 @@ class App extends Keet {
     // console.assert(getId('app').innerHTML === 'Hello World', 'hello test')
   }
 
-  pop(){
-  	console.log(1)
+  pop(...args){
+  	console.log(args)
   }
-  //console.log(event, ${this.pop}, this)
   ref(){
-  	let clr = 'red'
-  	// return html`
-  	//   <span id="test" style="color:${clr}" k-click="pop()" >me too!!</span>
-  	// `
-  	// (function(ev) {console.log(ev);})(event)
+  	let clr = 'red' 
+
   	return html`
-  	  <span id="test" style="color:${clr}" onclick="ev => console.log(ev)" >me too!!</span>
+  	  <span id="test" style="color:${clr}" onclick="${ev => this.pop(ev, this.data.greeting)}">me too!!</span>
   	`
   }
 
@@ -41,10 +35,3 @@ class App extends Keet {
 }
 
 const app = new App()
-
-
-// setTimeout(() => {
-//   app.update()
-// }, 2000)
-
-// export default new App()

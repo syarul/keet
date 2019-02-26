@@ -65,7 +65,8 @@ const assert = (val, msg) => {
  * keep all spacing within html tags
  * include handling ${} in the literals
  */
-const html = (...args) => {
+const html = function(...args) {
+  // console.log(this)
   // console.log(args)
   const literals = args.shift()
   // console.log(literals.raw)

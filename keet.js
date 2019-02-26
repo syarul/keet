@@ -45,23 +45,23 @@ class Keet {
       this.LOCAL = true
     }
     this.ID = Keet.indentity
-    // mount vtree from render arguments
-    this.autoRender() // initial rendering which register this as component
+    // mount template from render arguments
+    this.autoRender() // initial rendering which register this as a component
   }
 
   // Auto rendered on class constructor instantiation
   async autoRender (initial) {
     await this.el
     if (typeof this.render === 'function') {
-      const vtree = this.render()
-      this.mount(vtree, true)
+      const template = this.render()
+      this.mount(template, true)
       // ensure parsing only done by root component
       // check constructor if it decorated with childLike
       const proto = Object.getPrototypeOf(this)
       if (this.IS_STUB || (proto && proto.constructor.IS_STUB)) {
         return
       }
-      this.cycleVirtualDomTree()
+      this.updateDOMElement()
     }
   }
 
@@ -71,14 +71,14 @@ class Keet {
   }
 
   /**
-   * Methods to sync data to Vtree DOM
-   * @param {Object} instance - the data for the sync
+   * Methods to update data to the virtual DOM template
+   * @param {Object} instance - the data to update
    */
   setData(args){
     Object.assign(this.data, args)
     if (typeof this.render === 'function') {
-      const vtree = this.render()
-      this.mount(vtree)
+      const template = this.render()
+      this.mount(template)
       updateContext.call(this, morpher, 1)
     }
   }
@@ -103,7 +103,7 @@ class Keet {
    * Parse this component to the DOM
    * @param {Boolean} stub - set as true if this a child component
    */
-  cycleVirtualDomTree (stub) {
+  updateDOMElement (stub) {
     // life-cycle method before rendering the component
     if (this.componentWillMount && typeof this.componentWillMount === 'function') {
       this.componentWillMount()

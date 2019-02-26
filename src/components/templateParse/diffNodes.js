@@ -45,8 +45,8 @@ function setAttr (oldNode, newNode) {
     if (oldNode.attributes[attr] && oldNode.attributes[attr].name === attr && oldNode.attributes[attr].value !== output[attr]) {
       oldNode.setAttribute(attr, output[attr])
     } else {
-      // add new attributes as long is not part of k-<eventListener>
-      if (!oldNode.hasAttribute(attr) && !/^k-/.test(attr)) {
+      // add new attributes
+      if (!oldNode.hasAttribute(attr)) {
         oldNode.setAttribute(attr, output[attr])
       }
     }
