@@ -6,6 +6,9 @@ import conditionalNodes from '../conditionalNodes'
 import { getId } from '../../../utils'
 import { addEvent, addEventModel } from './addEvent'
 
+
+import mountToFragment from '../../base/mountToFragment'
+
 const conditionalNodesRawStart = /\{\{\?([^{}]+)\}\}/g
 const reConditional = /([^{?])(.*?)(?=\}\})/g
 const re = /{{([^{}]+)}}/g
@@ -71,6 +74,17 @@ function removeEventNode (node) {
   this.__refEvents__ = []
 }
 
+function processComponent (node) {
+  let ref = node.nodeName
+  console.log(this.__refCo__[ref])
+  let child = this.__refCo__[ref]
+  if(child){
+    let co = child.exp
+    co.updateDOMElement(true)
+    node.parentNode.replaceChild(co.base, node)
+  }
+}
+
 let currentNode
 
 function recon (node) {
@@ -78,7 +92,10 @@ function recon (node) {
     currentNode = node
     node = node.nextSibling
     if (currentNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
-      if (currentNode.hasAttributes()) {
+      if(currentNode.nodeName.match(/^CO-/)){
+        processComponent.call(this, currentNode)
+      }
+      if (currentNode.hasAttributes && currentNode.hasAttributes()) {
         // to take advantage of caching always assigned id to the node
         // we only assign eventListener on first mount to DOM or when the node is not available on DOM
         if (!getId(currentNode.id)) {

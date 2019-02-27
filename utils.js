@@ -65,22 +65,35 @@ const assert = (val, msg) => {
 const storeInlineEvt = function(expressions, literalsRaw) {
   literalsRaw.map((l, index) => {
     if(l.match(/\s+on/) && typeof expressions[index] === 'function'){
-      // console.log(l, expressions[index])
-      // let a = this.__refEvents__.map(ref => {
-      //   const proto = ref.expression.prototype // Object.getPrototypeOf(ref.expression)
-      //   console.log(proto)
-
-      //   return ref
-      // })//.indexOf(expressions)
-      // console.log(a)
-      let id = minId()
-      // expressions[index].name = id
+      let id = `evt-${minId()}`
       this.__refEvents__.push({
         id: id,
         expression: expressions[index]
       })
       expressions[index] = id
     }
+  })
+}
+
+/**
+ * @private
+ * @description
+ * Store component expression and assign reference 
+ *
+ * @param {Object} expressions - array of expressions
+ * @param {Object} literalsRaw - raw data array of literals
+ */
+const storeComponentRef = function(args, literalsRaw) {
+  console.log(args, literalsRaw)
+  return args.map(exp => {
+    if(typeof exp === 'object' && exp.constructor && exp.constructor.prototype){
+      if(typeof Object.getPrototypeOf(exp).constructor.prototype.autoRender !== 'function') 
+        return exp
+      let id = `co-${minId()}`
+      this.__refCo__[id.toUpperCase()] = { exp }
+      return id
+    }
+    return exp
   })
 }
 
@@ -99,6 +112,7 @@ const html = function(...args) {
   const literals = args.shift()
   if(this !== undefined){
     storeInlineEvt.call(this, args, literals.raw)
+    args = storeComponentRef.call(this, args, literals.raw)
   }
   const substs = args.slice()
   let result = literals.raw.reduce((acc, lit, i) => acc + substs[i - 1] + lit)

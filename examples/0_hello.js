@@ -16,13 +16,10 @@ class App extends Keet {
     })
   }
   button(){
-  	let clr = 'red' 
     let data = 'Keet'
-
     let html2 = html.bind(this)
-
   	return html2`
-  	  <button id="test" style="color:${clr}" onclick="${ev => this.pop(data)}">change</button>
+  	  <button onclick="${ev => this.pop(data)}">change</button>
   	`
   }
 

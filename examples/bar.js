@@ -5,22 +5,26 @@ import { getId, html } from '../utils'
 class App extends Keet {
   el = 'bar'
   data = {
-  	nameit: 'bar'
+  	name: 'bar'
   }
   componentDidUpdate(){
     console.log(this)
   }
-  change(){
+  change2(){
     console.log(this)
     this.setData({
-      nameit: 'dos'
+      name: this.data.name === 'dos' ? 'bar' : 'dos' 
     })
   }
+  getContext(){
+    return this
+  }
   render (props) {
-    props = props || {data: {}}
-    return html`
-      <div id='bar' onclick="${this.change}">
-        <h4>${this.data.nameit} ${props.data.name}</h4>
+    this.props = this.props || {}
+    let html2 = html.bind(this)
+    return html2`
+      <div id='bar' onclick="${this.change2}">
+        <h4>${this.data.name} ${this.props.name}</h4>
       </div>
     `
   }
