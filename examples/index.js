@@ -1,1 +1,1 @@
-import './hello2'
+import './2_component'

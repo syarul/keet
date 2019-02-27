@@ -66,8 +66,12 @@ function patch (oldNode, newNode) {
       arbiter(oldNode, newNode)
       if (isEqual(oldNode, newNode)) return
       if (oldNode.nodeName === newNode.nodeName) {
-        setAttr(oldNode, newNode)
-        diff(oldNode.firstChild, newNode.firstChild, oldNode)
+        if(oldNode.hasAttribute('key') && newNode.hasAttribute('key')){
+          oldNode.parentNode.replaceChild(newNode, oldNode)
+        } else {
+          setAttr(oldNode, newNode)
+          diff(oldNode.firstChild, newNode.firstChild, oldNode)
+        }
       } else {
         oldNode.parentNode.replaceChild(newNode, oldNode)
       }

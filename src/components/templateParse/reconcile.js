@@ -21,6 +21,8 @@ function testEventNode (node) {
   let name
   let value
   let evtName
+  let idx
+  let tempFn
 
   while (i < nodeAttributes.length) {
     a = nodeAttributes[i]
@@ -29,26 +31,46 @@ function testEventNode (node) {
     if (/^on/.test(name)) {
       evtName = name.replace(/^on/, '')
       node.removeAttribute(a.name)
-      let tempFn
-      // use eval to reassign function strings
-      // additionally bound the context to the component context instead of the DOM itself
-      try {
-        eval(`tempFn = ${value}`)
-      } catch(e){
-        // on failed silently skip
-        tempFn = function (){}
+      idx = this.__refEvents__.map(r => r.id).indexOf(value)
+      if(~idx){
+        tempFn = this.__refEvents__[idx].expression
+        this.__refEvents__.splice(idx, 1)
+      } else {
+        // dirty method *** NOT RECOMMENDED ***
+        // use eval to reassign function strings
+        try {
+          eval(`tempFn = ${value}`)
+        } catch(e){
+          // on failed silently skip
+          tempFn = function (){}
+        }
+        // deal with es2015 transpiling context
+        window._this2 = this || null
       }
-      console.log(value)
-      // deal with es2015 transpiling context
-      window._this2 = this || null
+      // additionally bound to the component context instead of the Element itself
       node.addEventListener(evtName, tempFn.bind(this), false)
     }
     i++
   }
 }
 
-let events
-let c
+function removeEventNode (node) {
+  let nodeAttributes = node.attributes
+  let i = 0
+  let a
+  let name
+
+  while (i < nodeAttributes.length) {
+    a = nodeAttributes[i]
+    name = a.localName
+    if (/^on/.test(name)) {
+      node.removeAttribute(a.name)
+    }
+    i++
+  }
+  this.__refEvents__ = []
+}
+
 let currentNode
 
 function recon (node) {
@@ -60,7 +82,9 @@ function recon (node) {
         // to take advantage of caching always assigned id to the node
         // we only assign eventListener on first mount to DOM or when the node is not available on DOM
         if (!getId(currentNode.id)) {
-          events = testEventNode.call(this, currentNode)
+          testEventNode.call(this, currentNode)
+        } else {
+          removeEventNode.call(this, currentNode)
         }
       }
       recon.call(this, currentNode.firstChild)
@@ -68,7 +92,6 @@ function recon (node) {
   }
 }
 
-// instance, addState, model
 function reconcile () {
   recon.apply(this, arguments)
 }

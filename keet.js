@@ -44,6 +44,7 @@ class Keet {
     if (localize) {
       this.LOCAL = true
     }
+    this.__refEvents__ = []
     this.ID = Keet.indentity
     // mount template from render arguments
     this.autoRender() // initial rendering which register this as a component

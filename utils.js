@@ -57,26 +57,53 @@ const assert = (val, msg) => {
 /**
  * @private
  * @description
+ * Store expression and assign reference 
+ *
+ * @param {Object} expressions - array of expressions
+ * @param {Object} literalsRaw - raw data array of literals
+ */
+const storeInlineEvt = function(expressions, literalsRaw) {
+  literalsRaw.map((l, index) => {
+    if(l.match(/\s+on/) && typeof expressions[index] === 'function'){
+      // console.log(l, expressions[index])
+      // let a = this.__refEvents__.map(ref => {
+      //   const proto = ref.expression.prototype // Object.getPrototypeOf(ref.expression)
+      //   console.log(proto)
+
+      //   return ref
+      // })//.indexOf(expressions)
+      // console.log(a)
+      let id = minId()
+      // expressions[index].name = id
+      this.__refEvents__.push({
+        id: id,
+        expression: expressions[index]
+      })
+      expressions[index] = id
+    }
+  })
+}
+
+/**
+ * @private
+ * @description
  * Simple html template literals MODIFIED from : http://2ality.com/2015/01/template-strings-html.html
  * by Dr. Axel Rauschmayer
  * no checking for wrapping in root element
  * no strict checking
  * remove spacing / indentation
  * keep all spacing within html tags
- * include handling ${} in the literals
+ * store inline eventListener if context available
  */
 const html = function(...args) {
-  // console.log(this)
-  // console.log(args)
   const literals = args.shift()
-  // console.log(literals.raw)
+  if(this !== undefined){
+    storeInlineEvt.call(this, args, literals.raw)
+  }
   const substs = args.slice()
-  // console.log(substs)
   let result = literals.raw.reduce((acc, lit, i) => acc + substs[i - 1] + lit)
   // remove spacing, indentation from every line
-  // console.log(result)
   result = result.split(/\n+/)
-  // console.log(result)
   result = result.map(t => t.trim()).join('')
   return result
 }

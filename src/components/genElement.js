@@ -23,7 +23,7 @@ const updateContext = function (fn, delay) {
 }
 
 const genElement = function () {
-  // reconcile.call(this, this.base.firstChild, addState.bind(this))
+  reconcile.call(this, this.base.firstChild)
   diffNodes.call(this, this.base.firstChild)
 }
 
