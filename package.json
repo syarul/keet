@@ -102,7 +102,7 @@
       "transform-class-properties",
       "transform-object-rest-spread",
       "transform-decorators-legacy",
-      "transform-jsx"
+      ["transform-jsx", {"useVariables": true}]
     ]
   },
   "standard": {

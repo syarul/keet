@@ -1,5 +1,5 @@
 import Keet from '../'
-import Artifact from './artifact'
+import Artifact from './artifact2'
 
 class App extends Keet {
   el = 'app'
@@ -8,7 +8,7 @@ class App extends Keet {
   }
   change(){
     this.setData({
-      name: 'ber'
+      name: 'bar'
     })
   }
   render () {
@@ -18,7 +18,7 @@ class App extends Keet {
     }
     return (
       <div>
-        <h4>{this.data.name}</h4>
+        <h4 {...d} >{this.data.name}</h4>
         <Artifact {...d} />
       </div>
     )

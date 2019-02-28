@@ -1,5 +1,4 @@
 import Keet from '../'
-import { getId, html } from '../utils'
 
 class App extends Keet {
   el = 'app'
@@ -12,29 +11,29 @@ class App extends Keet {
     })
   }
   person(name, index){
-    // bind html context (RECOMMENDED)
-    // ensure expression reassignment works properly
-    // add attributes 'key' to element for indexing
-    let html2 = html.bind(this)
-  	return html2`
-  	  <li key="${index}">
-        ${name}
-        <span style="cursor:pointer;" onclick="${ev => this.pop(ev, name)}">
+    // add attributes 'key' to element when dealing with nodeList length [OPTIONAL]
+  	return (
+  	  <li key={index}>
+        {name}
+        <span style="cursor:pointer;" onclick={ev => this.pop(ev, name)}>
           [x]
         </span>
-      </li>`
+      </li>
+    )
   }
   renderList(){
-    return this.data.names.map(this.person.bind(this)).join('')
+    return this.data.names.map(this.person.bind(this))
   }
   render () {
-    return html`
-      <h4>People</h4>
-      <ul>
-        ${this.renderList()}
-      </ul>
-    `
+    return (
+      <div>
+        <h4>People</h4>
+        <ul>
+          {this.renderList()}
+        </ul>
+      </div>
+    )
   }
 }
 
-window.app = new App()
+const app = new App()

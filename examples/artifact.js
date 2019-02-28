@@ -1,3 +1,3 @@
 export default function artifact(props){
-	return `props: ${props}`
+  return <artifact class="Hello">props: {JSON.stringify(props)}</artifact>
 }

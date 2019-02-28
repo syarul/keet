@@ -38,16 +38,28 @@ import uuid from 'uuid/v4'
  * The main constructor of Keet
  */
 class Keet {
-  constructor () {
-    this.__refCo__ = {}
-    // generate ID for the component
-    this.ID = uuid()
+  constructor (props) {
+
+    this.props = props || {}
+
+    this.__ref__ = {
+      // generate ID for the component
+      ID: uuid(),
+      // pubsub callback storage
+      exec: []
+    }
+
+    Object.defineProperty(this, '__ref__', {
+      enumerable: false,
+      configurable: true
+    })
+    
     // initial rendering which register this as a component
     this.autoRender()
   }
 
   // Auto rendered on class constructor instantiation
-  async autoRender (initial) {
+  async autoRender () {
     await this.el
     if (typeof this.render === 'function') {
       const template = this.render()
@@ -78,13 +90,9 @@ class Keet {
   /**
    * Mount an instance of html/string template
    * @param {Object|string} instance - the html/string template
-   * @param {Boolean} initial - initial or subsequent mounting
    */
-  mount (instance, initial) {
-    if (!this.el) {
-      assert(false, `Component has no unique identifier.`)
-    }
-    return mount.call(this, instance)
+  mount () {
+    return mount.apply(this, arguments)
   }
 
   /**
@@ -117,8 +125,7 @@ class Keet {
    * @param {Function} fn - the callback function for the subscribe
    */
   subscribe (fn) {
-    this.exec = this.exec || []
-    this.exec = this.exec.concat(fn)
+    this.__ref__.exec = this.__ref__.exec.concat(fn)
   }
   /**
    * Another component can subscribe to changes on this component.
@@ -126,8 +133,8 @@ class Keet {
    * @param {...*} value - one or more parameters to publish to subscribers
    */
   inform (...args) {
-    if (this.exec.length) {
-      this.exec.map(fn => fn.apply(null, args))
+    if (this.__ref__.exec.length) {
+      this.__ref__.exec.map(fn => fn.apply(null, args))
     }
   }
 }
