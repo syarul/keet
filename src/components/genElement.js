@@ -1,8 +1,5 @@
-
 import reconcile from './templateParse/reconcile'
 import diffNodes from './templateParse/diffNodes'
-import commentsDumpster from './templateParse/commentsDumpster'
-import strInterpreter from './strInterpreter'
 
 const DELAY = 0
 
@@ -23,7 +20,7 @@ const updateContext = function (fn, delay) {
 }
 
 const genElement = function () {
-  reconcile.call(this, this.base.firstChild)
+  // reconcile.call(this, this.base.firstChild)
   diffNodes.call(this, this.base.firstChild)
 }
 

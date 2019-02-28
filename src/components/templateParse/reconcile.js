@@ -1,18 +1,4 @@
-import replaceCommentBlock from './replaceCommentBlock'
-import inspectAttributes from './inspectAttributes'
-import replaceHandleBars from './replaceHandleBars'
-import conditionalNodes from '../conditionalNodes'
-
 import { getId } from '../../../utils'
-import { addEvent, addEventModel } from './addEvent'
-
-
-import mountToFragment from '../../base/mountToFragment'
-
-const conditionalNodesRawStart = /\{\{\?([^{}]+)\}\}/g
-const reConditional = /([^{?])(.*?)(?=\}\})/g
-const re = /{{([^{}]+)}}/g
-const modelRaw = /\{\{model:([^{}]+)\}\}/g
 
 const DOCUMENT_ELEMENT_TYPE = 1
 const DOCUMENT_COMMENT_TYPE = 8
@@ -36,7 +22,7 @@ function testEventNode (node) {
       node.removeAttribute(a.name)
       idx = this.__refEvents__.map(r => r.id).indexOf(value)
       if(~idx){
-        tempFn = this.__refEvents__[idx].expression
+        tempFn = this.__refEvents__[idx].expr
         this.__refEvents__.splice(idx, 1)
       } else {
         // dirty method *** NOT RECOMMENDED ***
@@ -92,16 +78,16 @@ function recon (node) {
     currentNode = node
     node = node.nextSibling
     if (currentNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
-      if(currentNode.nodeName.match(/^CO-/)){
-        processComponent.call(this, currentNode)
-      }
+      // if(currentNode.nodeName.match(/^CO-/)){
+      //   processComponent.call(this, currentNode)
+      // }
       if (currentNode.hasAttributes && currentNode.hasAttributes()) {
         // to take advantage of caching always assigned id to the node
         // we only assign eventListener on first mount to DOM or when the node is not available on DOM
         if (!getId(currentNode.id)) {
-          testEventNode.call(this, currentNode)
+          // testEventNode.call(this, currentNode)
         } else {
-          removeEventNode.call(this, currentNode)
+          // removeEventNode.call(this, currentNode)
         }
       }
       recon.call(this, currentNode.firstChild)

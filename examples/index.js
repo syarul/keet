@@ -1,1 +1,1 @@
-import './test'
+import './0_hello_jsx'

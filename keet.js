@@ -31,19 +31,19 @@
 import parseStr from './src/components/parseStr'
 import { updateContext, morpher } from './src/components/genElement'
 import { genId, assert, html, childLike } from './utils'
-import mount from './src/base/mount'
+import mount from './src/base/mountJSX'
+import uuid from 'uuid/v4'
 
 /**
  * The main constructor of Keet
- * instead using global referance
  */
 class Keet {
   constructor () {
-    this.__refEvents__ = []
     this.__refCo__ = {}
-    this.ID = Keet.indentity
-    // mount template from render arguments
-    this.autoRender() // initial rendering which register this as a component
+    // generate ID for the component
+    this.ID = uuid()
+    // initial rendering which register this as a component
+    this.autoRender()
   }
 
   // Auto rendered on class constructor instantiation
@@ -60,11 +60,6 @@ class Keet {
       }
       this.updateDOMElement()
     }
-  }
-
-  // generate ID for the component
-  static get indentity () {
-    return genId()
   }
 
   /**
@@ -111,7 +106,7 @@ class Keet {
   /**
    * Recheck all states if anything changed, diffing will occurs.
    * this method is ***asynchronous*** and ***trottled***, you can call it from a loop and
-   * only trigger diffing when the loop end
+   * only triggered on at the of the loop
    */
   callBatchPoolUpdate () {
     updateContext.call(this, morpher, 1)

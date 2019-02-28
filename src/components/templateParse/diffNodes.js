@@ -1,7 +1,6 @@
 import { getId } from '../../../utils'
 
 const DOCUMENT_ELEMENT_TYPE = 1
-const DOCUMENT_VALUE_TYPE = 3
 
 function isEqual (oldNode, newNode) {
   return (

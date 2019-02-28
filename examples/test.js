@@ -1,4 +1,4 @@
-/** @jsx toVDOM */
+let l = 'aw'
 
 const hello = (
   <h1 id="attr">
@@ -18,11 +18,14 @@ function toVDOM(node, attributes, ...rest) {
 };
 
 function render(virtualNode) {
+  // console.log(virtualNode)
   if (typeof virtualNode === 'string') {
     return document.createTextNode(virtualNode);
   }
   
-  const element = document.createElement(virtualNode.node);
+  const element = document.createElement(virtualNode.elementName);
+
+  // console.log(element)
   
   Object.keys(virtualNode.attributes || {}).forEach(
     (attr) => element.setAttribute(attr, virtualNode.attributes[attr])

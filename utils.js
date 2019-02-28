@@ -1,8 +1,3 @@
-const genId = () => {
-  const rd = () => (Math.random() * 1 * 1e17).toString(36)
-  return `KDATA-${rd()}-${rd()}`
-}
-
 const minId = () => (Math.random() * 1 * 1e17).toString(36)
 
 const getId = id => document.getElementById(id)
@@ -77,7 +72,7 @@ const storeComponentRef = function(args, literalsRaw) {
 const html = function(...args) {
   const literals = args.shift()
   // console.log(args, literals)
-  console.log(Object.getPrototypeOf(this)[])
+  // console.log(Object.getPrototypeOf(this))
   if(this !== undefined){
     storeInlineEvt.call(this, args, literals.raw)
     args = storeComponentRef.call(this, args, literals.raw)
@@ -104,7 +99,6 @@ const childLike = function () {
 export {
   html,
   assert,
-  genId,
   getId,
   minId,
   childLike
