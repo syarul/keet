@@ -1,11 +1,11 @@
 
 //
-// Keetjs v4.2.4 Alpha release: https://github.com/keetjs/keet
+// Keetjs v5.0.0-meta https://github.com/keetjs/keet
 // Minimalist view layer for the web
 //
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Keetjs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 //
-// Copyright 2018, Shahrul Nizam Selamat
+// Copyright 2019, Shahrul Nizam Selamat
 // Released under the MIT License.
 //
 
@@ -31,19 +31,14 @@
 import parseStr from './src/components/parseStr'
 import { updateContext, morpher } from './src/components/genElement'
 import { genId, assert, html, childLike } from './utils'
-import CreateModel from './src/base/createModel'
 import mount from './src/base/mount'
 
 /**
  * The main constructor of Keet
- * @param {Boolean} localize - Use local inhertance for sub-components
  * instead using global referance
  */
 class Keet {
-  constructor (localize) {
-    if (localize) {
-      this.LOCAL = true
-    }
+  constructor () {
     this.__refEvents__ = []
     this.__refCo__ = {}
     this.ID = Keet.indentity
@@ -76,7 +71,7 @@ class Keet {
    * Methods to update data to the virtual DOM template
    * @param {Object} instance - the data to update
    */
-  setData(args){
+  setData (args) {
     Object.assign(this.data, args)
     if (typeof this.render === 'function') {
       const template = this.render()
@@ -91,12 +86,8 @@ class Keet {
    * @param {Boolean} initial - initial or subsequent mounting
    */
   mount (instance, initial) {
-    if (!this.LOCAL) {
-      if (this.el && initial) {
-        this.storeRef(this.el)
-      } else if(!this.el) {
-        assert(false, `Component has no unique identifier.`)
-      }
+    if (!this.el) {
+      assert(false, `Component has no unique identifier.`)
     }
     return mount.call(this, instance)
   }
@@ -144,30 +135,10 @@ class Keet {
       this.exec.map(fn => fn.apply(null, args))
     }
   }
-
-  /**
-   * Store referance in the global space, with this the parent component do need
-   * to store/assign it as a property while still be able to look for the sub-component
-   * to initialize it
-   * @param {string} name - Identifier for the component, should be unique to avoid conflict
-   */
-  storeRef (name) {
-    window.__keetGlobalComponentRef__ = window.__keetGlobalComponentRef__ || []
-    let isExist = window.__keetGlobalComponentRef__.map(c => c.identifier).indexOf(name)
-    if (~isExist) {
-      assert(false, `The component name: ${name} already exist in the global pool.`)
-    } else {
-      window.__keetGlobalComponentRef__ = window.__keetGlobalComponentRef__.concat({
-        identifier: name,
-        component: this
-      })
-    }
-  }
 }
 
 export {
   Keet as default,
   html,
-  CreateModel,
   childLike
 }

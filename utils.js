@@ -10,40 +10,6 @@ const getId = id => document.getElementById(id)
 /**
  * @private
  * @description
- * Check a node availability in 100ms, if not found silenty skip the event
- * or execute a callback
- *
- * @param {string} id - the node id
- * @param {function} callback - the function to execute on success
- * @param {function} notFound - the function to execute on failed
- */
-const checkNodeAvailability = (component, componentName, callback, notFound) => {
-  let ele = getId(component.el)
-  let found = false
-  let t
-  function find () {
-    ele = getId(component.el)
-    if (ele) {
-      clearInterval(t)
-      found = true
-      callback(component, componentName, ele)
-    }
-  }
-  function fail () {
-    clearInterval(t)
-    if (!found && notFound && typeof notFound === 'function') notFound()
-  }
-  if (ele) return ele
-  else {
-    t = setInterval(find, 0)
-    // ignore finding the node after sometimes
-    setTimeout(fail, 5)
-  }
-}
-
-/**
- * @private
- * @description
  * Confirm that a value is truthy, throws an error message otherwise.
  *
  * @param {*} val - the val to test.
@@ -84,7 +50,7 @@ const storeInlineEvt = function(expressions, literalsRaw) {
  * @param {Object} literalsRaw - raw data array of literals
  */
 const storeComponentRef = function(args, literalsRaw) {
-  console.log(args, literalsRaw)
+  // console.log(args, literalsRaw)
   return args.map(exp => {
     if(typeof exp === 'object' && exp.constructor && exp.constructor.prototype){
       if(typeof Object.getPrototypeOf(exp).constructor.prototype.autoRender !== 'function') 
@@ -110,6 +76,8 @@ const storeComponentRef = function(args, literalsRaw) {
  */
 const html = function(...args) {
   const literals = args.shift()
+  // console.log(args, literals)
+  console.log(Object.getPrototypeOf(this)[])
   if(this !== undefined){
     storeInlineEvt.call(this, args, literals.raw)
     args = storeComponentRef.call(this, args, literals.raw)
@@ -136,7 +104,6 @@ const childLike = function () {
 export {
   html,
   assert,
-  checkNodeAvailability,
   genId,
   getId,
   minId,

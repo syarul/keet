@@ -1,1 +1,1 @@
-import './2_component'
+import './test'
