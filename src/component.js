@@ -61,7 +61,7 @@ export default class Keet {
   /**
    * Another component can subscribe to changes on this component.
    * This is the unsubscribe method
-   * @param {String} register - the register string identifier
+   * @param {Integer} register - the register index identifier
    */
   unsubscribe (register) {
     this.__ref__.exec.splice(register, 1, function () {})

@@ -56,7 +56,7 @@ function render (virtualNode) {
       // wait for component virtualNode to render
       if (typeof component.subscribe === 'function') {
         component.subscribe(res => {
-          if (res === '__render__') element.appendChild(component.base)
+          if (res === '__render__') element.appendChild(component.vnode)
         })
       } else {
         element.appendChild(render.call(this, component))
@@ -75,8 +75,7 @@ function render (virtualNode) {
 }
 
 async function mountJSX () {
-  this.base = render.apply(this, arguments)
-
+  this.vnode = render.apply(this, arguments)
   this.inform('__render__')
 }
 

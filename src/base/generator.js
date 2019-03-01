@@ -17,7 +17,6 @@ const batch = function (fn, delay) {
   timer[i] = setTimeout(fn.bind(this), delay)
 }
 
-export {
-  batch,
-  morpher
+export default function () {
+  batch.call(this, morpher, 1)
 }

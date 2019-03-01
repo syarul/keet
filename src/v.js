@@ -7,7 +7,7 @@ function VtreeRenderer () {
     app.el = node.id
 
     const reg = app.subscribe(res => {
-      node.appendChild(app.base)
+      node.appendChild(app.vnode)
       app.unsubscribe(reg)
     })
   }

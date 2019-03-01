@@ -1,9 +1,9 @@
-import { isFunction, delay } from 'lodash'
+import { isFunction } from 'lodash'
 import mount from '../parser/mountJSX'
 
-function _resolve (t) {
+function _resolve (renderer) {
   return new Promise(resolve =>
-    delay(resolve.bind(null, t), 0)
+    isFunction(renderer) && resolve(true)
   )
 }
 
@@ -11,11 +11,10 @@ function _resolve (t) {
 export default async function () {
   isFunction(this.componentWillMount) && this.componentWillMount()
 
-  await _resolve({})
+  await _resolve(this.render)
 
-  let tmpl = this.render
-  isFunction(tmpl) && mount.call(
+  mount.call(
     this,
-    tmpl.call(this)
+    this.render.call(this)
   )
 }

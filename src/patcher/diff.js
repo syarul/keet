@@ -141,14 +141,12 @@ function isPristine (oldNode, newNode) {
 }
 
 function diffNodes () {
-  const instance = this.base
+  let node = getId(this.el)
 
-  let base = getId(this.el)
-
-  if (base && !this.IS_STUB) {
-    diff(base.firstChild, instance, base)
-  } else if (base && !isPristine(null, instance)) {
-    diff(base.firstChild, instance.firstChild, base)
+  if (node && !this.IS_STUB) {
+    diff(node.firstChild, this.vnode, node)
+  } else if (node && !isPristine(null, this.vnode)) {
+    diff(node.firstChild, this.vnode.firstChild, node)
   }
 }
 
