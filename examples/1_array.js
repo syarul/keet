@@ -1,7 +1,6 @@
-import Keet from '../'
+import { Component } from '../'
 
-class App extends Keet {
-  el = 'app'
+export default class App extends Component {
   data = {
   	names: ['John', 'Sarah', 'Leon', 'Rex']
   }
@@ -21,6 +20,9 @@ class App extends Keet {
       </li>
     )
   }
+  componentDidUpdate(){
+    console.log(this)
+  }
   renderList(){
     return this.data.names.map(this.person.bind(this))
   }
@@ -35,5 +37,3 @@ class App extends Keet {
     )
   }
 }
-
-const app = new App()

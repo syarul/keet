@@ -1,7 +1,6 @@
-import Keet from '../'
+import { Component } from '../'
 
-class App extends Keet {
-  el = 'app'
+export default class App extends Component {
   data = {
   	greeting: 'World',
     color: 'red'
@@ -19,5 +18,3 @@ class App extends Keet {
     )
   }
 }
-
-const app = new App()

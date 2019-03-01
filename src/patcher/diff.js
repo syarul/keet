@@ -1,4 +1,4 @@
-import { getId } from '../../../utils'
+import { getId } from '../utils'
 
 const DOCUMENT_ELEMENT_TYPE = 1
 
@@ -65,7 +65,7 @@ function patch (oldNode, newNode) {
       arbiter(oldNode, newNode)
       if (isEqual(oldNode, newNode)) return
       if (oldNode.nodeName === newNode.nodeName) {
-        if(oldNode.hasAttribute('key') && newNode.hasAttribute('key')){
+        if (oldNode.hasAttribute('key') && newNode.hasAttribute('key')) {
           oldNode.parentNode.replaceChild(newNode, oldNode)
         } else {
           setAttr(oldNode, newNode)
@@ -88,7 +88,7 @@ function getIndex (store, count) {
   return store.length - count - 1
 }
 
-function addExtra(count, oldParentNode, newStore) {
+function addExtra (count, oldParentNode, newStore) {
   let index
   while (count > 0) {
     count--
@@ -113,7 +113,7 @@ function diff (oldNode, newNode, oldParentNode) {
 
   let index
 
-  if(!oldNode) {
+  if (!oldNode) {
     // if oldNode is null process newNode
     addExtra(count, oldParentNode, newStore)
   } else {
@@ -132,17 +132,19 @@ function diff (oldNode, newNode, oldParentNode) {
       }
     }
   }
-
 }
 
 function isPristine (oldNode, newNode) {
   // only setup attributes, but ignore all children changes
-  if(oldNode) setAttr(oldNode, newNode)
+  if (oldNode) setAttr(oldNode, newNode)
   return newNode.hasAttribute('pristine-model')
 }
 
-function diffNodes (instance) {
+function diffNodes () {
+  const instance = this.base
+
   let base = getId(this.el)
+
   if (base && !this.IS_STUB) {
     diff(base.firstChild, instance, base)
   } else if (base && !isPristine(null, instance)) {

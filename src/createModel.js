@@ -1,4 +1,4 @@
-import { minId } from '../../utils'
+import { minId } from './utils'
 
 /**
  * @module keet/CreateModel

@@ -1,7 +1,7 @@
-import Keet, { childLike } from '../'
+import { Component, childLike } from '../'
 
 @childLike()
-export default class App extends Keet {
+export default class App extends Component {
   data = {
   	name: 'bar'
   }
@@ -20,6 +20,7 @@ export default class App extends Keet {
     return (
       <div id="up">
         <h4>{this.data.name}</h4>
+        <p>props: {JSON.stringify(this.props)}</p>
       </div>
     )
   }

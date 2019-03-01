@@ -1,7 +1,7 @@
-import Keet from '../'
+import { Component } from '../'
 import Artifact from './artifact2'
 
-class App extends Keet {
+export default class App extends Component {
   el = 'app'
   data = {
   	name: 'foo'
@@ -24,5 +24,3 @@ class App extends Keet {
     )
   }
 }
-
-window.app = new App()
