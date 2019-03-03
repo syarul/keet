@@ -1,24 +1,22 @@
 import { Component, childLike } from '../'
 
-@childLike()
-export default class App extends Component {
+export default class Artifact extends Component {
   data = {
-  	name: 'bar'
+  	name: 'baz'
   }
   change(){
+    console.log(this)
     this.setData({
       name: 'ber'
     })
   }
-  componentDidMount(){
-  	console.log(2)
-  }
-  componentWillMount(){
-  	console.log(1)
+  onChange(){
+  	console.log('onChange', this.props)
   }
   render () {
     return (
-      <div id="up">
+      <div>
+        <button onclick={this.change}> local change </button>
         <h4>{this.data.name}</h4>
         <p>props: {JSON.stringify(this.props)}</p>
       </div>

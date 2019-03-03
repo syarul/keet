@@ -1,7 +1,7 @@
 import { Component } from '../'
 
 export default class App extends Component {
-  data = {
+  state = {
   	greeting: 'World',
     color: 'red'
   }
@@ -10,8 +10,8 @@ export default class App extends Component {
   }
   render () {
     return (
-      <h1 id="attr" style={{color:'red'}}>
-        Hello, {this.data.greeting}
+      <h1 id="attr" style={{color:'red', 'font-style': 'italic'}}>
+        Hello, {this.state.greeting}
         <p onclick={this.pop}>Hi!</p>
         What's up?
       </h1>

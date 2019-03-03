@@ -38,14 +38,14 @@ import generator from './base/generator'
  */
 export default class Keet {
   constructor (props) {
-    manifest.call(this, {}, props, auto)
+    manifest.call(this, {}, props)
   }
 
   /**
    * Methods to update data to the virtual DOM template
    * @param {Object} instance - the data to update
    */
-  setData () {
+  setState () {
     set.apply(this, arguments)
   }
 

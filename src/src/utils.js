@@ -67,9 +67,19 @@ const activatePubsub = function () {
   }
 }
 
+function customizer(o, n) {
+  for(let i in n) {
+    if(o[i] !== n[i]){
+      return false
+    }
+  }
+  return true
+}
+
 export {
   assert,
   getId,
   childLike,
-  activatePubsub
+  activatePubsub,
+  customizer
 }

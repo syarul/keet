@@ -1,15 +1,19 @@
-import { isFunction, isObject, isArray, assign } from 'lodash'
+import { isFunction, isObject, isString, isNumber, isArray, isBoolean, assign } from 'lodash'
 import {
   styleToStr,
+  objAttrToStr,
   switchCase,
-  componentChildRender
-} from './extra'
+  componentConstructorRender
+} from './construct'
+
+import { resolveVnode } from '../v'
 
 const processAttr = (attr, value) => {
   return [
     attr === 'style' && isObject(value),
     attr.match(/^on/) && isFunction(value),
-    attr === 'className'
+    attr === 'className',
+    attr === 'value'
   ].indexOf(true)
 }
 
@@ -20,17 +24,23 @@ const attrCases = {
   },
   // inline eventListener conversion to scoped listener
   inline: function (el, attr, value) {
-    el.removeAttribute(attr)
     el.addEventListener(attr.replace(/^on/, ''), value.bind(this), false)
   },
   // convert react className to standard class
   className: function (el, attr, value) {
-    el.removeAttribute(attr)
     el.setAttribute('class', value)
+  },
+  // pass value to element value instead as attribute
+  value: function (el, attr, value) {
+    el.value = value
   },
   // default attributes assignment
   default: function (el, attr, value) {
-    el.setAttribute(attr, value)
+    if(isObject(value)) {
+      objAttrToStr(value) ? el.setAttribute(attr, objAttrToStr(value)) : null
+    } else {
+      value ? isBoolean(value) ?  el.setAttribute(attr, '') : el.setAttribute(attr, value) : null
+    }
   }
 }
 
@@ -45,9 +55,30 @@ const processChild = child => {
 const childCases = {
   // child is array of nodes
   _array: function (child, el) {
-    child.map(c => el.appendChild(render.call(this, c)))
+
+    child.map(c => {
+      // console.log(c)
+      // if(isArray(c)) {
+      //   console.log(c)
+      //   childCases._array.call(this, c)
+      // } else {
+      //   switchCase(childCases, 'default')(
+      //     processChild(c)
+      //   ).call(this, c, el)
+      // }
+      if(isFunction(c.elementName)){
+        let elemFn = c.elementName
+        return new elemFn(c.attributes)
+      }
+    }).map(elem => {
+      // console.log(elem)
+      resolveVnode(elem).then(e => {
+        el.appendChild(e)
+      })
+    })
+
   },
-  _function: componentChildRender,
+  _function: componentConstructorRender,
   // component from object
   _object: function (child, el) {
     el.appendChild(render.call(this, child.elementName))
@@ -66,8 +97,13 @@ const childCases = {
  * @param {String|Object} virtualNode - the transform code
  */
 function render (virtualNode) {
-  if (typeof virtualNode === 'string') {
+  if (isString(virtualNode) || isNumber(virtualNode)) {
     return document.createTextNode(virtualNode)
+  } else if(isBoolean(virtualNode)) {
+    return document.createTextNode('')
+  } else if(isObject(virtualNode) && isFunction(virtualNode.elementName)) {
+    // console.trace(virtualNode)
+    return document.createTextNode('') //componentConstructorRender
   }
 
   const element = document.createElement(virtualNode.elementName)
@@ -83,11 +119,17 @@ function render (virtualNode) {
     ).apply(this, [element, ...argv])
   });
 
-  (virtualNode.children || []).forEach(child => {
+  (virtualNode.children || []).forEach((child, index) => {
+
+    if(child === (undefined || null)) return false
+    // if(child.elementName && child.elementName === 'li' && child.elementName === 'li'){
+      // console.log(child)
+    // }
     const argv = [
       child,
       element,
-      render
+      render,
+      index
     ]
 
     switchCase(childCases, 'default')(
@@ -98,8 +140,9 @@ function render (virtualNode) {
   return element
 }
 
-function mountJSX () {
+function mount () {
   this.vnode = render.apply(this, arguments)
+  // console.log(this.state)
 }
 
-export default mountJSX
+export default mount

@@ -23,6 +23,10 @@ function arbiter (oldNode, newNode) {
   if (oldNode.checked !== newNode.checked) {
     oldNode.checked = newNode.checked
   }
+  // added method to check explicit node value and compare them
+  if (oldNode.value !== newNode.value) {
+    oldNode.value = newNode.value
+  }
 }
 
 function setAttr (oldNode, newNode) {
@@ -63,7 +67,14 @@ function patch (oldNode, newNode) {
   if (oldNode.nodeType === newNode.nodeType) {
     if (oldNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
       arbiter(oldNode, newNode)
-      if (isEqual(oldNode, newNode)) return
+      // exit on equal and newNode having no children
+      if (isEqual(oldNode, newNode) && !newNode.firstChild) {
+        return
+      // diff children on equal and subsequently exit current execution
+      } else  if (isEqual(oldNode, newNode) && newNode.firstChild) {
+        diff(oldNode.firstChild, newNode.firstChild, oldNode)
+        return
+      }
       if (oldNode.nodeName === newNode.nodeName) {
         if (oldNode.hasAttribute('key') && newNode.hasAttribute('key')) {
           oldNode.parentNode.replaceChild(newNode, oldNode)
@@ -142,7 +153,7 @@ function isPristine (oldNode, newNode) {
 
 function diffNodes () {
   let node = getId(this.el) || document.querySelector(`[k-data="${this.__ref__.id}"]`)
-
+  // console.trace('diff')
   if (node && !this.__ref__.IS_STUB) {
     diff(node.firstChild, this.vnode, node)
   } else if (node && !isPristine(null, this.vnode)) {

@@ -1,10 +1,10 @@
-import uuid from 'uuid/v4'
+import { uniqueId } from 'lodash'
 
 export default function (exec, props, auto) {
   this.props = props || {}
   this.__ref__ = {
     // generate id for this component
-    id: uuid(),
+    id: uniqueId(),
     // pubsub callback storage
     exec
   }

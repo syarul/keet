@@ -15,16 +15,16 @@ function VtreeRenderer () {
   this.render = async function (virtualNode, node) {
     const App = virtualNode.elementName
 
-    const app = new App()
+    const rootApp = new App()
 
-    app.el = node.id
+    node.id ? rootApp.el = node.id : node.setAttribute('k-data', rootApp.__ref__.id)
 
-    const vnode = await resolveVnode(app)
+    const vnode = await resolveVnode(rootApp)
 
     node.appendChild(vnode)
 
     // detect changes
-    isFunction(app.onChange) && app.onChange()
+    // isFunction(rootApp.onChange) && rootApp.onChange()
   }
 }
 

@@ -1,4 +1,4 @@
-import  App from './1_array'
+import  App from './0_hello'
 import { v } from '../'
 
 v.render(
