@@ -1,4 +1,4 @@
-import { uniqueId } from 'lodash'
+import { uniqueId } from './utils'
 
 /**
  * @module keet/CreateModel
@@ -18,8 +18,6 @@ import { uniqueId } from 'lodash'
  *
  * const MyModel = new myModel()
  */
-
-// const uniqueId = f => f + (Math.random() * 1e17).toString(34)
 
 // check two objects properties attribute kdata-id and return the value equality
 const notEqual = function (a, b) {

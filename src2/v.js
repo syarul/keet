@@ -1,4 +1,4 @@
-import { isElement, isFunction } from 'lodash'
+import { isElement, isFunction } from './utils'
 
 function resolveVnode (component) {
   return new Promise(resolve => {

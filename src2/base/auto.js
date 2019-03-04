@@ -1,4 +1,4 @@
-import { isFunction } from 'lodash'
+import { isFunction } from '../utils'
 import mount from '../parser/mount'
 
 function _resolve (renderer) {

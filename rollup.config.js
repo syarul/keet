@@ -3,7 +3,7 @@ import commonjs from 'rollup-plugin-commonjs';
 import babel from 'rollup-plugin-babel';
 
 export default {
-	input: 'keet.js',
+	input: 'index.js',
 	output: {
 		file: 'keet-min.js',
 		format: 'iife',

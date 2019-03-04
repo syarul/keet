@@ -1,11 +1,11 @@
-import { chain, assign, isFunction, isEqualWith } from 'lodash'
 import stringHash from 'string-hash'
 import { resolveVnode } from '../v'
-import { customizer } from '../utils'
+import { isFunction, isEqualWith, customizer } from '../utils'
 
 function camelCase (s, o) {
   return `${s.replace(/([A-Z]+)/g, '-$1').toLowerCase()}:${o[s]};`
 }
+
 /**
  * @private
  * @description
@@ -14,28 +14,15 @@ function camelCase (s, o) {
  * @param {Object} style - the style as javascript object
  */
 function styleToStr (obj) {
-  return chain(obj)
-    .keys()
-    .reduce((a, b) =>
+  return Object.keys(obj).reduce((a, b) =>
       [a, b].map(style => `${camelCase(style, obj)}`).join('')
     )
-    .value()
 }
 
-/**
- * @private
- * @description
- * Convert style object into string
- *
- * @param {Object} style - the style as javascript object
- */
 function objAttrToStr (obj) {
-  return chain(obj)
-    .keys()
-    .reduce((a, b) =>
+  return Object.keys(obj).reduce((a, b) =>
       [a, b].map(attr => `${obj[attr] ? attr : ''}`).join(' ').trim('')
     )
-    .value()
 }
 
 const switchCase = (sources, defaultSource) => selector => sources[Object.keys(sources)[selector] || defaultSource]
@@ -59,7 +46,7 @@ const componentConstructorRender = async function (child, el, render, index) {
       // and do batch update on itself
       // TODO: add dirty checking before batch update
       if(!isEqualWith(component.props, child.attributes), customizer) {
-        assign(component.props, child.attributes)
+        Object.assign(component.props, child.attributes)
         component.batchUpdate()
       }
     }

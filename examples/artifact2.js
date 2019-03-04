@@ -1,12 +1,12 @@
 import { Component, childLike } from '../'
 
 export default class Artifact extends Component {
-  data = {
+  state = {
   	name: 'baz'
   }
   change(){
     console.log(this)
-    this.setData({
+    this.setState({
       name: 'ber'
     })
   }
@@ -17,7 +17,7 @@ export default class Artifact extends Component {
     return (
       <div>
         <button onclick={this.change}> local change </button>
-        <h4>{this.data.name}</h4>
+        <h4>{this.state.name}</h4>
         <p>props: {JSON.stringify(this.props)}</p>
       </div>
     )

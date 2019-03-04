@@ -1,4 +1,4 @@
-import { isFunction, isObject, isString, isNumber, isArray, isBoolean, assign } from 'lodash'
+import { isFunction, isObject, isString, isNumber, isArray, isBoolean } from '../utils'
 import {
   styleToStr,
   objAttrToStr,

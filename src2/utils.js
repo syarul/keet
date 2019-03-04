@@ -1,5 +1,3 @@
-import { isFunction } from 'lodash'
-
 const getId = id => document.getElementById(id)
 
 /**
@@ -67,6 +65,10 @@ const activatePubsub = function () {
   }
 }
 
+function isEqualWith(a, b, c){
+  return isFunction(c) && c(a, b)
+}
+
 function customizer(o, n) {
   for(let i in n) {
     if(o[i] !== n[i]){
@@ -76,10 +78,31 @@ function customizer(o, n) {
   return true
 }
 
+function uniqueId (f) {
+  return (f ? f : '') + (Math.random() * 1e17).toString(36).slice(0, 4)
+}
+
+function isObject(o) { return typeof o === 'object' }
+function isBoolean(o) { return typeof o === 'boolean' }
+function isString(o) { return typeof o === 'string' }
+function isFunction(o) { return typeof o === 'function' }
+function isElement(o) { return o instanceof Element }
+function isArray(o) { return o instanceof Array }
+function isNumber(o) { return typeof o === 'number' }
+
 export {
   assert,
   getId,
   childLike,
   activatePubsub,
-  customizer
+  isEqualWith,
+  customizer,
+  isObject,
+  isBoolean,
+  isString,
+  isFunction,
+  isElement,
+  uniqueId,
+  isArray,
+  isNumber
 }

@@ -3,7 +3,7 @@ import Artifact from './artifact2'
 
 export default class App extends Component {
   el = 'app'
-  data = {
+  state = {
   	name: 'foo',
     d: {
       s: Math.random(),
@@ -11,20 +11,20 @@ export default class App extends Component {
     }
   }
   change(){
-    this.setData({
+    this.setState({
       name: 'bar',
-      d: Object.assign(this.data.d, { s: 'hello' })
+      d: Object.assign(this.state.d, { s: 'hello' })
     })
   }
   onChange(){
     console.log('app mounted')
   }
   render () {
-    let props = this.data.d
+    let props = this.state.d
     return (
       <div>
         <button onclick={this.change}>change</button>
-        <h4>{this.data.name}</h4>
+        <h4>{this.state.name}</h4>
         <Artifact {...props} />
       </div>
     )

@@ -1,4 +1,4 @@
-import { uniqueId } from 'lodash'
+import { uniqueId } from '../utils'
 import auto from './auto'
 
 export default function (exec, props) {
