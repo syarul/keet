@@ -1,6 +1,12 @@
 import diff from '../patcher/diff'
+import { isFunction } from '../utils'
 
 let timer = {}
+
+const morpher = function (callback) {
+  diff.call(this)
+  isFunction(callback) && callback.call(this)
+}
 
 const batch = function (fn, delay) {
   const i = this.__ref__.id
@@ -9,6 +15,6 @@ const batch = function (fn, delay) {
   timer[i] = setTimeout(fn.bind(this), delay)
 }
 
-export default function () {
-  batch.call(this, diff.bind(this), 1)
+export default function (callback) {
+  batch.call(this, morpher.bind(this, callback), 1)
 }

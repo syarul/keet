@@ -33,45 +33,55 @@ const componentConstructorRender = async function (child, el, render, index) {
 
     let Component = child.elementName
 
+    // console.log(Component.name, index)
+
+    let component, vnode
     // console.log([Component], index, stringHash(Component.toString()))
 
-    let id = stringHash(Component.toString())
+    if(render){
+      // console.log(Component.name, index)
+      let id = stringHash(Component.toString())
 
-    let component = activeComponents[id] || new Component(child.attributes)
+      component = activeComponents[id] || new Component(child.attributes)
 
-    if (!activeComponents[id]) {
-      activeComponents[id] = component
-    } else {
-      // reassign established component props
-      // and do batch update on itself
-      // TODO: add dirty checking before batch update
-      if(!isEqualWith(component.props, child.attributes), customizer) {
-        Object.assign(component.props, child.attributes)
-        component.batchUpdate()
+      if (!activeComponents[id]) {
+        activeComponents[id] = component
+      } else {
+        // reassign established component props
+        // and do batch update on itself
+        // TODO: add dirty checking before batch update
+        if(!isEqualWith(component.props, child.attributes), customizer) {
+          console.log(component.props, child.attributes)
+          Object.assign(component.props, child.attributes)
+          component.batchUpdate()
+        }
       }
-    }
 
-    component.__ref__.IS_STUB = true
+      component.__ref__.IS_STUB = true
 
-    // component from constructor class
-    if (isFunction(component.setState)) {
-      // wait for component virtualNode to render
-      const vnode = await resolveVnode(component)
+      // component from constructor class
+      if (isFunction(component.setState)) {
+        // wait for component virtualNode to render
+        vnode = await resolveVnode(component)
 
-      // console.log(vnode)
+        // console.log(vnode)
 
-      // DOM patcher respectively will ignore childNodes
-      vnode.setAttribute('data-ignore', '')
+        // DOM patcher respectively will ignore childNodes
+        vnode.setAttribute('data-ignore', '')
+        vnode.id ? component.el = vnode.id : vnode.setAttribute('k-data', component.__ref__.id)
+        el.appendChild(vnode)
 
-      vnode.id ? component.el = vnode.id : vnode.setAttribute('k-data', component.__ref__.id)
+        // caller to detect changes
+        // isFunction(component.onChange) && component.onChange()
 
-      el.appendChild(vnode)
-      // caller to detect changes
-      isFunction(component.onChange) && component.onChange()
-
-    // component from function
+      // component from function
+      } else {
+        el.appendChild(render.call(this, component))
+      }
     } else {
-      el.appendChild(render.call(this, component))
+      component = new Component(child.attributes)
+      vnode = await resolveVnode(component)
+      return vnode
     }
   }
 
