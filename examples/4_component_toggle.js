@@ -1,32 +1,23 @@
 import { Component } from '../'
-import Artifact from './artifact2'
 import Other from './other2'
+import Artifact from './artifact2'
 
 export default class App extends Component {
   el = 'app'
   state = {
-  	name: 'foo',
-    d: {
-      s: Math.random(),
-      r: Math.random()
-    }
+  	name: 'foo'
   }
   change(){
     this.setState({
-      name: this.state.name ===  'foo' ? 'bar' : 'foo',
-      d: Object.assign(this.state.d, { s: 'hello' })
+      name: this.state.name ===  'foo' ? 'bar' : 'foo'
     })
   }
-  onChange(){
-    console.log('app mounted')
-  }
   render () {
-    let props = this.state.d
     return (
       <div>
         <button onclick={this.change}>change</button>
         <h4>{this.state.name}</h4>
-        <Artifact {...props} />
+        <Artifact {...this.state}/>
         <Other change={this.state.name === 'foo'} />
       </div>
     )

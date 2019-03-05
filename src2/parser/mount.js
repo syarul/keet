@@ -81,7 +81,7 @@ const childCases = {
  * @param {String|Object} virtualNode - the transform code
  */
 function render (virtualNode) {
-
+  // console.log(virtualNode)
   if (isString(virtualNode) || isNumber(virtualNode)) {
     return document.createTextNode(virtualNode)
   } /*else if(isBoolean(virtualNode)) {
@@ -127,7 +127,7 @@ function render (virtualNode) {
 
 function mount () {
   this.vnode = render.apply(this, arguments)
-  // console.log(this.state)
+  console.log(this.vnode)
 }
 
 export default mount

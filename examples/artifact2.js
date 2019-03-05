@@ -5,13 +5,9 @@ export default class Artifact extends Component {
   	name: 'baz'
   }
   change(){
-    console.log(this)
     this.setState({
-      name: 'ber'
+      name: this.state.name === 'baz' ? 'ber' : 'baz'
     })
-  }
-  onChange(){
-  	console.log('onChange', this.props)
   }
   render () {
     return (

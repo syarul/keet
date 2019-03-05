@@ -39,7 +39,7 @@ const activatePubsub = function () {
      * @param {Function} fn - the callback function for the subscribe
      */
     target.prototype.subscribe = function (register, fn) {
-      assert(isFunction(fn), 'Second argument is not a function.')
+      assert(isFunction(fn), 'Require callback function as parameter.')
       this.__ref__.exec = this.__ref__.exec[register] = fn
       return register
     }

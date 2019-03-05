@@ -153,8 +153,8 @@ function isPristine (oldNode, newNode) {
 
 function diffNodes () {
   let node = getId(this.el) || document.querySelector(`[k-data="${this.__ref__.id}"]`)
-  console.trace(1)
-  console.log(node.cloneNode(true), this.vnode.cloneNode(true))
+  // console.trace(1)
+  // console.log(node.cloneNode(true), this.vnode.cloneNode(true))
   if (node && !this.__ref__.IS_STUB) {
     diff(node.firstChild, this.vnode, node)
   } else if (node && !isPristine(null, this.vnode)) {

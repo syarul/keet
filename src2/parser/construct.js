@@ -42,19 +42,23 @@ const componentConstructorRender = async function (child, el, render, index) {
       // console.log(Component.name, index)
       let id = stringHash(Component.toString())
 
-      component = activeComponents[id] || new Component(child.attributes)
+      console.log(child.attributes)
+
+      component = /*activeComponents[id] ||*/ new Component(child.attributes)
+
+      component.__ref__.id = id
 
       if (!activeComponents[id]) {
-        activeComponents[id] = component
+        // activeComponents[id] = component
       } else {
         // reassign established component props
         // and do batch update on itself
         // TODO: add dirty checking before batch update
-        if(!isEqualWith(component.props, child.attributes), customizer) {
+        /*if(!isEqualWith(component.props, child.attributes), customizer) {
           console.log(component.props, child.attributes)
           Object.assign(component.props, child.attributes)
           component.batchUpdate()
-        }
+        }*/
       }
 
       component.__ref__.IS_STUB = true
