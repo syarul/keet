@@ -25,11 +25,23 @@ function objAttrToStr (obj) {
     )
 }
 
+let indices = 0
+
+function resetIndices(){
+  indices = 0
+}
+
+let currentState = {}
+
+// function storeState
+
 const switchCase = (sources, defaultSource) => selector => sources[Object.keys(sources)[selector] || defaultSource]
 
-let activeComponents = {}
+
+
 
 const componentConstructorRender = async function (child, el, render, index) {
+
 
     let Component = child.elementName
 
@@ -40,17 +52,23 @@ const componentConstructorRender = async function (child, el, render, index) {
 
     if(render){
       // console.log(Component.name, index)
+      indices++
+
       let id = stringHash(Component.toString())
 
-      console.log(child.attributes)
+      // console.log(child.attributes)
 
-      component = /*activeComponents[id] ||*/ new Component(child.attributes)
+      let state = currentState[indices].state || {} 
 
-      component.__ref__.id = id
+      let context = currentState[indices].context || {} 
 
-      if (!activeComponents[id]) {
+      component = new Component(child.attributes, state, context)
+
+      // component.__ref__.id = id
+
+      // if (!activeComponents[id]) {
         // activeComponents[id] = component
-      } else {
+      // } else {
         // reassign established component props
         // and do batch update on itself
         // TODO: add dirty checking before batch update
@@ -59,7 +77,7 @@ const componentConstructorRender = async function (child, el, render, index) {
           Object.assign(component.props, child.attributes)
           component.batchUpdate()
         }*/
-      }
+      // }
 
       component.__ref__.IS_STUB = true
 
@@ -93,5 +111,7 @@ export {
   styleToStr,
   objAttrToStr,
   switchCase,
-  componentConstructorRender
+  componentConstructorRender,
+  currentState,
+  resetIndices
 }

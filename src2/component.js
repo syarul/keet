@@ -37,8 +37,8 @@ import generator from './base/generator'
  * The main constructor of Keet
  */
 export default class Component {
-  constructor (props) {
-    manifest.call(this, {}, props)
+  constructor (props, state, context) {
+    manifest.call(this, {}, props, state, context)
   }
 
   /**
@@ -52,7 +52,7 @@ export default class Component {
   /**
    * Recheck all props if anything changed, diffing will occurs.
    */
-  batchUpdate () {
-    auto.call(this).then(generator.bind(this))
+  batchUpdate (callback) {
+    auto.call(this).then(generator.bind(this, callback))
   }
 }
