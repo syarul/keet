@@ -11,7 +11,7 @@ function resolveVnode (component) {
   })
 }
 
-function VtreeRenderer () {
+function keet () {
   this.render = async function (virtualNode, node) {
     const App = virtualNode.elementName
 
@@ -28,9 +28,9 @@ function VtreeRenderer () {
   }
 }
 
-const v = new VtreeRenderer()
+const Keet = new keet()
 
 export {
-  v as default,
+  Keet as default,
   resolveVnode
 }

@@ -6,7 +6,7 @@ import {
   componentConstructorRender
 } from './construct'
 
-import { resolveVnode } from '../v'
+import { resolveVnode } from '../keet'
 
 const processAttr = (attr, value) => {
   return [
@@ -108,9 +108,7 @@ function render (virtualNode) {
   (virtualNode.children || []).forEach((child, index) => {
 
     if(child === (undefined || null)) return false
-    // if(child.elementName && child.elementName === 'li' && child.elementName === 'li'){
-      // console.log(child)
-    // }
+
     const argv = [
       child,
       element,

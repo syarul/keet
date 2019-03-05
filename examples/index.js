@@ -1,6 +1,6 @@
 import  App from './4_component_toggle'
-import { v } from '../'
+import Keet from '../'
 
-v.render(
+Keet.render(
   <App />, document.getElementById('app')
 )

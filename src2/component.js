@@ -36,7 +36,7 @@ import generator from './base/generator'
 /**
  * The main constructor of Keet
  */
-export default class Keet {
+export default class Component {
   constructor (props) {
     manifest.call(this, {}, props)
   }

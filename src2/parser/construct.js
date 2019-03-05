@@ -1,5 +1,5 @@
 import stringHash from 'string-hash'
-import { resolveVnode } from '../v'
+import { resolveVnode } from '../keet'
 import { isFunction, isEqualWith, customizer } from '../utils'
 
 function camelCase (s, o) {
