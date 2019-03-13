@@ -53,6 +53,6 @@ export default class Component {
    * Recheck all props if anything changed, diffing will occurs.
    */
   batchUpdate (callback) {
-    auto.call(this).then(generator.bind(this, callback))
+    auto.call(this, this.props, this.state, this.context).then(generator.bind(this, callback))
   }
 }

@@ -1,12 +1,7 @@
 import { Component } from '../'
 
 export default class Other extends Component {
-  render () {
-
-    const {
-      change
-    } = this.props
-    console.log(change)
+  render ({change}) {
     return (
       <div>
         <h1> Other </h1>

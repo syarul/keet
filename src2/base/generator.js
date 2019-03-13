@@ -1,10 +1,12 @@
 import diff from '../patcher/diff'
 import { isFunction } from '../utils'
+import Keet from '../keet'
 
 let timer = {}
 
 const morpher = function (callback) {
-  diff.call(this)
+  diff.call(Keet.rootApp)
+  // console.log(Keet)
   isFunction(callback) && callback.call(this)
 }
 

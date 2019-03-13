@@ -25,12 +25,6 @@ function objAttrToStr (obj) {
     )
 }
 
-let indices = 0
-
-function resetIndices(){
-  indices = 0
-}
-
 let currentState = {}
 
 // function storeState
@@ -45,24 +39,35 @@ const componentConstructorRender = async function (child, el, render, index) {
 
     let Component = child.elementName
 
-    // console.log(Component.name, index)
+    console.log(Component.name)
 
     let component, vnode
     // console.log([Component], index, stringHash(Component.toString()))
 
     if(render){
       // console.log(Component.name, index)
-      indices++
 
       let id = stringHash(Component.toString())
 
+      console.log(id)
+
       // console.log(child.attributes)
 
-      let state = currentState[indices].state || {} 
+      currentState[id] = currentState[id] || {} 
 
-      let context = currentState[indices].context || {} 
 
-      component = new Component(child.attributes, state, context)
+
+      currentState[id].state = currentState[id].state || {}
+
+      Object.assign(currentState[id].state, Component.state)
+
+      currentState[id].context = currentState[id].context || {}
+
+      Object.assign(currentState[id].context, Component.context)
+
+      console.log(currentState)
+      
+      component = new Component(child.attributes, currentState[id].state, currentState[id].context)
 
       // component.__ref__.id = id
 
@@ -89,8 +94,8 @@ const componentConstructorRender = async function (child, el, render, index) {
         // console.log(vnode)
 
         // DOM patcher respectively will ignore childNodes
-        vnode.setAttribute('data-ignore', '')
-        vnode.id ? component.el = vnode.id : vnode.setAttribute('k-data', component.__ref__.id)
+        // vnode.setAttribute('data-ignore', '')
+        // vnode.id ? component.el = vnode.id : vnode.setAttribute('k-data', component.__ref__.id)
         el.appendChild(vnode)
 
         // caller to detect changes
@@ -112,6 +117,5 @@ export {
   objAttrToStr,
   switchCase,
   componentConstructorRender,
-  currentState,
-  resetIndices
+  currentState
 }

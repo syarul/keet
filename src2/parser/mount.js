@@ -3,8 +3,7 @@ import {
   styleToStr,
   objAttrToStr,
   switchCase,
-  componentConstructorRender,
-  resetIndices
+  componentConstructorRender
 } from './construct'
 
 import { resolveVnode } from '../keet'
@@ -126,7 +125,6 @@ function render (virtualNode) {
 
 function mount () {
   this.vnode = render.apply(this, arguments)
-  resetIndices()
 }
 
 export default mount

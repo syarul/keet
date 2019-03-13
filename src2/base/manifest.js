@@ -3,11 +3,12 @@ import auto from './auto'
 
 export default function (exec, props, state, context) {
   this.props = props || {}
-  this.state = state || {}
-  this.context = context || {}
+
+  this.state = state || this.state || {}
+
+  this.context = context || this.state || {}
+
   this.__ref__ = {
-    // generate id for this component
-    // id: uniqueId(),
     // pubsub callback storage
     exec
   }

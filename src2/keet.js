@@ -1,4 +1,5 @@
 import { isElement, isFunction } from './utils'
+import stringHash from 'string-hash'
 
 function resolveVnode (component) {
   return new Promise(resolve => {
@@ -15,17 +16,20 @@ function keet () {
   this.render = async function (virtualNode, node) {
     const App = virtualNode.elementName
 
-    const rootApp = new App()
+    this.rootApp = new App()
 
-    node.id ? rootApp.el = node.id : node.setAttribute('k-data', rootApp.__ref__.id)
+    this.rootApp.__ref__.id = stringHash(App.toString())
 
-    const vnode = await resolveVnode(rootApp)
+    node.id ? this.rootApp.el = node.id : node.setAttribute('k-data', this.rootApp.__ref__.id)
+
+    const vnode = await resolveVnode(this.rootApp)
 
     node.appendChild(vnode)
 
     // detect changes
     // isFunction(rootApp.onChange) && rootApp.onChange()
   }
+  
 }
 
 const Keet = new keet()
