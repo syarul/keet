@@ -6,15 +6,17 @@ export default class App extends Component {
     color: 'red'
   }
   pop(){
-   console.log(this)
+    this.setState({
+      greeting: this.state.greeting === 'World' ? 'Keet' : 'World'
+    })
   }
-  render () {
+  render ({}, {greeting}) {
     return (
-      <h1 id="attr" style={{color:'red', 'font-style': 'italic'}}>
-        Hello, {this.state.greeting}
-        <p onclick={this.pop}>Hi!</p>
-        What's up?
-      </h1>
+      <div id="attr" style={{color:'red', 'font-size': '2em'}}>
+        <p>Hello, {greeting}</p>
+        <button onclick={this.pop}>Hi!</button>
+        <p>What's up?</p>
+      </div>
     )
   }
 }

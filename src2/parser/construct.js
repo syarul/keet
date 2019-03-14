@@ -32,8 +32,6 @@ let currentState = {}
 const switchCase = (sources, defaultSource) => selector => sources[Object.keys(sources)[selector] || defaultSource]
 
 
-
-
 const componentConstructorRender = async function (child, el, render, index) {
 
 
@@ -55,15 +53,9 @@ const componentConstructorRender = async function (child, el, render, index) {
 
       currentState[id] = currentState[id] || {} 
 
-
-
       currentState[id].state = currentState[id].state || {}
 
-      Object.assign(currentState[id].state, Component.state)
-
       currentState[id].context = currentState[id].context || {}
-
-      Object.assign(currentState[id].context, Component.context)
 
       console.log(currentState)
       

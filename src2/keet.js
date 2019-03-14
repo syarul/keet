@@ -1,5 +1,5 @@
 import { isElement, isFunction } from './utils'
-import stringHash from 'string-hash'
+import store from './store'
 
 function resolveVnode (component) {
   return new Promise(resolve => {
@@ -14,11 +14,16 @@ function resolveVnode (component) {
 
 function keet () {
   this.render = async function (virtualNode, node) {
+
     const App = virtualNode.elementName
+
+    // console.log(virtualNode)
 
     this.rootApp = new App()
 
-    this.rootApp.__ref__.id = stringHash(App.toString())
+    this.rootApp.__ref__.id = store.gen(App)
+
+    console.log(this)
 
     node.id ? this.rootApp.el = node.id : node.setAttribute('k-data', this.rootApp.__ref__.id)
 

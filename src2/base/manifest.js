@@ -4,9 +4,9 @@ import auto from './auto'
 export default function (exec, props, state, context) {
   this.props = props || {}
 
-  this.state = state || this.state || {}
+  this.state = state || this.state
 
-  this.context = context || this.state || {}
+  this.context = context || this.state
 
   this.__ref__ = {
     // pubsub callback storage

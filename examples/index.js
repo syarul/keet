@@ -1,4 +1,4 @@
-import  App from './4_component_toggle'
+import  App from './0_hello'
 import Keet from '../'
 
 Keet.render(
