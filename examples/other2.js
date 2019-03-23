@@ -1,6 +1,12 @@
-import { Component } from '../'
+import { Component, pragma } from '../'
+
+// let p = new pragma
 
 export default class Other extends Component {
+  // constructor(){
+  // 	super()
+  // 	console.log(pragma)
+  // }
   render ({change}) {
     return (
       <div>

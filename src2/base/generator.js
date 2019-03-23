@@ -6,7 +6,7 @@ let timer = {}
 
 const morpher = function (callback) {
   diff.call(Keet.rootApp)
-  // console.log(Keet)
+  console.log(Keet)
   isFunction(callback) && callback.call(this)
 }
 

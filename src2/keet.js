@@ -1,5 +1,6 @@
 import { isElement, isFunction } from './utils'
 import store from './store'
+import { componentConstructorRender } from './parser/construct'
 
 function resolveVnode (component) {
   return new Promise(resolve => {
@@ -15,31 +16,28 @@ function resolveVnode (component) {
 function keet () {
   this.render = async function (virtualNode, node) {
 
-    const App = virtualNode.elementName
+    if(!node.id) {
+      throw new error('Unable to mount to Element without `id` attribute')
+    }
 
-    // console.log(virtualNode)
-
-    this.rootApp = new App()
-
-    this.rootApp.__ref__.id = store.gen(App)
-
-    console.log(this)
-
-    node.id ? this.rootApp.el = node.id : node.setAttribute('k-data', this.rootApp.__ref__.id)
-
-    const vnode = await resolveVnode(this.rootApp)
+    let vnode = await componentConstructorRender(virtualNode)
 
     node.appendChild(vnode)
 
-    // detect changes
-    // isFunction(rootApp.onChange) && rootApp.onChange()
   }
   
 }
+
+let pragma = function () {
+  this.id = Math.random()
+}
+
+// const k = new pragma()
 
 const Keet = new keet()
 
 export {
   Keet as default,
-  resolveVnode
+  resolveVnode,
+  pragma
 }

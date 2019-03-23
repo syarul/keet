@@ -32,7 +32,7 @@ let currentState = {}
 const switchCase = (sources, defaultSource) => selector => sources[Object.keys(sources)[selector] || defaultSource]
 
 
-const componentConstructorRender = async function (child, el, render, index) {
+const componentConstructorRender = async function (child, el, render, index, ref) {
 
 
     let Component = child.elementName
@@ -45,21 +45,23 @@ const componentConstructorRender = async function (child, el, render, index) {
     if(render){
       // console.log(Component.name, index)
 
-      let id = stringHash(Component.toString())
+      // let id = stringHash(Component.toString())
 
-      console.log(id)
+      // console.log(id)
 
       // console.log(child.attributes)
 
-      currentState[id] = currentState[id] || {} 
+      // currentState[id] = currentState[id] || {} 
 
-      currentState[id].state = currentState[id].state || {}
+      // currentState[id].state = currentState[id].state || {}
 
-      currentState[id].context = currentState[id].context || {}
+      // currentState[id].context = currentState[id].context || {}
 
-      console.log(currentState)
+      // console.log(currentState)
       
-      component = new Component(child.attributes, currentState[id].state, currentState[id].context)
+      component = new Component(child.attributes/*, currentState[id].state, currentState[id].context*/)
+
+      console.log(Component.name)
 
       // component.__ref__.id = id
 
@@ -82,6 +84,8 @@ const componentConstructorRender = async function (child, el, render, index) {
       if (isFunction(component.setState)) {
         // wait for component virtualNode to render
         vnode = await resolveVnode(component)
+
+         // console.log(Component.name)
 
         // console.log(vnode)
 

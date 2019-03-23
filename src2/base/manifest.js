@@ -2,6 +2,7 @@ import { uniqueId } from '../utils'
 import auto from './auto'
 
 export default function (exec, props, state, context) {
+  
   this.props = props || {}
 
   this.state = state || this.state

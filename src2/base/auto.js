@@ -13,6 +13,8 @@ export default async function () {
 
   const r = await _resolve(this.render)
 
+  console.log(this)
+
   mount.call(
     this,
     r.call(this, this.props, this.state, this.context)

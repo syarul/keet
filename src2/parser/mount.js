@@ -107,7 +107,9 @@ function render (virtualNode) {
 
   (virtualNode.children || []).forEach((child, index) => {
 
-    if(child === (undefined || null)) return false
+    if(child === undefined || child === null) {
+      return false
+    }
 
     const argv = [
       child,
