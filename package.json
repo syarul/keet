@@ -108,7 +108,8 @@
       [
         "transform-jsx",
         {
-          "useVariables": true
+          "useVariables": true,
+          "useNew": true
         }
       ]
     ]

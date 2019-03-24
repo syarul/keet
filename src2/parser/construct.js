@@ -1,6 +1,7 @@
 import stringHash from 'string-hash'
 import { resolveVnode } from '../keet'
 import { isFunction, isEqualWith, customizer } from '../utils'
+import auto from '../base/auto'
 
 function camelCase (s, o) {
   return `${s.replace(/([A-Z]+)/g, '-$1').toLowerCase()}:${o[s]};`
@@ -25,7 +26,7 @@ function objAttrToStr (obj) {
     )
 }
 
-let currentState = {}
+let store = {}
 
 // function storeState
 
@@ -37,7 +38,7 @@ const componentConstructorRender = async function (child, el, render, index, ref
 
     let Component = child.elementName
 
-    console.log(Component.name)
+    // console.log(child)
 
     let component, vnode
     // console.log([Component], index, stringHash(Component.toString()))
@@ -47,21 +48,26 @@ const componentConstructorRender = async function (child, el, render, index, ref
 
       // let id = stringHash(Component.toString())
 
-      // console.log(id)
+      // if( store[id]) {
+      //   component = store[id]
+      //   Object.assign(component.props, child.attributes)
 
-      // console.log(child.attributes)
 
-      // currentState[id] = currentState[id] || {} 
+      //   await auto.call(component)
+      //   vnode = component.vnode
+      // } else {
+        component = new Component(child.attributes)
+        // store[id] = component
 
-      // currentState[id].state = currentState[id].state || {}
+        vnode = await resolveVnode(component)
+      // }
 
-      // currentState[id].context = currentState[id].context || {}
+      // console.log(vnode)
+      // console.log(component)
 
-      // console.log(currentState)
-      
-      component = new Component(child.attributes/*, currentState[id].state, currentState[id].context*/)
+      el.appendChild(vnode)
 
-      console.log(Component.name)
+      // console.log(store)
 
       // component.__ref__.id = id
 
@@ -78,12 +84,12 @@ const componentConstructorRender = async function (child, el, render, index, ref
         }*/
       // }
 
-      component.__ref__.IS_STUB = true
+      // component.__ref__.IS_STUB = true
 
       // component from constructor class
       if (isFunction(component.setState)) {
         // wait for component virtualNode to render
-        vnode = await resolveVnode(component)
+        // vnode = await resolveVnode(component)
 
          // console.log(Component.name)
 
@@ -92,7 +98,7 @@ const componentConstructorRender = async function (child, el, render, index, ref
         // DOM patcher respectively will ignore childNodes
         // vnode.setAttribute('data-ignore', '')
         // vnode.id ? component.el = vnode.id : vnode.setAttribute('k-data', component.__ref__.id)
-        el.appendChild(vnode)
+        // el.appendChild(vnode)
 
         // caller to detect changes
         // isFunction(component.onChange) && component.onChange()
@@ -104,7 +110,7 @@ const componentConstructorRender = async function (child, el, render, index, ref
     } else {
       component = new Component(child.attributes)
       vnode = await resolveVnode(component)
-      return vnode
+      return { component, vnode }
     }
   }
 
@@ -113,5 +119,5 @@ export {
   objAttrToStr,
   switchCase,
   componentConstructorRender,
-  currentState
+  // currentState
 }

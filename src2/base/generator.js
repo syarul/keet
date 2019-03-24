@@ -5,8 +5,8 @@ import Keet from '../keet'
 let timer = {}
 
 const morpher = function (callback) {
-  diff.call(Keet.rootApp)
-  console.log(Keet)
+  diff.call(this, this._el)
+  console.log(this)
   isFunction(callback) && callback.call(this)
 }
 

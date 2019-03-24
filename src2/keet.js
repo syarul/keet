@@ -16,11 +16,9 @@ function resolveVnode (component) {
 function keet () {
   this.render = async function (virtualNode, node) {
 
-    if(!node.id) {
-      throw new error('Unable to mount to Element without `id` attribute')
-    }
+    let { component, vnode } = await componentConstructorRender(virtualNode)
 
-    let vnode = await componentConstructorRender(virtualNode)
+    component._el = node
 
     node.appendChild(vnode)
 

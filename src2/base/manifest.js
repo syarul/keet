@@ -1,13 +1,11 @@
 import { uniqueId } from '../utils'
 import auto from './auto'
 
-export default function (exec, props, state, context) {
+export default function (exec, props, state) {
   
   this.props = props || {}
 
   this.state = state || this.state
-
-  this.context = context || this.state
 
   this.__ref__ = {
     // pubsub callback storage

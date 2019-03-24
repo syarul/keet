@@ -3,7 +3,6 @@ import Artifact from './artifact2'
 import Other from './other2'
 
 export default class App extends Component {
-  el = 'app'
   state = {
   	name: 'foo',
     d: {

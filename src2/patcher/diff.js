@@ -151,8 +151,8 @@ function isPristine (oldNode, newNode) {
   return newNode.hasAttribute('pristine-model')
 }
 
-function diffNodes () {
-  let node = getId(this.el) || document.querySelector(`[k-data="${this.__ref__.id}"]`)
+function diffNodes (node) {
+  // let node = getId(this.el) || document.querySelector(`[k-data="${this.__ref__.id}"]`)
   // console.log(node)
   // console.log(node.cloneNode(true), this.vnode.cloneNode(true))
   if (node && !this.__ref__.IS_STUB) {
