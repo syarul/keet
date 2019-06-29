@@ -45,7 +45,7 @@ export default class Keet {
    * Methods to update data to the virtual DOM template
    * @param {Object} instance - the data to update
    */
-  setData () {
+  setState () {
     set.apply(this, arguments)
   }
 

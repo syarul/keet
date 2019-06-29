@@ -1,12 +1,12 @@
 import { Component } from '../'
 
 export default class App extends Component {
-  data = {
+  state = {
   	names: ['John', 'Sarah', 'Leon', 'Rex']
   }
-  pop(ev, checkName){
-    this.setData({ 
-      names: this.data.names.filter(name => name !== checkName) 
+  pop(checkName){
+    this.setState({ 
+      names: this.state.names.filter(name => name !== checkName) 
     })
   }
   person(name, index){
@@ -14,7 +14,7 @@ export default class App extends Component {
   	return (
   	  <li key={index}>
         {name}
-        <span style="cursor:pointer;" onclick={ev => this.pop(ev, name)}>
+        <span style="cursor:pointer;" onClick={ev => this.pop(name)}>
           [x]
         </span>
       </li>
@@ -24,7 +24,7 @@ export default class App extends Component {
     console.log(this)
   }
   renderList(){
-    return this.data.names.map(this.person.bind(this))
+    return this.state.names.map(this.person.bind(this))
   }
   render () {
     return (

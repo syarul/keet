@@ -12,7 +12,7 @@ export default class App extends Component {
     return (
       <h1 id="attr" style={{color:'red', 'font-style': 'italic'}}>
         Hello, {this.state.greeting}
-        <p onclick={this.pop}>Hi!</p>
+        <p onClick={this.pop}>Hi!</p>
         What's up?
       </h1>
     )

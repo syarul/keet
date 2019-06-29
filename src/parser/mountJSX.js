@@ -21,7 +21,7 @@ const attrCases = {
   // inline eventListener conversion to scoped listener
   inline: function (el, attr, value) {
     el.removeAttribute(attr)
-    el.addEventListener(attr.replace(/^on/, ''), value.bind(this), false)
+    el.addEventListener(attr.replace(/^on/, '').toLowerCase(), value.bind(this), false)
   },
   // convert react className to standard class
   className: function (el, attr, value) {
@@ -72,6 +72,8 @@ function render (virtualNode) {
 
   const element = document.createElement(virtualNode.elementName)
 
+  const { guid } = virtualNode
+
   Object.keys(virtualNode.attributes || {}).forEach(attr => {
     const argv = [
       attr,
@@ -87,7 +89,8 @@ function render (virtualNode) {
     const argv = [
       child,
       element,
-      render
+      render,
+      guid
     ]
 
     switchCase(childCases, 'default')(

@@ -24,7 +24,7 @@ function VtreeRenderer () {
     node.appendChild(vnode)
 
     // detect changes
-    isFunction(app.onChange) && app.onChange()
+    isFunction(app.componentWillMount) && app.componentWillMount()
   }
 }
 

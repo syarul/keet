@@ -1,23 +1,23 @@
 import { Component, childLike } from '../'
 
 export default class Artifact extends Component {
-  data = {
+  state = {
   	name: 'baz'
   }
   change(){
     console.log(this)
-    this.setData({
-      name: 'ber'
+    this.setState({
+      name: `ber${Math.random()}`
     })
   }
-  onChange(){
-  	console.log('onChange', this.props)
+  componentWillMount(){
+  	console.log('componentWillMount', this.props)
   }
   render () {
     return (
       <div>
-        <button onclick={this.change}> local change </button>
-        <h4>{this.data.name}</h4>
+        <button onClick={this.change}> local change </button>
+        <h4>{this.state.name}</h4>
         <p>props: {JSON.stringify(this.props)}</p>
       </div>
     )

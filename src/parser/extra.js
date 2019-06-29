@@ -24,33 +24,34 @@ const switchCase = (sources, defaultSource) => selector => sources[Object.keys(s
 
 let activeComponents = {}
 
-const componentChildRender = async function (child, el, render) {
+const componentChildRender = async function (child, el, render, guid) {
     let Component = child.elementName
 
-    let component = activeComponents[Component.name] || new Component(child.attributes)
+    let component = activeComponents[guid] || new Component(child.attributes)
 
-    if (!activeComponents[Component.name]) {
-      activeComponents[Component.name] = component
+    component.guid = guid
+
+    if (!activeComponents[guid]) {
+      activeComponents[guid] = component
     } else {
       assign(component.props, child.attributes)
       component.batchUpdate()
     }
 
-    component.__ref__.IS_STUB = true
-
     // component from constructor class
-    if (isFunction(component.setData)) {
+    if (isFunction(component.setState)) {
+
       // wait for component virtualNode to render
       const vnode = await resolveVnode(component)
 
       // DOM patcher respectively will ignore childNodes
-      vnode.setAttribute('data-ignore', '')
+      // vnode.setAttribute('data-ignore', '')
 
-      vnode.id ? component.el = vnode.id : vnode.setAttribute('k-data', component.__ref__.id)
+      !vnode.hasAttribute('k-data') && vnode.setAttribute('k-data', guid)
 
       el.appendChild(vnode)
       // caller to detect changes
-      isFunction(component.onChange) && component.onChange()
+      isFunction(component.componentWillMount) && component.componentWillMount()
 
     // component from function
     } else {

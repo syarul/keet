@@ -141,13 +141,8 @@ function isPristine (oldNode, newNode) {
 }
 
 function diffNodes () {
-  let node = getId(this.el) || document.querySelector(`[k-data="${this.__ref__.id}"]`)
-
-  if (node && !this.__ref__.IS_STUB) {
-    diff(node.firstChild, this.vnode, node)
-  } else if (node && !isPristine(null, this.vnode)) {
-    diff(node.firstChild, this.vnode.firstChild, node)
-  }
+  let node = getId(this.el) || document.querySelector(`[k-data="${this.guid}"]`)
+  diff(node.firstChild, this.vnode.firstChild, node)
 }
 
 export default diffNodes

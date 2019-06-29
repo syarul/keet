@@ -1,8 +1,9 @@
-import { assign } from 'lodash'
+import { assign, isFunction } from 'lodash'
 import auto from './auto'
 import generator from './generator'
 
-export default function (update) {
-  assign(this.data, update)
-  auto.call(this).then(generator.bind(this))
+export default function (update, next) {
+  assign(this.state, update)
+  next = isFunction(next) && next || function() {}
+  auto.call(this).then(generator.bind(this)).then(next)
 }

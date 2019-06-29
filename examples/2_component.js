@@ -3,11 +3,11 @@ import Artifact from './artifact'
 
 export default class App extends Component {
   el = 'app'
-  data = {
+  state = {
   	name: 'foo'
   }
   change(){
-    this.setData({
+    this.setState({
       name: 'ber'
     })
   }
@@ -18,7 +18,7 @@ export default class App extends Component {
     }
     return (
       <div>
-        <h4>{this.data.name}</h4>
+        <h4>{this.state.name}</h4>
         <Artifact {...d} />
       </div>
     )
