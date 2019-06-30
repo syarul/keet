@@ -37,13 +37,14 @@ import generator from './base/generator'
  * The main constructor of Keet
  */
 export default class Keet {
-  constructor (props) {
-    manifest.call(this, {}, props, auto)
+  constructor (props, context) {
+    manifest.call(this, {}, props, context, auto)
   }
 
   /**
    * Methods to update data to the virtual DOM template
    * @param {Object} instance - the data to update
+   * @param {Function} callback - callback function once state applied
    */
   setState () {
     set.apply(this, arguments)
@@ -55,4 +56,13 @@ export default class Keet {
   batchUpdate () {
     auto.call(this).then(generator.bind(this))
   }
+
+  /**
+   * Method render
+   * @param {object} props   Props (eg: JSX attributes) received from parent element/component
+   * @param {object} state   Component's current state
+   * @param {object} context Context object (if a parent component has provided context)
+   * @returns VitualNode
+   */
+  render(){}
 }

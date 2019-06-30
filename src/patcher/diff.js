@@ -1,4 +1,5 @@
 import { getId } from '../utils'
+import { isArray } from 'lodash'
 
 const DOCUMENT_ELEMENT_TYPE = 1
 
@@ -142,7 +143,21 @@ function isPristine (oldNode, newNode) {
 
 function diffNodes () {
   let node = getId(this.el) || document.querySelector(`[k-data="${this.guid}"]`)
-  diff(node.firstChild, this.vnode.firstChild, node)
+  if(!node){
+    node = document.getElementsByClassName(this.class)
+    if(node.length){
+      node = node[0]
+    } else {
+      throw new Error('Unable to find node.')
+    }
+  }
+  // console.log(node)
+  // diff(node.firstChild, this.vnode.firstChild, node)
+  if (node && !this.guid) {
+    diff(node.firstChild, this.vnode, node)
+  } else if (node && !isPristine(null, this.vnode)) {
+    diff(node.firstChild, this.vnode.firstChild, node)
+  }
 }
 
 export default diffNodes

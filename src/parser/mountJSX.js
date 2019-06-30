@@ -70,6 +70,8 @@ function render (virtualNode) {
     return document.createTextNode(virtualNode)
   }
 
+  console.log(arguments)
+
   const element = document.createElement(virtualNode.elementName)
 
   const { guid } = virtualNode

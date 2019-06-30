@@ -17,7 +17,13 @@ function VtreeRenderer () {
 
     const app = new App()
 
-    app.el = node.id
+    if(node.id){
+      app.el = node.id
+    } else if(node.hasAttribute('class')) {
+      app.class = node.getAttribute('class')
+    } else {
+      throw new Error('Unable to mount node without id/class attribute.')
+    }
 
     const vnode = await resolveVnode(app)
 

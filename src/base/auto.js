@@ -12,10 +12,12 @@ export default async function () {
   // caller to tell incoming changes
   isFunction(this.willChange) && this.willChange()
 
-  const r = await _resolve(this.render)
+  const componentRenderer = await _resolve(this.render)
+
+  const { props, state, context } = this
 
   mount.call(
     this,
-    r.call(this)
+    componentRenderer.call(this, props, state, context)
   )
 }
