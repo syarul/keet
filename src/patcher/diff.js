@@ -148,11 +148,9 @@ function diffNodes () {
     if(node.length){
       node = node[0]
     } else {
-      throw new Error('Unable to find node.')
+      throw new Error('Unable to find node')
     }
   }
-  // console.log(node)
-  // diff(node.firstChild, this.vnode.firstChild, node)
   if (node && !this.guid) {
     diff(node.firstChild, this.vnode, node)
   } else if (node && !isPristine(null, this.vnode)) {

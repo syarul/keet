@@ -66,15 +66,12 @@ const childCases = {
  * @param {String|Object} virtualNode - the transform code
  */
 function render (virtualNode) {
-  if (typeof virtualNode === 'string') {
-    return document.createTextNode(virtualNode)
-  }
+  if(!virtualNode) return
+  else if (typeof virtualNode === 'string') return document.createTextNode(virtualNode)
 
-  console.log(arguments)
+  const { guid, elementName } = virtualNode
 
-  const element = document.createElement(virtualNode.elementName)
-
-  const { guid } = virtualNode
+  const element = document.createElement(elementName)
 
   Object.keys(virtualNode.attributes || {}).forEach(attr => {
     const argv = [
@@ -88,6 +85,7 @@ function render (virtualNode) {
   });
 
   (virtualNode.children || []).forEach(child => {
+    if(!child) return
     const argv = [
       child,
       element,

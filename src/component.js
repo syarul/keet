@@ -59,9 +59,9 @@ export default class Keet {
 
   /**
    * Method render
-   * @param {object} props   Props (eg: JSX attributes) received from parent element/component
-   * @param {object} state   Component's current state
-   * @param {object} context Context object (if a parent component has provided context)
+   * @param {object} props    Props (eg: JSX attributes) received from parent element/component
+   * @param {object} state    Component's current state
+   * @param {object} context  Context object (if a parent component has provided context)
    * @returns VitualNode
    */
   render(){}
