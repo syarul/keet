@@ -144,10 +144,11 @@ function isPristine (oldNode, newNode) {
 function diffNodes () {
   let node = getId(this.el) || document.querySelector(`[k-data="${this.guid}"]`)
   if(!node){
-    node = document.getElementsByClassName(this.class)
+    node = document.getElementsByClassName(this.cl)
     if(node.length){
       node = node[0]
     } else {
+      console.log(this)
       throw new Error('Unable to find node')
     }
   }

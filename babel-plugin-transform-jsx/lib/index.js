@@ -79,6 +79,29 @@ exports.default = function (_ref) {
     };
   };
 
+  var hash2 = function hash2(str) {
+    var hash = 5381;
+    var len = str.length;
+
+    for (var i = 0; i < len; i++) {
+      hash = hash * 33 ^ str.charCodeAt(i);
+    }
+
+    return hash >>> 0;
+  };
+
+  var rand = function rand() {
+    return (Math.random() * 1e17).toString(32);
+  };
+
+  /* ==========================================================================
+   * UniqueId generator
+   * ======================================================================= */
+
+  var guid = function guid() {
+    return hash2(rand() + '-' + rand() + '-' + rand()).toString();
+  };
+
   /* =========================================================================
    * Visitors
    * ======================================================================= */
@@ -91,18 +114,6 @@ exports.default = function (_ref) {
     var _state$get = state.get('jsxConfig'),
         variablesRegex = _state$get.variablesRegex,
         jsxObjectTransformer = _state$get.jsxObjectTransformer;
-
-    /* ==========================================================================
-     * UniqueId generator
-     * ======================================================================= */
-
-
-    var guid = function guid() {
-      function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-      }
-      return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    };
 
     /* ==========================================================================
      * Node Transformers

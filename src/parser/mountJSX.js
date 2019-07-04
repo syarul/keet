@@ -45,7 +45,15 @@ const processChild = child => {
 const childCases = {
   // child is array of nodes
   _array: function (child, el) {
-    child.map(c => el.appendChild(render.call(this, c)))
+    child.map(c => {
+      // console.log(c)
+      if(typeof c.elementName === 'function'){
+        // console.log(c)
+        componentChildRender
+      } else {
+        el.appendChild(render.call(this, c))
+      }
+    })
   },
   _function: componentChildRender,
   // component from object
@@ -71,6 +79,8 @@ function render (virtualNode) {
 
   const { guid, elementName } = virtualNode
 
+  console.log(virtualNode, guid)
+
   const element = document.createElement(elementName)
 
   Object.keys(virtualNode.attributes || {}).forEach(attr => {
@@ -86,6 +96,7 @@ function render (virtualNode) {
 
   (virtualNode.children || []).forEach(child => {
     if(!child) return
+    // console.log(child)
     const argv = [
       child,
       element,

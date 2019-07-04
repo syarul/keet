@@ -29,6 +29,8 @@ const componentChildRender = async function (child, el, render, guid) {
 
     let component = activeComponents[guid] || new Component(child.attributes)
 
+    console.log(component)
+
     component.guid = guid
 
     if (!activeComponents[guid]) {

@@ -73,6 +73,25 @@ export default function ({ types: t }) {
     }
   }
 
+  const hash2 = str => {
+    let hash = 5381;
+    const len = str.length;
+
+    for (let i = 0; i < len; i++) {
+      hash = (hash * 33) ^ str.charCodeAt(i);
+    }
+
+    return hash >>> 0;
+  }
+
+  const rand = () => (Math.random()*1e17).toString(32)
+
+  /* ==========================================================================
+   * UniqueId generator
+   * ======================================================================= */
+
+  const guid = () => hash2(`${rand()}-${rand()}-${rand()}`)
+
   /* =========================================================================
    * Visitors
    * ======================================================================= */
@@ -86,31 +105,6 @@ export default function ({ types: t }) {
       variablesRegex,
       jsxObjectTransformer
     } = state.get('jsxConfig')
-
-    /* ==========================================================================
-     * UniqueId generator
-     * ======================================================================= */
-    const guid = () => {
-      function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-          .toString(16)
-          .substring(1);
-      }
-      return (
-        s4() +
-        s4() +
-        '-' +
-        s4() +
-        '-' +
-        s4() +
-        '-' +
-        s4() +
-        '-' +
-        s4() +
-        s4() +
-        s4()
-      );
-    }
 
     /* ==========================================================================
      * Node Transformers

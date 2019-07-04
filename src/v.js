@@ -13,6 +13,7 @@ function resolveVnode (component) {
 
 function VtreeRenderer () {
   this.render = async function (virtualNode, node) {
+
     const App = virtualNode.elementName
 
     const app = new App()
@@ -20,10 +21,12 @@ function VtreeRenderer () {
     if(node.id){
       app.el = node.id
     } else if(node.hasAttribute('class')) {
-      app.class = node.getAttribute('class')
+      app.cl = node.getAttribute('class')
     } else {
       throw new Error('Unable to mount node without id/class attribute.')
     }
+
+    console.log(app)
 
     const vnode = await resolveVnode(app)
 
