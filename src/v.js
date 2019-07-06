@@ -1,45 +1,43 @@
 import { isElement, isFunction } from 'lodash'
 
-function resolveVnode (component) {
-  return new Promise(resolve => {
-    const intv = setInterval(() => {
-      if (isElement(component.vnode)) {
-        clearInterval(intv)
-        resolve(component.vnode)
-      }
-    }, 0)
-  })
-}
+import createElement from 'virtual-dom/create-element'
 
 function VtreeRenderer () {
-  this.render = async function (virtualNode, node) {
+
+  this.rootApp = null
+
+  this.render = function (virtualNode, node) {
 
     const App = virtualNode.elementName
 
-    const app = new App()
+    const rootApp = new App()
 
-    if(node.id){
-      app.el = node.id
-    } else if(node.hasAttribute('class')) {
-      app.cl = node.getAttribute('class')
-    } else {
-      throw new Error('Unable to mount node without id/class attribute.')
-    }
+    rootApp.__composite__.then(app => {
 
-    console.log(app)
+      const { vtree } = app
 
-    const vnode = await resolveVnode(app)
+      this.rootApp = app
 
-    node.appendChild(vnode)
+      if(node.id){
+        app.el = node.id
+      } else if(node.hasAttribute('class')) {
+        app.cl = node.getAttribute('class')
+      } else {
+        throw new Error('Unable to mount node without id/class attribute')
+      }
 
-    // detect changes
-    isFunction(app.componentWillMount) && app.componentWillMount()
+      const vnode = createElement(vtree)
+
+      node.appendChild(vnode)
+
+      // detect changes
+      isFunction(app.componentWillMount) && app.componentWillMount()
+
+    })
+
   }
 }
 
 const v = new VtreeRenderer()
 
-export {
-  v as default,
-  resolveVnode
-}
+export default v

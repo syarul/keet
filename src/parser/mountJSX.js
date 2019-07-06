@@ -1,119 +1,61 @@
-import { isFunction, isObject, isArray, assign } from 'lodash'
 import {
-  styleToStr,
-  switchCase,
-  componentChildRender
+  vTreeChildRenderer,
+  activeComponents
 } from './extra'
 
-const processAttr = (attr, value) => {
-  return [
-    attr === 'style' && isObject(value),
-    attr.match(/^on/) && isFunction(value),
-    attr === 'className'
-  ].indexOf(true)
-}
+import { assign } from 'lodash'
 
-const attrCases = {
-  // style as js object also resolve camelcase naming
-  style: function (el, attr, value) {
-    el.setAttribute(attr, styleToStr(value))
-  },
-  // inline eventListener conversion to scoped listener
-  inline: function (el, attr, value) {
-    el.removeAttribute(attr)
-    el.addEventListener(attr.replace(/^on/, '').toLowerCase(), value.bind(this), false)
-  },
-  // convert react className to standard class
-  className: function (el, attr, value) {
-    el.removeAttribute(attr)
-    el.setAttribute('class', value)
-  },
-  // default attributes assignment
-  default: function (el, attr, value) {
-    el.setAttribute(attr, value)
-  }
-}
-
-const processChild = child => {
-  return [
-    isArray(child),
-    child.elementName && isFunction(child.elementName),
-    child.elementName && isObject(child.elementName)
-  ].indexOf(true)
-}
-
-const childCases = {
-  // child is array of nodes
-  _array: function (child, el) {
-    child.map(c => {
-      // console.log(c)
-      if(typeof c.elementName === 'function'){
-        // console.log(c)
-        componentChildRender
-      } else {
-        el.appendChild(render.call(this, c))
-      }
-    })
-  },
-  _function: componentChildRender,
-  // component from object
-  _object: function (child, el) {
-    el.appendChild(render.call(this, child.elementName))
-  },
-  // default render operation
-  default: function (child, el) {
-    el.appendChild(render.call(this, child))
-  }
-}
+import { h } from 'virtual-dom'
+import VText from 'virtual-dom/vnode/vtext'
 
 /**
  * @private
  * @description
- * Mount a virtualNode
+ * Recursive render virtual DOM Tree
  *
- * @param {String|Object} virtualNode - the transform code
+ * @param {String|Object} virtualNode - transformed jsx
  */
-function render (virtualNode) {
-  if(!virtualNode) return
-  else if (typeof virtualNode === 'string') return document.createTextNode(virtualNode)
 
-  const { guid, elementName } = virtualNode
+async function vTreeRenderer (virtualNode) {
 
-  console.log(virtualNode, guid)
+  if(virtualNode === null || (typeof virtualNode === 'boolean' && !virtualNode)) 
+    return
+  else if(typeof virtualNode === 'string' || typeof virtualNode === 'number') 
+    return new VText(virtualNode)
+  else if(typeof virtualNode.elementName === 'function')
+    return await vTreeChildRenderer.call(this, virtualNode, vTreeRenderer)
 
-  const element = document.createElement(elementName)
+  const { elementName, attributes, children } = virtualNode
 
-  Object.keys(virtualNode.attributes || {}).forEach(attr => {
-    const argv = [
-      attr,
-      virtualNode.attributes[attr]
-    ]
-
-    switchCase(attrCases, 'default')(
-      processAttr(...argv)
-    ).apply(this, [element, ...argv])
-  });
-
-  (virtualNode.children || []).forEach(child => {
-    if(!child) return
-    // console.log(child)
-    const argv = [
-      child,
-      element,
-      render,
-      guid
-    ]
-
-    switchCase(childCases, 'default')(
-      processChild(...argv)
-    ).apply(this, argv)
+  Object.keys(attributes || {}).forEach(attr => {
+    // handle camelCase React eventListener
+    if(typeof attributes[attr] === 'function'){
+      const oldAttr = attr
+      attributes[attr.toLowerCase()] = attributes[attr]
+      delete attributes[oldAttr]
+    // handle React className
+    } else if(attr === 'className'){
+      const oldAttr = attr
+      attributes['class'] = attributes[attr]
+      delete attributes[oldAttr]
+    }
   })
 
-  return element
+  const CHILD_VTREES = [];
+
+  (children || []).forEach(child => CHILD_VTREES.push(vTreeRenderer.call(this, child)))
+
+  const childVtree = await Promise.all(CHILD_VTREES)
+
+  return h(elementName, attributes, childVtree)
 }
 
-function mountJSX () {
-  this.vnode = render.apply(this, arguments)
+function mountJSX (virtualNode) {
+  vTreeRenderer.call(this, virtualNode).then(vtree => {
+    console.log(vtree)
+    this.vtree = vtree
+    this.isRender(this)
+  })
 }
 
 export default mountJSX

@@ -1,12 +1,16 @@
 import { getId } from '../utils'
 import { isArray } from 'lodash'
 
+import Root from '../v'
+import createElement from 'virtual-dom/create-element'
+
 const DOCUMENT_ELEMENT_TYPE = 1
 
 function isEqual (oldNode, newNode) {
   return (
     isPristine(oldNode, newNode) ||
     compare(oldNode, newNode) ||
+    arbiter(oldNode, newNode) ||
     oldNode.isEqualNode(newNode)
   )
 }
@@ -23,6 +27,9 @@ function arbiter (oldNode, newNode) {
   if (oldNode.nodeName !== 'INPUT') return
   if (oldNode.checked !== newNode.checked) {
     oldNode.checked = newNode.checked
+  }
+  if(oldNode.value !== newNode.value){
+    oldNode.value = newNode.value
   }
 }
 
@@ -63,7 +70,6 @@ function setAttr (oldNode, newNode) {
 function patch (oldNode, newNode) {
   if (oldNode.nodeType === newNode.nodeType) {
     if (oldNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
-      arbiter(oldNode, newNode)
       if (isEqual(oldNode, newNode)) return
       if (oldNode.nodeName === newNode.nodeName) {
         if (oldNode.hasAttribute('key') && newNode.hasAttribute('key')) {
@@ -142,21 +148,20 @@ function isPristine (oldNode, newNode) {
 }
 
 function diffNodes () {
-  let node = getId(this.el) || document.querySelector(`[k-data="${this.guid}"]`)
+  const { rootApp } = Root
+  const { vtree } = rootApp
+  // createElement
+  let node = getId(rootApp.el)
   if(!node){
-    node = document.getElementsByClassName(this.cl)
+    node = document.getElementsByClassName(rootApp.cl)
     if(node.length){
       node = node[0]
     } else {
-      console.log(this)
       throw new Error('Unable to find node')
     }
   }
-  if (node && !this.guid) {
-    diff(node.firstChild, this.vnode, node)
-  } else if (node && !isPristine(null, this.vnode)) {
-    diff(node.firstChild, this.vnode.firstChild, node)
-  }
+  const vnode = createElement(vtree)
+  diff(node.firstChild, vnode, node)
 }
 
 export default diffNodes
