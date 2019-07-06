@@ -24,27 +24,31 @@ const switchCase = (sources, defaultSource) => selector => sources[Object.keys(s
 
 let activeComponents = {}
 
-const componentChildRender = async function (child, el, render, guid) {
-    let Component = child.elementName
+const componentChildRender = function (child, el, render) {
+  let Component = child.elementName
 
-    let component = activeComponents[guid] || new Component(child.attributes)
+  let { guid } = child
 
-    console.log(component)
+  let component = activeComponents[guid] || new Component(child.attributes)
 
-    component.guid = guid
+  component.guid = guid
 
-    if (!activeComponents[guid]) {
-      activeComponents[guid] = component
-    } else {
-      assign(component.props, child.attributes)
-      component.batchUpdate()
-    }
+  console.log(Component, guid)
 
-    // component from constructor class
-    if (isFunction(component.setState)) {
+  if (!activeComponents[guid]) {
+    activeComponents[guid] = component
+  } else {
+    assign(component.props, child.attributes)
+    component.batchUpdate()
+  }
+
+  // component from constructor class
+  if (component.__composite__ instanceof Promise) {
+
+    component.__composite__.then(app => {
 
       // wait for component virtualNode to render
-      const vnode = await resolveVnode(component)
+      const { vnode } = app
 
       // DOM patcher respectively will ignore childNodes
       // vnode.setAttribute('data-ignore', '')
@@ -53,16 +57,19 @@ const componentChildRender = async function (child, el, render, guid) {
 
       el.appendChild(vnode)
       // caller to detect changes
-      isFunction(component.componentWillMount) && component.componentWillMount()
+      isFunction(app.componentWillMount) && app.componentWillMount()
 
-    // component from function
-    } else {
-      el.appendChild(render.call(this, component))
-    }
+    })
+  // component from function
+  } else {
+    el.appendChild(render.call(this, component))
   }
+
+}
 
 export {
   styleToStr,
   switchCase,
-  componentChildRender
+  componentChildRender,
+  activeComponents
 }

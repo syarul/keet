@@ -1,9 +1,15 @@
 import { uniqueId } from 'lodash'
 
-export default function (exec, props, context, auto) {
+export default function (props, context, auto) {
   this.props = props || {}
-  this.exec = exec
   this.state = this.state || {}
+
+  this.vRendered = res => res
+
+  this.__composite__ = new Promise(function(resolve, reject){
+    this.vRendered = resolve
+  }.bind(this))
+
   if(context) this.context = context
 
   Object.defineProperty(this, 'exec', { enumerable: false, configurable: true })

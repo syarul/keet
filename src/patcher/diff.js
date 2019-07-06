@@ -7,6 +7,7 @@ function isEqual (oldNode, newNode) {
   return (
     isPristine(oldNode, newNode) ||
     compare(oldNode, newNode) ||
+    compareInput(oldNode, newNode) ||
     oldNode.isEqualNode(newNode)
   )
 }
@@ -19,10 +20,13 @@ function isIgnored (node) {
   return node.getAttribute('data-ignore') != null
 }
 
-function arbiter (oldNode, newNode) {
+function compareInput (oldNode, newNode) {
   if (oldNode.nodeName !== 'INPUT') return
   if (oldNode.checked !== newNode.checked) {
     oldNode.checked = newNode.checked
+  }
+  if(oldNode.value !== newNode.value){
+    oldNode.value = newNode.value
   }
 }
 
@@ -63,7 +67,6 @@ function setAttr (oldNode, newNode) {
 function patch (oldNode, newNode) {
   if (oldNode.nodeType === newNode.nodeType) {
     if (oldNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
-      arbiter(oldNode, newNode)
       if (isEqual(oldNode, newNode)) return
       if (oldNode.nodeName === newNode.nodeName) {
         if (oldNode.hasAttribute('key') && newNode.hasAttribute('key')) {

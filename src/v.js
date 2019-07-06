@@ -1,39 +1,52 @@
 import { isElement, isFunction } from 'lodash'
 
-function resolveVnode (component) {
-  return new Promise(resolve => {
-    const intv = setInterval(() => {
-      if (isElement(component.vnode)) {
-        clearInterval(intv)
-        resolve(component.vnode)
-      }
-    }, 0)
-  })
-}
+// function resolveVnode (component) {
+//   // console.log(component.vnode)
+//   return new Promise(resolve => {
+//     console.log(component.vnode)
+//     const intv = setInterval(() => {
+//       // console.log(component.vnode)
+//       if (isElement(component.vnode)) {
+//         clearInterval(intv)
+//         resolve(component.vnode)
+//       }
+//     }, 0)
+//   })
+// }
 
 function VtreeRenderer () {
-  this.render = async function (virtualNode, node) {
+  this.render = function (virtualNode, node) {
 
     const App = virtualNode.elementName
+    // let tt = new Date()
+    
+    const _root = new App()
 
-    const app = new App()
+    _root.__composite__.then(app => {
 
-    if(node.id){
-      app.el = node.id
-    } else if(node.hasAttribute('class')) {
-      app.cl = node.getAttribute('class')
-    } else {
-      throw new Error('Unable to mount node without id/class attribute.')
-    }
+      const { vnode } = app
 
-    console.log(app)
+      // console.log(`tt:${new Date() - tt}`)
 
-    const vnode = await resolveVnode(app)
+      if(node.id){
+        app.el = node.id
+      } else if(node.hasAttribute('class')) {
+        app.cl = node.getAttribute('class')
+      } else {
+        throw new Error('Unable to mount node without id/class attribute')
+      }
 
-    node.appendChild(vnode)
+      // let t = new Date()
 
-    // detect changes
-    isFunction(app.componentWillMount) && app.componentWillMount()
+      // console.log(new Date() - t)
+
+      node.appendChild(vnode)
+
+      // detect changes
+      isFunction(app.componentWillMount) && app.componentWillMount()
+
+    })
+
   }
 }
 
@@ -41,5 +54,5 @@ const v = new VtreeRenderer()
 
 export {
   v as default,
-  resolveVnode
+  // resolveVnode
 }

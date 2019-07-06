@@ -4,14 +4,14 @@ export default class Artifact extends Component {
   state = {
   	name: 'baz'
   }
-  change(){
-    console.log(this)
+  change = () => {
+    // console.log(this)
     this.setState({
       name: `ber${Math.random()}`
     })
   }
   componentWillMount(){
-  	console.log('componentWillMount', this.props)
+  	// console.log('componentWillMount', this.props)
   }
   render () {
     return (

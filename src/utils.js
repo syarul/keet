@@ -1,4 +1,34 @@
-import { isFunction } from 'lodash'
+import {
+  isNumber,
+  isString,
+  isFunction,
+  isObject,
+  isArray,
+  isNaN,
+  isUndefined,
+  isNull,
+  isBoolean,
+} from 'lodash'
+
+const type = {
+  str: isString,
+  num: isNumber,
+  func: isFunction,
+  obj: isObject,
+  ary: isArray,
+  nan: isNaN,
+  undef: isUndefined,
+  null: isNull,
+  bool: isBoolean
+}
+
+const typeCheck = value => {
+  if(!isObject(value)) throw new Error('Wrong argument type')
+  for(let attr in value){
+    return type[attr](value[attr])
+  }
+  return false
+}
 
 const getId = id => document.getElementById(id)
 
@@ -68,6 +98,7 @@ const activatePubsub = function () {
 }
 
 export {
+  typeCheck,
   assert,
   getId,
   childLike,

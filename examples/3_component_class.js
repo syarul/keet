@@ -10,7 +10,7 @@ export default class App extends Component {
       r: Math.random()
     }
   }
-  change(){
+  change = () => {
     this.setState({
       name: 'bar',
       d: {
