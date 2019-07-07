@@ -11,8 +11,6 @@ export default function (update, next) {
 
   if(!rootApp) rootApp = this
 
-  console.log(this.state)
-
   auto.call(rootApp).then(generator.bind(rootApp)).then(next)
 
 }

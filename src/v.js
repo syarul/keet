@@ -1,7 +1,5 @@
 import { isElement, isFunction } from 'lodash'
 
-import createElement from 'virtual-dom/create-element'
-
 function VTreeRenderer () {
 
   this.rootApp = null
@@ -14,9 +12,9 @@ function VTreeRenderer () {
 
     rootApp.__composite__.then(app => {
 
-      const { vtree } = app
+      const { vnode } = app
 
-      console.log(vtree)
+      // console.log(vnode)
 
       this.rootApp = app
 
@@ -27,8 +25,6 @@ function VTreeRenderer () {
       } else {
         throw new Error('Unable to mount node without id/class attribute')
       }
-
-      const vnode = createElement(vtree)
 
       // detect changes
       isFunction(app.componentWillMount) && app.componentWillMount()

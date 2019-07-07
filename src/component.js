@@ -54,7 +54,7 @@ export default class Keet {
    * Recheck all props if anything changed, diffing will occurs.
    */
   batchUpdate (props, context) {
-    manifest.call(this, props, context, auto) //.then(generator.bind(this))
+    manifest.call(this, props, context, auto)
   }
 
   /**

@@ -2,7 +2,6 @@ import { getId } from '../utils'
 import { isArray } from 'lodash'
 
 import Root from '../v'
-import createElement from 'virtual-dom/create-element'
 
 const DOCUMENT_ELEMENT_TYPE = 1
 
@@ -28,7 +27,6 @@ function arbiter (oldNode, newNode) {
   if (oldNode.checked !== newNode.checked) {
     oldNode.checked = newNode.checked
   }
-  console.log(oldNode.value, newNode.value)
   if(oldNode.value !== newNode.value){
     oldNode.value = newNode.value
   }
@@ -150,7 +148,7 @@ function isPristine (oldNode, newNode) {
 
 function diffNodes () {
   const { rootApp } = Root
-  const { vtree } = rootApp
+  const { vnode } = rootApp
   let node = getId(rootApp.el)
   if(!node){
     node = document.getElementsByClassName(rootApp.cl)
@@ -160,8 +158,6 @@ function diffNodes () {
       throw new Error('Unable to find node')
     }
   }
-  const vnode = createElement(vtree)
-  console.log(vtree)
   diff(node.firstChild, vnode, node)
 }
 
