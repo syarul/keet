@@ -1,27 +1,31 @@
-import { assign, isFunction } from 'lodash'
+import { isFunction } from 'lodash'
 
 let activeComponents = {}
 
-const vTreeChildRenderer = async function(child, vTreeRenderer) {
+const vTreeChildRenderer = async function(child, walkVTree, guid) {
 
-  let Component = child.elementName
+  const Component = child.elementName
 
-  const { guid } = child
+  const { attributes } = child
 
-  let component = activeComponents[guid] || new Component(child.attributes)
+  guid = guid || child.guid
+
+  const component = activeComponents[guid] || new Component(child.attributes)
+
+  const { props } = component
 
   if (!activeComponents[guid]) {
     activeComponents[guid] = component
-  } else {
-    assign(component.props, child.attributes)
-    component.batchUpdate()
   }
+
+  Object.assign(props, attributes)
+
+  component.batchUpdate(props, component.context)
 
   // component from constructor class
   if (component.__composite__ instanceof Promise) {
 
     return component.__composite__.then(app => {
-
       const { vtree } = app
 
       // caller to detect changes
@@ -32,10 +36,11 @@ const vTreeChildRenderer = async function(child, vTreeRenderer) {
     })
   // component from function
   } else {
-    return await vTreeRenderer.call(this, component)
+    return await walkVTree.call(this, component)
   }
 }
 
 export {
-  vTreeChildRenderer
+  vTreeChildRenderer,
+  activeComponents
 }

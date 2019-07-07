@@ -2,7 +2,7 @@ import { isElement, isFunction } from 'lodash'
 
 import createElement from 'virtual-dom/create-element'
 
-function VtreeRenderer () {
+function VTreeRenderer () {
 
   this.rootApp = null
 
@@ -16,6 +16,8 @@ function VtreeRenderer () {
 
       const { vtree } = app
 
+      console.log(vtree)
+
       this.rootApp = app
 
       if(node.id){
@@ -28,16 +30,16 @@ function VtreeRenderer () {
 
       const vnode = createElement(vtree)
 
-      node.appendChild(vnode)
-
       // detect changes
       isFunction(app.componentWillMount) && app.componentWillMount()
+
+      node.appendChild(vnode)
 
     })
 
   }
 }
 
-const v = new VtreeRenderer()
+const v = new VTreeRenderer()
 
 export default v

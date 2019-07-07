@@ -1,5 +1,5 @@
 import { isFunction } from 'lodash'
-import mount from '../parser/mountJSX'
+import mount from '../parser/mount'
 
 function _resolve (renderer) {
   return new Promise(resolve =>
@@ -10,7 +10,7 @@ function _resolve (renderer) {
 // auto rendered on class constructor instantiation
 export default async function () {
   // caller to tell incoming changes
-  isFunction(this.componentWillRecieveProps) && this.componentWillRecieveProps()
+  isFunction(this.componentWillReceiveProps) && this.componentWillReceiveProps()
 
   const componentRenderer = await _resolve(this.render)
 
@@ -20,11 +20,9 @@ export default async function () {
 
   this.guid = this.guid || virtualNode.guid
 
-  if(virtualNode.guid !== this.guid)
-    virtualNode.guid = this.guid
-
-  mount.call(
+  return mount.call(
     this,
     virtualNode
   )
+
 }

@@ -10,5 +10,5 @@ const batch = function (fn, delay) {
 }
 
 export default function () {
-  batch.call(this, diff.bind(this), 1)
+  batch.call(this, diff, 1)
 }

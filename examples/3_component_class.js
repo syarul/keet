@@ -18,7 +18,7 @@ export default class App extends Component {
         r: Math.random()
       }
     }, () => {
-      console.log('!')
+      console.log(this.state.d)
     })
   }
   onChange(){

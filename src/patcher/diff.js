@@ -28,6 +28,7 @@ function arbiter (oldNode, newNode) {
   if (oldNode.checked !== newNode.checked) {
     oldNode.checked = newNode.checked
   }
+  console.log(oldNode.value, newNode.value)
   if(oldNode.value !== newNode.value){
     oldNode.value = newNode.value
   }
@@ -150,7 +151,6 @@ function isPristine (oldNode, newNode) {
 function diffNodes () {
   const { rootApp } = Root
   const { vtree } = rootApp
-  // createElement
   let node = getId(rootApp.el)
   if(!node){
     node = document.getElementsByClassName(rootApp.cl)
@@ -161,6 +161,7 @@ function diffNodes () {
     }
   }
   const vnode = createElement(vtree)
+  console.log(vtree)
   diff(node.firstChild, vnode, node)
 }
 
