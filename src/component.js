@@ -11,21 +11,6 @@
 
 /**
  * @module keet
- * @example
- * import { Component } from 'keet'
- *
- * class App extends Component {
- *   contructor() {
- *     super()
- *     // props
- *   }
- *   // new extended method
- *   myMethod(...args){
- *     //
- *   }
- * }
- *
- * const app = new App()
  */
 
 import manifest from './base/manifest'

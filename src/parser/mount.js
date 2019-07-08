@@ -92,7 +92,7 @@ async function walkVTree (virtualNode, guid) {
 
   childVnodes.map(vnode => { 
     if(Array.isArray(vnode)){
-      // console.log(vnode)
+      console.log(vnode)
       vnode.map(v => el.appendChild(v))
     } else {
       el.appendChild(vnode)

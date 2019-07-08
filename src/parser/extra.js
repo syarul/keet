@@ -32,15 +32,22 @@ const vTreeChildRenderer = async function(child, walkVTree, guid, isArray) {
   let component
 
   if(isArray){
-    component = new Component(child.attributes)
+    guid = this.guid
+    component = activeComponents[guid] || new Component(child.attributes)
   } else {
     component = activeComponents[guid] || new Component(child.attributes)
-    
-    if (!activeComponents[guid]) {
-      activeComponents[guid] = component
-    }
   }
 
+  if (!activeComponents[guid]) {
+    activeComponents[guid] = component
+  }
+
+  // if(isArray){
+  //   const { props } = component
+  //   Object.assign(props, attributes)
+  //   component.batchUpdate(props, component.context)
+  //   return component.vnode
+  // }
 
   // console.log(child, component, attributes)
 
@@ -53,9 +60,11 @@ const vTreeChildRenderer = async function(child, walkVTree, guid, isArray) {
 
     component.batchUpdate(props, component.context)
 
+    console.log('c')
+
     return component.__composite__.then(app => {
       const { vnode } = app
-
+      console.log('d')
       // caller to detect changes
       isFunction(app.componentWillMount) && app.componentWillMount()
 
