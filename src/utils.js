@@ -67,12 +67,12 @@ const activatePubsub = function () {
   }
 }
 
-const indent = function (node) {
+const _ident = function (node) {
   return (!!node.id || node.hasAttribute('class'))
 }
 
 export {
-  ident,
+  _ident,
   assert,
   getId,
   childLike,
