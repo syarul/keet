@@ -6,6 +6,10 @@ import attach from './dom/attach'
 
 class kvRenderer {
 
+    mergeVnode(v) {
+        this.VNODE = v
+    }
+
     render (virtualNode, node) {
 
         const { elementName, attributes } = virtualNode || {}
@@ -14,22 +18,29 @@ class kvRenderer {
 
         const _vnode = typeof elementName === 'function' && new elementName(attributes)
 
-        const vnode = createVnode(_vnode)
+        const VNODE = this.VNODE || createVnode(_vnode)
+
+        if(!this.VNODE) {
+            mergeVnode(VNODE)
+            VNODE._isRender = true
+        }
 
         if(_vnode.children) {
-            console.log(_vnode.children)
-           _vnode.children.map(vchild => {
-                console.log(arguments)
+           _vnode.children.map((vchild, index) => {
                 attach(
                     vnode, 
-                    createVnode(vchild)
+                    createVnode(vchild, VNODE, index)
                 )
             })
         }
 
         typeof app.componentWillMount === 'function' && app.componentWillMount()
 
-        _ident(node) && attach(node, vnode)
+        if(_ident(node)) {
+            attach(node, vnode)
+
+            VNODE.isMounted = true
+        }
 
     }
 
