@@ -1,5 +1,3 @@
-const getId = id => document.getElementById(id)
-
 /**
  * @private
  * @description
@@ -16,29 +14,17 @@ const assert = (val, msg) => {
 /**
  * @private
  * @decorator
- * Add checking for child component
- */
-const childLike = function() {
-    return function(target) {
-        if (target.__ref__) target.__ref__.IS_STUB = true
-    }
-}
-
-/**
- * @private
- * @decorator
  * Add internal pub/sub to component
  */
 const eventHooks = function() {
     return function(target) {
 
         /**
-         * Another component can subscribe to changes on this component.
-         * This is the subscribe method
-         * @param {String} register - the callback function identifier name
-         * @param {Function} fn - the callback function for the subscribe
+         * Returns a reference to the eventName reg, so the chained function is called
+         * @param {string} reg - the identifier eventName
+         * @param {function} fn - the function to chained
          */
-        target.prototype.sub = function(reg, fn) {
+        target.prototype.on = function(reg, fn) {
             assert(typeof fn === 'function', 'Second argument is not a function.')
             this.__ref__ = this.__ref__ || {}
             this.__ref__[reg] = fn
@@ -46,20 +32,19 @@ const eventHooks = function() {
         }
 
         /**
-         * Another component can subscribe to changes on this component.
-         * This is the unsubscribe method
-         * @param {Integer} register - the register index identifier
+         * Removes the specified listener from the listener array for the event named reg
+         * @param {string} register - the register index identifier
          */
-        target.prototype.unsub = function(reg) {
+        target.prototype.removeListener = function(reg) {
             delete this.__ref__[reg]
         }
 
         /**
-         * Another component can subscribe to changes on this component.
-         * This is the publish method
-         * @param {...*} value - one or more parameters to publish to subscribers
+         * Synchronously calls a listener registered for the event named reg
+         * @param {string} reg - the event name
+         * @param {...*} value - one or more parameters to emit to listener
          */
-        target.prototype.pub = function() {
+        target.prototype.emit = function() {
             const reg = [].shift.call(arguments)
             typeof this.__ref__[reg] === 'function' && this.__ref__[reg].apply(null, arguments)
         }
@@ -81,12 +66,17 @@ const isFunc = function(vnode) {
     return typeof vnode === 'function'
 }
 
+const isObj = function(vnode) {
+    return typeof vnode === 'object' && typeof vnode !== 'function'
+}
+
 const isArr = function(vnode) {
     return typeof vnode === 'object' &&
         Array.isArray(vnode)
 }
 
 const getProto = function(_object, _constructor) {
+    if(!_object) return false
     return Object.getPrototypeOf(Object.getPrototypeOf(_object).constructor) === _constructor
 }
 
@@ -98,12 +88,11 @@ const composite = function() {
 
 export {
     assert,
-    getId,
-    childLike,
     eventHooks,
     assign,
     isNode,
     isFunc,
+    isObj,
     isArr,
     getProto,
     composite

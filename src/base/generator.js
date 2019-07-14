@@ -1,14 +1,10 @@
-import diff from '../patcher/diff'
+import keet from '../'
 
-let timer = {}
+let timer = null
 
-const batch = function (fn, delay) {
-  const i = this.guid
-  timer[i] = timer[i] || null
-  clearTimeout(timer[i])
-  timer[i] = setTimeout(fn.bind(this), delay)
+const batch = (fn, delay) => {
+    clearTimeout(timer)
+    timer = setTimeout(fn, delay)
 }
 
-export default function () {
-  batch.call(this, diff, 1)
-}
+export default async() => batch(keet.pub.bind(keet, 'event-hooks'), 1)

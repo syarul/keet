@@ -1,12 +1,7 @@
-// import Component from './src/component'
-// import CreateModel from './src/createModel'
-// import { childLike, activatePubsub } from './src/utils'
-import kv from './src/kv'
+import Component from './src-pragma/component'
+import k from './src-pragma'
 
 export {
-  // Component,
-  // CreateModel,
-  // childLike,
-  // activatePubsub,
-  kv
+  Component,
+  k
 }
