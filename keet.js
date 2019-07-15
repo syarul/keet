@@ -1,4 +1,4 @@
-import { isNode } from './src-pragma/utils'
+import { isNode, assert } from './src-pragma/utils'
 import walk from './src-pragma/dom/walk'
 
 const keet = function(virtualNode) {
@@ -16,13 +16,7 @@ const keet = function(virtualNode) {
      *    - Well the lacks of error handling messages
      */
 
-    if(!isNode(virtualNode)) {
-        throw new Error('Paramater is not a transform JSX element')
-    } 
-    // else if(virtualNode.hasOwnProperty('elementName') &&
-    //     typeof virtualNode.elementName !== 'function' ) {
-    //     throw new Error('Attribute "elementName" is not a constructor')
-    // }
+    // assert(isNode(virtualNode), 'Paramater is not a transform JSX element')
 
 	/**
      * ==================

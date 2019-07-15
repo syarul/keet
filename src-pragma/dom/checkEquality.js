@@ -9,6 +9,7 @@ export default function(oprop, nprop) {
     for (let i = 0; i < nArr.length; i++) {
         let n = nprop[nArr[i]]
         let o = oprop[oArr[i]]
+        // console.log(nArr[i], oArr[i])
         if(typeof n === 'function'){
             // console.log(n === o)
             if(Object.getPrototypeOf(n).constructor !== Object.getPrototypeOf(o).constructor) eq = false
@@ -17,6 +18,9 @@ export default function(oprop, nprop) {
                 // console.log(n[attr] !== o[attr], n[attr], o[attr])
                 if(n[attr] !== o[attr]) eq = false
             }
+        // if has key return false
+        // } else if (nArr[i] === oArr[i] === 'key'){
+        //     return false
         } else {
             if(nprop[nArr[i]] !== oprop[oArr[i]]) eq = false
         }

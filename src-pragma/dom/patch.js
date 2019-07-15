@@ -48,6 +48,7 @@ function setAttr(oldNode, newNode) {
 }
 
 function patch(oldNode, newNode) {
+    console.log(oldNode, newNode)
     if (oldNode.nodeType === newNode.nodeType) {
         if (oldNode.nodeType === DOCUMENT_ELEMENT_TYPE) {
             if (isEqual(oldNode, newNode)) return

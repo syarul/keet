@@ -2,7 +2,7 @@ import component from '../component'
 import { getProto, isNode, isArr, assign, isFunc, isObj } from '../utils'
 
 const walk = (vnode, rootProps) => {
-    // console.log(vnode)
+
     if(!vnode) return null
 
     // check type of vnode
@@ -11,7 +11,7 @@ const walk = (vnode, rootProps) => {
     const _rawVnode = isVirtualNode ? 
         vnode.elementName : 
         vnode
-    // console.log(_rawVnode)
+
     // handle vnode array
     if (isArr(_rawVnode)) return _rawVnode.map(cv => walk(cv, rootProps))
 
@@ -26,7 +26,6 @@ const walk = (vnode, rootProps) => {
     // return rendered _rawVnode is a contructor/function
     if(isFunc(_rawVnode)) {
         const vnodeApp = new _rawVnode(_props)
-        console.log(vnodeApp)
         // only execute it if KeetComponent constructor
         if(getProto(vnodeApp, component)){
             const { props, state } = vnodeApp

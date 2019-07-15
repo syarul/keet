@@ -14,13 +14,13 @@ import mount from './dom/mount'
 import diff from './dom/diff'
 import patch from './dom/patch'
 import createEl from './dom/createEl'
+import walk from './dom/walk'
 import component from './component'
 
 @eventHooks()
 class keetRenderer {
 
     render (vtree, node) {
-        console.log(vtree)
 
         let rootNode
         let oldVtree
@@ -55,7 +55,6 @@ class keetRenderer {
         this.on('event-hooks', nextProps => {
 
         	let update
-        	let context
             // if root props changing --> do a force render
             if(getProto(vtree, component)){
 
@@ -66,19 +65,20 @@ class keetRenderer {
 
 	            update = diff.call(vtree, oldVtree, vtree._vnode)
 
-	            // update oldVtree
-	            oldVtree = vtree._vnode
-
-	            patch(node, update)
-
             } else if(!getProto(vtree, component) && nextProps) {
-            	const { vnode, _vnode } = vtree
-            	const { elementName, attributes } = vnode || {}
+
+            	const { vnode } = vtree
+            	const { attributes } = vnode || {}
             	assign(attributes, nextProps)
-            	// console.log(vnode)
-            	// new elementName(attributes)
-            	// update = diff.call(context, oldVtree, vtree)
+                const newVtree = walk(vnode, {})
+
+                update = diff(oldVtree._vnode, newVtree._vnode)
+
             }
+
+            // update oldVtree
+            oldVtree = vtree._vnode
+            patch(node, update)
         })
     }
 }
