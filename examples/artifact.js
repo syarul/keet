@@ -1,3 +1,3 @@
-export default function artifact({ greet }){
-  	return <artifact style={{fontStyle:'italic'}}>Hello {greet}</artifact>
+export default function artifact({ greet, s, r }){
+  	return <artifact style={{fontStyle:'italic'}}>Hello {greet} {s} {r}</artifact>
 }

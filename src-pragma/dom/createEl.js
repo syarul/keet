@@ -1,6 +1,9 @@
 import mount from './mount'
 import parseAttr from './attr'
-import { isFunc, isArr } from '../utils'
+import { getProto, isFunc, isArr } from '../utils'
+import component from '../component'
+
+const DOCUMENT_ELEMENT_TYPE = 1
 
 const createEl = function(vtree, fragment) {
 
@@ -9,20 +12,32 @@ const createEl = function(vtree, fragment) {
     if(!vtree) return fragment
 
     const { _type, _rawVnode, _props, _vChildren } = vtree || {}
-
+    
+    let pass = false
     let node = null
-    if(_type === 'object' && !isFunc(_rawVnode)){
-        node = document.createElement(_rawVnode)
+
+    if(!getProto(_rawVnode, component)){
+
+        if(_type === 'object' && !isFunc(_rawVnode)){
+            node = document.createElement(_rawVnode)
+        } else if(_type !== 'object') {
+            node = document.createTextNode(_rawVnode)
+        } else {
+            pass = true
+        }
+    } else {
+        pass = true
+    }
+
+    if (node && node.nodeType === DOCUMENT_ELEMENT_TYPE) {
         for(let attr in _props) {
             parseAttr.call(this, node, attr, _props[attr])
         }
-    } else if(!isFunc(_rawVnode)) {
-        node = document.createTextNode(_rawVnode)
     }
 
-    isArr(_vChildren) && _vChildren.map(vchild => createEl.call(this, vchild, node))
-    
-    !isFunc(_rawVnode) && mount(fragment, node)
+    _vChildren.map(vchild => createEl.call(this, vchild, pass ? fragment : node))
+
+    node && mount(fragment, node)
 
     return fragment
 

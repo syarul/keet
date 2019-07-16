@@ -18,7 +18,7 @@ const assert = (val, msg) => {
  */
 const eventHooks = function() {
     return function(target) {
-
+        console.log(target)
         /**
          * Returns a reference to the eventName reg, so the chained function is called
          * @param {string} reg - the identifier eventName

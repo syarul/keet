@@ -24,59 +24,59 @@ class keetRenderer {
 
         console.log(vtree)
 
-        let rootNode
         let oldVtree
 
-        if(getProto(vtree, component)){
+        const { _rawVnode = {} } = vtree
 
-        	const { _vnode, componentWillMount, componentDidMount } = vtree
+        const { componentWillMount, componentDidMount } = _rawVnode
 
-        	isFunc(componentWillMount) && componentWillMount()
+        isFunc(_rawVnode) && isFunc(componentWillMount) && componentWillMount()
 
-        	rootNode = createEl.call(vtree, _vnode)
+        const rootNode = createEl.call(_rawVnode, vtree)
 
-        	mount(node, rootNode)
+        console.log(rootNode)
 
-        	isFunc(componentDidMount) && componentDidMount()
+        isFunc(_rawVnode) && isFunc(componentDidMount) && componentDidMount()
 
-        	oldVtree = _vnode
+        mount(node, rootNode)
 
-        } else {
-
-        	const { vnode, _vnode } = vtree
-        	const { elementName } = vnode || {}
-        	rootNode = createEl.call(elementName, _vnode)
-
-        	mount(node, rootNode)
-
-        	oldVtree = vtree
-
-        }
+        oldVtree = assign({}, vtree)
 
         // life-cycle prop-hooks event
-        this.on('event-hooks', nextProps => {
+        this.on('event-hooks', (nextProps, vNode) => {
+            console.log(vtree)
+
+            const { _rawVnode, _props, _vChildren } = vtree
 
         	let update
             // if root props changing --> do a force render
-            if(getProto(vtree, component)){
-
+            if(getProto(_rawVnode, component)){
+                console.log(1)
 	            if(nextProps) {
-	            	assign(vtree.props, nextProps) && vtree.forceRender()
+	            	assign(_props, nextProps)// && vtree.forceRender()
+                    console.log(vtree)
 	            	return
-	            } 
+	            }
 
-	            update = diff.call(vtree, oldVtree, vtree._vnode)
+                if(vNode){
+                    _vChildren.splice(0,1, vNode)
+                } 
 
-	            // console.log(update.cloneNode(true))
+                console.log(_vChildren[0], vNode)
 
-            } else if(!getProto(vtree, component) && nextProps) {
+	            update = diff.call(_rawVnode, _vChildren[0], vNode)
 
-            	const { vnode } = vtree
-            	const { attributes } = vnode || {}
-            	assign(attributes, nextProps)
-                const newVtree = walk(vnode, {})
+	            console.log(update.cloneNode(true))
 
-                update = diff(oldVtree._vnode, newVtree._vnode)
+            } else {
+
+                assign(_props, nextProps)
+                console.log(vtree)
+                const newVtree = walk()
+            // 	assign(attributes, nextProps)
+            //     const newVtree = walk(vnode, {})
+
+            //     update = diff(oldVtree._vnode, newVtree._vnode)
 
             }
 

@@ -29,7 +29,7 @@ const keet = function(virtualNode) {
      * borrow some analogy from https://github.com/Matt-Esch/virtual-dom
      */
 
-    return walk(virtualNode, {})
+    return walk(virtualNode, true)
 
 }
 

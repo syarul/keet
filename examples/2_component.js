@@ -2,7 +2,6 @@ import { Component } from '../'
 import Artifact from './artifact'
 
 export default class App extends Component {
-  el = 'app'
   state = {
   	name: 'foo'
   }
