@@ -6,11 +6,6 @@ export default class App extends Component {
   state = {
   	name: 'foo'
   }
-  change(){
-    this.setState({
-      name: 'ber'
-    })
-  }
   render () {
     let d = {
       s: 1,

@@ -1,10 +1,12 @@
 import mount from './mount'
 import parseAttr from './attr'
-import { isFunc } from '../utils'
+import { isFunc, isArr } from '../utils'
 
 const createEl = function(vtree, fragment) {
 
     fragment = fragment || document.createDocumentFragment()
+
+    if(!vtree) return fragment
 
     const { _type, _rawVnode, _props, _vChildren } = vtree || {}
 
@@ -18,7 +20,7 @@ const createEl = function(vtree, fragment) {
         node = document.createTextNode(_rawVnode)
     }
 
-    _vChildren.map(vchild => createEl.call(this, vchild, node))
+    isArr(_vChildren) && _vChildren.map(vchild => createEl.call(this, vchild, node))
     
     !isFunc(_rawVnode) && mount(fragment, node)
 

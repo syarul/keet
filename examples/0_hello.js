@@ -1,4 +1,3 @@
-import Keet from '../keet'
 import { Component } from '../'
 
 export default class App extends Component {

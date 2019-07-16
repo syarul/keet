@@ -26,10 +26,11 @@ export default class App extends Component {
   renderList(){
     return this.state.names.map(this.person.bind(this))
   }
-  render () {
+  render ({ greet }) {
     return (
       <div>
-        <h4>People</h4>
+        {/*<h4>People</h4>*/}
+        <h4>Hello {greet}</h4>
         <ul>
           {this.renderList()}
         </ul>

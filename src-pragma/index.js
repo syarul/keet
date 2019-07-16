@@ -22,6 +22,8 @@ class keetRenderer {
 
     render (vtree, node) {
 
+        console.log(vtree)
+
         let rootNode
         let oldVtree
 
@@ -64,6 +66,8 @@ class keetRenderer {
 	            } 
 
 	            update = diff.call(vtree, oldVtree, vtree._vnode)
+
+	            // console.log(update.cloneNode(true))
 
             } else if(!getProto(vtree, component) && nextProps) {
 
