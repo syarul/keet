@@ -1,5 +1,8 @@
 import parseAttr from './attr'
 import checkEquality from './checkEquality'
+import { getProto, getShallowProto, isFunc } from '../utils'
+import component from '../component'
+import pureFunction from '../pureFunction'
 
 const diff = function(ov, nv, fragment, markUnignore) {
     fragment = fragment || document.createDocumentFragment()
@@ -10,10 +13,13 @@ const diff = function(ov, nv, fragment, markUnignore) {
         return fragment
     }
 
-    if(ov._rawVnode !== nv._rawVnode || markUnignore){
+    if(getShallowProto(nv._rawVnode, pureFunction) || getProto(nv._rawVnode, component)){
+        diff(ov._vChildren[0], nv._vChildren[0], fragment, markUnignore)
+        return fragment
+    } else if(ov._rawVnode !== nv._rawVnode || markUnignore){
         if(nv._type === 'object'){
             node = document.createElement(nv._rawVnode)
-        } else {
+        } else if(nv._type !== 'object') {
             node = document.createTextNode(nv._rawVnode)
         }
     } 
@@ -37,6 +43,8 @@ const diff = function(ov, nv, fragment, markUnignore) {
     } else {
         node.nodeType === 1 && node.setAttribute('ignore-attr', '')
     }
+
+    console.log(node)
 
     fragment.appendChild(node)
 

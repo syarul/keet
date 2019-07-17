@@ -92,28 +92,6 @@ const composite = function() {
     }.bind(this))
 }
 
-
-function wrapFunction(fn, props, KeetRenderer) {
-
-  let prevProps = {}
-
-  this.render = (nextProps = {}) => {
-    // console.log(props, nextProps)
-    assign(prevProps, props, nextProps) || prevProps
-    return fn(prevProps)
- }
-
-  this.forceRender = nextProps => {
-
-    composite.call(this)
-
-    this.__composite__.then(KeetRenderer.emit.bind(KeetRenderer, 'event-rendered'))
-
-    this._resolve(this.render(nextProps))
-
-  }
-} 
-
 export {
     assert,
     eventHooks,
@@ -124,6 +102,5 @@ export {
     isArr,
     getProto,
     getShallowProto,
-    composite,
-    wrapFunction
+    composite
 }

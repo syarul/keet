@@ -1,7 +1,8 @@
 import mount from './mount'
 import parseAttr from './attr'
-import { wrapFunction, getProto, isFunc, isArr } from '../utils'
+import { getProto, getShallowProto, isFunc, isArr } from '../utils'
 import component from '../component'
+import pureFunction from '../pureFunction'
 
 const DOCUMENT_ELEMENT_TYPE = 1
 
@@ -16,18 +17,18 @@ const createEl = function(vtree, fragment) {
     let pass = false
     let node = null
 
-    if(!getProto(_rawVnode, component)){
-
-        if(_type === 'object' &&  Object.getPrototypeOf(_rawVnode).constructor !== wrapFunction){
+    if(getProto(_rawVnode, component)){
+        pass = true
+    } else if(getShallowProto(_rawVnode, pureFunction)){
+        pass = true
+    } else {
+        if(_type === 'object'){
             node = document.createElement(_rawVnode)
         } else if(_type !== 'object') {
             node = document.createTextNode(_rawVnode)
         } else {
             pass = true
         }
-
-    } else {
-        pass = true
     }
 
     if (node && node.nodeType === DOCUMENT_ELEMENT_TYPE) {
