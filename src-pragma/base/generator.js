@@ -8,5 +8,5 @@ const batch = (fn, delay) => {
 }
 
 export default async vNode => {
-	batch(KeetRenderer.emit.bind(KeetRenderer, 'event-hooks', null, vNode), 1)
+	batch(KeetRenderer.emit.bind(KeetRenderer, 'event-rendered', vNode), 1)
 }

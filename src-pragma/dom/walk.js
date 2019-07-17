@@ -1,8 +1,14 @@
 import component from '../component'
-import { eventHooks, getProto, isNode, isArr, assign, isFunc, isObj } from '../utils'
+import { wrapFunction, getProto, isNode, isArr, assign, isFunc, isObj } from '../utils'
+
+import renderer from '../'
+
+// console.log(renderer)
 
 // global props store
 let rootProps = {}
+
+const updateGlobalProps = nextProps => assign(rootProps, nextProps)
 
 const walk = (vnode, isInitial) => {
     // console.log(vnode)
@@ -32,9 +38,9 @@ const walk = (vnode, isInitial) => {
         return _rawVnode
     }
 
-    let _hooks = null
+    // let _hooks = null
 
-    // console.log(rootProps, vnode)
+    // console.log(rootProps, 'do', isInitial)
 
     // travers children
     let _child = vnode.children || []
@@ -42,16 +48,21 @@ const walk = (vnode, isInitial) => {
     // return rendered _rawVnode is a contructor/function
     if(isFunc(_rawVnode)) {
         const vnodeApp = new _rawVnode(_props)
-        // only execute it if KeetComponent constructor
+        // KeetComponent constructor
         if(getProto(vnodeApp, component)){
             const { props, state } = vnodeApp
             _rawVnode = vnodeApp
-            _child = _child.concat(vnodeApp.render(assign(props, rootProps), state))
+            _child = _child.concat(_rawVnode.render(assign(props, rootProps), state))
         } else {
-            _hooks = true
-            _child = _child.concat(vnodeApp)
+        // wrapFunction constructor
+            console.log(rootProps)
+            _rawVnode = new wrapFunction(_rawVnode, rootProps, renderer)
+            // console.log(_rawVnode)
+            _child = _child.concat(_rawVnode.render())
         }
     }
+
+    // console.log(_rawVnode)
 
     let _vChildren = []
     let i = 0
@@ -65,7 +76,7 @@ const walk = (vnode, isInitial) => {
         // _isDirty: false,
         // _guid: vnode.guid,
         // _parentVnode: parentVnode || null,
-        _hooks,
+        // _hooks,
         _rawVnode,
         _type: typeof vnode,
         _props: vnode.attributes || null,
@@ -79,4 +90,7 @@ const walk = (vnode, isInitial) => {
     return output
 }
 
-export default walk
+export {
+    walk as default,
+    updateGlobalProps
+}

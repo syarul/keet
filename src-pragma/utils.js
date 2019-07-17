@@ -17,8 +17,9 @@ const assert = (val, msg) => {
  * Add internal pub/sub to component
  */
 const eventHooks = function() {
+
     return function(target) {
-        console.log(target)
+
         /**
          * Returns a reference to the eventName reg, so the chained function is called
          * @param {string} reg - the identifier eventName
@@ -80,11 +81,38 @@ const getProto = function(_object, _constructor) {
     return Object.getPrototypeOf(Object.getPrototypeOf(_object).constructor) === _constructor
 }
 
+const getShallowProto = function(_object, _constructor) {
+    if(!_object) return false
+    return Object.getPrototypeOf(_object).constructor === _constructor
+}
+
 const composite = function() {
     this.__composite__ = new Promise(function(resolve) {
         this._resolve = resolve
     }.bind(this))
 }
+
+
+function wrapFunction(fn, props, KeetRenderer) {
+
+  let prevProps = {}
+
+  this.render = (nextProps = {}) => {
+    // console.log(props, nextProps)
+    assign(prevProps, props, nextProps) || prevProps
+    return fn(prevProps)
+ }
+
+  this.forceRender = nextProps => {
+
+    composite.call(this)
+
+    this.__composite__.then(KeetRenderer.emit.bind(KeetRenderer, 'event-rendered'))
+
+    this._resolve(this.render(nextProps))
+
+  }
+} 
 
 export {
     assert,
@@ -95,5 +123,7 @@ export {
     isObj,
     isArr,
     getProto,
-    composite
+    getShallowProto,
+    composite,
+    wrapFunction
 }

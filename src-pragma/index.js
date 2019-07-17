@@ -9,12 +9,12 @@
 // Released under the MIT License.
 //
 
-import { eventHooks, getProto, assign, isFunc } from './utils'
+import { eventHooks, getProto, getShallowProto, assign, isFunc, wrapFunction } from './utils'
 import mount from './dom/mount'
 import diff from './dom/diff'
 import patch from './dom/patch'
 import createEl from './dom/createEl'
-import walk from './dom/walk'
+import walk, { updateGlobalProps } from './dom/walk'
 import component from './component'
 
 @eventHooks()
@@ -34,54 +34,33 @@ class keetRenderer {
 
         const rootNode = createEl.call(_rawVnode, vtree)
 
-        console.log(rootNode)
+        // console.log(rootNode)
 
         isFunc(_rawVnode) && isFunc(componentDidMount) && componentDidMount()
 
         mount(node, rootNode)
 
-        oldVtree = assign({}, vtree)
+        oldVtree = vtree
 
         // life-cycle prop-hooks event
-        this.on('event-hooks', (nextProps, vNode) => {
-            console.log(vtree)
+        this.on('event-hooks', nextProps => {
+            console.log('event-hooks')
 
-            const { _rawVnode, _props, _vChildren } = vtree
+            const { _rawVnode } = vtree
 
         	let update
             // if root props changing --> do a force render
-            if(getProto(_rawVnode, component)){
-                console.log(1)
-	            if(nextProps) {
-	            	assign(_props, nextProps)// && vtree.forceRender()
-                    console.log(vtree)
-	            	return
-	            }
-
-                if(vNode){
-                    _vChildren.splice(0,1, vNode)
-                } 
-
-                console.log(_vChildren[0], vNode)
-
-	            update = diff.call(_rawVnode, _vChildren[0], vNode)
-
-	            console.log(update.cloneNode(true))
-
-            } else {
-
-                assign(_props, nextProps)
-                console.log(vtree)
-                const newVtree = walk()
-            // 	assign(attributes, nextProps)
-            //     const newVtree = walk(vnode, {})
-
-            //     update = diff(oldVtree._vnode, newVtree._vnode)
-
+            if(getProto(_rawVnode, component) || getShallowProto(_rawVnode, wrapFunction)){
+                vtree._rawVnode.forceRender(nextProps)
             }
+        })
 
-            // update oldVtree
-            oldVtree = vtree._vnode
+        this.on('event-rendered', vNode => {
+            console.log('event-rendered')
+
+            const { _rawVnode, _vChildren } = vtree
+            console.log(vNode)
+            const update = diff.call(_rawVnode, _vChildren[0], vNode)
             patch(node, update)
         })
     }

@@ -1,6 +1,6 @@
 import mount from './mount'
 import parseAttr from './attr'
-import { getProto, isFunc, isArr } from '../utils'
+import { wrapFunction, getProto, isFunc, isArr } from '../utils'
 import component from '../component'
 
 const DOCUMENT_ELEMENT_TYPE = 1
@@ -18,13 +18,14 @@ const createEl = function(vtree, fragment) {
 
     if(!getProto(_rawVnode, component)){
 
-        if(_type === 'object' && !isFunc(_rawVnode)){
+        if(_type === 'object' &&  Object.getPrototypeOf(_rawVnode).constructor !== wrapFunction){
             node = document.createElement(_rawVnode)
         } else if(_type !== 'object') {
             node = document.createTextNode(_rawVnode)
         } else {
             pass = true
         }
+
     } else {
         pass = true
     }
