@@ -1,17 +1,13 @@
 import { assign, composite } from './utils'
 import factory from './propsFactory'
 
-function pureFunction(fn, KeetRenderer, child) {
+function pureFunction(fn, KeetRenderer) {
 
   let prevProps = {}
 
   this.render = () => {
-    
     const activeProps = assign(prevProps, factory.getProps())
-
-    const newVnode = fn(activeProps)
-    child.splice(0, 1, newVnode)
-    console.log(child)
+    this._vnode = fn(activeProps)
  }
 
   this.forceRender = () => {

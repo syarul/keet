@@ -29,19 +29,17 @@ class keetRenderer {
 
         let oldVtree
 
-        const { _rawVnode = {} } = vtree
+        const { _vnode, componentWillMount, componentDidMount } = vtree
 
-        const { componentWillMount, componentDidMount } = _rawVnode
+        isFunc(componentWillMount) && componentWillMount()
 
-        isFunc(_rawVnode) && isFunc(componentWillMount) && componentWillMount()
-
-        // const rootNode = createEl.call(_rawVnode, vtree)
+        const rootNode = createEl.call(vtree, _vnode)
 
         // console.log(rootNode)
 
-        isFunc(_rawVnode) && isFunc(componentDidMount) && componentDidMount()
+        isFunc(componentDidMount) && componentDidMount()
 
-        // mount(node, rootNode)
+        mount(node, rootNode)
 
         oldVtree = clone(vtree)
 
@@ -49,35 +47,32 @@ class keetRenderer {
         this.on('event-hooks', nextProps => {
             console.log('event-hooks')
 
-            const { _rawVnode } = vtree
-
             // if root props changing --> do a force render
-            if(getProto(_rawVnode, component) || getShallowProto(_rawVnode, pureFunction)){
+            if(getProto(vtree, component) || getShallowProto(vtree, pureFunction)){
 
                 // set factory props
                 factory.umount()
                 factory.setProps(nextProps)
 
                 // force render
-                _rawVnode.forceRender()
+                vtree.forceRender()
 
-                console.log(vtree)
+                // console.log(vtree)
             }
         })
 
         this.on('event-rendered', vNode => {
             console.log('event-rendered')
 
-            // const { _rawVnode, _vChildren } = vtree
-
-            // // _vChildren.splice(0, 1, vNode)
+            const { _vnode } = vtree
 
             // console.log(vtree)
-            // const update = diff.call(_rawVnode, oldVtree, vtree)
-            // // console.log(node, update)
-            // patch(node, update)
 
-            // oldVtree = clone(vtree)
+            const update = diff.call(vtree, oldVtree._vnode, _vnode)
+            // console.log(node, update)
+            patch(node, update)
+
+            oldVtree = clone(vtree)
         })
     }
 }

@@ -25,7 +25,7 @@ const walk = (vnode, isInitial) => {
     const _props = isVirtualNode ? attributes : {}
 
     if(isObj(_rawVnode)){
-        console.log(_rawVnode)
+        // console.log(_rawVnode)
         return _rawVnode
     }
 
@@ -40,30 +40,20 @@ const walk = (vnode, isInitial) => {
     // return rendered _rawVnode is a contructor/function
     if(isFunc(_rawVnode)) {
         // console.log('do')
-        const vnodeApp = new _rawVnode(_props)
+        let vnodeApp = new _rawVnode(_props)
         // KeetComponent constructor
         if(getProto(vnodeApp, component)){
             const { props, state } = vnodeApp
-            _rawVnode = vnodeApp
-            _child = _child.concat(
-                _rawVnode.render(
-                    assign(
-                        props,
-                        factory.getProps()
-                    ), state
-                )
-            )
+            vnodeApp._vnode = vnodeApp.render(assign(props, factory.getProps()), state)
         } else {
         // pureFunction constructor
-            _rawVnode = new pureFunction(
-                _rawVnode,
-                keetRenderer,
-                _child
-            )
+            vnodeApp = new pureFunction(_rawVnode, keetRenderer)
         }
+
+        return vnodeApp
     }
 
-    console.trace(vnode)
+    // console.log(vnode)
 
     let _vChildren = []
     let i = 0
