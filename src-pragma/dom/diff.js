@@ -14,8 +14,25 @@ const diff = function(ov, nv, fragment, markUnignore) {
     }
 
     if(getShallowProto(nv._rawVnode, pureFunction) || getProto(nv._rawVnode, component)){
-        diff(ov._vChildren[0], nv._vChildren[0], fragment, markUnignore)
+
+        let indices = 0
+
+        ov = ov._rawVnode._vnode
+        nv = nv._rawVnode._vnode
+
+        while(indices < nv._vChildren.length) {
+            ovChild = ov._vChildren[indices]
+            nvChild = nv._vChildren[indices]
+            diff(ovChild, nvChild, node, markUnignore)
+            indices++
+        }
+
+        node.setAttribute('ignore-attr', '')
+
+        fragment.appendChild(node)
+
         return fragment
+
     } else if(ov._rawVnode !== nv._rawVnode || markUnignore){
         if(nv._type === 'object'){
             node = document.createElement(nv._rawVnode)
@@ -43,8 +60,6 @@ const diff = function(ov, nv, fragment, markUnignore) {
     } else {
         node.nodeType === 1 && node.setAttribute('ignore-attr', '')
     }
-
-    console.log(node)
 
     fragment.appendChild(node)
 

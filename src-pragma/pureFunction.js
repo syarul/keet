@@ -1,24 +1,30 @@
 import { assign, composite } from './utils'
-import factory from './propsFactory'
 
-function pureFunction(fn, KeetRenderer) {
+function pureFunction(props, fn, KeetRenderer) {
 
   let prevProps = {}
 
-  this.render = () => {
-    const activeProps = assign(prevProps, factory.getProps())
+  this.render = nextProps => {
+    props = nextProps || props
+    const activeProps = assign(prevProps, props)
     this._vnode = fn(activeProps)
- }
+  }
 
-  this.forceRender = () => {
+  this.forceRender = (nextProps, handler) => {
+
+    handler = handler || function() {}
 
     composite.call(this)
 
-    this.__composite__.then(KeetRenderer.emit.bind(KeetRenderer, 'event-rendered'))
+    this.__composite__
+      .then(KeetRenderer.emit.bind(KeetRenderer, 'event-rendered'))
+      .then(handler)
 
-    this._resolve(this.render())
+    this._resolve(this.render(nextProps))
 
   }
+
+  this._fn = fn
 
   // initial rendering
   this.render()

@@ -1,5 +1,6 @@
 import { Component } from '../'
-import Artifact from './artifact2'
+import Artifact2 from './artifact2'
+import Artifact from './artifact'
 
 export default class App extends Component {
   el = 'app'
@@ -12,7 +13,7 @@ export default class App extends Component {
   }
   change = () => {
     this.setState({
-      name: 'bar',
+      name: `foo${Math.random()}`,
       d: {
         s: Math.random(),
         r: Math.random()
@@ -25,12 +26,14 @@ export default class App extends Component {
     console.log('app mounted')
   }
   render () {
-    let props = this.state.d
+    let d = this.state.d
+    let props = this.props
     return (
       <div>
         <button onClick={this.change}>change</button>
         <h4>{this.state.name}</h4>
-        <Artifact {...props} />
+        {/*<Artifact2 {...d} {...props} />*/}
+        <Artifact {...d} {...props} />
       </div>
     )
   }

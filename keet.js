@@ -13,7 +13,7 @@ const keet = function(virtualNode) {
      *    - No $$typeof, props, key, ref, or other specific React lingo
      *    - Key is still supported although it is optional
      *    - We use useVariable to support component element names
-     *    - Well the lacks of error handling messages
+     *    - Well the lacks of error handling messages (*remedies tba)
      */
 
     // assert(isNode(virtualNode), 'Paramater is not a transform JSX element')
@@ -26,7 +26,7 @@ const keet = function(virtualNode) {
      * do not transform to DOM for any reason during this stage
      * pass properties to each vnode if it is a constructor
      * return as it is if is not a constructor
-     * borrow some analogy from https://github.com/Matt-Esch/virtual-dom
+     * borrow some analogies from https://github.com/Matt-Esch/virtual-dom
      */
 
     return walk(virtualNode, true)

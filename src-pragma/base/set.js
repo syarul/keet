@@ -2,21 +2,19 @@ import { assign, isFunc, composite } from '../utils'
 import auto from './auto'
 import generator from './generator'
 
-import factory from '../propsFactory'
+export default function(nextProps = {}, nextState = {}, handler) {
 
-export default function(update, next) {
+    assign(this.state, nextState)
 
-    update && assign(this.state, update)
+    assign(this.props, nextProps)
 
-    this.props = assign(this.props, factory.getProps())
-
-    next = isFunc(next) && next || function() {}
+    handler = isFunc(handler) && handler || function() {}
 
     composite.call(this)
 
     this.__composite__
         .then(generator)
-        .then(next)
+        .then(handler)
 
     auto.call(this)
 

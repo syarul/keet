@@ -8,9 +8,13 @@ const DOCUMENT_ELEMENT_TYPE = 1
 
 const createEl = function(vtree, fragment) {
 
+    // console.log(vtree, fragment)
+
     fragment = fragment || document.createDocumentFragment()
 
     if(!vtree) return fragment
+
+    vtree = (vtree._rawVnode && vtree._rawVnode._vnode) || vtree
 
     const { _type, _rawVnode, _props, _vChildren } = vtree || {}
     

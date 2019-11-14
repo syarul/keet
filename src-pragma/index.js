@@ -23,9 +23,11 @@ import factory from './propsFactory'
 @eventHooks()
 class keetRenderer {
 
+
+
     render (vtree, node) {
 
-        console.log(vtree)
+        // console.log(vtree)
 
         let oldVtree
 
@@ -41,27 +43,22 @@ class keetRenderer {
 
         mount(node, rootNode)
 
+        // cache old vtree
         oldVtree = clone(vtree)
 
-        // life-cycle prop-hooks event
-        this.on('event-hooks', nextProps => {
-            console.log('event-hooks')
+        this.__vtree__ = vtree
 
+        // life-cycle prop-hooks event
+        this.on('event-hooks', (nextProps, eventHandler) => {
+            // console.log('event-hooks', nextProps, eventHandler)
             // if root props changing --> do a force render
             if(getProto(vtree, component) || getShallowProto(vtree, pureFunction)){
-
-                // set factory props
-                factory.umount()
-                factory.setProps(nextProps)
-
                 // force render
-                vtree.forceRender()
-
-                // console.log(vtree)
+                vtree.forceRender(nextProps, eventHandler)
             }
         })
 
-        this.on('event-rendered', vNode => {
+        this.on('event-rendered', () => {
             console.log('event-rendered')
 
             const { _vnode } = vtree
@@ -72,6 +69,7 @@ class keetRenderer {
             // console.log(node, update)
             patch(node, update)
 
+            // cache old vtree
             oldVtree = clone(vtree)
         })
     }

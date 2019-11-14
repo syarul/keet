@@ -1,8 +1,31 @@
 import component from '../component'
 import pureFunction from '../pureFunction'
-import factory from '../propsFactory'
+// import factory from '../propsFactory'
 import keetRenderer from '../'
 import { getProto, isNode, isArr, assign, isFunc, isObj } from '../utils'
+
+
+const vtreeRef = (vtree, constructor) => {
+    const { _vnode } = vtree
+    const { _vChildren } = _vnode || []
+    console.log(vtree)
+    let is = Object.getPrototypeOf(vtree).constructor === constructor
+    // console.log(Object.getPrototypeOf(vtree).constructor)
+    // console.log(constructor)
+    // let hook = 
+    if(is){
+        return vtree
+    } else {
+        return _vChildren.map(vnode => {
+            if(!vnode) return false
+            return isObj(vnode._rawVnode) ? vtreeRef(vnode._rawVnode, constructor) : false
+        }).filter(f => !!f)
+    }
+
+    // console.log(Object.getPrototypeOf(vtree).constructor)
+    // console.log(constructor)
+    // console.log(is)
+}
 
 const walk = (vnode, isInitial) => {
     // console.log(vnode)
@@ -18,13 +41,17 @@ const walk = (vnode, isInitial) => {
 
     // inherits rootProps to all children in the tree, 
     // i.e history/global props/state management api
-    if(isInitial){
-        factory.setProps(attributes)
-    }
+    // if(isInitial){
+    //     factory.umount()
+    //     factory.setProps(attributes)
+    // }
+
+    // console.log(factory.getProps())
 
     const _props = isVirtualNode ? attributes : {}
 
-    if(isObj(_rawVnode)){
+    // return walked vtree
+    if(isObj(_rawVnode) && _rawVnode.hasOwnProperty('_w')){
         // console.log(_rawVnode)
         return _rawVnode
     }
@@ -37,17 +64,37 @@ const walk = (vnode, isInitial) => {
     // travers children
     let _child = vnode.children || []
 
-    // return rendered _rawVnode is a contructor/function
+    // return rendered _rawVnode is a constructor/function
     if(isFunc(_rawVnode)) {
-        // console.log('do')
-        let vnodeApp = new _rawVnode(_props)
-        // KeetComponent constructor
-        if(getProto(vnodeApp, component)){
-            const { props, state } = vnodeApp
-            vnodeApp._vnode = vnodeApp.render(assign(props, factory.getProps()), state)
+        // console.log('do', vnode)
+        let vnodeApp
+        console.log(keetRenderer.__vtree__)
+        if(keetRenderer.__vtree__){
+            let pvtree = vtreeRef(keetRenderer.__vtree__, _rawVnode)
+            console.log(pvtree)
+            if(pvtree.length){
+                vnodeApp = pvtree[0]
+                if(getProto(vnodeApp, component)){
+                    const { props } = vnodeApp
+                    vnodeApp.forceRender(assign(props, attributes))
+                } else {
+                    const { _props } = vnodeApp
+                    vnodeApp
+                }
+            }
         } else {
-        // pureFunction constructor
-            vnodeApp = new pureFunction(_rawVnode, keetRenderer)
+            vnodeApp = new _rawVnode(_props)
+            // console.log(vnodeApp, _props)
+            // KeetComponent constructor
+            if(getProto(vnodeApp, component)){
+                const { props, state } = vnodeApp
+                vnodeApp._vnode = vnodeApp.render(assign(props, attributes), state)
+                // console.log(vnodeApp)
+            } else {
+            // pureFunction constructor
+                const { _props } = vnodeApp
+                vnodeApp = new pureFunction(assign(_props, attributes), _rawVnode, keetRenderer)
+            }
         }
 
         return vnodeApp
@@ -63,14 +110,10 @@ const walk = (vnode, isInitial) => {
     }
 
     return {
-        // _isMounted: false,
-        // _isDirty: false,
-        // _guid: vnode.guid,
-        // _parentVnode: parentVnode || null,
-        // _hooks,
+        _w: true,
         _rawVnode,
         _type: typeof vnode,
-        _props: vnode.attributes || null,
+        _props: vnode.attributes || {},
         _vChildren
     }
 }

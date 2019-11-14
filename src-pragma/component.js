@@ -20,15 +20,15 @@ export default class KeetComponent {
    * @param {Object} instance - the state to update
    * @param {Function} callback - callback function once state applied
    */
-  setState () {
-    set.apply(this, arguments)
+  setState (nextState, handler) {
+    set.call(this, {}, nextState, handler)
   }
 
   /**
    * Force rerendering component
    */
-  forceRender () {
-    set.apply(this, {})
+  forceRender (nextProps, handler) {
+    set.call(this, nextProps, {}, handler)
   }
 
   /**

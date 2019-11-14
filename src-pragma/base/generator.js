@@ -7,6 +7,4 @@ const batch = (fn, delay) => {
     timer = setTimeout(fn, delay)
 }
 
-export default async vNode => {
-	batch(KeetRenderer.emit.bind(KeetRenderer, 'event-rendered', vNode), 1)
-}
+export default async => batch(KeetRenderer.emit.bind(KeetRenderer, 'event-rendered'), 1)
