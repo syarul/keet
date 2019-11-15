@@ -5,26 +5,21 @@ import keetRenderer from '../'
 import { getProto, isNode, isArr, assign, isFunc, isObj } from '../utils'
 
 
-const vtreeRef = (vtree, constructor) => {
-    const { _vnode } = vtree
+const vtreeFindRef = (vtree, constructor) => {
+    const { _vnode, _fn } = vtree
     const { _vChildren } = _vnode || []
-    console.log(vtree)
-    let is = Object.getPrototypeOf(vtree).constructor === constructor
-    // console.log(Object.getPrototypeOf(vtree).constructor)
-    // console.log(constructor)
-    // let hook = 
+    const ref = _fn ? _fn : _vnode
+    let is = Object.getPrototypeOf(ref).constructor === constructor
+    console.log(ref === constructor, is)
     if(is){
-        return vtree
+        return ref
     } else {
-        return _vChildren.map(vnode => {
+        return _vChildren.find(vnode => {
+            console.log(vnode)
             if(!vnode) return false
-            return isObj(vnode._rawVnode) ? vtreeRef(vnode._rawVnode, constructor) : false
-        }).filter(f => !!f)
+            return isObj(vnode._rawVnode) ? vtreeFindRef(vnode._rawVnode, constructor) : false
+        })
     }
-
-    // console.log(Object.getPrototypeOf(vtree).constructor)
-    // console.log(constructor)
-    // console.log(is)
 }
 
 const walk = (vnode, isInitial) => {
@@ -68,19 +63,19 @@ const walk = (vnode, isInitial) => {
     if(isFunc(_rawVnode)) {
         // console.log('do', vnode)
         let vnodeApp
-        console.log(keetRenderer.__vtree__)
+        // console.log(keetRenderer.__vtree__)
         if(keetRenderer.__vtree__){
-            let pvtree = vtreeRef(keetRenderer.__vtree__, _rawVnode)
-            console.log(pvtree)
-            if(pvtree.length){
-                vnodeApp = pvtree[0]
-                if(getProto(vnodeApp, component)){
-                    const { props } = vnodeApp
-                    vnodeApp.forceRender(assign(props, attributes))
-                } else {
-                    const { _props } = vnodeApp
-                    vnodeApp
-                }
+            let vtree = vtreeFindRef(keetRenderer.__vtree__, _rawVnode)
+            console.log(vtree)
+            if(vtree) {
+                vnodeApp = vtree._rawVnode
+            }
+            if(getProto(vnodeApp, component)){
+                const { props } = vnodeApp
+                vnodeApp.forceRender(assign(props, attributes))
+            } else {
+                const { _props } = vnodeApp
+                vnodeApp
             }
         } else {
             vnodeApp = new _rawVnode(_props)

@@ -33,7 +33,7 @@ export default class App extends Component {
         <button onClick={this.change}>change</button>
         <h4>{this.state.name}</h4>
         {/*<Artifact2 {...d} {...props} />*/}
-        <Artifact {...d} {...props} />
+        {<Artifact {...d} {...props} />}
       </div>
     )
   }
