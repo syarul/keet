@@ -1,5 +1,6 @@
 import { isNode, assert } from './src-pragma/utils'
-import walk from './src-pragma/dom/walk'
+// import walk from './src-pragma/dom/walk'
+import walk from './src-bare/walk'
 
 const keet = function(virtualNode) {
 
