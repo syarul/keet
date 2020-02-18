@@ -11,7 +11,8 @@ import { k } from '../'
 let props = { greet: 'World' }
 
 k.render(
-  <App {...props} />,
+  App,
+  props,
   //<div {...props}>I'm ready!</div>, 
   document.getElementById('app')
 )

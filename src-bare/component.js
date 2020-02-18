@@ -1,3 +1,3 @@
-export default function Wrapper(component) {
+export default function Wrapper (component) {
   return null
 }
