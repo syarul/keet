@@ -14,7 +14,7 @@
     "babel-plugin-istanbul": "^4.1.5",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-decorators-legacy": "^1.3.5",
-    "babel-plugin-transform-jsx": "^2.0.0",
+    "babel-plugin-transform-jsx": "file:babel-plugin-transform-jsx",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
@@ -23,6 +23,7 @@
     "babel-preset-stage-0": "^6.24.1",
     "clone": "^2.1.2",
     "coveralls": "^3.0.0",
+    "hookuspocus": "git+https://github.com/michael-klein/hookuspocus.git",
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^2.30.1",
     "jsdoc-to-markdown": "^4.0.1",
@@ -41,7 +42,6 @@
     "standard": "^11.0.1",
     "uglify-js": "^2.7.5",
     "url-parse": "^1.4.3",
-    "uuid": "^3.3.2",
     "virtual-dom": "^2.1.1",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.11.1"
@@ -117,7 +117,5 @@
   "standard": {
     "parser": "babel-eslint"
   },
-  "dependencies": {
-    "hookuspocus": "git+https://github.com/syarul/hookuspocus.git"
-  }
+  "dependencies": {}
 }

@@ -2,18 +2,19 @@ import { useState } from 'hookuspocus/src/use_state'
 // import { useEffect } from 'hookuspocus/src/use_effect'
 
 function Child(props){ 
-  const { count } = props
+  const { foobar } = props
 
-  const [v, setV] = useState('foo')
+  let [count, setCount] = useState(1)
 
   const click = e => {
-    setV(v === 'foo' ? 'bar': 'foo')
+    count++
+    setCount(count)
   }
 
   return (
     <div>
-      <button onClick={click}>test : {v}</button>
-      <div id='2'>Current count is: {count}</div>
+      <button onClick={click}>count : {count}</button>
+      <div id='2'>Current state is: {foobar}</div>
     </div>
   )
 }
@@ -22,20 +23,20 @@ function App(props) {
 
   const { todo } = props
 
-  let [count, setCount] = useState(0)
+  let [foobar, setFoobar] = useState(5)
 
   const click = e => {
-    count += 1
-    setCount(count)
+    foobar++
+    setFoobar(foobar)
   }
 
   return (
     <div>
       <button onClick={click}>
-        {todo}: {count}
+        count: {foobar}
       </button>
-      <p>me</p>
-      <Child count={count}/>
+      <p>sub hook</p>
+      <Child foobar={foobar}/>
     </div>
   )
 }
