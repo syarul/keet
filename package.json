@@ -117,5 +117,7 @@
   "standard": {
     "parser": "babel-eslint"
   },
-  "dependencies": {}
+  "dependencies": {
+    "hookuspocus": "git+https://github.com/syarul/hookuspocus.git"
+  }
 }

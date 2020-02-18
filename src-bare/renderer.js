@@ -1,4 +1,5 @@
 import walk from './walk'
+import patch from '../src-pragma/dom/patch'
 /**
  * @private
  * @decorator
@@ -64,9 +65,7 @@ function classes (el, attr, value) {
 
 function evt (el, attr, value) {
   el.removeAttribute(attr)
-  el.addEventListener(attr.replace(/^on/, '').toLowerCase(), () => {
-  	value && value()
-  }, false)
+  el.addEventListener(attr.replace(/^on/, '').toLowerCase(), value, false)
 }
 
 function parseAttr (el, attr, value) {
@@ -99,7 +98,6 @@ function createEl (vtree, fragment) {
       parseAttr(node, attr, attributes[attr])
     })
   } else {
-  	console.log(vtree)
     node = document.createTextNode(vtree)
   }
 
@@ -115,28 +113,21 @@ function createEl (vtree, fragment) {
 @eventHooks()
 class Renderer {
   
-  render (App, props, rootNode) {
+  render (vtree, rootNode) {
 
-  	const vtree = (<App {...props} />)
-
-    console.log(vtree)
     const el = createEl(vtree)
     rootNode.appendChild(el)
 
-    this.on('event-rendered', () => {
+    let oldVtree = vtree
 
-        console.log('event-rendered')
+    this.on('after', vtree => {
+      const el = createEl(vtree)
 
-        let nvtree = (<App {...props} />)
-  		console.log(nvtree)
+      patch(rootNode, el)
         
     })
   }
 
-  rerender() {
-  	let node = walk(this.__vtree__)
-  	console.log(node)
-  }
 }
 
 const keetRenderer = new Renderer()

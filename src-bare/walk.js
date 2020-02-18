@@ -1,47 +1,46 @@
 import keetRenderer from './renderer'
-import { composite } from '../src-pragma/utils'
+import { pocus, dataMap } from 'hookuspocus/src/core'
+import { onStateChanged } from 'hookuspocus/src/on'
 
-function pureFunction(props, fn, KeetRenderer) {
+const core = []
 
-  this.render = props => {
-    return fn(props)
-  }
+onStateChanged(context => {
+  // console.log(dataMap.get(context))
+  // console.log(context === dataMap.get(core[0])[0])
+  // console.log(pocus(context))
+  const vtree = pocus(dataMap.get(core[0])[0])
+  // const vtree = pocus(context)
+  // emit changes to render so patching can be done
+  keetRenderer.emit.call(keetRenderer, 'after', walk(vtree))
+})
 
-  this.forceRender = (nextProps, handler) => {
-
-  	props = nextProps || props
-
-    handler = handler || function() {}
-
-    composite.call(this)
-
-    this.__composite__
-      .then(KeetRenderer.emit.bind(KeetRenderer, 'event-rendered'))
-      .then(handler)
-
-    this._resolve(this.render(props))
-
-  }
-
-  return this.render(props)
-
+// HORRAY!! pass the context through pocus
+// so our function can use all hooks features
+// from hookuspocus https://github.com/michael-klein/hookuspocus
+function genContext(func, props, initial){
+  // bind the props to the function which 
+  // will retain as context object for
+  // subsequent runs
+  const context = func.bind(null, props)
+  if(!core.length) core.push(context)
+  const out = pocus(context)
+  // run dom logics
+  return out
 }
 
-function walk (node) {
-  console.log(node)
+function walk (node, initial) {
+
   const { elementName, attributes, children } = node
 
   if (typeof elementName === 'function') {
-  	return walk(elementName(attributes))
-    // return walk(new pureFunction(attributes, elementName, keetRenderer))
+    return genContext(elementName, attributes, initial)
   }
 
   if (children && children.length) {
     const _children = children.map(child => {
       const { elementName, attributes } = child
       if (typeof elementName === 'function') {
-      	return walk(elementName(attributes))
-        // return walk(new pureFunction(attributes, elementName, keetRenderer))
+        return genContext(elementName, attributes)
       }
       return child
     })
@@ -56,25 +55,4 @@ function walk (node) {
   return node
 }
 
-let map = []
-
-function useState(value) {
-  console.log(map)
-  if(!map.length) map.push(value)
-  return map.length === 2 ? map[1] : map[0]
-}
-
-function setState(args){
-	map.push(args)
-	if(map.length > 2) {
-		map.shift()
-	}
-	console.log(map)
-	keetRenderer.emit.call(keetRenderer, 'event-rendered')
-}
-
-export {
-	walk as default,
-	setState,
-	useState
-}
+export default walk

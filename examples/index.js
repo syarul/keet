@@ -8,12 +8,10 @@ import App from './test'
 
 import { k } from '../'
 
-let props = { greet: 'World' }
+let props = { todo: 'Click' }
 
 k.render(
-  App,
-  props,
-  //<div {...props}>I'm ready!</div>, 
+  <App {...props} />,
   document.getElementById('app')
 )
 

@@ -10,14 +10,14 @@
 //   k
 // }
 
-import Component from './src-bare/component'
+// import Component from './src-bare/component'
 import k from './src-bare/renderer'
 
 // keet fragment identity to enclose jsx elements
 const Fragment = 'Keet.Fragment'
 
 export {
-  Component,
+  // Component,
   Fragment,
   k
 }
