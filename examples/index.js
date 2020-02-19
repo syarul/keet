@@ -4,7 +4,8 @@
 // import  App from './3_component_class'
 // import App from './artifact'
 
-import App from './test'
+// import App from './test'
+import App from './single'
 
 import { k } from '../'
 

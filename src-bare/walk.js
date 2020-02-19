@@ -13,6 +13,7 @@ onStateChanged(context => {
   const props = propStore.get(rootContext)
   const vtree = pocus([props], rootContext)
   // emit changes to render so patching can be done
+  // console.log(vtree.children[0].children)
   renderer.emit('after', vtree)
 })
 
