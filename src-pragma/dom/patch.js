@@ -1,3 +1,5 @@
+import { evtMap } from '../../src-bare/renderer'
+
 const DOCUMENT_ELEMENT_TYPE = 1
 
 function isEqual(oldNode, newNode) {
@@ -31,7 +33,11 @@ function setAttr(oldNode, newNode) {
     }
     for (let attr in output) {
         if (oldNode.attributes[attr] && oldNode.attributes[attr].name === attr && oldNode.attributes[attr].value !== output[attr]) {
-            oldNode.setAttribute(attr, output[attr])
+            if(attr === '_onclick') {
+
+            } else {
+                oldNode.setAttribute(attr, output[attr])
+            }
         } else {
             // add new attributes
             if (!oldNode.hasAttribute(attr)) {

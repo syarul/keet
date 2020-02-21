@@ -5,6 +5,8 @@ import patch from '../src-pragma/dom/patch'
  * @decorator
  * Add internal pub/sub to component
  */
+const evtMap = new(WeakMap || Map)()
+
 function eventHooks () {
   return function (target) {
     /**
@@ -64,8 +66,10 @@ function classes (el, attr, value) {
 }
 
 function evt (el, attr, value) {
-  el.removeAttribute(attr)
   el.addEventListener(attr.replace(/^on/, '').toLowerCase(), value, false)
+  let id = Math.round(Math.random()*1e17).toString(32)
+  evtMap.set({ id }, value)
+  el.setAttribute(`_${attr}`, id)
 }
 
 function parseAttr (el, attr, value) {
@@ -132,4 +136,7 @@ class Renderer {
 
 const keetRenderer = new Renderer()
 
-export default keetRenderer
+export {
+  keetRenderer as default,
+  evtMap
+}
